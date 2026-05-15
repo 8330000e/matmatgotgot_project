@@ -1,11 +1,18 @@
 import "../App.css";
+import Header from "../components/commons/Header";
 
 const Main = () => {
   return (
-    <div className="main">
-      <h1>맛맛곳곳</h1>
-      <p>맛있는 음식과 아름다운 장소를 찾아보세요!</p>
-    </div>
+    <>
+      <Header />
+      <div className="main">
+        <div>
+          <section>
+            <h2>맛맛곳곳에 오신 것을 환영합니다!</h2>
+          </section>
+        </div>
+      </div>
+    </>
   );
 };
 
