@@ -1,10 +1,10 @@
-package kr.co.iei;
+package com.twotwo.matmatgotgot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MatmatgotgotBackApplicationTests {
+class MatmatgotgotApplicationTests {
 
 	@Test
 	void contextLoads() {

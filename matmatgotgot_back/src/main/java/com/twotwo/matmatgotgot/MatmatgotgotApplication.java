@@ -1,13 +1,13 @@
-package kr.co.iei;
+package com.twotwo.matmatgotgot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MatmatgotgotBackApplication {
+public class MatmatgotgotApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MatmatgotgotBackApplication.class, args);
+		SpringApplication.run(MatmatgotgotApplication.class, args);
 	}
 
 }
