@@ -1,4 +1,18 @@
+import { useEffect } from "react";
+import axios from "axios";
+
 const Login = () => {
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/members`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <div>
       <h1>Login</h1>

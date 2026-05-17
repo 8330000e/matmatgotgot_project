@@ -1,14 +1,14 @@
 import "../App.css";
-import Header from "../components/commons/Header";
+import LeftSideBar from "../components/commons/LeftSideBar";
 
 const Main = () => {
   return (
     <>
-      <Header />
+      <LeftSideBar />
       <div className="main">
         <div>
           <section>
-            <h2>맛맛곳곳에 오신 것을 환영합니다!</h2>
+            <h2>로그인 후 메인페이지</h2>
           </section>
         </div>
       </div>
