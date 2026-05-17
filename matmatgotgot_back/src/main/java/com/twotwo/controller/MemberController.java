@@ -1,4 +1,4 @@
-package controller;
+package com.twotwo.controller;
 
 import java.util.List;
 
@@ -10,22 +10,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dto.MemberDto;
-import entity.MemberEntity;
-import lombok.RequiredArgsConstructor;
-import service.MemberService;
+import com.twotwo.dto.MemberDto;
+import com.twotwo.entity.MemberEntity;
 
-@CrossOrigin(value="*")
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/members")
 public class MemberController {
 	
-	private final MemberService memberService;
+	private final com.twotwo.service.MemberService memberService;
 	
 	@GetMapping
 	public ResponseEntity<?> selectAllMembers() {
-		List<MemberEntity> list = memberService.selectAllMembers();
+		List<MemberDto> list = memberService.selectAllMembers();
 		System.out.println(list);
 		return ResponseEntity.ok(list);
 	}

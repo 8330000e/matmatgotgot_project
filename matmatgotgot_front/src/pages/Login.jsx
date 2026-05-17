@@ -4,7 +4,7 @@ import axios from "axios";
 const Login = () => {
   useEffect(() => {
     axios
-      .get("/api/members")
+      .get(`${import.meta.env.VITE_BACKSERVER}/members`)
       .then((res) => {
         console.log(res.data);
       })

@@ -1,14 +1,13 @@
-package mapper;
+package com.twotwo.mapper;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import dto.MemberDto;
-import entity.MemberEntity;
+import com.twotwo.dto.MemberDto;
 
 @Mapper
 public interface MemberMapper {
 
-	List<MemberEntity> selectAllMembers();
+	List<MemberDto> selectAllMembers();
 }

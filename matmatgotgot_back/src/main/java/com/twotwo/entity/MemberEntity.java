@@ -1,4 +1,4 @@
-package entity;
+package com.twotwo.entity;
 
 import java.time.LocalDateTime;
 
