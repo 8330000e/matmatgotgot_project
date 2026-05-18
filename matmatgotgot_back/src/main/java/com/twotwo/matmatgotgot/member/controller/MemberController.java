@@ -1,4 +1,4 @@
-package com.twotwo.controller;
+package com.twotwo.matmatgotgot.member.controller;
 
 import java.util.List;
 
@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.twotwo.dto.MemberDto;
-import com.twotwo.entity.MemberEntity;
+import com.twotwo.matmatgotgot.member.dto.MemberDto;
+import com.twotwo.matmatgotgot.member.mapper.MemberMapper;
+import com.twotwo.matmatgotgot.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value="/members")
 public class MemberController {
 	
-	private final com.twotwo.service.MemberService memberService;
+	private final MemberService memberService;
 	
 	@GetMapping
 	public ResponseEntity<?> selectAllMembers() {

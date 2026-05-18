@@ -1,4 +1,4 @@
-package com.twotwo.config;
+package com.twotwo.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

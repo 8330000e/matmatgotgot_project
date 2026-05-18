@@ -1,4 +1,4 @@
-package com.twotwo.entity;
+package com.twotwo.matmatgotgot.member.entity;
 
 import java.time.LocalDateTime;
 

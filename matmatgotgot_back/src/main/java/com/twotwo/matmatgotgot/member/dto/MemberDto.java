@@ -1,8 +1,4 @@
-package com.twotwo.dto;
-
-import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
+package com.twotwo.matmatgotgot.member.dto;
 
 import lombok.Data;
 
