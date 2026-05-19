@@ -2,18 +2,15 @@ package com.twotwo.matmatgotgot.member.entity;
 
 import java.time.LocalDateTime;
 
-import org.apache.ibatis.type.Alias;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-@Alias(value="member")
-public class MemberEntity {
-    private Long id;
+public class LoginMember {
+	private Long id;
     private String memberId;
     private String memberPw;
     private String memberName;
@@ -22,4 +19,6 @@ public class MemberEntity {
     private String memberThumb;
     private int memberStatus;
     private LocalDateTime enrollDate;
+    private boolean admin;
 }
+
