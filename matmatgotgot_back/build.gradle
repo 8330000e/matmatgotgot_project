@@ -18,11 +18,12 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
