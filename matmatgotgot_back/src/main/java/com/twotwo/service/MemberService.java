@@ -6,16 +6,15 @@ import org.springframework.stereotype.Service;
 
 import com.twotwo.dto.response.MemberResponse;
 import com.twotwo.entity.Member;
-import com.twotwo.exception.UserNotFoundException;
+import com.twotwo.exception.MemberNotFoundException;
 import com.twotwo.repository.MemberRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MemberService {
 	private final MemberRepository memberRepository;
-
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
 
     public List<MemberResponse> selectAll() {
         List<Member> memberList = memberRepository.selectAll(); 

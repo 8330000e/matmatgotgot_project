@@ -30,3 +30,28 @@ public class ApiResponse<T> {
         return new ApiResponse<>(false, null, errorCode.getCode(), message);
     }
 }
+
+// 응답 예시
+//// 성공
+//{
+//        "success": true,
+//        "data": { "id": 1, "memberName": "홍길동", "memberEmail": "hong@example.com" },
+//        "code": null,
+//        "message": null
+//        }
+//
+//// 실패 - 사용자 없음
+//        {
+//        "success": false,
+//        "data": null,
+//        "code": "U001",
+//        "message": "사용자를 찾을 수 없습니다."
+//        }
+//
+//// 실패 - 입력값 오류 (@Valid)
+//        {
+//        "success": false,
+//        "data": null,
+//        "code": "C001",
+//        "message": "이메일을 입력해주세요, 비밀번호는 8자 이상이어야 합니다."
+//        }
