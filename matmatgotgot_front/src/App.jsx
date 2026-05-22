@@ -10,8 +10,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<MainCover/>} />
-        <Route path="/main" element={<Main/>} />
+        <Route path="/" element={<MainCover />} />
+        <Route path="/main" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Join />} />
       </Routes>

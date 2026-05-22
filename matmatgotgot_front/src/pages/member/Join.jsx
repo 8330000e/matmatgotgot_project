@@ -1,22 +1,103 @@
+import axios from "axios";
+import { useState } from "react";
+
 const Join = () => {
+  const [member, setMember] = useState({
+    memberId: "",
+    memberPw: "",
+    memberName: "",
+    memberEmail: "",
+  });
+  const inputMember = (e) => {
+    const { name, value } = e.target;
+    setMember((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const [mailAuth, setMailAuth] = useState(0);
+  const [mailAuthCode, setMailAuthCode] = useState(null);
+  const pwDupCheck = () => {
+    const pw = document.getElementById("memberPw").value;
+    const pwConfirm = document.getElementById("memberPwConfirm").value;
+    if (pw !== pwConfirm) {
+      alert("Passwords do not match.");
+      return false;
+    }
+    return true;
+  };
+  const sendMail = () => {
+    const obj = { memberEmail: member.memberEmail };
+    axios
+      .post(`${import.meta.env.VITE_BACKSERVER}/members/email-verification`, {
+        memberEmail: member.memberEmail,
+      })
+      .then((res) => {
+        console.log(res);
+        setMailAuthCode(res.data.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <div>
       <h1>Join</h1>
       <form>
         <label htmlFor="memberId">ID:</label>
-        <input type="text" id="memberId" name="memberId" />
+        <input
+          type="text"
+          id="memberId"
+          name="memberId"
+          value={member.memberId}
+          onChange={inputMember}
+        />
         <br />
         <label htmlFor="memberPw">Password:</label>
-        <input type="password" id="memberPw" name="memberPw" />
+        <input
+          type="password"
+          id="memberPw"
+          name="memberPw"
+          value={member.memberPw}
+          onChange={inputMember}
+        />
         <br />
         <label htmlFor="memberPwConfirm">Confirm Password:</label>
-        <input type="password" id="memberPwConfirm" name="memberPwConfirm" />
+        <input
+          type="password"
+          id="memberPwConfirm"
+          name="memberPwConfirm"
+          value={member.memberPwConfirm}
+          onChange={inputMember}
+        />
         <br />
         <label htmlFor="memberName">Name:</label>
-        <input type="text" id="memberName" name="memberName" />
+        <input
+          type="text"
+          id="memberName"
+          name="memberName"
+          value={member.memberName}
+          onChange={inputMember}
+        />
         <br />
-        <label htmlFor="memberEmail">Email:</label>
-        <input type="email" id="memberEmail" name="memberEmail" />
+        <label htmlFor="memberEmail">이메일</label>
+        <div>
+          <input
+            type="text"
+            name="memberEmail"
+            id="memberEmail"
+            value={member.memberEmail}
+            onChange={inputMember}
+            readOnly={mailAuth === 1 || mailAuth === 3}
+          />
+          <button
+            type="button"
+            className="btn primary sm"
+            onClick={sendMail}
+            disabled={mailAuth === 1 || mailAuth === 3}
+          >
+            메일전송
+          </button>
+        </div>
         <br />
         <button type="submit">Join</button>
       </form>
