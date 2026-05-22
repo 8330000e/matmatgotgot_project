@@ -7,14 +7,13 @@ import org.springframework.stereotype.Repository;
 import com.twotwo.entity.Member;
 import com.twotwo.mapper.MemberMapper;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Repository
+@RequiredArgsConstructor
 public class MemberRepository {
     private final MemberMapper memberMapper;
-
-    public MemberRepository(MemberMapper memberMapper) {
-        this.memberMapper = memberMapper;
-    }
 
     public List<Member> selectAll() {
         // memberMapper 안에 전체 조회하는 메소드 이름을 적어주면 돼요.

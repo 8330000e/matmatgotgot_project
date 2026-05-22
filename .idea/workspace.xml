@@ -5,29 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="360bc756-0ced-4946-9768-93539bd9b427" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/entity/BaseEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/api/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/api/memberApi.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/components/ui/Button.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/components/ui/Input.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/components/ui/form.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/store/useAuthStore.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/config/MyBatisConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/config/SecurityConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/exception/BusinessException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/exception/ErrorCode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/exception/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/response/ApiResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/security/CustomUserDetailsService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/security/JwtProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/util/DateUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/global/util/StringUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/controller/MemberController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/dto/MemberDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/entity/LoginMember.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/entity/Member.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/exception/DuplicateEmailException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/exception/UserNotFoundException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/mapper/MemberMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/repository/MemberRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/member/service/MemberService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/mapper/MemberMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/mapper/MemberMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/config/MyBatisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/config/MyBatisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/entity/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/entity/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/exception/UserNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/exception/MemberNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/repository/MemberRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/repository/MemberRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/response/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/response/ApiResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/security/JwtProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/security/JwtProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/service/MemberService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/util/DateUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/util/DateUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application-local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application-local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application-prod.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application-prod.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/Join.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Join.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Login.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +38,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KotlinCodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -51,14 +56,27 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "kgy",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/CODING/KH_JONGNO_CLASS/matmatgotgot_project",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
+    "last_opened_file_path": "C:/Users/user1/Desktop/matmatgotgot_project",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "프로젝트",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "typescript.add.unambiguous.imports.on.the.fly": "true",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\user1\Desktop\matmatgotgot_project\matmatgotgot_front\src\pages\member" />
       <recent name="D:\CODING\KH_JONGNO_CLASS\matmatgotgot_project\matmatgotgot_back\src\main\java\com\twotwo" />
       <recent name="D:\CODING\KH_JONGNO_CLASS\matmatgotgot_project\matmatgotgot_back\src\main\java\com\twotwo\matmatgotgot" />
     </key>
@@ -77,7 +95,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1778885653476</updated>
+      <workItem from="1779429043039" duration="2938000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

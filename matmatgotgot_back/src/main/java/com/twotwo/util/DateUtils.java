@@ -3,7 +3,7 @@ package com.twotwo.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-// 날짜 관련 공통 유틸. 여러 도메인에서 공통으로 쓰는 메서드만 위치
+// 여러 레이어에서 공통으로 쓰는 날짜 유틸
 public class DateUtils {
 
     private DateUtils() {}  // 인스턴스 생성 금지
