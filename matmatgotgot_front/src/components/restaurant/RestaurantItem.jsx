@@ -1,16 +1,38 @@
 import styles from "./RestaurantItem.module.css";
+import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 
 const RestaurantItem = ({ rest }) => {
   return (
     <>
       <div className={styles.restaurant_item}>
-        <div className={styles.rest_name}>{`${rest.resetName}`}</div>
+        <div className={styles.rest_name}>맛집 상호명</div>
+        <div className={styles.rest_img}>
+          <ImageNotSupportedIcon className={styles.ImageNotSupportedIcon} />
+        </div>
+        <div className={styles.rest_addr}>맛곳광역시 맛곳구 맛곳동</div>
+        <div className={styles.reset_category}>중식당</div>
+      </div>
+      <div className={styles.like_star}>
+        <div className={styles.like}>좋아요</div>
+        <div className={styles.star}>* 5.0</div>
       </div>
     </>
   );
 };
 
 export default RestaurantItem;
+
+// {market.marketThumb ? (
+//           <img
+//             src={`${import.meta.env.VITE_IMAGE_SERVER}/${market.marketThumb}`}
+//             alt={market.marketTitle}
+//           />
+//         ) : (
+//           <ImageNotSupportedIcon
+//             className={styles.ImageNotSupportedIcon}
+//             style={{ height: "200px", width: "200px", fill: "var(--primary)" }}
+//           />
+//         )}
 
 // rest_no BIGINT AUTO_INCREMENT PRIMARY KEY,
 //     member_no BIGINT NOT NULL,

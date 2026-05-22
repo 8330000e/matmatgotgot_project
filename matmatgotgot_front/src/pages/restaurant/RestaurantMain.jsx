@@ -27,6 +27,7 @@ const RestaurantMain = () => {
       <section className={styles.local_card_wrap}>
         <div>현지인 맛집</div>
         <div className={styles.restaurant_card}>
+          {/* localList에서 8개의 rest 정보를 가지고 온다고 할 때 화면에는 4개의 RestaurantItem을 보여주고 오른쪽, 왼쪽 방향을 누르면 swipe 되도록 하기 */}
           {localList.map((rest) => {
             return (
               <RestaurantItem
