@@ -3,7 +3,8 @@
 <mapper namespace="com.twotwo.mapper.RestaurantMapper">
 
     <select id="getLocalList" resultType="restaurant">
-		
+
+
 
     </select>
 

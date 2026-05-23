@@ -12,7 +12,7 @@ const RestaurantMain = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/local`)
       .then((res) => {
-        setLocalList(res.dtaa);
+        setLocalList(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -21,7 +21,7 @@ const RestaurantMain = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/popular`)
       .then((res) => {
-        setPopularList(res.dtaa);
+        setPopularList(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -30,7 +30,7 @@ const RestaurantMain = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/like`)
       .then((res) => {
-        setLikeList(res.dtaa);
+        setLikeList(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -39,7 +39,7 @@ const RestaurantMain = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/region`)
       .then((res) => {
-        setRegionList(res.dtaa);
+        setRegionList(res.data);
       })
       .catch((err) => {
         console.log(err);
