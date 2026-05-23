@@ -4,12 +4,42 @@ import axios from "axios";
 
 const RestaurantMain = () => {
   const [localList, setLocalList] = useState([]);
+  const [popularList, setPopularList] = useState([]);
+  const [likeList, setLikeList] = useState([]);
+  const [regionList, setRegionList] = useState([]);
 
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/local`)
       .then((res) => {
         setLocalList(res.dtaa);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/popular`)
+      .then((res) => {
+        setPopularList(res.dtaa);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/like`)
+      .then((res) => {
+        setLikeList(res.dtaa);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/region`)
+      .then((res) => {
+        setRegionList(res.dtaa);
       })
       .catch((err) => {
         console.log(err);
@@ -24,11 +54,53 @@ const RestaurantMain = () => {
         </div>
       </section>
 
-      <section className={styles.local_card_wrap}>
+      <section className={styles.card_wrap}>
         <div>현지인 맛집</div>
         <div className={styles.restaurant_card}>
           {/* localList에서 8개의 rest 정보를 가지고 온다고 할 때 화면에는 4개의 RestaurantItem을 보여주고 오른쪽, 왼쪽 방향을 누르면 swipe 되도록 하기 */}
           {localList.map((rest) => {
+            return (
+              <RestaurantItem
+                key={`${rest.restNo}`}
+                rest={rest}
+              ></RestaurantItem>
+            );
+          })}
+        </div>
+      </section>
+      <section className={styles.card_wrap}>
+        <div>인기 맛집</div>
+        <div className={styles.restaurant_card}>
+          {/* popularList에서 8개의 rest 정보를 가지고 온다고 할 때 화면에는 4개의 RestaurantItem을 보여주고 오른쪽, 왼쪽 방향을 누르면 swipe 되도록 하기 */}
+          {popularList.map((rest) => {
+            return (
+              <RestaurantItem
+                key={`${rest.restNo}`}
+                rest={rest}
+              ></RestaurantItem>
+            );
+          })}
+        </div>
+      </section>
+      <section className={styles.card_wrap}>
+        <div>찜한 맛집</div>
+        <div className={styles.restaurant_card}>
+          {/* likeList에서 8개의 rest 정보를 가지고 온다고 할 때 화면에는 4개의 RestaurantItem을 보여주고 오른쪽, 왼쪽 방향을 누르면 swipe 되도록 하기 */}
+          {likeList.map((rest) => {
+            return (
+              <RestaurantItem
+                key={`${rest.restNo}`}
+                rest={rest}
+              ></RestaurantItem>
+            );
+          })}
+        </div>
+      </section>
+      <section className={styles.card_wrap}>
+        <div>내 주변 맛집</div>
+        <div className={styles.restaurant_card}>
+          {/* regionList에서 8개의 rest 정보를 가지고 온다고 할 때 화면에는 4개의 RestaurantItem을 보여주고 오른쪽, 왼쪽 방향을 누르면 swipe 되도록 하기 */}
+          {regionList.map((rest) => {
             return (
               <RestaurantItem
                 key={`${rest.restNo}`}
