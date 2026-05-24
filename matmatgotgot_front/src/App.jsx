@@ -4,6 +4,7 @@ import "./App.css";
 import MainCover from "./pages/MainCover";
 import Main from "./pages/Main";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
+import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
 import Login from "./pages/member/Login.jsx";
 import Join from "./pages/member/Join.jsx";
 
@@ -17,7 +18,11 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
-          <Route path="/restaurantmain" element={<RestaurantMain />} />
+          <Route path="/restmain" element={<RestaurantMain />} />
+          <Route
+            path="/restdetailsearch"
+            element={<RestaurantDetailSearch />}
+          />
         </Routes>
       </div>
       {/* <Footer /> */}
