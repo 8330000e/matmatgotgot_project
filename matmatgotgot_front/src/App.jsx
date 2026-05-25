@@ -7,6 +7,7 @@ import RestaurantMain from "./pages/restaurant/RestaurantMain";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
 import Login from "./pages/member/Login.jsx";
 import Join from "./pages/member/Join.jsx";
+import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             path="/restdetailsearch"
             element={<RestaurantDetailSearch />}
           />
+          <Route path="/restregist" element={<RestaurantRegist />} />
         </Routes>
       </div>
       {/* <Footer /> */}
