@@ -34,6 +34,13 @@ public class MemberController {
 		return ResponseEntity.ok(ApiResponse.success(memberService.selectAll()));
 	}
 
+	@PostMapping
+	public ResponseEntity<?> insertMember(@RequestBody Member member) {
+		int result = memberService.insertMember(member);
+		return ResponseEntity.ok(result);
+	}
+	
+
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member) {
 		String emailTitle = "[맛맛곳곳] 회원가입 인증 메일입니다.";

@@ -6,13 +6,14 @@ const Join = () => {
     memberId: "",
     memberPw: "",
     memberName: "",
+    memberNickname: "",
     memberEmail: "",
   });
+  const [memberPwRe,setMemberPwRe] = useState("");
   const inputMember = (e) => {
     const { name, value } = e.target;
     setMember((prev) => ({ ...prev, [name]: value }));
   };
-
   const [mailAuth, setMailAuth] = useState(0);
   const [mailAuthCode, setMailAuthCode] = useState(null);
   const pwDupCheck = () => {
@@ -25,7 +26,6 @@ const Join = () => {
     return true;
   };
   const sendMail = () => {
-    const obj = { memberEmail: member.memberEmail };
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/members/email-verification`, {
         memberEmail: member.memberEmail,
@@ -38,11 +38,19 @@ const Join = () => {
         console.error(err);
       });
   };
+  const joinMember = () => {
+    axios.post(`${import.meta.env.VITE_BACKSERVER}/members`, member)
+    .then((res)=>{console.log(res);})
+    .catch((err)=>{console.log(err);});
+  };
 
   return (
     <div>
       <h1>Join</h1>
-      <form>
+      <form onSubmit={(e)=>{
+        e.preventDefault();
+        joinMember();
+      }}>
         <label htmlFor="memberId">ID:</label>
         <input
           type="text"
@@ -66,8 +74,10 @@ const Join = () => {
           type="password"
           id="memberPwConfirm"
           name="memberPwConfirm"
-          value={member.memberPwConfirm}
-          onChange={inputMember}
+          value={memberPwRe}
+          onChange={(e)=>{
+            setMemberPwRe(e.target.value);
+          }}
         />
         <br />
         <label htmlFor="memberName">Name:</label>
@@ -76,6 +86,15 @@ const Join = () => {
           id="memberName"
           name="memberName"
           value={member.memberName}
+          onChange={inputMember}
+        />
+        <br />
+        <label htmlFor="memberName">Nickname:</label>
+        <input
+          type="text"
+          id="memberNickname"
+          name="memberNickname"
+          value={member.memberNickname}
           onChange={inputMember}
         />
         <br />
