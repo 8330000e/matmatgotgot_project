@@ -7,12 +7,12 @@ import Pagination from "../../components/ui/Pagination";
 const RestaurantDetailSearch = () => {
   const [region, setRegion] = useState("");
   const [categories, setCategories] = useState([]);
-  const [order, setOrder] = useState("");
+  const [order, setOrder] = useState("latest"); // 기본값: 최신순
   const [restList, setRestList] = useState([]);
-  const [restName, setRestName] = useState("");
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(12);
+  const [size] = useState(12); // 한 페이지에 보여줄 카드 수 (12 = 4열 × 3행)
   const [totalPage, setTotalPage] = useState(null);
+  const [restName, setRestName] = useState("");
 
   useEffect(() => {
     axios
@@ -26,9 +26,9 @@ const RestaurantDetailSearch = () => {
       });
   }, []);
 
+  // 카테고리 체크박스 핸들러 (다중 선택 가능)
   const handleCategoryChange = (e) => {
     const { value, checked } = e.target;
-
     if (checked) {
       setCategories([...categories, value]);
     } else {
@@ -36,23 +36,60 @@ const RestaurantDetailSearch = () => {
     }
   };
 
+  // 맛집 이름 검색 핸들러
+  // restName을 쿼리 파라미터로 전달하고, 검색 시 첫 페이지(0)로 초기화
+  const handleSearch = () => {
+    setPage(0);
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/search`, {
+        params: { restName, page: 0, size },
+      })
+      .then((res) => {
+        setRestList(res.data);
+        setTotalPage(res.data.totalPage);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
-    <>
+    /* 전체 레이아웃: 좌측 필터 사이드바 + 우측 목록 (2컬럼 flex) */
+    <div className={styles.page_wrap}>
+      {/* ===== 좌측: 필터 사이드바 ===== */}
       <section className={styles.filter_section}>
-        <div>필터</div>
+        {/* 필터 제목 */}
+        <div className={styles.filter_title}>필터</div>
+
+        {/* 지역 검색 입력 */}
         <div className={styles.region}>
-          <div>지역</div>
+          <div className={styles.filter_label}>지역</div>
           <input
             type="text"
             name="region"
             id="region"
+            placeholder="지역 입력"
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-          ></input>
+          />
         </div>
+
+        {/* 카테고리 다중 선택
+            실제 checkbox는 숨기고, label을 pill 버튼처럼 스타일링
+            선택 시 :has(input:checked) 로 노란색 배경 적용 */}
         <div className={styles.category}>
-          <div>카테고리</div>
+          <div className={styles.filter_label}>카테고리</div>
           <div className={styles.ckbox}>
+            {/* 전체 추가 */}
+            <label>
+              <input
+                type="checkbox"
+                value="all"
+                checked={categories.includes("all")}
+                onChange={handleCategoryChange}
+              />
+              전체
+            </label>
             <label>
               <input
                 type="checkbox"
@@ -62,7 +99,6 @@ const RestaurantDetailSearch = () => {
               />
               한식
             </label>
-
             <label>
               <input
                 type="checkbox"
@@ -72,7 +108,6 @@ const RestaurantDetailSearch = () => {
               />
               양식
             </label>
-
             <label>
               <input
                 type="checkbox"
@@ -82,7 +117,6 @@ const RestaurantDetailSearch = () => {
               />
               일식
             </label>
-
             <label>
               <input
                 type="checkbox"
@@ -95,8 +129,11 @@ const RestaurantDetailSearch = () => {
           </div>
         </div>
 
+        {/* 정렬 방식 단일 선택
+            실제 radio는 숨기고, label을 pill 버튼처럼 스타일링
+            조회순 → 별점순으로 변경 (이미지 디자인 반영) */}
         <div className={styles.sort}>
-          <div>정렬</div>
+          <div className={styles.filter_label}>정렬</div>
           <div className={styles.order}>
             <label>
               <input
@@ -108,49 +145,60 @@ const RestaurantDetailSearch = () => {
               />
               최신순
             </label>
-
             <label>
               <input
                 type="radio"
                 name="order"
-                value="view"
-                checked={order === "view"}
+                value="star"
+                checked={order === "star"}
                 onChange={(e) => setOrder(e.target.value)}
               />
-              조회순
+              별점순
             </label>
           </div>
         </div>
 
+        {/* 필터 적용 버튼 (margin-top: auto 로 사이드바 최하단 고정) */}
         <div className={styles.filter_btn}>
-          <button type="button">필터적용</button>
+          <button type="button">필터 적용</button>
         </div>
       </section>
+
+      {/* ===== 우측: 식당 목록 영역 ===== */}
       <section className={styles.list_section}>
-        <div className={styles.restName}>
-          <input
-            type="text"
-            name="restName"
-            id="restName"
-            value={restName}
-            onChange={(e) => setRestName(e.target.value)}
-          ></input>
-          <button>검색</button>
-        </div>
-        <div className={styles.rest_list}>
-          {restList.map((rest) => {
-            return (
-              <RestaurantItem
-                key={`${rest.restNo}`}
-                rest={rest}
-              ></RestaurantItem>
-            );
-          })}
-        </div>
-        <div className={styles.regist_btn}>
-          <button type="button">맛집 등록</button>
+        {/* 상단 검색 바: 맛집 이름으로 검색
+            - input + button을 하나의 바처럼 묶어 pill 형태로 표시
+            - Enter 키 입력 시에도 검색 실행 */}
+        <div className={styles.list_top}>
+          <div className={styles.search_bar}>
+            <input
+              className={styles.search_input}
+              type="text"
+              name="restName"
+              id="restName"
+              placeholder="맛집 이름을 검색하세요"
+              value={restName}
+              onChange={(e) => setRestName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+            <button
+              className={styles.search_btn}
+              type="button"
+              onClick={handleSearch}
+            >
+              검색
+            </button>
+          </div>
         </div>
 
+        {/* 식당 카드 그리드 (4열 × 3행 = 12개 / 페이지) */}
+        <div className={styles.rest_list}>
+          {restList.map((rest) => (
+            <RestaurantItem key={`${rest.restNo}`} rest={rest} />
+          ))}
+        </div>
+
+        {/* 페이지네이션 */}
         <div className={styles.pagination}>
           <Pagination
             totalPage={totalPage}
@@ -159,8 +207,13 @@ const RestaurantDetailSearch = () => {
             naviSize={5}
           />
         </div>
+
+        {/* 맛집 등록 버튼 (화면 우하단 고정) */}
+        <div className={styles.regist_btn}>
+          <button type="button">맛집 등록</button>
+        </div>
       </section>
-    </>
+    </div>
   );
 };
 
