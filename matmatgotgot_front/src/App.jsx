@@ -8,6 +8,7 @@ import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.js
 import Login from "./pages/member/Login.jsx";
 import Join from "./pages/member/Join.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
+import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
 
 function App() {
   return (
@@ -19,12 +20,13 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
-          <Route path="/restmain" element={<RestaurantMain />} />
+          <Route path="/rest" element={<RestaurantMain />} />
           <Route
-            path="/restdetailsearch"
+            path="/rest/detailsearch"
             element={<RestaurantDetailSearch />}
           />
-          <Route path="/restregist" element={<RestaurantRegist />} />
+          <Route path="/rest/regist" element={<RestaurantRegist />} />
+          <Route path="/rest/view" element={<RestaurantView />} />
         </Routes>
       </div>
       {/* <Footer /> */}
