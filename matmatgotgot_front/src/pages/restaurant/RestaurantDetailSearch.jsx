@@ -10,7 +10,7 @@ const RestaurantDetailSearch = () => {
   const [order, setOrder] = useState("latest"); // 기본값: 최신순
   const [restList, setRestList] = useState([]);
   const [page, setPage] = useState(0);
-  const [size] = useState(12); // 한 페이지에 보여줄 카드 수 (12 = 4열 × 3행)
+  const [size] = useState(12);
   const [totalPage, setTotalPage] = useState(null);
   const [restName, setRestName] = useState("");
 
@@ -18,7 +18,7 @@ const RestaurantDetailSearch = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/search`)
       .then((res) => {
-        setRestList(res.data);
+        setRestList(res.data.list);
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
