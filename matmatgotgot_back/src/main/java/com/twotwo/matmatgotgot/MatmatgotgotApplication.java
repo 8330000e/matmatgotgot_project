@@ -1,11 +1,11 @@
-package com.twotwo;
+package com.twotwo.matmatgotgot.domain;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.twotwo.matmatgotgot.member.mapper")
+@MapperScan("com.twotwo.matmatgotgot.domain.member.mapper")
 public class MatmatgotgotApplication {
 
 	public static void main(String[] args) {
