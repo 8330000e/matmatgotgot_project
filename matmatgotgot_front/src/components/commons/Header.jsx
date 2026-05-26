@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const LeftSideBar = () => {
+const Header = () => {
   return (
     <div className="header">
       <div>
@@ -10,4 +10,4 @@ const LeftSideBar = () => {
   );
 };
 
-export default LeftSideBar;
+export default Header;
