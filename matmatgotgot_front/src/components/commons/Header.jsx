@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
-import alarmIcon from "../../../public/alarmIcon.svg";
-import messageIcon from "../../../public/messageIcon.svg";
-import mypageIcon from "../../../public/mypageIcon.svg";
-import settingIcon from "../../../public/settingIcon.svg";
+import alarmIcon from "../../assets/alarmIcon.svg";
+import messageIcon from "../../assets/messageIcon.svg";
+import mypageIcon from "../../assets/mypageIcon.svg";
+import settingIcon from "../../assets/settingIcon.svg";
 
 const Header = () => {
   return (
     <div className="header">
       <div>
-        <h1>맛맛곳곳</h1>
+        <Link to="/">
+          <h1>맛맛곳곳</h1>
+        </Link>
       </div>
       <div>
         <ul>
