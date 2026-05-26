@@ -10,6 +10,7 @@ import Join from "./pages/member/Join.jsx";
 import Login from "./pages/member/Login.jsx";
 import Main from "./pages/Main";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
+import MypagePage from "./pages/MypagePage.jsx";
 
 function App() {
   //관리자 페이지 로직
@@ -35,6 +36,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
           <Route path="/restaurantmain" element={<RestaurantMain />} />
+          <Route path="/mypage" element={<MypagePage />} />
         </Routes>
       </div>
       <Footer />
