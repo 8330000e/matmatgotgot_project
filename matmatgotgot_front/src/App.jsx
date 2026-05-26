@@ -1,13 +1,16 @@
 import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuthStore } from "./store/useAuthStore.js";
 import "./App.css";
+import axios from "axios";
 import MainCover from "./pages/MainCover";
+import Header from "./components/commons/Header.jsx";
+import Footer from "./components/commons/Footer.jsx";
+import Join from "./pages/member/Join.jsx";
+import Login from "./pages/member/Login.jsx";
 import Main from "./pages/Main";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
-import Login from "./pages/member/Login.jsx";
-import Join from "./pages/member/Join.jsx";
-import { useEffect } from "react";
-import axios from "axios";
-import { useAuthStore } from "./store/useAuthStore.js";
+import MypagePage from "./pages/MypagePage.jsx";
 
 function App() {
   //관리자 페이지 로직
@@ -25,7 +28,7 @@ function App() {
 
   return (
     <div className="wrap">
-      {/* <Header /> */}
+      <Header />
       <div className="main">
         <Routes>
           <Route path="/" element={<MainCover />} />
@@ -33,9 +36,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
           <Route path="/restaurantmain" element={<RestaurantMain />} />
+          <Route path="/mypage" element={<MypagePage />} />
         </Routes>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
