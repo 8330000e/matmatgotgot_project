@@ -1,9 +1,9 @@
 import { useState } from "react";
-import styles from "./RestaurantReviewRegist.module.css";
+import styles from "./ReviewRegist.module.css";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const RestaurantReviewRegist = () => {
+const ReviewRegist = () => {
   const [review, setReview] = useState({
     restName: "",
     restAddr: "",
@@ -260,7 +260,7 @@ const FileItem = ({ file, deleteFile }) => {
       <li>
         <InsertDriveFileIcon />
       </li>
-      <li className={styles.file_name}>{file.name || file.boardFileName}</li>
+      <li className={styles.file_name}>{file.name || file.reviewFileName}</li>
       <li>
         <ClearIcon
           className={styles.file_delete}
@@ -273,4 +273,4 @@ const FileItem = ({ file, deleteFile }) => {
   );
 };
 
-export default RestaurantReviewRegist;
+export default ReviewRegist;
