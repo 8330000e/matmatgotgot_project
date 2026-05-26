@@ -1,5 +1,4 @@
 import "../App.css";
-import LeftSideBar from "../components/commons/Header";
 
 const Main = () => {
   return (

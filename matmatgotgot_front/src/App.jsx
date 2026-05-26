@@ -13,8 +13,6 @@ import RestaurantMain from "./pages/restaurant/RestaurantMain";
 import MypagePage from "./pages/MypagePage.jsx";
 
 function App() {
-  //관리자 페이지 로직
-
   const token = useAuthStore((state) => state.token);
   useEffect(() => {
     if (token) {

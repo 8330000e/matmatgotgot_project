@@ -13,7 +13,7 @@ const Login = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/members`)
       .then((res) => {
-        console.log(res.data);
+        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -51,6 +51,9 @@ const Login = () => {
           { withCredentials: true }, // 아까 설정한 쿠키 공유 옵션!
         );
         console.log("로그인 성공:", res.data);
+        if (res.status === 200) {
+          navigate("/main");
+        }
       } catch (err) {
         console.error("백엔드 전송 실패:", err);
       }
