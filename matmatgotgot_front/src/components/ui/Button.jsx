@@ -1,7 +1,15 @@
-import style from './style';
+import styles from './Button.module.css';
 
-const Button = () => {
-    return (<></>);
+const Button = ({ children, className, ...props }) => {
+  const classList = className.split(' ');
+  const classStyles = classList.map((cls) => {
+    return styles[cls];
+  });
+  return (
+    <button className={classStyles.join(' ')} {...props}>
+      {children}
+    </button>
+  );
 };
 
 export default Button;
