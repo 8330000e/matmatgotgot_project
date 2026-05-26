@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class LoginMember {
-	private Long id;
+	private Long memberNo;
     private String memberId;
     private String memberPw;
     private String memberName;
@@ -20,5 +20,6 @@ public class LoginMember {
     private int memberStatus;
     private LocalDateTime enrollDate;
     private boolean admin;
+    private String socialLogin;
 }
 

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Alias(value="member")
 public class Member {
-    private Long id;
+    private Long memberNo;
     private String memberId;
     private String memberPw;
     private String memberName;
@@ -25,6 +25,7 @@ public class Member {
     private int memberStatus;
     private LocalDateTime enrollDate;
     private boolean admin;
+    private String socialLogin;
 
     
 }

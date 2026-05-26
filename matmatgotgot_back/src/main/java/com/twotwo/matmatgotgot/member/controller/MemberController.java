@@ -82,6 +82,7 @@ public class MemberController {
 			// 구글 로그인은 비밀번호가 없으므로, 랜덤한 문자열을 비밀번호로 설정해줍니다.
 			newMember.setMemberPw("google_" + googleId); // 예시: "google_1234567890"
 			newMember.setMemberNickname(googleUser.getName());
+			newMember.setSocialLogin("google");
 			memberService.insertMember(newMember);
 			member = newMember; // 가입된 회원 정보로 member 변수 업데이트
 		} else {
