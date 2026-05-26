@@ -1,4 +1,4 @@
-package com.twotwo.matmatgotgot.domain;
+package com.twotwo.matmatgotgot;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
