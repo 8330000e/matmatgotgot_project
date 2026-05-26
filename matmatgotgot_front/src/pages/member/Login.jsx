@@ -29,7 +29,7 @@ const Login = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          navigate("/");
+          navigate("/main");
         }
       })
       .catch((err) => {
