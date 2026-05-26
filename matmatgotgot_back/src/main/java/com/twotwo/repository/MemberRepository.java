@@ -20,4 +20,19 @@ public class MemberRepository {
         // (보통 selectAll이나 findAll 등으로 만드니, 내 매퍼 파일에 적힌 이름으로 맞춰주세요!)
         return memberMapper.selectAll();
     }
+
+    public int insertmember(Member member) {
+        // TODO Auto-generated method stub
+        return memberMapper.insertMember(member);
+    }
+
+    public Member selectOneMember(String memberId) {
+        Member m = memberMapper.selectOneMember(memberId);
+        return m;
+    }
+
+    public Member login(Member member) {
+        Member loginMember = memberMapper.login(member);
+        return loginMember;
+    }
 }

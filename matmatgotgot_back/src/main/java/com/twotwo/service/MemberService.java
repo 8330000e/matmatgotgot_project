@@ -2,7 +2,9 @@ package com.twotwo.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.twotwo.dto.response.MemberResponse;
 import com.twotwo.entity.Member;
@@ -15,9 +17,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
 	private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bcrypt;
 
     public List<MemberResponse> selectAll() {
         List<Member> memberList = memberRepository.selectAll(); 
         return memberList.stream().map(MemberResponse::from).toList();
+    }
+
+    @Transactional
+    public int insertMember(Member member) {
+        String memberPw = member.getMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        member.setMemberPw(encPw);
+        int result = memberRepository.insertmember(member);
+        return result;
+    }
+
+    public Member login(Member member) {
+        Member m = memberRepository.selectOneMember(member.getMemberId());
+        member.setMemberId(m.getMemberId());
+        Member loginMember = memberRepository.login(member);
+        if(loginMember != null) {
+            boolean result = bcrypt.matches(member.getMemberPw(), loginMember.getMemberPw());
+            if(result) {
+                return loginMember;
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 }
