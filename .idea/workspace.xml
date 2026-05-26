@@ -58,7 +58,8 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "kgy",
+    "git-widget-placeholder": "jiyeon",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/user1/Desktop/matmatgotgot_project",
     "node.js.detected.package.eslint": "true",
@@ -96,6 +97,7 @@
       <option name="presentableId" value="Default" />
       <updated>1778885653476</updated>
       <workItem from="1779429043039" duration="2938000" />
+      <workItem from="1779754088144" duration="171000" />
     </task>
     <servers />
   </component>
