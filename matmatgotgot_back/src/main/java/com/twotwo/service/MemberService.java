@@ -32,4 +32,22 @@ public class MemberService {
         int result = memberRepository.insertmember(member);
         return result;
     }
+
+    public Member selectOneMember(String memberId) {
+        Member m = memberRepository.selectOneMember(memberId);
+        return m;
+    }
+
+    public Member login(Member member) {
+        Member loginMember = memberRepository.login(member);
+        if(loginMember != null) {
+            boolean result = bcrypt.matches(member.getMemberPw(), loginMember.getMemberPw());
+            if(result) {
+                return loginMember;
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
 }

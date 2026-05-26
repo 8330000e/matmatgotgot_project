@@ -25,4 +25,14 @@ public class MemberRepository {
         // TODO Auto-generated method stub
         return memberMapper.insertMember(member);
     }
+
+    public Member selectOneMember(String memberId) {
+        Member m = memberMapper.selectOneMember(memberId);
+        return m;
+    }
+
+    public Member login(Member member) {
+        Member loginMember = memberMapper.login(member);
+        return loginMember;
+    }
 }

@@ -34,7 +34,6 @@ public class SpringSecurityConfig {
                 // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
                 .requestMatchers("/members", "/members/**").permitAll() 
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
-                // 💡 개발 단계에서 전부 허용하고 싶다면 아래 authenticated()를 permitAll()로 바꾸시면 됩니다.
                 .anyRequest().authenticated() 
             );
 
@@ -47,15 +46,15 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 💡 리액트(5173 포트) 연동을 위한 CORS 세부 설정
+    // 💡 리액트(5173 포트) 연동 및 credential 허용을 위한 CORS 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         
         config.setAllowedOrigins(List.of("http://localhost:5173")); // 프론트엔드 주소 허용
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // OPTIONS 포함 필수
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 인증 헤더(토큰, 쿠키 등)를 허용할 때 필수
+        config.setAllowCredentials(true); // 👈 핵심: axios의 withCredentials와 맞물리는 설정!
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config); // 모든 URL 경로에 위의 CORS 설정 적용

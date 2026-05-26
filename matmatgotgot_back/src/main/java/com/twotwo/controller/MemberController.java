@@ -39,7 +39,12 @@ public class MemberController {
 		int result = memberService.insertMember(member);
 		return ResponseEntity.ok(result);
 	}
-	
+
+	@PostMapping(value="/login")
+	public ResponseEntity<?> login(@RequestBody Member member) {
+		Member loginMember = memberService.login(member);
+		return ResponseEntity.ok(ApiResponse.success(loginMember));
+	}
 
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member) {
