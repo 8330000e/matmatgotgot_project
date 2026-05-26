@@ -40,6 +40,8 @@ const Login = () => {
   const googleLogin = useGoogleLogin({
     // 구글로부터 '인가 코드(code)'를 받아오는 방식 설정
     flow: "auth-code",
+    // ux_mode: "redirect",
+    // redirect_uri: `${import.meta.env.VITE_FRONTSERVER}/login`,
     onSuccess: async (codeResponse) => {
       console.log("구글 인가 코드:", codeResponse.code);
 
