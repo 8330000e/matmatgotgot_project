@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useAuthStore } from "./store/useAuthStore.js";
 import "./App.css";
 import axios from "axios";
-import MainCover from "./pages/MainCover";
 import Header from "./components/commons/Header.jsx";
 import Footer from "./components/commons/Footer.jsx";
 import Join from "./pages/member/Join.jsx";
@@ -31,8 +30,7 @@ function App() {
       <Header />
       <div className="main">
         <Routes>
-          <Route path="/" element={<MainCover />} />
-          <Route path="/main" element={<Main />} />
+          <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
           <Route path="/restaurantmain" element={<RestaurantMain />} />
