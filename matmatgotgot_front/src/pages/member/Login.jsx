@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -36,6 +37,26 @@ const Login = () => {
         console.log(err);
       });
   };
+  const googleLogin = useGoogleLogin({
+    // 구글로부터 '인가 코드(code)'를 받아오는 방식 설정
+    flow: "auth-code",
+    onSuccess: async (codeResponse) => {
+      console.log("구글 인가 코드:", codeResponse.code);
+
+      // 백엔드 서버로 인가 코드 전송
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_BACKSERVER}/members/login/google`,
+          { code: codeResponse.code },
+          { withCredentials: true }, // 아까 설정한 쿠키 공유 옵션!
+        );
+        console.log("로그인 성공:", res.data);
+      } catch (err) {
+        console.error("백엔드 전송 실패:", err);
+      }
+    },
+    onError: () => console.log("구글 로그인 실패"),
+  });
 
   return (
     <div>
@@ -67,6 +88,7 @@ const Login = () => {
         <br />
         <button type="submit">Login</button>
       </form>
+      <button onClick={() => googleLogin()}>구글로 로그인하기</button>
     </div>
   );
 };
