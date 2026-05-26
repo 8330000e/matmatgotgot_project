@@ -33,12 +33,9 @@ public class MemberService {
         return result;
     }
 
-    public Member selectOneMember(String memberId) {
-        Member m = memberRepository.selectOneMember(memberId);
-        return m;
-    }
-
     public Member login(Member member) {
+        Member m = memberRepository.selectOneMember(member.getMemberId());
+        member.setMemberId(m.getMemberId());
         Member loginMember = memberRepository.login(member);
         if(loginMember != null) {
             boolean result = bcrypt.matches(member.getMemberPw(), loginMember.getMemberPw());

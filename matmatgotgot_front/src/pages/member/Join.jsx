@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Join = () => {
+  const navigate = useNavigate();
   const [member, setMember] = useState({
     memberId: "",
     memberPw: "",
@@ -9,7 +11,7 @@ const Join = () => {
     memberNickname: "",
     memberEmail: "",
   });
-  const [memberPwRe,setMemberPwRe] = useState("");
+  const [memberPwRe, setMemberPwRe] = useState("");
   const inputMember = (e) => {
     const { name, value } = e.target;
     setMember((prev) => ({ ...prev, [name]: value }));
@@ -39,18 +41,28 @@ const Join = () => {
       });
   };
   const joinMember = () => {
-    axios.post(`${import.meta.env.VITE_BACKSERVER}/members`, member)
-    .then((res)=>{console.log(res);})
-    .catch((err)=>{console.log(err);});
+    axios
+      .post(`${import.meta.env.VITE_BACKSERVER}/members`, member)
+      .then((res) => {
+        console.log(res);
+        if (res.data === 1) {
+          navigate("/login");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
     <div>
       <h1>Join</h1>
-      <form onSubmit={(e)=>{
-        e.preventDefault();
-        joinMember();
-      }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          joinMember();
+        }}
+      >
         <label htmlFor="memberId">ID:</label>
         <input
           type="text"
@@ -75,7 +87,7 @@ const Join = () => {
           id="memberPwConfirm"
           name="memberPwConfirm"
           value={memberPwRe}
-          onChange={(e)=>{
+          onChange={(e) => {
             setMemberPwRe(e.target.value);
           }}
         />

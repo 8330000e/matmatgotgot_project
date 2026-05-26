@@ -27,8 +27,8 @@ const Login = () => {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res.data);
-        if (res.data) {
+        console.log(res);
+        if (res.status === 200) {
           navigate("/");
         }
       })
