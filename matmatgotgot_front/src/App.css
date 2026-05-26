@@ -54,3 +54,13 @@ ol {
 .main {
   flex-grow: 1;
 }
+
+/* 실무에서는 보통 필요한 곳만 적용
+.no-select {
+  user-select: none;
+} 
+
+오히려 전체 적용하면 문제 생김
+* {
+  user-select: none;
+} */

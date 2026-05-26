@@ -10,6 +10,11 @@ import Join from "./pages/member/Join.jsx";
 import Login from "./pages/member/Login.jsx";
 import Main from "./pages/Main";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
+import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
+import Login from "./pages/member/Login.jsx";
+import Join from "./pages/member/Join.jsx";
+import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
+import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
 import MypagePage from "./pages/MypagePage.jsx";
 
 function App() {
@@ -33,6 +38,13 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
+          <Route path="/rest" element={<RestaurantMain />} />
+          <Route
+            path="/rest/detailsearch"
+            element={<RestaurantDetailSearch />}
+          />
+          <Route path="/rest/regist" element={<RestaurantRegist />} />
+          <Route path="/rest/view" element={<RestaurantView />} />
           <Route path="/restaurantmain" element={<RestaurantMain />} />
           <Route path="/mypage" element={<MypagePage />} />
         </Routes>
