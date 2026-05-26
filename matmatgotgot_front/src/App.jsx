@@ -6,8 +6,6 @@ import axios from "axios";
 import MainCover from "./pages/MainCover";
 import Header from "./components/commons/Header.jsx";
 import Footer from "./components/commons/Footer.jsx";
-import Join from "./pages/member/Join.jsx";
-import Login from "./pages/member/Login.jsx";
 import Main from "./pages/Main";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
