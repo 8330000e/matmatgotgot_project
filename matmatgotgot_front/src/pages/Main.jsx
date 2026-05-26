@@ -1,10 +1,8 @@
 import "../App.css";
-import LeftSideBar from "../components/commons/LeftSideBar";
 
 const Main = () => {
   return (
     <>
-      <LeftSideBar />
       <div className="main">
         <div>
           <section>

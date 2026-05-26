@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styles from "./RestaurantMain.module.css";
+import styles from "./Restaurant.module.css";
 import axios from "axios";
 import RestaurantItem from "../../components/restaurant/RestaurantItem";
 
