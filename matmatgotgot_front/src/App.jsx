@@ -14,6 +14,8 @@ import Join from "./pages/member/Join.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
 import MypagePage from "./pages/MypagePage.jsx";
+import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
+import ReviewView from "./pages/restaurant/ReviewView.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -43,7 +45,8 @@ function App() {
           />
           <Route path="/rest/regist" element={<RestaurantRegist />} />
           <Route path="/rest/view" element={<RestaurantView />} />
-          <Route path="/restaurantmain" element={<RestaurantMain />} />
+          <Route path="/rest/review/regist" element={<ReviewRegist />} />
+          <Route path="/rest/review/view" element={<ReviewView />} />
           <Route path="/mypage" element={<MypagePage />} />
         </Routes>
       </div>
