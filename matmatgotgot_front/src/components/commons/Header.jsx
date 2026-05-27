@@ -4,6 +4,7 @@ import messageIcon from "../../assets/messageIcon.svg";
 import mypageIcon from "../../assets/mypageIcon.svg";
 import settingIcon from "../../assets/settingIcon.svg";
 import { useAuthStore } from "../../store/useAuthStore";
+import styles from "./Commons.module.css";
 
 const Header = () => {
   const memberNickname = useAuthStore((state) => state.memberNickname);
@@ -11,7 +12,7 @@ const Header = () => {
   const logout = useAuthStore((state) => state.logout);
 
   if (!isReady) {
-    return null; 
+    return null;
   }
 
   return (
@@ -45,14 +46,27 @@ const Header = () => {
           </li>
         </ul>
       </div>
-      <div>
-        <ul>
-          <li>
-            {memberNickname == null ? "토큰좀 만들어" : memberNickname}
-          </li>
-          {logout?<li><button onClick={logout}>로그아웃</button></li>:""}
-        </ul>
-      </div>
+      {memberNickname == null ? (
+        <div className={styles.loginSignup}>
+          <div>
+            <Link to="/login">Login</Link>
+          </div>
+          <div>
+            <Link to="/signup">Sign Up</Link>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <ul>
+            <li>{memberNickname}</li>
+            {logout ? (
+              <li>
+                <button onClick={logout}>로그아웃</button>
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
