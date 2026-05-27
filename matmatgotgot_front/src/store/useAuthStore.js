@@ -44,7 +44,7 @@ const useAuthStore = create(
       logout: () => {
         get().stopLoginTimer();
         const currentId = get().memberId;
-        if (currentId) {
+        if (currentId && currentId !== 'test') { 
           axios
             .post(
               `${import.meta.env.VITE_BACKSERVER}/member/logout/${currentId}`,
@@ -60,12 +60,28 @@ const useAuthStore = create(
           endTime: null,
         });
 
-        delete axios.defaults.headers.common["Authorization"];
-
-        localStorage.removeItem("auth-key");
+       delete axios.defaults.headers.common["Authorization"];
+       localStorage.removeItem("auth-key");
       },
 
-      startLoginTimer: () => {},
+      startLoginTimer: (endTime) => {
+        if (!endTime) return;
+
+        get().stopLoginTimer();
+        const currentTime = new Date().getTime();
+        const remainingTime = endTime - currentTime;
+
+        if (remainingTime > 0) {
+          logoutTimer = setTimeout(() => {
+            if (get().token) {
+              get().logout();
+            }
+          }, remainingTime);
+          } else {
+          //이미 시간이 지난 경우 즉시 로그아웃
+          get().logout();
+        }
+      },
 
       setReady: (ready) => {
         set({ isReady: ready });

@@ -1,7 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.entity;
 
-import java.time.LocalDateTime;
-
+import java.time.LocalDateTime; // ◀ 최신 라이브러리로 변경!
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,16 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class LoginMember {
-	private Long memberNo;
+    private String token;
     private String memberId;
-    private String memberPw;
-    private String memberName;
-    private String memberEmail;
-    private String memberNickname;
     private String memberThumb;
-    private int memberStatus;
-    private LocalDateTime enrollDate;
+    private String memberNickname;
     private boolean admin;
-    private String socialLogin;
+    private LocalDateTime validity; // ◀ LocalDateTime 사용
 }
-

@@ -15,8 +15,8 @@ public interface MemberMapper {
 
     Member selectOneMember(String memberId);
 
-    Member login(Member member);
-
     Member selectOneMemberByEmail(String email);
+
+    int googleInsertMember(Member newMember);
 	
 }

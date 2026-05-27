@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,6 +10,27 @@ const Login = () => {
   const inputMember = (e) => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
+  const login = useAuthStore((state) => state.login);
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKSERVER}/members/login`, {
+        memberId: members.memberId,
+        memberPw: members.memberPw
+      });
+
+      console.log("백엔드가 보내준 로그인 응답 데이터:", response.data);
+
+      // 백엔드에서 준 응답 데이터(memberId, token, memberNickname 등)
+      if (response.data) {
+        // 🔥 여기서 스토어의 login을 실행해야 localStorage에 "auth-key"가 생성됩니다!
+        login(response.data); 
+        navigate("/main");
+      }
+    } catch (error) {
+      console.error("로그인 실패:", error);
+    }
+  };
+
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/members`)
@@ -19,24 +41,24 @@ const Login = () => {
         console.log(err);
       });
   }, []);
-  const login = () => {
-    if (members.memberId === "" || members.memberPw === "") {
-      return;
-    }
-    axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/members/login`, members, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          navigate("/main");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const loginPage = () => {
+  //   if (members.memberId === "" || members.memberPw === "") {
+  //     return;
+  //   }
+  //   axios
+  //     .post(`${import.meta.env.VITE_BACKSERVER}/members/login`, members, {
+  //       withCredentials: true,
+  //     })
+  //     .then((res) => {
+  //       console.log(res);
+  //       if (res.status === 200) {
+  //         navigate("/main");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
   const googleLogin = useGoogleLogin({
     // 구글로부터 '인가 코드(code)'를 받아오는 방식 설정
     flow: "auth-code",
@@ -69,7 +91,7 @@ const Login = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          login();
+          handleLogin();
         }}
         autoComplete="off"
       >
