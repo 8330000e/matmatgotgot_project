@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "./ReviewRegist.module.css";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const ReviewRegist = () => {
   const [review, setReview] = useState({
@@ -11,6 +12,7 @@ const ReviewRegist = () => {
     reviewVisit: "",
     reviewContent: "",
   });
+  const navigate = useNavigate();
   const [tags, setTags] = useState([]);
   const [files, setFiles] = useState([]);
 
@@ -81,6 +83,8 @@ const ReviewRegist = () => {
         console.log(err);
       });
   };
+  //죄송합니다. 화면을 보기위해 여러부분에 주석처리를 했고 쌩뚱맞은곳에 변수나 함수를 입력해두었습니다ㅜㅜ
+  registReview
 
   return (
     <>
@@ -134,8 +138,8 @@ const ReviewRegist = () => {
               type="text"
               name="reviewVisit"
               id="reviewVisit"
-              value={reviewVisit}
-              onChange={(e) => setRestPhone(e.target.value)}
+              // value={reviewVisit}
+              // onChange={(e) => setRestPhone(e.target.value)}
             />
           </div>
 
@@ -221,7 +225,7 @@ const ReviewRegist = () => {
                     <FileItem
                       key={index}
                       file={file}
-                      deleteFile={addDeleteFileList}
+                      // deleteFile={addDeleteFileList}
                     ></FileItem>
                   );
                 })}
@@ -258,16 +262,17 @@ const FileItem = ({ file, deleteFile }) => {
   return (
     <ul className={styles.file_item}>
       <li>
-        <InsertDriveFileIcon />
+        {/* <InsertDriveFileIcon /> */}
       </li>
       <li className={styles.file_name}>{file.name || file.reviewFileName}</li>
       <li>
-        <ClearIcon
+        {/* <ClearIcon
           className={styles.file_delete}
           onClick={() => {
             deleteFile(file);
           }}
-        />
+        /> */}
+        {deleteFile}
       </li>
     </ul>
   );

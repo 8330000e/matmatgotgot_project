@@ -6,13 +6,11 @@ import axios from "axios";
 import MainCover from "./pages/MainCover";
 import Header from "./components/commons/Header.jsx";
 import Footer from "./components/commons/Footer.jsx";
-import Join from "./pages/member/Join.jsx";
-import Login from "./pages/member/Login.jsx";
 import Main from "./pages/Main";
+import LoginPage from "./pages/member/LoginPage.jsx"
+import JoinPage from "./pages/member/JoinPage.jsx"
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
-import Login from "./pages/member/Login.jsx";
-import Join from "./pages/member/Join.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
 import MypagePage from "./pages/MypagePage.jsx";
@@ -36,8 +34,8 @@ function App() {
         <Routes>
           <Route path="/" element={<MainCover />} />
           <Route path="/main" element={<Main />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Join />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<JoinPage />} />
           <Route path="/rest" element={<RestaurantMain />} />
           <Route
             path="/rest/detailsearch"
