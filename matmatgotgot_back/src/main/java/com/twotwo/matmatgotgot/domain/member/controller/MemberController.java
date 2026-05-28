@@ -152,6 +152,17 @@ public class MemberController {
         return ResponseEntity.ok(googleUser); // 테스트를 위해 우선 유저 정보를 리턴
     }
 
+	@PostMapping(value="/login/kakao")
+	public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> request) {
+		String code = request.get("code");
+
+		if (code == null || code.isEmpty()) {
+			return ResponseEntity.badRequest().body("인가 코드가 없습니다.");
+		}
+
+		return ResponseEntity.ok("카카오 로그인은 아직 구현되지 않았습니다.");
+	}
+
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member) {
 		String emailTitle = "[맛맛곳곳] 회원가입 인증 메일입니다.";

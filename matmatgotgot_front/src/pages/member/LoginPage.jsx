@@ -75,6 +75,26 @@ const Login = () => {
   });
 
   // 카카오톡 로그인
+  const kakaoLogin = () => {
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.KAKAO_REDIRECT_URI}`;
+    const kakaoCode = axios.get(kakaoAuthUrl).then((res) => {
+      console.log("카카오 인가 코드:", res.data.code);
+      // 백엔드 서버로 인가 코드 전송
+      try {
+        const res = axios.post(
+          `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
+          { code: res.data.code },
+          { withCredentials: true },
+        );
+        console.log("카카오 로그인 성공:", res.data);
+        if (res.status === 200) {
+          navigate("/main");
+        }
+      } catch (err) {
+        console.error("카카오 로그인 실패:", err);
+      }
+    });
+  };
 
   // 네이버 로그인
 
@@ -111,6 +131,7 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
       <button onClick={() => googleLogin()}>구글로 로그인하기</button>
+      <button onClick={() => kakaoLogin()}>카카오톡으로 로그인하기</button>
     </div>
   );
 };
