@@ -34,6 +34,7 @@ public class SpringSecurityConfig {
                 // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
                 .requestMatchers("/members/logout/**").permitAll()
                 .requestMatchers("/members/login", "/members/email-verification").permitAll()
+                .requestMatchers("/api/ocr/**").permitAll()
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
                 .anyRequest().authenticated() 
             );

@@ -16,6 +16,7 @@ import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
 import ReviewView from "./pages/restaurant/ReviewView.jsx";
 import TripMain from "./pages/trip/TripMain.jsx";
 import Main from "./pages/Main.jsx";
+import ReceiptCheck from "./pages/restaurant/ReceiptCheck.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -46,6 +47,8 @@ function App() {
           <Route path="/rest/view" element={<RestaurantView />} />
           <Route path="/rest/review/regist" element={<ReviewRegist />} />
           <Route path="/rest/review/view" element={<ReviewView />} />
+          <Route path="/receipt" element={<ReceiptCheck />} />
+
           <Route path="/mypage" element={<MypagePage />} />
           {/* <Route path="/board/list" element={<BoardListPage />} /> */}
           {/* <Route path="/board/write" element={<BoardWritePage />} /> */}

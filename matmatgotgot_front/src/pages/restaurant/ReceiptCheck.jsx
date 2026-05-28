@@ -95,7 +95,7 @@ const ReceiptCheck = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/ocr/receipt",
+        "http://localhost:9999/api/ocr/receipt",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );
