@@ -8,7 +8,6 @@
 .mainTripImg {
   width: 100%;
   position: fixed;
-  /* top: -45px; */
 }
 
 .mainTripImg img {
@@ -109,4 +108,31 @@
 .mainTripDev {
   width: 100%;
   height: 100vh;
+}
+
+.tripTextDev {
+  position: fixed;
+  top: 46.7vh;
+  left: 39.5vw;
+  transform: rotate(-4.4deg);
+}
+
+.tripTextDev .tripText1 {
+  font-size: 4.4em;
+  font-weight: 900;
+}
+
+.tripTextDev .tripText2 {
+  font-size: 2.4em;
+  font-weight: bold;
+}
+
+.mainReviewDev {
+  background-color: var(--bg);
+  width: 100%;
+  position: relative;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
 }

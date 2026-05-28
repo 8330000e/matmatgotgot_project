@@ -10,11 +10,10 @@ import Login from "./pages/member/Login.jsx";
 import Main from "./pages/Main";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
-import Login from "./pages/member/Login.jsx";
-import Join from "./pages/member/Join.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
 import MypagePage from "./pages/MypagePage.jsx";
+import TripMain from "./pages/trip/TripMain.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -45,6 +44,7 @@ function App() {
           <Route path="/rest/view" element={<RestaurantView />} />
           <Route path="/restaurantmain" element={<RestaurantMain />} />
           <Route path="/mypage" element={<MypagePage />} />
+          <Route path="/trip" element={<TripMain />} />
         </Routes>
       </div>
       <Footer />

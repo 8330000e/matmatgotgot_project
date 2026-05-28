@@ -1,9 +1,10 @@
 import styles from "./Main.module.css";
 import LeftSideBar from "../components/commons/Header";
 import mainFoodImg from "../assets/main/main-food.png";
-import mainTripImg from "../assets/main/main-img.png";
+import mainTripImg from "../assets/main/main-img-1.png";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import ModeOfTravelIcon from "@mui/icons-material/ModeOfTravel";
+import Slide from "../components/main/Slide";
 
 const Main = () => {
   return (
@@ -11,6 +12,10 @@ const Main = () => {
       <div className={styles.main}>
         <div className={styles.mainTripImg}>
           <img src={mainTripImg} alt="메인 여행 이미지" />
+        </div>
+        <div className={styles.tripTextDev}>
+          <div className={styles.tripText1}>맛맛곳곳,</div>
+          <div className={styles.tripText2}>내 동선에 맛집을 더하다</div>
         </div>
 
         <div className={styles.mainFoodImg}>
@@ -43,6 +48,11 @@ const Main = () => {
         </div>
 
         <div className={styles.mainTripDev}></div>
+
+        <div className={styles.mainReviewDev}>
+          <Slide text="베스트 리뷰" />
+          <Slide text="베스트 투어" />
+        </div>
       </div>
     </>
   );
