@@ -1,31 +1,124 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import styles from "./ReviewView.module.css";
+import axios from "axios";
+import Swal from "sweetalert2";
+import ReviewViewInfo from "../../components/restaurant/ReviewViewInfo";
+import ReviewViewComment from "../../components/restaurant/ReviewViewComment";
+
+// useAuthStore import 필요 — 실제 프로젝트 경로에 맞게 조정
+// import { useAuthStore } from "../../store/authStore";
 
 const ReviewView = () => {
+  const { reviewNo } = useParams(); // URL 파라미터에서 reviewNo 추출
+  const navigate = useNavigate();
+
+  // 로그인한 회원 번호 (본인 여부 확인용)
+  // const { memberId: loginMemberNo } = useAuthStore();
+
+  // 리뷰 상세 데이터 (서버에서 fetching)
+  const [review, setReview] = useState(null);
+
+  // 좋아요 토글 상태
+  const [liked, setLiked] = useState(false);
+
+  // ── 리뷰 데이터 조회 ─────────────────────────────────────
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/review/${reviewNo}`)
+      .then((res) => setReview(res.data))
+      .catch((err) => console.log(err));
+  }, [reviewNo]);
+
+  // ── 리뷰 삭제 ───────────────────────────────────────────
+  const deleteReview = () => {
+    Swal.fire({
+      title: "삭제하시겠습니까?",
+      text: "삭제 후 복구할 수 없습니다",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${import.meta.env.VITE_BACKSERVER}/review/${reviewNo}`)
+          .then(() => navigate(-1)) // 이전 페이지로 이동
+          .catch((err) => console.log(err));
+      }
+    });
+  };
+
+  // 본인 리뷰 여부 (수정/삭제 버튼 표시 조건)
+  // const isOwner = review && loginMemberNo === review.memberNo;
+  const isOwner = true; // 임시: 항상 버튼 표시 (authStore 연동 후 위 줄로 교체)
+
+  // 로딩 중 (review 미수신 시 렌더링 생략)
+  if (!review) return null;
+
   return (
-    <>
+    <div className={styles.page_wrap}>
+      {/* ======= 리뷰 상세 섹션 ======= */}
       <section className={styles.review_info}>
-        <div className={styles.btn_zone_info}>
-          <button type="button">수정</button>
-          <button type="button">삭제</button>
-        </div>
+        {/* ── 수정 / 삭제 버튼 (본인만 표시) ── */}
+        {isOwner && (
+          <div className={styles.btn_zone_info}>
+            <button
+              type="button"
+              className={styles.info_btn}
+              onClick={() => navigate(`/review/edit/${reviewNo}`)}
+            >
+              수정
+            </button>
+            <button
+              type="button"
+              className={styles.info_btn}
+              onClick={deleteReview}
+            >
+              삭제
+            </button>
+          </div>
+        )}
 
-        <ReviewViewInfo />
+        {/* ── 리뷰 상세 정보 컴포넌트 ── */}
+        <ReviewViewInfo review={review} />
 
+        {/* ── 하단 버튼: 신고 / 좋아요 / 맛집 상세보기 ── */}
         <div className={styles.btn_zone}>
-          <div className={styles.btn_zone1}>
-            <button type="button">신고</button>
-            <button type="button">좋아요</button>
+          {/* 왼쪽: 신고 + 좋아요 */}
+          <div className={styles.btn_zone_left}>
+            <button type="button" className={styles.report_btn}>
+              신고
+            </button>
+            <button
+              type="button"
+              className={`${styles.like_btn} ${liked ? styles.liked : ""}`}
+              onClick={() => setLiked((prev) => !prev)}
+            >
+              좋아요
+            </button>
           </div>
-          <div className={styles.btn_zone2}>
-            <button type="button">맛집 상세보기</button>
+
+          {/* 오른쪽: 맛집 상세보기 */}
+          <div className={styles.btn_zone_right}>
+            <button
+              type="button"
+              className={styles.detail_btn}
+              onClick={() => navigate(`/restaurant/${review.restNo}`)}
+            >
+              맛집 상세 보기
+            </button>
           </div>
         </div>
       </section>
+
+      {/* ======= 댓글 섹션 ======= */}
       <section className={styles.review_comment}>
-        <div>댓글</div>
-        <ReviewViewComment />
+        <div className={styles.comment_title}>댓글</div>
+        {/* ReviewViewComment에 reviewNo 전달 (댓글 조회/등록 API에 사용) */}
+        <ReviewViewComment reviewNo={reviewNo} />
       </section>
-    </>
+    </div>
   );
 };
 
