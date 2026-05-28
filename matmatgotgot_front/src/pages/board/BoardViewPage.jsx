@@ -210,7 +210,6 @@ const BoardViewPage = () => {
 //좋아요
 const Like = ({ boardNo }) => {
   const { memberId, memberStatus } = useAuthStore();
-  const isBlocked = Number(memberStatus) >= 1;
   const [likeInfo, setLikeInfo] = useState(null);
   useEffect(() => {
     axios

@@ -20,7 +20,8 @@ const BoardItem = ({ board }) => {
     if (category === 2) return '자유게시글';
     return '';
   };
-  /* 백엔드 만든 후 코드
+
+  //백엔드 만든 후 코드
   return (
     <li
       className={styles.board_item}
@@ -58,45 +59,6 @@ const BoardItem = ({ board }) => {
             </div>
             <p>{board.boardWriter}</p>
           </div>
-          <p>{board.boardDate}</p>
-        </div>
-      </div>
-    </li>
-  );
-  */
-  return (
-    <li
-      className={styles.board_item}
-      onClick={() => {
-        navigate(`/board/view/${board.boardNo}`);
-      }}
-    >
-      <div className={styles.board_img_wrap}>
-        <img
-          src={board.boardThumb ? board.boardThumb : defaultImage}
-          alt="board"
-        />
-      </div>
-
-      <div className={styles.board_info}>
-        <p className={styles.board_title}>
-          [{getCategoryName(board.boardCategory)}] {board.boardTitle}
-        </p>
-
-        <div className={styles.board_sub_info}>
-          <div className={styles.board_writer}>
-            <div
-              className={board.memberThumb ? styles.member_thumb_exists : ''}
-            >
-              <img
-                src={board.memberThumb ? board.memberThumb : userImage}
-                alt="user"
-              />
-            </div>
-
-            <p>{board.boardWriter}</p>
-          </div>
-
           <p>{board.boardDate}</p>
         </div>
       </div>

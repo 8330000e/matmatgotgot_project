@@ -1,7 +1,7 @@
-import React from "react";
-import styles from "./Header.module.css";
-import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
-import { Link, useLocation } from "react-router-dom";
+import React from 'react';
+import styles from './Header.module.css';
+import { FiBell, FiMail, FiUser, FiSettings } from 'react-icons/fi';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Header({ isLoggedIn = true }) {
   const location = useLocation();
@@ -19,9 +19,9 @@ export default function Header({ isLoggedIn = true }) {
           <nav className={styles.centerMenu}>
             <button
               className={
-                location.pathname.startsWith("/restaurant")
+                location.pathname.startsWith('/restaurant')
                   ? styles.activeMenu
-                  : ""
+                  : ''
               }
             >
               <Link to="/restaurant">맛집</Link>
@@ -29,7 +29,7 @@ export default function Header({ isLoggedIn = true }) {
 
             <button
               className={
-                location.pathname.startsWith("/trip") ? styles.activeMenu : ""
+                location.pathname.startsWith('/trip') ? styles.activeMenu : ''
               }
             >
               <Link to="/trip">여행</Link>
@@ -37,10 +37,10 @@ export default function Header({ isLoggedIn = true }) {
 
             <button
               className={
-                location.pathname.startsWith("/board") ? styles.activeMenu : ""
+                location.pathname.startsWith('/board') ? styles.activeMenu : ''
               }
             >
-              <Link to="/board">게시판</Link>
+              <Link to="/board/list">게시판</Link>
             </button>
           </nav>
         )}
