@@ -10,6 +10,19 @@ const Login = () => {
   const inputMember = (e) => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/members`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  // 일반로그인
   const login = useAuthStore((state) => state.login);
   const handleLogin = async () => {
     try {
@@ -34,34 +47,7 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/members`)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-  // const loginPage = () => {
-  //   if (members.memberId === "" || members.memberPw === "") {
-  //     return;
-  //   }
-  //   axios
-  //     .post(`${import.meta.env.VITE_BACKSERVER}/members/login`, members, {
-  //       withCredentials: true,
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       if (res.status === 200) {
-  //         navigate("/main");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+  // 구글 로그인
   const googleLogin = useGoogleLogin({
     // 구글로부터 '인가 코드(code)'를 받아오는 방식 설정
     flow: "auth-code",
@@ -87,6 +73,12 @@ const Login = () => {
     },
     onError: () => console.log("구글 로그인 실패"),
   });
+
+  // 카카오톡 로그인
+
+  // 네이버 로그인
+
+  // 애플 로그인(상황에 따라 생략 가능성 높음)
 
   return (
     <div>
