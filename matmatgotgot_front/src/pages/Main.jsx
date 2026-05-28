@@ -5,6 +5,7 @@ import mainTripImg from "../assets/main/main-img-1.png";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import ModeOfTravelIcon from "@mui/icons-material/ModeOfTravel";
 import Slide from "../components/main/Slide";
+import Header from "../components/commons/Header";
 
 const Main = () => {
   return (

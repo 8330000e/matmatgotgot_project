@@ -34,7 +34,7 @@ function App() {
       <Header />
       <div className="main">
         <Routes>
-          <Route path="/" element={<MainCover />} />
+          {/* <Route path="/" element={<MainCover />} /> */}
           <Route path="/main" element={<Main />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
