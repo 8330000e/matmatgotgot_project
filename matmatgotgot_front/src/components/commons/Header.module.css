@@ -1,11 +1,12 @@
 .header {
   width: 100%;
-  background-color: var(--primary);
+  background-color: var(--gray8);
   color: var(--text1);
   font-family: sans-serif;
   box-sizing: border-box;
   position: fixed;
   z-index: 10000;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.04);
 }
 
 .container {
@@ -26,10 +27,25 @@
 }
 
 .logo {
-  font-size: 22px;
   font-weight: bold;
   margin: 0;
   cursor: pointer;
+}
+
+.logo a {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.logo .logoImg {
+  width: 30px;
+  height: 39.8px;
+}
+
+.logo .logoText {
+  font-size: 32px;
+  line-height: 1;
 }
 
 .centerMenu {
