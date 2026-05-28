@@ -2,8 +2,6 @@ import { useState } from "react";
 import styles from "./ReviewRegist.module.css";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import ClearIcon from "@mui/icons-material/Clear";
 
 const ReviewRegist = () => {
   const navigate = useNavigate();

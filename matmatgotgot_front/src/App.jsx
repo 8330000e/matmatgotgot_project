@@ -5,7 +5,6 @@ import "./App.css";
 import axios from "axios";
 import Header from "./components/commons/Header.jsx";
 import Footer from "./components/commons/Footer.jsx";
-import Main from "./pages/Main";
 import LoginPage from "./pages/member/LoginPage.jsx";
 import JoinPage from "./pages/member/JoinPage.jsx";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
@@ -16,6 +15,7 @@ import MypagePage from "./pages/MypagePage.jsx";
 import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
 import ReviewView from "./pages/restaurant/ReviewView.jsx";
 import TripMain from "./pages/trip/TripMain.jsx";
+import Main from "./pages/Main.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -34,8 +34,7 @@ function App() {
       <Header />
       <div className="main">
         <Routes>
-          <Route path="/" element={<MainCover />} />
-          <Route path="/main" element={<Main />} />
+          <Route path="/" element={<Main />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
           <Route path="/rest" element={<RestaurantMain />} />
@@ -48,8 +47,10 @@ function App() {
           <Route path="/rest/review/regist" element={<ReviewRegist />} />
           <Route path="/rest/review/view" element={<ReviewView />} />
           <Route path="/mypage" element={<MypagePage />} />
-          <Route path="/board/list" element={<BoardListPage />} />
-          <Route path="/board/write" element={<BoardWritePage />} />
+          {/* <Route path="/board/list" element={<BoardListPage />} /> */}
+          {/* <Route path="/board/write" element={<BoardWritePage />} /> */}
+
+          <Route path="/trip" element={<TripMain />} />
         </Routes>
       </div>
       <Footer />

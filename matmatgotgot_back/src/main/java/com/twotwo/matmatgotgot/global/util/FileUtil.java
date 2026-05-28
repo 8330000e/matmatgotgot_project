@@ -1,4 +1,4 @@
-package com.twotwo.util;
+package com.twotwo.matmatgotgot.global.util;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
