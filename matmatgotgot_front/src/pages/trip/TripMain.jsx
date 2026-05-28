@@ -3,8 +3,16 @@ import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import AdsClickIcon from "@mui/icons-material/AdsClick";
 import CasinoSharpIcon from "@mui/icons-material/CasinoSharp";
+import { useState } from "react";
+import MyCourse from "../../components/trip/MyCourse";
 
 const TripMain = () => {
+  const [mapTitleStatus, setMapTitleStatus] = useState(0);
+
+  const clickMapTitle = (status) => {
+    setMapTitleStatus(status);
+  };
+
   return (
     <div className={styles.tripMainWrap}>
       {/* 상단 영역 */}
@@ -24,7 +32,7 @@ const TripMain = () => {
             </div>
 
             <div className={styles.myCourseContent}>
-              <div className={styles.myCourseList}></div>
+              <MyCourse />
             </div>
           </div>
 
@@ -49,11 +57,23 @@ const TripMain = () => {
         {/* 오른쪽 지도 영역 */}
         <div className={styles.mapSection}>
           <div className={styles.mapTitle}>
-            <div className={styles.mapTitleWish}>가고 싶은</div>
-
+            <div
+              className={`${styles.mapTitleWish} ${mapTitleStatus === 0 ? "" : styles.nonActiveMapTitle}`}
+              onClick={() => {
+                clickMapTitle(0);
+              }}
+            >
+              가고 싶은
+            </div>
             <div className={styles.mapTitleDivider}>|</div>
-
-            <div className={styles.mapTitleVisited}>다녀왔던</div>
+            <div
+              className={`${styles.mapTitleVisited} ${mapTitleStatus === 1 ? "" : styles.nonActiveMapTitle}`}
+              onClick={() => {
+                clickMapTitle(1);
+              }}
+            >
+              다녀왔던
+            </div>
           </div>
 
           <div className={styles.mapContainer}>

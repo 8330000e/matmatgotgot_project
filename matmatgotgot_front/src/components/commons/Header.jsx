@@ -2,9 +2,11 @@ import React from "react";
 import styles from "./Header.module.css";
 import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
 
-export default function Header({ isLoggedIn = true }) {
+export default function Header() {
   const location = useLocation();
+  const { member } = useAuthStore();
 
   return (
     <header className={styles.header}>
@@ -15,7 +17,7 @@ export default function Header({ isLoggedIn = true }) {
           </h1>
         </div>
 
-        {isLoggedIn && (
+        {member && (
           <nav className={styles.centerMenu}>
             <button
               className={
@@ -46,7 +48,7 @@ export default function Header({ isLoggedIn = true }) {
         )}
 
         <div className={styles.rightArea}>
-          {isLoggedIn ? (
+          {member ? (
             <div className={styles.userMenu}>
               <button aria-label="알림" className={styles.iconBtn}>
                 <FiBell />

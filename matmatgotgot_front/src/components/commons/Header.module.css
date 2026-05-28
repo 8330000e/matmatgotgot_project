@@ -1,11 +1,12 @@
 .header {
   width: 100%;
-  background-color: var(--primary);
+  background-color: var(--gray8);
   color: var(--text1);
   font-family: sans-serif;
   box-sizing: border-box;
   position: fixed;
   z-index: 10000;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.04);
 }
 
 .container {
