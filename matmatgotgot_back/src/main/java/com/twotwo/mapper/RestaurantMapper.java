@@ -6,5 +6,5 @@ import java.util.List;
 @Mapper
 public interface RestaurantMapper {
 
-    List<Restaurant> getLocalList();
+//    List<Restaurant> getLocalList();
 }

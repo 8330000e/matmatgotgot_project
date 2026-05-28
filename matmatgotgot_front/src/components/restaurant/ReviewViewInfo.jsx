@@ -1,23 +1,87 @@
-import styles from "./RestaruntViewInfo.module.css";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import styles from "./ReviewViewInfo.module.css";
+import {
+  Navigation,
+  Pagination,
+} from "swiper/modules"; /* ← 수정: 모듈 경로 추가 */
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation"; /* ← 추가: 네비게이션 화살표 CSS */
+import "swiper/css/pagination"; /* ← 추가: 페이지네이션 도트 CSS */
 
-const ReviewViewInfo = () => {
-  const [review, setReview] = useState(null);
+// ============================================================
+// ReviewViewInfo  —  리뷰 상세 정보 컴포넌트
+//
+// props:
+//   review: {
+//     memberThumb  : 프로필 이미지 파일명 (없으면 null)
+//     memberName   : 작성자 이름
+//     isLocal      : 현지인 여부 (boolean)
+//     images       : 리뷰 이미지 배열 [{ reviewImageNo, marketFilePath }, ...]
+//     reviewContent: 리뷰 내용
+//     tags         : 태그 배열 ["야외석", "국물", ...]
+//     reviewVisit  : 방문 날짜 (string)
+//     reviewMenu   : 방문 메뉴 (string)
+//     rating       : 별점 (1~5 number)
+//   }
+//
+// 수정 내역:
+//   - CSS import 경로 수정 (RestaruntViewInfo → ReviewViewInfo)
+//   - Navigation, Pagination swiper/modules에서 import (← 누락 수정)
+//   - swiper/css/navigation, pagination CSS import 추가
+//   - review를 local state 대신 props로 받도록 변경
+//   - null guard 추가 (review 없으면 null 반환)
+//   - renderStars() 헬퍼 함수 추가 (숫자 → ★ 기호)
+//   - images / imgUrl 미정의 → review.images / VITE_BACKSERVER로 수정
+//   - 하드코딩된 내용 → review 데이터로 교체
+//   - review_meta 내부 div에 meta_item / meta_label / meta_value className 추가
+//   - "****" → renderStars(review.rating) 으로 수정
+//   - 이미지 alt 속성 추가
+// ============================================================
+const ReviewViewInfo = ({ review }) => {
+  // review 데이터가 아직 없을 때 렌더링 생략
+  if (!review) return null;
+
+  const imgBaseUrl = import.meta.env.VITE_BACKSERVER;
+
+  // 이미지 배열 (없으면 빈 배열)
+  const images = review.images ?? [];
+
+  // ── 별점 렌더링 헬퍼 ─────────────────────────────────────
+  // rating (1~5 숫자) → ★(채움) / ★(빈) span 배열 반환
+  const renderStars = (rating = 0) =>
+    [1, 2, 3, 4, 5].map((n) => (
+      <span
+        key={n}
+        className={n <= rating ? styles.star_filled : styles.star_empty}
+      >
+        ★
+      </span>
+    ));
 
   return (
     <>
+      {/* ── 작성자 정보 ── */}
       <div className={styles.writer_info}>
         <div className={styles.review_writer}>
+          {/* 프로필 이미지 / 기본 아이콘 */}
           <div
-            className={`${styles.member_thumb} ${review.memberThumb ? styles.thumb_exists : styles.thumb_default}`}
+            className={`${styles.member_thumb} ${
+              review.memberThumb ? styles.thumb_exists : styles.thumb_default
+            }`}
           >
-            {review.memberThumb && (
+            {review.memberThumb ? (
               <img
-                src={`${import.meta.env.VITE_BACKSERVER}/member/thumb/${review.memberThumb}`}
+                src={`${imgBaseUrl}/member/thumb/${review.memberThumb}`}
                 alt="프로필 이미지"
               />
+            ) : (
+              // 프로필 없을 때 Material Icons 기본 아이콘 (CDN 필요)
+              <span className="material-icons">account_circle</span>
             )}
           </div>
+
+          {/* 이름 + 현지인 뱃지 */}
           <div className={styles.name_badge_row}>
             <span className={styles.member_name}>{review.memberName}</span>
             {review.isLocal && (
@@ -26,30 +90,62 @@ const ReviewViewInfo = () => {
           </div>
         </div>
       </div>
-      <div className={styles.photo_swiper}></div>
-      <div className={styles.content}>
-        국물이 진하고 면발이 쫄깃해서 자주 찾는 단골 맛집이에요. 야외석에 앉아서
-        먹으면 날씨 좋은 날 특히 더 맛있습니다. 수제비 하나에 파전까지 시키면
-        배부르게 먹을 수 있어요 조용한 동네 분위기라 데이트나 가족 나들이에도
-        좋아요!
-      </div>
-      <div className={styles.tags}>
-        <span className={styles.tag_item}>야외석</span>
-        <span className={styles.tag_item}>국물</span>
-        <span className={styles.tag_item}>분위기</span>
-      </div>
+
+      {/* ── 사진 Swiper 캐러셀 ── */}
+      {images.length > 0 && (
+        <div className={styles.photo_swiper}>
+          <Swiper
+            modules={[Navigation, Pagination]}
+            navigation /* 좌우 화살표 버튼 */
+            pagination={{ clickable: true }} /* 하단 도트 */
+            spaceBetween={0}
+            slidesPerView={1}
+          >
+            {images.map((image) => (
+              <SwiperSlide key={image.reviewImageNo}>
+                <img
+                  className={styles.swiper_img}
+                  src={`${imgBaseUrl}/review/image/${image.marketFilePath}`}
+                  alt="리뷰 이미지"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      )}
+
+      {/* ── 리뷰 내용 ── */}
+      <div className={styles.content}>{review.reviewContent}</div>
+
+      {/* ── 태그 ── */}
+      {review.tags && review.tags.length > 0 && (
+        <div className={styles.tags}>
+          {review.tags.map((tag, i) => (
+            <span key={i} className={styles.tag_item}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* ── 방문 정보 (방문일 / 메뉴 / 별점) ── */}
       <div className={styles.review_meta}>
-        <div>
-          <p>방문일</p>
-          <p>2026년 5월 5일</p>
+        {/* 방문일 */}
+        <div className={styles.meta_item}>
+          <p className={styles.meta_label}>방문일</p>
+          <p className={styles.meta_value}>{review.reviewVisit}</p>
         </div>
-        <div>
-          <p>메뉴</p>
-          <p>수제비, 파전, 막러리</p>
+
+        {/* 메뉴 */}
+        <div className={styles.meta_item}>
+          <p className={styles.meta_label}>메뉴</p>
+          <p className={styles.meta_value}>{review.reviewMenu}</p>
         </div>
-        <div>
-          <p>별점</p>
-          <p>****</p>
+
+        {/* 별점 — grid에서 full-width 배치 (meta_full 클래스) */}
+        <div className={`${styles.meta_item} ${styles.meta_full}`}>
+          <p className={styles.meta_label}>별점</p>
+          <p className={styles.meta_value}>{renderStars(review.rating)}</p>
         </div>
       </div>
     </>

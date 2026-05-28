@@ -16,6 +16,9 @@ import RestaurantRegist from './pages/restaurant/RestaurantRegist.jsx';
 import RestaurantView from './pages/restaurant/RestaurantView.jsx';
 import MypagePage from './pages/MypagePage.jsx';
 import BoardWritePage from './pages/board/BoardWritePage.jsx';
+import ReviewRegist from './pages/restaurant/ReviewRegist.jsx';
+import ReviewView from './pages/restaurant/ReviewView.jsx';
+import TripMain from './pages/trip/TripMain.jsx';
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -34,8 +37,7 @@ function App() {
       <Header />
       <div className="main">
         <Routes>
-          <Route path="/" element={<MainCover />} />
-          <Route path="/main" element={<Main />} />
+          <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
           <Route path="/rest" element={<RestaurantMain />} />
@@ -45,7 +47,8 @@ function App() {
           />
           <Route path="/rest/regist" element={<RestaurantRegist />} />
           <Route path="/rest/view" element={<RestaurantView />} />
-          <Route path="/restaurantmain" element={<RestaurantMain />} />
+          <Route path="/rest/review/regist" element={<ReviewRegist />} />
+          <Route path="/rest/review/view" element={<ReviewView />} />
           <Route path="/mypage" element={<MypagePage />} />
           <Route path="/board/list" element={<BoardListPage />} />
           <Route path="/board/write" element={<BoardWritePage />} />
