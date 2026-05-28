@@ -3,19 +3,17 @@ import { useEffect } from "react";
 import { useAuthStore } from "./store/useAuthStore.js";
 import "./App.css";
 import axios from "axios";
-import MainCover from "./pages/MainCover";
 import Header from "./components/commons/Header.jsx";
 import Footer from "./components/commons/Footer.jsx";
 import Main from "./pages/Main";
 import RestaurantMain from "./pages/restaurant/RestaurantMain";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
-import Login from "./pages/member/Login.jsx";
-import Join from "./pages/member/Join.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
 import MypagePage from "./pages/MypagePage.jsx";
 import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
 import ReviewView from "./pages/restaurant/ReviewView.jsx";
+import TripMain from "./pages/trip/TripMain.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -34,8 +32,7 @@ function App() {
       <Header />
       <div className="main">
         <Routes>
-          <Route path="/" element={<MainCover />} />
-          <Route path="/main" element={<Main />} />
+          <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
           <Route path="/rest" element={<RestaurantMain />} />
@@ -48,6 +45,7 @@ function App() {
           <Route path="/rest/review/regist" element={<ReviewRegist />} />
           <Route path="/rest/review/view" element={<ReviewView />} />
           <Route path="/mypage" element={<MypagePage />} />
+          <Route path="/trip" element={<TripMain />} />
         </Routes>
       </div>
       <Footer />
