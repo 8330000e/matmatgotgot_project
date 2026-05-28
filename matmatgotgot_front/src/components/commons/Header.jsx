@@ -1,10 +1,11 @@
-import React from "react";
 import styles from "./Header.module.css";
 import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function Header({ isLoggedIn = true }) {
   const location = useLocation();
+  const { memberId } = useAuthStore();
 
   return (
     <header className={styles.header}>
@@ -46,7 +47,7 @@ export default function Header({ isLoggedIn = true }) {
         )}
 
         <div className={styles.rightArea}>
-          {isLoggedIn ? (
+          {memberId != null ? (
             <div className={styles.userMenu}>
               <button aria-label="알림" className={styles.iconBtn}>
                 <FiBell />
@@ -56,9 +57,11 @@ export default function Header({ isLoggedIn = true }) {
                 <FiMail />
               </button>
 
-              <button aria-label="마이페이지" className={styles.iconBtn}>
-                <FiUser />
-              </button>
+              <Link to="/mypage">
+                <button aria-label="마이페이지" className={styles.iconBtn}>
+                  <FiUser />
+                </button>
+              </Link>
 
               <button aria-label="설정" className={styles.iconBtn}>
                 <FiSettings />

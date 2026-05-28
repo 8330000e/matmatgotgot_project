@@ -1,4 +1,5 @@
 import axios from "axios";
+import styles from "./LoginPage.module.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -10,17 +11,6 @@ const Login = () => {
   const inputMember = (e) => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/members`)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   // 일반로그인
   const login = useAuthStore((state) => state.login);
@@ -40,7 +30,7 @@ const Login = () => {
       if (response.data) {
         // 🔥 여기서 스토어의 login을 실행해야 localStorage에 "auth-key"가 생성됩니다!
         login(response.data);
-        navigate("/main");
+        navigate("/");
       }
     } catch (error) {
       console.error("로그인 실패:", error);
@@ -65,7 +55,7 @@ const Login = () => {
         );
         console.log("로그인 성공:", res.data);
         if (res.status === 200) {
-          navigate("/main");
+          navigate("/");
         }
       } catch (err) {
         console.error("백엔드 전송 실패:", err);
@@ -101,38 +91,40 @@ const Login = () => {
   // 애플 로그인(상황에 따라 생략 가능성 높음)
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleLogin();
-        }}
-        autoComplete="off"
-      >
-        <label htmlFor="memberId">Username:</label>
-        <input
-          type="text"
-          id="memberId"
-          name="memberId"
-          value={members.memberId}
-          onChange={inputMember}
-        />
-        <br />
-        <label htmlFor="memberPw">Password:</label>
-        <input
-          type="password"
-          id="memberPw"
-          name="memberPw"
-          value={members.memberPw}
-          onChange={inputMember}
-        />
-        <br />
-        <button type="submit">Login</button>
-      </form>
-      <button onClick={() => googleLogin()}>구글로 로그인하기</button>
-      <button onClick={() => kakaoLogin()}>카카오톡으로 로그인하기</button>
-    </div>
+    <>
+      <div>
+        <h1>Login</h1>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          autoComplete="off"
+        >
+          <label htmlFor="memberId">Username:</label>
+          <input
+            type="text"
+            id="memberId"
+            name="memberId"
+            value={members.memberId}
+            onChange={inputMember}
+          />
+          <br />
+          <label htmlFor="memberPw">Password:</label>
+          <input
+            type="password"
+            id="memberPw"
+            name="memberPw"
+            value={members.memberPw}
+            onChange={inputMember}
+          />
+          <br />
+          <button type="submit">Login</button>
+        </form>
+        <button onClick={() => googleLogin()}>구글로 로그인하기</button>
+        <button onClick={() => kakaoLogin()}>카카오톡으로 로그인하기</button>
+      </div>
+    </>
   );
 };
 
