@@ -23,6 +23,8 @@
 
 .leftSection .myCourseContent {
   padding: 25px;
+  position: relative;
+  overflow: hidden;
 }
 
 .tripMainWrap .mapSection {
