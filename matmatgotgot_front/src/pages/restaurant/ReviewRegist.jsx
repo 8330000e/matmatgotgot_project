@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./ReviewRegist.module.css";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const ReviewRegist = () => {
@@ -16,6 +17,7 @@ const ReviewRegist = () => {
     reviewVisit: "",
     reviewContent: "",
   });
+  const navigate = useNavigate();
 
   // 별점 상태 (1~5, 0 = 미선택)
   const [rating, setRating] = useState(0);
@@ -94,6 +96,8 @@ const ReviewRegist = () => {
         console.log(err);
       });
   };
+  //죄송합니다. 화면을 보기위해 여러부분에 주석처리를 했고 쌩뚱맞은곳에 변수나 함수를 입력해두었습니다ㅜㅜ
+  registReview
 
   // 별점 렌더링용 태그 목록
   const tagList = [
@@ -222,8 +226,31 @@ const ReviewRegist = () => {
               accept="image/*"
               multiple
               style={{ display: "none" }}
+            ></input>
+            <div className={styles.file_wrap}>
+              {/* 리뷰 수정 시 사용 */}
+              {review.fileList &&
+                review.fileList.map((file, index) => {
+                  return (
+                    <FileItem
+                      key={index}
+                      file={file}
+                      // deleteFile={addDeleteFileList}
+                    ></FileItem>
+                  );
+                })}
+              {files.map((file, index) => {
+                return (
+                  <FileItem
+                    key={index}
+                    file={file}
+                    deleteFile={deleteFile}
+                  ></FileItem>
+                );
+              })}
+            </div>
               onChange={(e) => addFiles(Array.from(e.target.files))}
-            />
+            {/* /> */}
 
             {/* 사진 없을 때: 클릭 영역 */}
             {files.length === 0 ? (
@@ -284,7 +311,30 @@ const ReviewRegist = () => {
           </div>
         </div>
       </section>
-    </div>
+      <div className={styles.btn_zone}>
+        <button type="button">리뷰 등록*</button>
+      </div>
+    </>
+  );
+};
+
+const FileItem = ({ file, deleteFile }) => {
+  return (
+    <ul className={styles.file_item}>
+      <li>
+        {/* <InsertDriveFileIcon /> */}
+      </li>
+      <li className={styles.file_name}>{file.name || file.reviewFileName}</li>
+      <li>
+        {/* <ClearIcon
+          className={styles.file_delete}
+          onClick={() => {
+            deleteFile(file);
+          }}
+        /> */}
+        {deleteFile}
+      </li>
+    </ul>
   );
 };
 

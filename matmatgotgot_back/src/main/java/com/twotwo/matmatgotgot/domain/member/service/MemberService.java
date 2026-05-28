@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
+import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.member.mapper.MemberMapper;
+import com.twotwo.matmatgotgot.security.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 	private final MemberMapper memberMapper;
     private final BCryptPasswordEncoder bcrypt;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public List<MemberResponse> selectAll() {
         List<Member> memberList = memberMapper.selectAll();
@@ -32,23 +35,54 @@ public class MemberService {
         return result;
     }
 
-    public Member login(Member member) {
-        Member m = memberMapper.selectOneMember(member.getMemberId());
-        member.setMemberId(m.getMemberId());
-        Member loginMember = memberMapper.login(member);
-        if(loginMember != null) {
-            boolean result = bcrypt.matches(member.getMemberPw(), loginMember.getMemberPw());
-            if(result) {
-                return loginMember;
-            } else {
-                return null;
-            }
-        }
-        return null;
-    }
-
     public Member member(String email) {
         Member member = memberMapper.selectOneMemberByEmail(email);
         return member;
+    }
+
+    public LoginMember login(Member member) {
+        Member loginmember  = memberMapper.selectOneMember(member.getMemberId());
+        if(loginmember != null && bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw())) {
+            LoginMember login = jwtTokenProvider.createToken(loginmember.getMemberId(),loginmember.getMemberNickname(),false);
+            if(login != null) {
+                int result = memberMapper.loginLog(loginmember.getMemberNo());
+                if(result > 0) {
+                    return login;
+                }
+            }
+            } else {
+                return null;
+            }
+        return null;
+    }
+
+    @Transactional
+    public int insertMemberG(Member newMember) {
+        String memberPw = newMember.getMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        newMember.setMemberPw(encPw);
+        int result = memberMapper.insertMember(newMember);
+        if(result > 0) {
+            int socialResult = memberMapper.googleInsertMember(newMember);
+            memberMapper.loginLog(newMember.getMemberNo());
+            return socialResult;
+        }
+        return -1;
+    }
+
+    public Member findMember(String memberId) {
+        Member member = memberMapper.selectOneMember(memberId);
+        return member;
+    }
+
+    @Transactional
+    public boolean logout(String memberId) {
+        Member loginMember = memberMapper.selectOneMember(memberId);
+        if (loginMember != null) {
+            int result = memberMapper.logoutLog(loginMember.getMemberNo());
+            return result > 0; 
+        }
+        
+        return false;
     }
 }

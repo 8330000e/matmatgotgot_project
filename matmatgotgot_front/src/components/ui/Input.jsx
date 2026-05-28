@@ -1,7 +1,9 @@
-import style from './style';
+import styles from './Style.module.css';
 
 const Input = () => {
-    return (<></>);
+    return (<>
+        <div className={styles.input_wrap}></div>
+    </>);
 };
 
 export default Input;

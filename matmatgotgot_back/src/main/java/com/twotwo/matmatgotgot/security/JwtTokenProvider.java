@@ -5,10 +5,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import jakarta.annotation.PostConstruct; // 추가 (초기화용)
+import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
+import jakarta.annotation.PostConstruct;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;        // ◀ 추가: JWT 빌더용 기점 시간
+import java.time.LocalDateTime;  // ◀ 추가: 엔티티 주입용 시간
+import java.time.ZoneId;         // ◀ 추가: 시간대 변환용
 import java.util.Date;
 
 @Component
@@ -18,27 +22,41 @@ public class JwtTokenProvider {
     private String secretKeyString;
 
     @Value("${jwt.expiration}")
-    private long expiration;
+    private long expiration; // 밀리초 단위 (예: 3600000 = 1시간)
 
     private SecretKey secretKey;
 
-    // 객체 생성 후 문자열 키를 실제 SecretKey 객체로 변환
     @PostConstruct
     protected void init() {
         this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
     }
 
     // // 토큰 생성
-    public String createToken(String memberId) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + expiration);
+    public LoginMember createToken(String memberId, String memberNickname, Boolean admin) {
+        Instant now = Instant.now();
+        Instant validityInstant = now.plusMillis(expiration);
 
-        return Jwts.builder()
-                .subject(memberId)                    // setSubject -> subject
-                .issuedAt(now)
-                .expiration(validity)                // setExpiration -> expiration
-                .signWith(secretKey)                 // Keys.hmacShaKeyFor를 매번 호출하지 않고 변수 사용
+        String token = Jwts.builder()
+                .subject(memberId)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(validityInstant)) 
+                .signWith(secretKey)
+                .claim(admin ? "일반회원" : "관리자", admin)
                 .compact();
+
+        LocalDateTime validityLDT = LocalDateTime.ofInstant(validityInstant, ZoneId.systemDefault());
+
+        LoginMember login = new LoginMember();
+        login.setAdmin(admin);
+        login.setMemberId(memberId);
+        
+        // 💡 [해결 1] 리턴할 객체에 닉네임을 확실하게 넣어줍니다!
+        login.setMemberNickname(memberNickname); 
+        
+        login.setToken(token);
+        login.setValidity(validityLDT);
+
+        return login;
     }
 
     // // 토큰에서 memberId 추출

@@ -1,6 +1,8 @@
 package com.twotwo.matmatgotgot.domain.member.controller;
 
 import com.twotwo.matmatgotgot.global.util.EmailSender;
+
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -13,9 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
+import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
 import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
+import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.member.service.MemberService;
 import com.twotwo.matmatgotgot.global.response.ApiResponse;
@@ -47,9 +53,56 @@ public class MemberController {
 	}
 
 	@PostMapping(value="/login")
-	public ResponseEntity<?> login(@RequestBody Member member) {
-		Member loginMember = memberService.login(member);
-		return ResponseEntity.ok(loginMember);
+	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
+		Member loginInput = new Member();
+		loginInput.setMemberNo(dto.getMemberNo());
+		loginInput.setMemberId(dto.getMemberId());
+		loginInput.setMemberPw(dto.getMemberPw());
+
+		LoginMember loginLog = memberService.login(loginInput);
+
+		if (loginLog == null) {
+			return ResponseEntity.status(401).body("로그인 정보가 올바르지 않습니다.");
+		}
+
+		Member member = memberService.findMember(dto.getMemberId());
+		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), member.isAdmin());
+
+		LoginResponseDto response = new LoginResponseDto();
+		response.setMemberNo(loginMember.getMemberNo());
+		response.setMemberId(loginMember.getMemberId());
+		response.setMemberNickname(loginMember.getMemberNickname());
+		response.setMemberThumb(member.getMemberThumb());
+		response.setAdmin(loginMember.isAdmin());
+		response.setToken(loginMember.getToken());
+
+		long validityMilli = loginMember.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		response.setValidity(validityMilli);
+
+		return ResponseEntity.ok(response);
+	}
+
+	// @PostMapping(value="/login")
+	// public ResponseEntity<?> login(@RequestBody Member member) {
+	// 	LoginMember loginMember = memberService.login(member);
+	// 	if(loginMember == null) {
+	// 		return ResponseEntity.status(404).build();
+	// 	}else{
+	// 		return ResponseEntity.ok(loginMember);
+	// 	}
+	// }
+
+	@PostMapping("/logout/{currentId}")
+	public ResponseEntity<?> logout(@PathVariable("currentId") String memberId) {
+		
+		boolean isSuccess = memberService.logout(memberId);
+		System.out.println("로그아웃 시도한 회원 ID: " + memberId);
+		
+		if(isSuccess) {
+			return ResponseEntity.ok("로그아웃 성공");
+		} else {
+			return ResponseEntity.status(404).body("존재하지 않는 회원입니다.");
+		}
 	}
 
 	@PostMapping("/login/google")
@@ -80,18 +133,35 @@ public class MemberController {
 			newMember.setMemberEmail(googleUser.getEmail());
 			newMember.setMemberName(googleUser.getName());
 			// 구글 로그인은 비밀번호가 없으므로, 랜덤한 문자열을 비밀번호로 설정해줍니다.
-			newMember.setMemberPw("google_" + googleId); // 예시: "google_1234567890"
-			newMember.setMemberNickname(googleUser.getName());
-			newMember.setSocialLogin("google");
-			memberService.insertMember(newMember);
+			newMember.setMemberPw("google" + googleId); // 예시: "google_1234567890"
+			newMember.setMemberNickname("google_" + googleId);
+			System.out.println(googleId);
+			int loginMember = memberService.insertMemberG(newMember);
 			member = newMember; // 가입된 회원 정보로 member 변수 업데이트
+			if(loginMember > 0) {
+				return ResponseEntity.status(404).build();
+			}else{
+				return ResponseEntity.ok(loginMember);
+			}
 		} else {
-			jwtTokenProvider.createToken(member.getMemberId());
-			System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
+			LoginMember loginMember = memberService.login(member);
+			if(loginMember!=null) {
+				System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
+			}
 		}
-
         return ResponseEntity.ok(googleUser); // 테스트를 위해 우선 유저 정보를 리턴
     }
+
+	@PostMapping(value="/login/kakao")
+	public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> request) {
+		String code = request.get("code");
+
+		if (code == null || code.isEmpty()) {
+			return ResponseEntity.badRequest().body("인가 코드가 없습니다.");
+		}
+
+		return ResponseEntity.ok("카카오 로그인은 아직 구현되지 않았습니다.");
+	}
 
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member) {
