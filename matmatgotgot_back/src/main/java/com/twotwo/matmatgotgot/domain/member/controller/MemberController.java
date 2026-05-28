@@ -55,6 +55,7 @@ public class MemberController {
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
 		Member loginInput = new Member();
+		loginInput.setMemberNo(dto.getMemberNo());
 		loginInput.setMemberId(dto.getMemberId());
 		loginInput.setMemberPw(dto.getMemberPw());
 
@@ -68,6 +69,7 @@ public class MemberController {
 		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), member.isAdmin());
 
 		LoginResponseDto response = new LoginResponseDto();
+		response.setMemberNo(loginMember.getMemberNo());
 		response.setMemberId(loginMember.getMemberId());
 		response.setMemberNickname(loginMember.getMemberNickname());
 		response.setMemberThumb(member.getMemberThumb());

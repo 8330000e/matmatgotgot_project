@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data // Lombok이 없다면 Getter, Setter 직접 생성
 public class LoginResponseDto {
+    private Long memberNo;
     private String memberId;
     private String memberNickname;
     private String memberThumb;
