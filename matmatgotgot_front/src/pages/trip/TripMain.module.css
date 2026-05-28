@@ -14,11 +14,15 @@
 }
 
 .tripMainWrap .topSection .leftSection {
-  width: 40%;
+  width: 55%;
 }
 
 .leftSection .myCourseSection {
   margin-bottom: 20px;
+}
+
+.leftSection .myCourseContent {
+  padding: 25px;
 }
 
 .tripMainWrap .mapSection {
@@ -33,14 +37,28 @@
   height: 35px;
   margin-bottom: 5px;
   font-size: 1.2em;
+  gap: 10px;
 }
 
 .tripMainWrap .mapSection .mapTitle > div {
   align-content: center;
 }
 
+.tripMainWrap .mapSection .mapTitle > div:not(.mapTitleDivider) {
+  cursor: pointer;
+}
+
+.tripMainWrap .mapSection .mapTitle .nonActiveMapTitle {
+  color: color-mix(in srgb, var(--text1) 25%, transparent);
+}
+
 .tripMainWrap .mapSection .mapContainer {
   flex: 1;
+}
+
+.tripMainWrap .title .titleText,
+.tripMainWrap .mapSection .mapTitle > div {
+  font-weight: 600;
 }
 
 .tripMainWrap .title {
@@ -78,7 +96,6 @@
 .tripMainWrap .tasteRestaurantContent,
 .tripMainWrap .howAboutHereContent {
   background-color: var(--gray8);
-  min-height: 300px;
   border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
   border-radius: 20px;
 }
