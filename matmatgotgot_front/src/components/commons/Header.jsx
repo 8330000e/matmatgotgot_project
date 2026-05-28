@@ -6,7 +6,7 @@ import settingIcon from "../../assets/settingIcon.svg";
 import { useAuthStore } from "../../store/useAuthStore";
 import styles from "./Commons.module.css";
 
-const Header = () => {
+export const Header = () => {
   const memberNickname = useAuthStore((state) => state.memberNickname);
   const isReady = useAuthStore((state) => state.isReady);
   const logout = useAuthStore((state) => state.logout);
@@ -59,11 +59,9 @@ const Header = () => {
         <div>
           <ul>
             <li>{memberNickname}</li>
-            {logout ? (
-              <li>
-                <button onClick={logout}>로그아웃</button>
-              </li>
-            ) : null}
+            <li>
+              <button onClick={logout}>로그아웃</button>
+            </li>
           </ul>
         </div>
       )}

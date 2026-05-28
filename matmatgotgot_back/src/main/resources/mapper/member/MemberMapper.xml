@@ -16,4 +16,10 @@
 	<insert id="googleInsertMember">
 		insert into social_login_tbl (social_google) value (CURRENT_TIMESTAMP)
 	</insert>
+	<insert id="logoutLog">
+		insert into login_log_tbl (member_no, login_status) value (#{memberNo}, 0)
+	</insert>
+	<insert id="loginLog">
+		insert into login_log_tbl (member_no, login_status) value (#{memberNo}, 1)
+	</insert>
 </mapper>

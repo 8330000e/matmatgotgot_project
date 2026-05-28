@@ -13,17 +13,20 @@ const Login = () => {
   const login = useAuthStore((state) => state.login);
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKSERVER}/members/login`, {
-        memberId: members.memberId,
-        memberPw: members.memberPw
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKSERVER}/members/login`,
+        {
+          memberId: members.memberId,
+          memberPw: members.memberPw,
+        },
+      );
 
       console.log("백엔드가 보내준 로그인 응답 데이터:", response.data);
 
       // 백엔드에서 준 응답 데이터(memberId, token, memberNickname 등)
       if (response.data) {
         // 🔥 여기서 스토어의 login을 실행해야 localStorage에 "auth-key"가 생성됩니다!
-        login(response.data); 
+        login(response.data);
         navigate("/main");
       }
     } catch (error) {

@@ -18,5 +18,9 @@ public interface MemberMapper {
     Member selectOneMemberByEmail(String email);
 
     int googleInsertMember(Member newMember);
+
+    int loginLog(Long memberNo);
+
+    int logoutLog(Long memberNo);
 	
 }

@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { useNavigate } from "react-router-dom";
 
 let alertTimer = null;
 let logoutTimer = null;
@@ -41,16 +42,24 @@ const useAuthStore = create(
 
       updateToken: () => {},
 
-      logout: () => {
-        get().stopLoginTimer();
+      logout: async () => {
+        if (typeof stopLoginTimer === "function") stopLoginTimer();
+        else get().stopLoginTimer?.();
+
         const currentId = get().memberId;
-        if (currentId && currentId !== 'test') { 
-          axios
-            .post(
-              `${import.meta.env.VITE_BACKSERVER}/member/logout/${currentId}`,
-            )
-            .catch(() => {});
+        console.log("👉 [체크] 로그아웃 요청을 보낼 ID:", currentId);
+
+        if (currentId) {
+          try {
+            const res = await axios.post(
+              `${import.meta.env.VITE_BACKSERVER}/members/logout/${currentId}`,
+            );
+            console.log("✅ 백엔드 응답 성공:", res.data);
+          } catch (err) {
+            console.error("🚨 백엔드 요청 실패 에러:", err);
+          }
         }
+
         set({
           memberId: null,
           memberThumb: null,
@@ -60,8 +69,11 @@ const useAuthStore = create(
           endTime: null,
         });
 
-       delete axios.defaults.headers.common["Authorization"];
-       localStorage.removeItem("auth-key");
+        delete axios.defaults.headers.common["Authorization"];
+        localStorage.removeItem("auth-key");
+
+        alert("로그아웃 되었습니다.");
+        window.location.href = "/";
       },
 
       startLoginTimer: (endTime) => {
@@ -77,7 +89,7 @@ const useAuthStore = create(
               get().logout();
             }
           }, remainingTime);
-          } else {
+        } else {
           //이미 시간이 지난 경우 즉시 로그아웃
           get().logout();
         }

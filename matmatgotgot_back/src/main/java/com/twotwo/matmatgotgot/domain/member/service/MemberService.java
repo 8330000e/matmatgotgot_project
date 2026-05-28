@@ -44,6 +44,12 @@ public class MemberService {
         Member loginmember  = memberMapper.selectOneMember(member.getMemberId());
         if(loginmember != null && bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw())) {
             LoginMember login = jwtTokenProvider.createToken(member.getMemberId(),member.getMemberNickname(),false);
+            if(login != null) {
+                int result = memberMapper.loginLog(member.getMemberNo());
+                if(result > 0) {
+                    return login;
+                }
+            }
             } else {
                 return null;
             }
@@ -58,6 +64,7 @@ public class MemberService {
         int result = memberMapper.insertMember(newMember);
         if(result > 0) {
             int socialResult = memberMapper.googleInsertMember(newMember);
+            memberMapper.loginLog(newMember.getMemberNo());
             return socialResult;
         }
         return -1;
@@ -66,5 +73,16 @@ public class MemberService {
     public Member findMember(String memberId) {
         Member member = memberMapper.selectOneMember(memberId);
         return member;
+    }
+
+    @Transactional
+    public boolean logout(String memberId) {
+        Member loginMember = memberMapper.selectOneMember(memberId);
+        if (loginMember != null) {
+            int result = memberMapper.logoutLog(loginMember.getMemberNo());
+            return result > 0; 
+        }
+        
+        return false;
     }
 }

@@ -54,13 +54,22 @@ public class MemberController {
 
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
-		Member member = memberService.findMember(dto.getMemberId());
+		Member loginInput = new Member();
+		loginInput.setMemberId(dto.getMemberId());
+		loginInput.setMemberPw(dto.getMemberPw());
 
+		LoginMember loginLog = memberService.login(loginInput);
+
+		if (loginLog == null) {
+			return ResponseEntity.status(401).body("로그인 정보가 올바르지 않습니다.");
+		}
+
+		Member member = memberService.findMember(dto.getMemberId());
 		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), member.isAdmin());
 
 		LoginResponseDto response = new LoginResponseDto();
 		response.setMemberId(loginMember.getMemberId());
-		response.setMemberNickname(loginMember.getMemberNickname()); // 닉네임 매핑
+		response.setMemberNickname(loginMember.getMemberNickname());
 		response.setMemberThumb(member.getMemberThumb());
 		response.setAdmin(loginMember.isAdmin());
 		response.setToken(loginMember.getToken());
@@ -80,6 +89,19 @@ public class MemberController {
 	// 		return ResponseEntity.ok(loginMember);
 	// 	}
 	// }
+
+	@PostMapping("/logout/{currentId}")
+	public ResponseEntity<?> logout(@PathVariable("currentId") String memberId) {
+		
+		boolean isSuccess = memberService.logout(memberId);
+		System.out.println("로그아웃 시도한 회원 ID: " + memberId);
+		
+		if(isSuccess) {
+			return ResponseEntity.ok("로그아웃 성공");
+		} else {
+			return ResponseEntity.status(404).body("존재하지 않는 회원입니다.");
+		}
+	}
 
 	@PostMapping("/login/google")
     public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> request) {
