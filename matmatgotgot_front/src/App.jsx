@@ -1,3 +1,4 @@
+import BoardListPage from './pages/board/BoardListPage.jsx';
 import { Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuthStore } from './store/useAuthStore.js';
@@ -10,12 +11,13 @@ import Join from './pages/member/Join.jsx';
 import Login from './pages/member/Login.jsx';
 import Main from './pages/Main';
 import RestaurantMain from './pages/restaurant/RestaurantMain';
+import RestaurantDetailSearch from './pages/restaurant/RestaurantDetailSearch.jsx';
+import RestaurantRegist from './pages/restaurant/RestaurantRegist.jsx';
+import RestaurantView from './pages/restaurant/RestaurantView.jsx';
 import MypagePage from './pages/MypagePage.jsx';
-import BoardListPage from './pages/board/BoardListPage.jsx';
+import BoardWritePage from './pages/board/BoardWritePage.jsx';
 
 function App() {
-  //관리자 페이지 로직
-
   const token = useAuthStore((state) => state.token);
   useEffect(() => {
     if (token) {
@@ -36,9 +38,17 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Join />} />
+          <Route path="/rest" element={<RestaurantMain />} />
+          <Route
+            path="/rest/detailsearch"
+            element={<RestaurantDetailSearch />}
+          />
+          <Route path="/rest/regist" element={<RestaurantRegist />} />
+          <Route path="/rest/view" element={<RestaurantView />} />
           <Route path="/restaurantmain" element={<RestaurantMain />} />
           <Route path="/mypage" element={<MypagePage />} />
           <Route path="/board/list" element={<BoardListPage />} />
+          <Route path="/board/write" element={<BoardWritePage />} />
         </Routes>
       </div>
       <Footer />

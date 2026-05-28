@@ -1,20 +1,18 @@
 import styles from './Pagination.module.css';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import IconButton from '@mui/material/IconButton';
 
 const Pagination = ({ page, setPage, totalPage, naviSize }) => {
   if (totalPage === null || totalPage < 1) {
-    return;
+    //db 먼저 수행할 수 있도록 함
+    return null;
   }
 
+  // 현재 페이지 번호 (서버에 주는 숫자 + 1, 1부터 시작하도록)
   const current = page + 1;
-  const halfLangth = Math.floor(naviSize / 2);
-  let startPage = Math.max(1, current - halfLangth);
+  const halfLenth = Math.floor(naviSize / 2);
+  // 현재 페이지가 페이지네이션의 가운데 숫자가 될 수 있도록 함
+  let startPage = Math.max(1, current - halfLenth);
+  // 마지막 페이지가 총 페이지 개수를 넘지 않도록
   let endPage = Math.min(totalPage, startPage + naviSize - 1);
-  startPage = Math.max(1, endPage - naviSize + 1);
 
   const pages = new Array();
 
@@ -27,58 +25,56 @@ const Pagination = ({ page, setPage, totalPage, naviSize }) => {
 
   return (
     <div className={styles.pagination_wrap}>
-      <IconButton
-        onClick={() => {
-          setPage(0);
-        }}
+      {/* 처음 페이지로 이동 */}
+      <button
+        className={styles.jump_btn}
+        onClick={() => setPage(0)}
         disabled={isFirst}
-        className={styles.page_arrow_btn}
+        title="첫 페이지"
       >
-        <KeyboardDoubleArrowLeftIcon className={styles.page_arrow} />
-      </IconButton>
+        {'<<'}
+      </button>
 
-      <IconButton
-        onClick={() => {
-          setPage(page - 1);
-        }}
+      {/* 이전 페이지로 이동 */}
+      <button
+        className={styles.nav_btn}
+        onClick={() => setPage(page - 1)}
         disabled={isFirst}
-        className={styles.page_arrow_btn}
+        title="이전 페이지"
       >
-        <NavigateBeforeIcon className={styles.page_arrow} />
-      </IconButton>
+        {'<'}
+      </button>
 
-      {pages.map((p, i) => {
-        return (
-          <IconButton
-            key={'pagination-' + i}
-            className={p === current ? styles.active : ''}
-            onClick={() => {
-              setPage(p - 1);
-            }}
-          >
-            {p}
-          </IconButton>
-        );
-      })}
+      {/* 페이지 번호 목록 — 현재 페이지에 .active 클래스 적용 */}
+      {pages.map((p, i) => (
+        <button
+          key={'pagination-' + i}
+          className={p === current ? styles.active : styles.page_btn}
+          onClick={() => setPage(p - 1)}
+        >
+          {p}
+        </button>
+      ))}
 
-      <IconButton
-        onClick={() => {
-          setPage(page + 1);
-        }}
+      {/* 다음 페이지로 이동 */}
+      <button
+        className={styles.nav_btn}
+        onClick={() => setPage(page + 1)}
         disabled={isLast}
-        className={styles.page_arrow_btn}
+        title="다음 페이지"
       >
-        <NavigateNextIcon className={styles.page_arrow} />
-      </IconButton>
-      <IconButton
-        onClick={() => {
-          setPage(totalPage - 1);
-        }}
+        {'>'}
+      </button>
+
+      {/* 마지막 페이지로 이동 */}
+      <button
+        className={styles.jump_btn}
+        onClick={() => setPage(totalPage - 1)}
         disabled={isLast}
-        className={styles.page_arrow_btn}
+        title="마지막 페이지"
       >
-        <KeyboardDoubleArrowRightIcon className={styles.page_arrow} />
-      </IconButton>
+        {'>>'}
+      </button>
     </div>
   );
 };

@@ -1,0 +1,73 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--gray8);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.restaurant_item {
+  padding: 8px 8px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rest_name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rest_img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--gray6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ImageNotSupportedIcon {
+  font-size: 36px !important;
+  color: var(--gray4);
+}
+
+.rest_addr {
+  font-size: 11px;
+  color: var(--gray3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reset_category {
+  font-size: 11px;
+  color: var(--gray3);
+}
+
+.like_star {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px 8px;
+}
+
+.like {
+  display: flex;
+  align-items: center;
+}
+
+.favorite_icon {
+  font-size: 18px !important;
+  color: var(--text1);
+}
+
+.star {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 600;
+}

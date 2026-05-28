@@ -13,7 +13,7 @@ const Login = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/members`)
       .then((res) => {
-        console.log(res.data);
+        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -40,6 +40,8 @@ const Login = () => {
   const googleLogin = useGoogleLogin({
     // 구글로부터 '인가 코드(code)'를 받아오는 방식 설정
     flow: "auth-code",
+    // ux_mode: "redirect",
+    // redirect_uri: `${import.meta.env.VITE_FRONTSERVER}/login`,
     onSuccess: async (codeResponse) => {
       console.log("구글 인가 코드:", codeResponse.code);
 
@@ -51,6 +53,9 @@ const Login = () => {
           { withCredentials: true }, // 아까 설정한 쿠키 공유 옵션!
         );
         console.log("로그인 성공:", res.data);
+        if (res.status === 200) {
+          navigate("/main");
+        }
       } catch (err) {
         console.error("백엔드 전송 실패:", err);
       }

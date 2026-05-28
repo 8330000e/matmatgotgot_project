@@ -1,0 +1,72 @@
+/* ==========================================================
+   RestaurantView.module.css
+   맛집 상세 페이지 최상위 레이아웃
+   구조:
+     rest_info    : 맛집 정보 섹션 (수정/삭제 버튼 + Info + 신고/찜 버튼)
+     rest_reviews : 리뷰 섹션
+========================================================== */
+
+/* ========== 맛집 정보 섹션 ========== */
+.rest_info {
+  padding: 20px 24px 0;
+}
+
+/* 수정 / 삭제 버튼 — 우측 정렬 */
+.btn_zone_info {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.btn_zone_info button {
+  background-color: transparent;
+  border: 1.5px solid var(--gray5);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--gray2);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn_zone_info button:hover {
+  border-color: var(--text1);
+  color: var(--text1);
+}
+
+/* 신고 / 찜 버튼 — 좌측 정렬 */
+.btn_zone1 {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1.5px solid var(--gray6); /* 리뷰 섹션과 시각적 구분 */
+}
+
+.btn_zone1 button {
+  background-color: transparent;
+  border: 1.5px solid var(--gray5);
+  border-radius: 20px;
+  padding: 5px 18px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--gray2);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn_zone1 button:hover {
+  background-color: var(--gray7);
+  color: var(--text1);
+}
+
+/* ========== 리뷰 섹션 ========== */
+.rest_reviews {
+  padding: 20px 24px 80px; /* 하단 fixed 버튼 공간 확보 */
+}

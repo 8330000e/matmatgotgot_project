@@ -1,34 +1,19 @@
 .btn {
   padding: 9px;
   width: auto;
+  height: 36px;
   font-size: 12px;
   color: var(--gray8);
   border: none;
   border-radius: 12px;
-  background-color: var(--color1);
-}
-
-.cancel {
-  background-color: var(--color5);
-}
-
-.join_btn {
-  padding: 12px;
-  width: 300px;
-  color: var(--gray8);
-  font-size: 16px;
-  margin-top: 20px;
-  margin-bottom: 40px;
-  border: none;
-  border-radius: 12px;
-  background-color: var(--color1);
-  text-align: center;
-}
-.join_btn:hover {
+  background-color: var(--primary);
   cursor: pointer;
-  filter: brightness(1.1);
 }
 
-.join_btn:active {
-  filter: brightness(0.9);
+.primary {
+  background-color: var(--primary);
+  color: var(--text1);
+  font-weight: 700;
+
+  border-radius: 6px;
 }
