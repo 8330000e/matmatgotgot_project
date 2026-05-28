@@ -9,35 +9,6 @@ import "swiper/css";
 import "swiper/css/navigation"; /* ← 추가: 네비게이션 화살표 CSS */
 import "swiper/css/pagination"; /* ← 추가: 페이지네이션 도트 CSS */
 
-// ============================================================
-// ReviewViewInfo  —  리뷰 상세 정보 컴포넌트
-//
-// props:
-//   review: {
-//     memberThumb  : 프로필 이미지 파일명 (없으면 null)
-//     memberName   : 작성자 이름
-//     isLocal      : 현지인 여부 (boolean)
-//     images       : 리뷰 이미지 배열 [{ reviewImageNo, marketFilePath }, ...]
-//     reviewContent: 리뷰 내용
-//     tags         : 태그 배열 ["야외석", "국물", ...]
-//     reviewVisit  : 방문 날짜 (string)
-//     reviewMenu   : 방문 메뉴 (string)
-//     rating       : 별점 (1~5 number)
-//   }
-//
-// 수정 내역:
-//   - CSS import 경로 수정 (RestaruntViewInfo → ReviewViewInfo)
-//   - Navigation, Pagination swiper/modules에서 import (← 누락 수정)
-//   - swiper/css/navigation, pagination CSS import 추가
-//   - review를 local state 대신 props로 받도록 변경
-//   - null guard 추가 (review 없으면 null 반환)
-//   - renderStars() 헬퍼 함수 추가 (숫자 → ★ 기호)
-//   - images / imgUrl 미정의 → review.images / VITE_BACKSERVER로 수정
-//   - 하드코딩된 내용 → review 데이터로 교체
-//   - review_meta 내부 div에 meta_item / meta_label / meta_value className 추가
-//   - "****" → renderStars(review.rating) 으로 수정
-//   - 이미지 alt 속성 추가
-// ============================================================
 const ReviewViewInfo = ({ review }) => {
   // review 데이터가 아직 없을 때 렌더링 생략
   if (!review) return null;

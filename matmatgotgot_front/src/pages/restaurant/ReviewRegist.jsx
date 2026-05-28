@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styles from "./ReviewRegist.module.css";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -17,7 +16,6 @@ const ReviewRegist = () => {
     reviewVisit: "",
     reviewContent: "",
   });
-  const navigate = useNavigate();
 
   // 별점 상태 (1~5, 0 = 미선택)
   const [rating, setRating] = useState(0);
@@ -97,7 +95,7 @@ const ReviewRegist = () => {
       });
   };
   //죄송합니다. 화면을 보기위해 여러부분에 주석처리를 했고 쌩뚱맞은곳에 변수나 함수를 입력해두었습니다ㅜㅜ
-  registReview
+  registReview;
 
   // 별점 렌더링용 태그 목록
   const tagList = [
@@ -249,9 +247,8 @@ const ReviewRegist = () => {
                 );
               })}
             </div>
-              onChange={(e) => addFiles(Array.from(e.target.files))}
+            onChange={(e) => addFiles(Array.from(e.target.files))}
             {/* /> */}
-
             {/* 사진 없을 때: 클릭 영역 */}
             {files.length === 0 ? (
               <label htmlFor="files" className={styles.photo_placeholder}>
@@ -314,24 +311,22 @@ const ReviewRegist = () => {
       <div className={styles.btn_zone}>
         <button type="button">리뷰 등록*</button>
       </div>
-    </>
+    </div>
   );
 };
 
 const FileItem = ({ file, deleteFile }) => {
   return (
     <ul className={styles.file_item}>
-      <li>
-        {/* <InsertDriveFileIcon /> */}
-      </li>
+      <li>{/* <InsertDriveFileIcon /> */}</li>
       <li className={styles.file_name}>{file.name || file.reviewFileName}</li>
       <li>
-        {/* <ClearIcon
+        <ClearIcon
           className={styles.file_delete}
           onClick={() => {
             deleteFile(file);
           }}
-        /> */}
+        />
         {deleteFile}
       </li>
     </ul>
