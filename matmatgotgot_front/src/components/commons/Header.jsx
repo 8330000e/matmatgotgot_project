@@ -3,6 +3,7 @@ import styles from "./Header.module.css";
 import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import logo from "../../assets/logo/맛맛곳곳로고_300x398.png";
 
 export default function Header() {
   const location = useLocation();
@@ -12,9 +13,12 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logoArea}>
-          <h1 className={styles.logo}>
-            <Link to="/">맛맛곳곳</Link>
-          </h1>
+          <div className={styles.logo}>
+            <Link to="/">
+              <img src={logo} alt="맛맛곳곳 로고" className={styles.logoImg} />
+              <div className={styles.logoText}>맛맛곳곳</div>
+            </Link>
+          </div>
         </div>
 
         {member && (
