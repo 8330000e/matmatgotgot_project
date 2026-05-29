@@ -51,10 +51,6 @@ ol {
   flex-direction: column;
 }
 
-.header {
-  position: fixed;
-}
-
 .main {
   flex-grow: 1;
 }
