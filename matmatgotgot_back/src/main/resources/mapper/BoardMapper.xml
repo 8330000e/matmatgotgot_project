@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.twotwo.matmatgotgot.domain.board.mapper.BoardMapper">
+
+    <!-- 게시글 개수 -->
+    <select id="selectBoardCount"
+            parameterType="listItem"
+            resultType="int">
+
+        SELECT COUNT(*)
+        FROM BOARD_TBL B
+        JOIN MEMBER_TBL M
+        ON B.MEMBER_NO = M.MEMBER_NO
+
+        <where>
+
+            B.BOARD_STATUS = 1
+
+            <if test="category == 1">
+                AND B.BOARD_CATEGORY = 1
+            </if>
+
+            <if test="category == 2">
+                AND B.BOARD_CATEGORY = 2
+            </if>
+
+            <if test="searchKeyword != null and searchKeyword != ''">
+
+                <choose>
+
+                    <when test="searchType == 1">
+                        AND B.BOARD_TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+
+                    <when test="searchType == 2">
+                        AND M.MEMBER_NICKNAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+
+                </choose>
+
+            </if>
+
+        </where>
+
+    </select>
+
+    <!-- 게시글 목록 -->
+    <select id="selectBoardList"
+            parameterType="listItem"
+            resultType="board">
+
+        SELECT
+        B.BOARD_NO,
+        B.BOARD_CATEGORY,
+        B.BOARD_TITLE,
+        B.BOARD_THUMB,
+        B.BOARD_STATUS,
+        DATE_FORMAT(B.BOARD_DATE, '%Y-%m-%d') AS BOARD_DATE,
+
+        M.MEMBER_NICKNAME AS BOARD_WRITER,
+        M.MEMBER_THUMB
+
+        FROM BOARD_TBL B
+
+        JOIN MEMBER_TBL M
+        ON B.MEMBER_NO = M.MEMBER_NO
+
+        <where>
+
+            B.BOARD_STATUS = 1
+
+            <if test="category == 1">
+                AND B.BOARD_CATEGORY = 1
+            </if>
+
+            <if test="category == 2">
+                AND B.BOARD_CATEGORY = 2
+            </if>
+
+            <if test="searchKeyword != null and searchKeyword != ''">
+
+                <choose>
+
+                    <when test="searchType == 1">
+                        AND B.BOARD_TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+
+                    <when test="searchType == 2">
+                        AND M.MEMBER_NICKNAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+
+                </choose>
+
+            </if>
+
+        </where>
+
+        <choose>
+
+            <when test="order == 2">
+                ORDER BY B.BOARD_NO ASC
+            </when>
+
+            <otherwise>
+                ORDER BY B.BOARD_NO DESC
+            </otherwise>
+
+        </choose>
+
+        LIMIT #{offset}, #{size}
+
+    </select>
+
+    <!-- 게시글 등록 -->
+    <insert id="insertBoard">
+
+        INSERT INTO BOARD_TBL
+        (
+            MEMBER_NO,
+            BOARD_CATEGORY,
+            BOARD_TITLE,
+            BOARD_CONTENT,
+            BOARD_THUMB,
+            PLACE_NO
+        )
+        VALUES
+            (
+                #{memberNo},
+                #{boardCategory},
+                #{boardTitle},
+                #{boardContent},
+                #{boardThumb},
+                #{placeNo}
+            )
+
+    </insert>
+
+    <!-- 게시글 상세 -->
+    <select id="selectOneBoard"
+            parameterType="int"
+            resultType="board">
+
+        SELECT
+            B.BOARD_NO,
+            B.MEMBER_NO,
+            B.BOARD_CATEGORY,
+            B.BOARD_TITLE,
+            B.BOARD_CONTENT,
+            B.BOARD_THUMB,
+            B.BOARD_STATUS,
+            DATE_FORMAT(B.BOARD_DATE, '%Y-%m-%d') AS BOARD_DATE,
+            B.PLACE_NO,
+
+            M.MEMBER_NICKNAME AS BOARD_WRITER,
+            M.MEMBER_THUMB,
+
+            P.PLACE_NAME
+
+        FROM BOARD_TBL B
+
+        JOIN MEMBER_TBL M
+        ON B.MEMBER_NO = M.MEMBER_NO
+
+        JOIN BOARD_PLACE_TBL P
+        ON B.PLACE_NO = P.PLACE_NO
+
+        WHERE B.BOARD_NO = #{boardNo}
+
+    </select>
+
+</mapper>

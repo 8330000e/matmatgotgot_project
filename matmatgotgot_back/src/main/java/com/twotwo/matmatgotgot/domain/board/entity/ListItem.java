@@ -8,7 +8,7 @@ import org.apache.ibatis.type.Alias;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Alias("")
+@Alias("listItem")
 public class ListItem {
     private Integer page;
     private Integer size;
@@ -17,6 +17,5 @@ public class ListItem {
     private Integer searchType;
     private String searchKeyword;
     private Integer category;
-    private Long memberNo;
-    private Boolean admin;          //(true:관리자, false:일반회원)
+    private Integer offset;
 }

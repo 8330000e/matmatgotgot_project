@@ -17,7 +17,7 @@ const BoardViewPage = () => {
   const boardNo = params.boardNo;
   const [board, setBoard] = useState(null);
 
-  const { memberId, admin, memberStatu, isReady } = useAuthStore(); //admin(일반유저:0, 관리자:1) / memberStatus(정상:0, 비정상:1, 차단:3) => 1이상: 제한회원
+  const { memberId, admin, memberStatus, isReady } = useAuthStore(); //admin(일반유저:0, 관리자:1) / memberStatus(정상:0, 비정상:1, 차단:3) => 1이상: 제한회원
 
   const isAdmin = Number(admin) === 1; //관리자:1
   const isBlocked = Number(memberStatus) >= 1; //비정상:1, 차단:3

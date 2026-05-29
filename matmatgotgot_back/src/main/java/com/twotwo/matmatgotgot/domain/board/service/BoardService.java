@@ -4,33 +4,40 @@ import com.twotwo.matmatgotgot.domain.board.entity.Board;
 import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
 import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
 import com.twotwo.matmatgotgot.domain.board.mapper.BoardMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BoardService {
-    @Autowired
-    private BoardMapper boardMapper;
 
-    //게시글 목록 조회
+    private final BoardMapper boardMapper;
+
+    // 게시글 목록 조회
     public ListResponse selectBoardList(ListItem request) {
 
-        // page, size null 방지
-        if (request.getPage() == null || request.getPage() < 1) {
-            request.setPage(1);
+        if (request.getPage() == null || request.getPage() < 0) {
+            request.setPage(0);
         }
 
         if (request.getSize() == null || request.getSize() < 1) {
-            request.setSize(10);
+            request.setSize(8);
         }
 
-        Integer totalCount = boardMapper.selectBoardCount(request);
+        request.setOffset(
+                request.getPage() * request.getSize()
+        );
+
+        Integer totalCount =
+                boardMapper.selectBoardCount(request);
 
         int totalPage =
-                (int) Math.ceil(totalCount / (double) request.getSize());
+                (int)Math.ceil(totalCount / (double)request.getSize());
 
         List<Board> list =
                 boardMapper.selectBoardList(request);
@@ -38,19 +45,16 @@ public class BoardService {
         return new ListResponse(list, totalPage);
     }
 
-
-    //게시글 등록
+    // 게시글 등록
     @Transactional
     public int insertBoard(Board board) {
-        int boardNo = boardMapper.getNewBoardNo();
-        board.setBoardNo(boardNo);
-        int result = boardMapper.inserBoard(board);
-        return result;
+
+        return boardMapper.insertBoard(board);
     }
 
-    //게시글 상세 조회
+    // 상세 조회
     public Board selectOneBoard(Integer boardNo) {
+
         return boardMapper.selectOneBoard(boardNo);
     }
 }
-

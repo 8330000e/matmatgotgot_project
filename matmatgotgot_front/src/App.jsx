@@ -18,6 +18,8 @@ import TripMain from './pages/trip/TripMain.jsx';
 import Main from './pages/Main.jsx';
 import BoardListPage from './pages/board/BoardListPage';
 import BoardWritePage from './pages/board/BoardWritePage';
+import BoardViewPage from './pages/board/BoardViewPage.jsx';
+import NaverSearch from './pages/board/NaverSearch.jsx';
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -51,6 +53,8 @@ function App() {
           <Route path="/mypage" element={<MypagePage />} />
           <Route path="/board/list" element={<BoardListPage />} />
           <Route path="/board/write" element={<BoardWritePage />} />
+          <Route path="/board/view/:boardNo" element={<BoardViewPage />} />
+          <Route path="/boardNavermap" element={<NaverSearch />} />
 
           <Route path="/trip" element={<TripMain />} />
         </Routes>

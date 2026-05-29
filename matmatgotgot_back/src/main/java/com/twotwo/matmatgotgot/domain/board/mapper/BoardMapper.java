@@ -8,13 +8,14 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+
     Integer selectBoardCount(ListItem request);
 
     List<Board> selectBoardList(ListItem request);
 
     int getNewBoardNo();
 
-    int inserBoard(Board board);
+    int insertBoard(Board board);
 
     Board selectOneBoard(Integer boardNo);
 }
