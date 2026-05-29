@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                         .fromUriString("https://openapi.naver.com")
                         .path("/v1/search/local.json")
                         .queryParam("query", query)
-                        .queryParam("display", 10)
+                        .queryParam("display", 8)
                         .build()
                         .encode()
                         .toUri();

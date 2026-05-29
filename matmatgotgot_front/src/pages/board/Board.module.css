@@ -1,7 +1,7 @@
 .board_wrap {
   width: 1200px;
   margin: 50px auto;
-  padding: 32px;
+  padding: 50px;
   border-radius: 12px;
   background-color: var(--gray8);
 }
