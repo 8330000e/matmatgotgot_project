@@ -12,9 +12,6 @@ const formatPrice = (value) => {
   return Number(num).toLocaleString("ko-KR") + "원";
 };
 
-/* ============================================================
-   ReceiptCheck — 메인 컴포넌트
-   ============================================================ */
 const ReceiptCheck = () => {
   const [file, setFile] = useState(null); // 선택된 파일
   const [preview, setPreview] = useState(null); // 이미지 미리보기 URL
@@ -22,7 +19,6 @@ const ReceiptCheck = () => {
   const [result, setResult] = useState(null); // OCR 결과 데이터
   const [error, setError] = useState(null); // 에러 메시지
   const [dragOver, setDragOver] = useState(false); // 드래그 오버 여부
-
   const inputRef = useRef(null); // 숨겨진 file input 참조
 
   // ── 파일 선택 공통 처리 (input change / 드래그 드롭) ──────
@@ -83,7 +79,7 @@ const ReceiptCheck = () => {
   };
 
   // ── OCR 분석 API 호출 ──────────────────────────────────────
-  const handleAnalyze = async () => {
+  const handleAnalyze = () => {
     if (!file) return;
 
     setLoading(true);
@@ -93,27 +89,30 @@ const ReceiptCheck = () => {
     const formData = new FormData();
     formData.append("image", file);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:9999/api/ocr/receipt",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } },
-      );
+    axios
+      .post(`${import.meta.env.VITE_BACKSERVER}/api/ocr/receipt`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.data.success) {
+          setResult(response.data.data);
+        } else {
+          setError(response.data.message || "OCR 분석에 실패했습니다.");
+        }
+      })
+      .catch((err) => {
+        const msg =
+          err.response?.data?.message ||
+          err.message ||
+          "서버 연결에 실패했습니다. 백엔드가 실행 중인지 확인해주세요.";
 
-      if (response.data.success) {
-        setResult(response.data.data);
-      } else {
-        setError(response.data.message || "OCR 분석에 실패했습니다.");
-      }
-    } catch (err) {
-      const msg =
-        err.response?.data?.message ||
-        err.message ||
-        "서버 연결에 실패했습니다. 백엔드가 실행 중인지 확인해주세요.";
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
+        setError(msg);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -208,13 +207,7 @@ const ReceiptCheck = () => {
   );
 };
 
-/* ============================================================
-   ResultCard  —  OCR 결과 표시 컴포넌트
-   ============================================================ */
 const ResultCard = ({ data }) => {
-  // 합계 포맷 (있을 때만 표시)
-  const totalFormatted = formatPrice(data.totalAmount);
-
   return (
     <div className={styles.result_card}>
       {/* 결과 헤더 */}
@@ -283,36 +276,19 @@ const ResultCard = ({ data }) => {
           </div>
         </div>
 
-        {/* 합계 (인식된 경우만 표시) */}
-        {totalFormatted && (
-          <div className={styles.result_row}>
-            <div className={styles.result_row_content}>
-              <div className={styles.result_label}>합계</div>
-              <div className={`${styles.result_value} ${styles.total_value}`}>
-                {totalFormatted}
-              </div>
-            </div>
+        {/* 네이버 맵 */}
+        <div className={`${styles.result_row} ${styles.result_row_map}`}>
+          <div className={styles.result_row_content}>
+            <div className={styles.result_label}>위치</div>
+            {/* OCR 주소를 초기값으로 전달 → 지도 자동 이동 */}
+            <NaverMapSection initialAddress={data.address} />
           </div>
-        )}
-
-        {/* 위치 — 네이버 지도 (주소가 있을 때만 표시) */}
-        {data.address && (
-          <div className={`${styles.result_row} ${styles.result_row_map}`}>
-            <div className={styles.result_row_content}>
-              <div className={styles.result_label}>위치</div>
-              {/* OCR 주소를 초기값으로 전달 → 지도 자동 이동 */}
-              <NaverMapSection initialAddress={data.address} />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
 };
 
-/* ============================================================
-   NaverMapSection  —  네이버 지도 + 주소 검색
-   ============================================================ */
 const NaverMapSection = ({ initialAddress }) => {
   const mapDivRef = useRef(null);
   const mapRef = useRef(null);
@@ -380,7 +356,7 @@ const NaverMapSection = ({ initialAddress }) => {
       );
     });
 
-    // OCR 주소가 있으면 자동으로 지오코딩 후 지도 이동 (수정: 기존에는 미구현)
+    // OCR 주소가 있으면 자동으로 지오코딩 후 지도 이동
     if (initialAddress) {
       naver.maps.Service.geocode(
         { query: initialAddress },

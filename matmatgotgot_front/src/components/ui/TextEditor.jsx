@@ -61,12 +61,17 @@ const MenuBar = ({ editor }) => {
       const form = new FormData();
       form.append("image", file);
 
+      // 선택한 이미지를 백엔드에 업로드하고 파일 이름을 받아옴
       axios
-        .post(`${import.meta.env.VITE_BACKSERVER}/boards/image-upload`, form, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+        .post(
+          `${import.meta.env.VITE_BACKSERVER}/restaurants/image-upload`,
+          form,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          },
+        )
         .then((res) => {
-          const imageUrl = `${import.meta.env.VITE_BACKSERVER}/editor/${res.data}`;
+          const imageUrl = `${import.meta.env.VITE_BACKSERVER}/restaurants/${res.data}`;
           editor.chain().focus().setImage({ src: imageUrl }).run();
         })
         .catch(console.error);

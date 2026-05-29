@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./RestaurantRegist.module.css";
 import TextEditor from "../../components/ui/TextEditor";
+import axios from "axios";
 
 const RestaurantRegist = () => {
   const [restName, setRestName] = useState("");
@@ -8,12 +9,11 @@ const RestaurantRegist = () => {
   const [restHours, setRestHours] = useState("");
   const [restPhone, setRestPhone] = useState("");
   const [category, setCategory] = useState("");
-  const [tags, setTags] = useState([]);
   const [content, setContent] = useState("");
 
   const mapDivRef = useRef(null);
-  const [lng, setLng] = useState(null);
-  const [lat, setLat] = useState(null);
+  const [lat, setLat] = useState(37.5696734);
+  const [lng, setLng] = useState(126.9843022);
 
   useEffect(() => {
     if (!mapDivRef.current || !window.naver) {
@@ -65,6 +65,41 @@ const RestaurantRegist = () => {
   // 텍스트 에디터 내용 업데이트
   const inputContent = (data) => {
     setContent(data);
+  };
+
+  const regist = () => {
+    if (
+      restName === "" ||
+      restaddr === "" ||
+      restHours === "" ||
+      restPhone === "" ||
+      category === "" ||
+      content === "" ||
+      lat === "" ||
+      lng === ""
+    ) {
+      return;
+    }
+
+    const requestData = {
+      restName,
+      restAddr,
+      restHours,
+      restPhone,
+      category,
+      content,
+      lng,
+      lat,
+    };
+
+    axios
+      .post(`${import.meta.env.VITE_BACKSERVER}/restaurants`, requestData)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
@@ -127,12 +162,6 @@ const RestaurantRegist = () => {
               onChange={(e) => setRestPhone(e.target.value)}
             />
           </div>
-        </section>
-
-        {/* 우측: 지도 + 카테고리 + 태그 */}
-        <section className={styles.info_right}>
-          {/* 네이버 지도 */}
-          <div className={styles.map_div} ref={mapDivRef} />
 
           {/* 카테고리 선택 — radio를 숨기고 label을 pill 버튼으로 스타일링 */}
           <div className={styles.category_wrap}>
@@ -180,58 +209,12 @@ const RestaurantRegist = () => {
               </label>
             </div>
           </div>
+        </section>
 
-          {/* 태그 선택 — checkbox를 숨기고 label을 pill 버튼으로 스타일링 */}
-          <div className={styles.tsg_wrap}>
-            <div className={styles.field_label}>태그 선택</div>
-            <div className={styles.tag}>
-              <label>
-                <input
-                  type="checkbox"
-                  value="outdoor"
-                  checked={tags.includes("outdoor")}
-                  onChange={handleTagChange}
-                />
-                야외석
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  value="soup"
-                  checked={tags.includes("soup")}
-                  onChange={handleTagChange}
-                />
-                국물
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  value="vibe"
-                  checked={tags.includes("vibe")}
-                  onChange={handleTagChange}
-                />
-                분위기
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  value="alone"
-                  checked={tags.includes("alone")}
-                  onChange={handleTagChange}
-                />
-                혼밥
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  value="date"
-                  checked={tags.includes("date")}
-                  onChange={handleTagChange}
-                />
-                데이트
-              </label>
-            </div>
-          </div>
+        {/* 우측: 지도 + 카테고리 + 태그 */}
+        <section className={styles.info_right}>
+          {/* 네이버 지도 */}
+          <div className={styles.map_div} ref={mapDivRef} />
         </section>
       </section>
 
@@ -243,7 +226,9 @@ const RestaurantRegist = () => {
 
       {/* ===== 등록 버튼 ===== */}
       <div className={styles.regist_btn}>
-        <button type="button">등록</button>
+        <button type="button" onClick={regist}>
+          등록
+        </button>
       </div>
     </div>
   );

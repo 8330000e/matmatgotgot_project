@@ -146,21 +146,20 @@ public class ReceiptParserService {
         return null;
     }
 
-    // ── JSON 경로 탐색 헬퍼 ─────────────────────────────────────
-    // [변경 — 신규 추가]
-    // node → childKey1 → childKey2 → "text" 경로를 안전하게 읽는다.
-    // 중간 노드가 없으면 null 반환 (NullPointerException 방지).
     private String readText(JsonNode node, String... keys) {
         JsonNode current = node;
         for (String key : keys) {
             if (current == null || current.isMissingNode()) return null;
             current = current.path(key);
         }
+
         if (current == null || current.isMissingNode()) return null;
+
         // 마지막 노드의 "text" 필드 읽기
         String text = current.path("text").asText("").trim();
+
         return text.isEmpty() ? null : text;
-    }
+    }//
 
     // rawText 조립 (디버그·프론트 원본 표시용)
     private String buildRawText(String storeName, String address, String date, List<MenuItem> menuItems) {

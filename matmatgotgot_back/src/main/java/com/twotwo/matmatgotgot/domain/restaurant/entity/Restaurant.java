@@ -1,0 +1,35 @@
+package com.twotwo.matmatgotgot.domain.restaurant.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.ibatis.type.Alias;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+@Alias(value="restaurant")
+public class Restaurant {
+
+    private Long restNo;
+    private Long memberNo;
+    private String restName;
+    private String address;
+    private Double lat; // 위도
+    private Double lng; // 경도
+    private String category;
+    private String phone;
+    private String hours;
+    private Integer ratingSum;
+    private Integer reviewTotalCount;
+    private Integer localReviewCount;
+    private String content;
+    private String aiReview;
+    private RestStatus restStatus;  // NORMAL, HIDDEN
+    private String restThumb;
+    private String createdAt;
+}
+
+

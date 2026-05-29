@@ -9,11 +9,13 @@ import java.util.UUID;
 
 @Component
 public class FileUtil {
+
     public String upload(String savepath, MultipartFile file) {
         //사용자가 올린 원본 파일 이름
         String filename = file.getOriginalFilename();
         int dotIndex = filename.lastIndexOf(".");
         String extension = "";
+
         if(dotIndex != -1) {//-1이면 빈 문자열, 아니면 확장자 찾아오기
             extension = filename.substring(dotIndex);
         }
@@ -25,9 +27,9 @@ public class FileUtil {
         try {
             file.transferTo(savefile);
         } catch (IllegalStateException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
         return filepath;
     }
 
