@@ -219,7 +219,7 @@
   background-color: rgba(0, 0, 0, 0.5);
   border: none;
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--gray8);
   cursor: pointer;
   display: flex;
   align-items: center;

@@ -23,12 +23,12 @@
 
 .fadeOverlayTop {
   top: 0;
-  background: linear-gradient(to top, transparent, #ffffff);
+  background: linear-gradient(to top, transparent, var(--gray8));
 }
 
 .fadeOverlayBottom {
   bottom: 0;
-  background: linear-gradient(to bottom, transparent, #ffffff);
+  background: linear-gradient(to bottom, transparent, var(--gray8));
 }
 
 .fadeOverlayTop.hide,
@@ -67,7 +67,7 @@
   font-weight: 600;
   font-size: 1.12em;
   /* color: color-mix(in srgb, var(--text1) 85%, transparent); */
-  color: #fff;
+  color: var(--gray8);
   text-shadow: 0 0 10px color-mix(in srgb, var(--text1) 30%, transparent);
 }
 

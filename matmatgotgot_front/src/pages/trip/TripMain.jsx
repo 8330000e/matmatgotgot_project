@@ -1,119 +1,75 @@
+import ListFrame from "../../components/trip/ListFrame";
 import styles from "./TripMain.module.css";
-import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import AdsClickIcon from "@mui/icons-material/AdsClick";
-import CasinoSharpIcon from "@mui/icons-material/CasinoSharp";
-import { useState } from "react";
-import MyCourse from "../../components/trip/MyCourse";
+import MapSharpIcon from "@mui/icons-material/MapSharp";
+import FavoriteSharpIcon from "@mui/icons-material/FavoriteSharp";
+import LocalFireDepartmentSharpIcon from "@mui/icons-material/LocalFireDepartmentSharp";
+import CourseCollect from "../../components/trip/CourseCollect";
 
 const TripMain = () => {
-  const [mapTitleStatus, setMapTitleStatus] = useState(0);
+  const courseList = [
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "몇분짜리입니다. 굿굿",
+    },
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "어디갑니다. 굿굿",
+    },
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "몇분짜리입니다. 굿굿",
+    },
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "어디갑니다. 굿굿",
+    },
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "몇분짜리입니다. 굿굿",
+    },
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "어디갑니다. 굿굿",
+    },
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "몇분짜리입니다. 굿굿",
+    },
+    {
+      imgName: "test1.png",
+      title: "코스입니다.",
+      desc: "어디갑니다. 굿굿",
+    },
+  ];
 
-  const clickMapTitle = (status) => {
-    setMapTitleStatus(status);
-  };
+  const iconTexts = [
+    {
+      icon: <MapSharpIcon />,
+      title: "내가 만든 코스",
+    },
+    {
+      icon: <FavoriteSharpIcon />,
+      title: "내가 찜한 코스",
+    },
+    {
+      icon: <LocalFireDepartmentSharpIcon />,
+      title: "맛곳러들의 추천 코스 TOP10",
+    },
+  ];
 
   return (
     <div className={styles.tripMainWrap}>
-      {/* 상단 영역 */}
-      <div className={styles.topSection}>
-        {/* 왼쪽 영역 */}
-        <div className={styles.leftSection}>
-          {/* 나의 맛집 코스 */}
-          <div className={styles.myCourseSection}>
-            <div className={styles.title}>
-              <div className={styles.titleIcon}>
-                <AddLocationAltIcon />
-              </div>
-
-              <div className={styles.titleText}>
-                이어서 완성해보세요, 나의 맛집 코스!
-              </div>
-            </div>
-
-            <div className={styles.myCourseContent}>
-              <MyCourse />
-            </div>
-          </div>
-
-          {/* 먹킷리스트 */}
-          <div className={styles.myListSection}>
-            <div className={styles.title}>
-              <div className={styles.titleIcon}>
-                <FormatListBulletedIcon />
-              </div>
-
-              <div className={styles.titleText}>
-                놓칠 수 없는 나의 먹킷리스트
-              </div>
-            </div>
-
-            <div className={styles.myListContent}>
-              <div className={styles.myListItems}></div>
-            </div>
-          </div>
-        </div>
-
-        {/* 오른쪽 지도 영역 */}
-        <div className={styles.mapSection}>
-          <div className={styles.mapTitle}>
-            <div
-              className={`${styles.mapTitleWish} ${mapTitleStatus === 0 ? "" : styles.nonActiveMapTitle}`}
-              onClick={() => {
-                clickMapTitle(0);
-              }}
-            >
-              가고 싶은
-            </div>
-            <div className={styles.mapTitleDivider}>|</div>
-            <div
-              className={`${styles.mapTitleVisited} ${mapTitleStatus === 1 ? "" : styles.nonActiveMapTitle}`}
-              onClick={() => {
-                clickMapTitle(1);
-              }}
-            >
-              다녀왔던
-            </div>
-          </div>
-
-          <div className={styles.mapContainer}>
-            <div className={styles.map}></div>
-          </div>
-        </div>
-      </div>
-
-      {/* 취향저격 맛집 */}
-      <div className={styles.tasteRestaurantSection}>
-        <div className={styles.title}>
-          <div className={styles.titleIcon}>
-            <AdsClickIcon />
-          </div>
-
-          <div className={styles.titleText}>**님 취향저격 맛집</div>
-        </div>
-
-        <div className={styles.tasteRestaurantContent}>
-          <div className={styles.tasteRestaurantList}></div>
-        </div>
-      </div>
-
-      {/* 오늘은 이 식당 어떠세요 */}
-      <div className={styles.howAboutHereSection}>
-        <div className={styles.title}>
-          <div className={styles.titleIcon}>
-            <CasinoSharpIcon />
-          </div>
-
-          <div className={styles.titleText}>오늘은 이 식당 어떠세요?</div>
-        </div>
-
-        <div className={styles.howAboutHereContent}>
-          <div className={styles.howAboutHereList}></div>
-          <div className={styles.buttonContainer}>
-            <button className={styles.moreButton}>다른 식당 추천받기</button>
-          </div>
-        </div>
-      </div>
+      <ListFrame order={0} iconText={iconTexts[0]} items={courseList} />
+      <ListFrame order={1} iconText={iconTexts[1]} items={courseList} />
+      <ListFrame order={2} iconText={iconTexts[2]} items={courseList} />
+      <CourseCollect />
     </div>
   );
 };

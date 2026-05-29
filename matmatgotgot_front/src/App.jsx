@@ -15,7 +15,9 @@ import MypagePage from "./pages/MypagePage.jsx";
 import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
 import ReviewView from "./pages/restaurant/ReviewView.jsx";
 import TripMain from "./pages/trip/TripMain.jsx";
-import Main from "./pages/Main.jsx";
+import Main from "./pages/main/Main.jsx";
+import Main_login from "./pages/main/Main_login.jsx";
+import CreateCourse from "./pages/trip/CreateCourse.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -35,6 +37,7 @@ function App() {
       <div className="main">
         <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/test" element={<Main_login />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
           <Route path="/rest" element={<RestaurantMain />} />
@@ -51,6 +54,7 @@ function App() {
           {/* <Route path="/board/write" element={<BoardWritePage />} /> */}
 
           <Route path="/trip" element={<TripMain />} />
+          <Route path="/trip/create" element={<CreateCourse />} />
         </Routes>
       </div>
       <Footer />

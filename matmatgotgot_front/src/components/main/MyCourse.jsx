@@ -24,10 +24,10 @@ const MyCourse = () => {
 
     const { scrollTop, scrollHeight, clientHeight } = container;
 
-    const isAtTop = scrollTop === 0;
+    const isAtTop = scrollTop <= 0;
     setShowTopFade(!isAtTop);
 
-    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 2;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 5;
     setShowBottomFade(!isAtBottom);
   };
 
@@ -35,12 +35,10 @@ const MyCourse = () => {
     handleScroll();
   }, []);
 
-  const shouldShowFade = showTopFade && showBottomFade;
-
   return (
     <>
       <div
-        className={`${styles.fadeOverlayTop} ${shouldShowFade ? "" : styles.hide}`}
+        className={`${styles.fadeOverlayTop} ${showTopFade ? "" : styles.hide}`}
       />
 
       <div
@@ -59,7 +57,7 @@ const MyCourse = () => {
       </div>
 
       <div
-        className={`${styles.fadeOverlayBottom} ${shouldShowFade ? "" : styles.hide}`}
+        className={`${styles.fadeOverlayBottom} ${showBottomFade ? "" : styles.hide}`}
       />
     </>
   );
