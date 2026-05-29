@@ -49,10 +49,10 @@ public class MemberService {
                 if(result > 0) {
                     return login;
                 }
-            }
             } else {
                 return null;
             }
+        }
         return null;
     }
 
@@ -84,5 +84,19 @@ public class MemberService {
         }
         
         return false;
+    }
+
+    @Transactional
+    public int insertMemberK(Member newMember) {
+        String memberPw = newMember.getMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        newMember.setMemberPw(encPw);
+        int result = memberMapper.insertMember(newMember);
+        if(result > 0) {
+            int socialResult = memberMapper.kakaoInsertMember(newMember);
+            memberMapper.loginLog(newMember.getMemberNo());
+            return socialResult;
+        }
+        return -1;
     }
 }

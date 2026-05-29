@@ -1,16 +1,18 @@
 import axios from "axios";
 import styles from "./LoginPage.module.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuthStore } from "../../store/useAuthStore";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [members, setMembers] = useState({ memberId: "", memberPw: "" });
   const inputMember = (e) => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
+  const [isCallbackMode, setIsCallbackMode] = useState(false);
 
   // 일반로그인
   const login = useAuthStore((state) => state.login);
@@ -65,25 +67,124 @@ const Login = () => {
   });
 
   // 카카오톡 로그인
-  const kakaoLogin = () => {
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.KAKAO_REDIRECT_URI}`;
-    const kakaoCode = axios.get(kakaoAuthUrl).then((res) => {
-      console.log("카카오 인가 코드:", res.data.code);
-      // 백엔드 서버로 인가 코드 전송
-      try {
-        const res = axios.post(
-          `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
-          { code: res.data.code },
-          { withCredentials: true },
-        );
-        console.log("카카오 로그인 성공:", res.data);
-        if (res.status === 200) {
-          navigate("/main");
-        }
-      } catch (err) {
-        console.error("카카오 로그인 실패:", err);
+  const KakaoLogin = () => {
+    const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+
+    if (!REST_API_KEY || !REDIRECT_URI) {
+      throw new Error(".env 파일에서 환경변수를 불러오지 못했습니다.");
+    }
+
+    // 카카오 인증 페이지 URL
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+
+    window.location.href = kakaoAuthUrl;
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    if (code) {
+      setIsCallbackMode(true);
+      console.log("카카오 인가 코드 획득 성공:", code);
+      getKakaoToken(code); // 코드가 있으면 다음 단계인 토큰 요청 실행
+    }
+  }, []);
+
+  const getKakaoToken = async (authorizeCode) => {
+    try {
+      console.log("🔑 인가 코드로 토큰 요청 시작. 코드:", authorizeCode);
+
+      const body = new URLSearchParams();
+      body.append("grant_type", "authorization_code");
+      body.append("client_id", import.meta.env.VITE_KAKAO_REST_API_KEY);
+      body.append("redirect_uri", import.meta.env.VITE_KAKAO_REDIRECT_URI);
+
+      if (import.meta.env.VITE_KAKAO_CLIENT_SECRET) {
+        body.append("client_secret", import.meta.env.VITE_KAKAO_CLIENT_SECRET);
       }
-    });
+      body.append("code", authorizeCode);
+
+      const response = await axios.post(
+        "https://kauth.kakao.com/oauth/token",
+        body,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+          },
+        },
+      );
+
+      console.log("🎉 카카오 토큰 발급 성공:", response.data);
+      localStorage.setItem("access_token", response.data.access_token);
+
+      // 토큰을 정상적으로 받았으므로 다음 단계인 이메일/백엔드 전송 실행
+      getKakaoUserInfo(response.data.access_token);
+    } catch (error) {
+      console.error(
+        "토큰 요청 실패:",
+        error.response ? error.response.data : error.message,
+      );
+      alert("카카오 로그인 인증에 실패했습니다.");
+      setIsCallbackMode(false);
+    }
+  };
+
+  const getKakaoUserInfo = async (accessToken) => {
+    try {
+      const response = await axios.get("https://kapi.kakao.com/v2/user/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      });
+
+      console.log("🎉 카카오 사용자 정보 획득:", response.data);
+
+      const kakaoEmail = response.data.kakao_account?.email;
+      const kakaoNickname = response.data.properties?.nickname;
+      const kakaoThumb = response.data.properties?.thumbnail_image;
+
+      if (kakaoEmail) {
+        console.log("사용자 이메일:", kakaoEmail);
+        console.log("사용자 닉네임:", kakaoNickname);
+        console.log("사용자 프로필:", kakaoThumb);
+
+        console.log(
+          "🚀 백엔드로 보낼 준비 완료! 주소:",
+          `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
+        );
+
+        // 우리 스프링 백엔드 서버로 POST 요청
+        const res = await axios.post(
+          `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
+          {
+            memberEmail: kakaoEmail,
+            memberNickname: kakaoNickname,
+            memberThumb: kakaoThumb,
+          },
+        );
+
+        console.log("✅ 백엔드 응답 성공:", res.data);
+
+        // 백엔드 데이터베이스 저장까지 정상 완료된 것을 확인하고 메인 홈으로 이동!
+        navigate("/");
+      } else {
+        console.log(
+          "이메일 정보가 없습니다. (카카오 로그인 시 이메일 동의 안 함)",
+        );
+        alert("이메일 제공 동의가 필요합니다.");
+        setIsCallbackMode(false);
+      }
+    } catch (error) {
+      console.error(
+        "사용자 정보 요청 또는 백엔드 전송 실패:",
+        error.response ? error.response.data : error.message,
+      );
+      alert("로그인 처리 중 오류가 발생했습니다.");
+      setIsCallbackMode(false);
+    }
   };
 
   // 네이버 로그인
@@ -92,37 +193,47 @@ const Login = () => {
 
   return (
     <>
-      <div>
-        <h1>Login</h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-          autoComplete="off"
-        >
-          <label htmlFor="memberId">Username:</label>
-          <input
-            type="text"
-            id="memberId"
-            name="memberId"
-            value={members.memberId}
-            onChange={inputMember}
-          />
-          <br />
-          <label htmlFor="memberPw">Password:</label>
-          <input
-            type="password"
-            id="memberPw"
-            name="memberPw"
-            value={members.memberPw}
-            onChange={inputMember}
-          />
-          <br />
-          <button type="submit">Login</button>
-        </form>
-        <button onClick={() => googleLogin()}>구글로 로그인하기</button>
-        <button onClick={() => kakaoLogin()}>카카오톡으로 로그인하기</button>
+      <div style={{ textAlign: "center", padding: "100px 0" }}>
+        {isCallbackMode ? (
+          // 주소창에 code가 있을 때 (토큰 요청 중인 빈 화면 상태)
+          <div>
+            <h3>카카오 로그인 처리 중입니다...</h3>
+            <p>잠시만 기다려주세요.</p>
+          </div>
+        ) : (
+          <div>
+            <h1>Login</h1>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
+              autoComplete="off"
+            >
+              <label htmlFor="memberId">Username:</label>
+              <input
+                type="text"
+                id="memberId"
+                name="memberId"
+                value={members.memberId}
+                onChange={inputMember}
+              />
+              <br />
+              <label htmlFor="memberPw">Password:</label>
+              <input
+                type="password"
+                id="memberPw"
+                name="memberPw"
+                value={members.memberPw}
+                onChange={inputMember}
+              />
+              <br />
+              <button type="submit">Login</button>
+            </form>
+            <button onClick={() => googleLogin()}>구글로 로그인하기</button>
+            <button onClick={KakaoLogin}>카카오톡으로 로그인하기</button>
+          </div>
+        )}
       </div>
     </>
   );
