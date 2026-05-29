@@ -32,7 +32,7 @@ public class SpringSecurityConfig {
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
                 // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
-                .requestMatchers("/members/logout/**","/members/login/kakao","/login").permitAll()
+                .requestMatchers("/members/logout/**","/members/login/kakao","/members/login/google","/login").permitAll()
                 .requestMatchers("/members/login", "/members/email-verification").permitAll()
                 .requestMatchers("/boards/**").permitAll()
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정

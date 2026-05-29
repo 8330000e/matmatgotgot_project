@@ -66,7 +66,7 @@ public class MemberController {
 		}
 
 		Member member = memberService.findMember(dto.getMemberId());
-		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), member.isAdmin());
+		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
 
 		LoginResponseDto response = new LoginResponseDto();
 		response.setMemberNo(loginMember.getMemberNo());
@@ -141,11 +141,31 @@ public class MemberController {
 			if(loginMember > 0) {
 				return ResponseEntity.status(404).build();
 			}else{
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
 				return ResponseEntity.ok(loginMember);
 			}
 		} else {
 			LoginMember loginMember = memberService.login(member);
 			if(loginMember!=null) {
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
 				System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
 			}
 		}
@@ -177,11 +197,31 @@ public class MemberController {
 			if(loginMember > 0) {
 				return ResponseEntity.status(404).build();
 			}else{
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
 				return ResponseEntity.ok(loginMember);
 			}
 		} else {
-			LoginMember loginMember = memberService.login(member);
+			LoginMember loginMember = memberService.login(member);			
 			if(loginMember!=null) {
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
 				System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
 			}
 		}
