@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./Header.module.css";
 import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
@@ -7,7 +6,7 @@ import logo from "../../assets/logo/맛맛곳곳로고_300x398.png";
 
 export default function Header() {
   const location = useLocation();
-  const { member } = useAuthStore();
+  const { memberId } = useAuthStore();
 
   return (
     <header className={styles.header}>
@@ -21,7 +20,7 @@ export default function Header() {
           </div>
         </div>
 
-        {member && (
+        {memberId && (
           <nav className={styles.centerMenu}>
             <button
               className={
@@ -46,13 +45,13 @@ export default function Header() {
                 location.pathname.startsWith("/board") ? styles.activeMenu : ""
               }
             >
-              <Link to="/board">게시판</Link>
+              <Link to="/board/list">게시판</Link>
             </button>
           </nav>
         )}
 
         <div className={styles.rightArea}>
-          {member ? (
+          {memberId ? (
             <div className={styles.userMenu}>
               <button aria-label="알림" className={styles.iconBtn}>
                 <FiBell />
@@ -62,9 +61,11 @@ export default function Header() {
                 <FiMail />
               </button>
 
-              <button aria-label="마이페이지" className={styles.iconBtn}>
-                <FiUser />
-              </button>
+              <Link to="/mypage">
+                <button aria-label="마이페이지" className={styles.iconBtn}>
+                  <FiUser />
+                </button>
+              </Link>
 
               <button aria-label="설정" className={styles.iconBtn}>
                 <FiSettings />
