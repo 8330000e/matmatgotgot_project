@@ -2,4 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper">
 
+    <insert id="restaurantCreate" useGeneratedKeys="true" keyProperty="restNo">
+        INSERT INTO restaurant_tbl (member_no, rest_name, rest_addr, lat, lng, category, phone, hours, rest_content, rest_thumb, created_at)
+        VALUES (#{memberNo}, #{restName}, #{restAddr}, #{lat}, #{lng}, #{category}, #{phone}, #{hours}, #{restContent}, #{restThumb}, current_timestamp());
+    </insert>
+
+    <select id="restaurantView" resultType="restViewResponse">
+        SELECT
+            r.rest_name,
+            r.category,
+            r.ai_review,
+            r.rest_content,
+            r.lat,
+            r.lng,
+            r.phone,
+            r.hours,
+            r.rating_sum,
+            r.review_total_count,
+            r.rest_status,
+
+            EXISTS (
+                SELECT 1
+                FROM rest_like_tbl rl
+                WHERE rl.rest_no = r.rest_no
+                  AND rl.member_no = #{memberNo}
+            ) AS is_like,
+
+            EXISTS (
+                SELECT 1
+                FROM rest_report_tbl rr
+                WHERE rr.rest_no = r.rest_no
+                  AND rr.member_no = #{memberNo}
+            ) AS is_report
+
+        FROM restaurant_tbl r
+        WHERE r.rest_no = #{restNo} AND r.rest_status = 'NORMAL';
+    </select>
+
 </mapper>

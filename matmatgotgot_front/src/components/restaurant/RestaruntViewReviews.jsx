@@ -1,19 +1,42 @@
 import styles from "./RestaruntViewReviews.module.css";
-// Pagination 컴포넌트 import 추가 (경로는 실제 프로젝트 구조에 맞게 조정)
 import Pagination from "../../components/ui/Pagination";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-// setPage 구조분해 추가
-const RestaruntViewReviews = ({
-  reviewList,
-  size,
-  page,
-  totalPage,
-  setPage,
-}) => {
+const RestaruntViewReviews = () => {
+  const [reviewList, setRivewList] = useState([]);
+  const [page, setPage] = useState(0);
+  const [size] = useState(4); // 한 페이지에 보여줄 리뷰 수
+  const [totalPage, setTotalPage] = useState(null);
+
+  useEffect(() => {
+    // 리뷰 목록 조회
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/reviews`)
+      .then((res) => {
+        setRivewList(res.data.list);
+        setTotalPage(res.data.totalPage);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <>
       {/* 리뷰 수 헤더 */}
-      <div className={styles.review_count}>리뷰 수 24개</div>
+      <div className={styles.review_top}>
+        <div className={styles.review_count}>리뷰 수 24개</div>
+        <div className={styles.btn_zone_reviews}>
+          <button type="button">리뷰 작성하기</button>
+        </div>
+      </div>
+      {/* 리뷰된 메뉴 — className 추가 */}
+      <div className={styles.reviewd_menu}>
+        <span className={styles.menu_item}>라면</span>
+        <span className={styles.menu_item}>김밥</span>
+        <span className={styles.menu_item}>돈까스</span>
+      </div>
 
       {/* 리뷰 카드 그리드 (2열) */}
       <div className={styles.review_wrap}>
@@ -31,11 +54,6 @@ const RestaruntViewReviews = ({
           setPage={setPage}
           naviSize={5}
         />
-      </div>
-
-      {/* 리뷰 작성하기 버튼 (화면 우하단 고정) */}
-      <div className={styles.btn_zone_reviews}>
-        <button type="button">리뷰 작성하기</button>
       </div>
     </>
   );

@@ -13,5 +13,4 @@ public class RestCreateRequest {
     private String content;
     private Double lat; // 위도
     private Double lng; // 경도
-    private String restThumb;
 }

@@ -70,9 +70,7 @@ const RestaurantRegist = () => {
   const regist = () => {
     if (
       restName === "" ||
-      restaddr === "" ||
-      restHours === "" ||
-      restPhone === "" ||
+      restAddr === "" ||
       category === "" ||
       content === "" ||
       lat === "" ||
@@ -84,12 +82,12 @@ const RestaurantRegist = () => {
     const requestData = {
       restName,
       restAddr,
-      restHours,
-      restPhone,
+      restHours: restHours === "" ? null : restHours,
+      restPhone: restPhone === "" ? null : restPhone,
       category,
       content,
-      lng,
-      lat,
+      lng: Number(lng),
+      lat: Number(lat),
     };
 
     axios

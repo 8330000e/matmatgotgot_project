@@ -16,7 +16,7 @@ public class Restaurant {
     private Long restNo;
     private Long memberNo;
     private String restName;
-    private String address;
+    private String restAddr;
     private Double lat; // 위도
     private Double lng; // 경도
     private String category;
@@ -25,7 +25,7 @@ public class Restaurant {
     private Integer ratingSum;
     private Integer reviewTotalCount;
     private Integer localReviewCount;
-    private String content;
+    private String restContent;
     private String aiReview;
     private RestStatus restStatus;  // NORMAL, HIDDEN
     private String restThumb;

@@ -5,29 +5,14 @@ import RestaruntViewReviews from "../../components/restaurant/RestaruntViewRevie
 import styles from "./RestaurantView.module.css";
 
 const RestaurantView = () => {
-  const [reviewList, setRivewList] = useState([]);
-  const [page, setPage] = useState(0);
-  const [size] = useState(4); // 한 페이지에 보여줄 리뷰 수
-  const [totalPage, setTotalPage] = useState(null);
   const [restView, setRestView] = useState(null);
 
   useEffect(() => {
     // 맛집 상세 정보 조회
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/view`)
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants?restNo=2&memberNo=1`)
       .then((res) => {
         setRestView(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    // 리뷰 목록 조회
-    axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/reviews`)
-      .then((res) => {
-        setRivewList(res.data.list);
-        setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
         console.log(err);
@@ -55,13 +40,7 @@ const RestaurantView = () => {
 
       {/* ===== 리뷰 영역 ===== */}
       <section className={styles.rest_reviews}>
-        <RestaruntViewReviews
-          reviewList={reviewList}
-          page={page}
-          size={size}
-          totalPage={totalPage}
-          setPage={setPage}
-        />
+        <RestaruntViewReviews />
       </section>
     </>
   );

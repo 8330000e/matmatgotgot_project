@@ -1,7 +1,10 @@
 package com.twotwo.matmatgotgot.domain.restaurant.controller;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestCreateRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
+import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
@@ -11,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,20 +29,29 @@ public class RestaurantController {
     private final FileUtil fileUtil;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody RestCreateRequest request) {
-        System.out.println(request);
+    public ResponseEntity<?> restaurantCreate(@RequestBody RestCreateRequest request) {
+        Restaurant restaurant = Restaurant.builder()
+                .restName(request.getRestName())
+                .restAddr(request.getRestAddr())
+                .hours(request.getRestHours())
+                .phone(request.getRestPhone())
+                .category(request.getCategory())
+                .restContent(request.getContent())
+                .lat(request.getLat())
+                .lng(request.getLng())
+                .memberNo(1L) // request 에 memberNo 있다고 가정
+                .build();
 
         Document doc = Jsoup.parse(request.getContent());
-
         // 이미지 태그 선택자로 첫 번째 요소를 가져옴
         // 단, 이미지 태그가 한 개도 없으면 null 리턴
         Element firstImg = doc.selectFirst("img");
         String restThumb = firstImg == null ? null : firstImg.attr("src");
-        request.setRestThumb(restThumb);
+        restaurant.setRestThumb(restThumb);
 
-        int result = restaurantService.create(request);
+        int result = restaurantService.restaurantCreate(restaurant);
 
-        return null;
+        return ResponseEntity.ok(result);
     }//
 
     @PostMapping(value="/image-upload")
@@ -46,5 +60,17 @@ public class RestaurantController {
         String filepath = fileUtil.upload(savepath, image);
 
         return ResponseEntity.ok(filepath);
+    }//
+
+    @GetMapping
+    public ResponseEntity<?> restaurantView(@RequestParam Long memberNo, @RequestParam Long restNo){
+        HashMap<String, Long> paramMap = new HashMap<>();
+        paramMap.put("memberNo", memberNo);
+        paramMap.put("restNo", restNo);
+
+        RestViewResponse restRes = restaurantService.restaurantView(paramMap);
+
+
+        return null;
     }//
 }

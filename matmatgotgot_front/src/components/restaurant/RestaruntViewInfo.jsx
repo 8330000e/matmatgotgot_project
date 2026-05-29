@@ -39,16 +39,22 @@ const RestaruntViewInfo = ({ restView }) => {
       {/* ===== info1: 상호명 / 주소 / 카테고리 / 태그 / 평점 / 영업시간 / 전화번호 ===== */}
       <section className={styles.info1}>
         {/* 상호명 */}
-        <div className={styles.rest_name}>맛집 상호명</div>
+        <div className={styles.name_addr}>
+          <div className={styles.rest_name}>맛집 상호명</div>
+          <span className={styles.rest_addr}>서울시 종로구 권철동</span>
+        </div>
 
         {/* 메타 정보 행: 좌(주소·카테고리·태그) + 우(평점·시간·전화) */}
         <div className={styles.rest_meta}>
           {/* 좌측: 주소 + 카테고리 + 태그 */}
           <div className={styles.meta_left}>
-            <span className={styles.rest_addr}>서울시 종로구 권철동</span>
-            <span className={styles.rest_cat}>한식</span>
+            <div className={styles.cateogry}>
+              <span>category </span>
+              <span className={styles.tag_item}>한식</span>
+            </div>
             <div className={styles.tags}>
               {/* 태그 아이템에 className 추가 */}
+              <span>tags </span>
               <span className={styles.tag_item}>야외석</span>
               <span className={styles.tag_item}>분위기</span>
               <span className={styles.tag_item}>혼밥</span>
@@ -85,14 +91,6 @@ const RestaruntViewInfo = ({ restView }) => {
       <section className={styles.info3}>
         {/* 좌측: 메뉴 목록 + AI 총평 */}
         <div className={styles.menu_ai_side}>
-          {/* 리뷰된 메뉴 — className 추가 */}
-          <div className={styles.section_title}>리뷰된 메뉴</div>
-          <div className={styles.reviewd_menu}>
-            <span className={styles.menu_item}>라면</span>
-            <span className={styles.menu_item}>김밥</span>
-            <span className={styles.menu_item}>돈까스</span>
-          </div>
-
           {/* ai 리뷰 총평 — 기존 JSX에 없던 섹션 추가 */}
           <div className={styles.ai_section}>
             <div className={styles.section_title}>ai 리뷰 총평</div>
