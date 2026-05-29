@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuthStore } from "./store/useAuthStore.js";
 import "./App.css";
@@ -11,13 +11,14 @@ import RestaurantMain from "./pages/restaurant/RestaurantMain";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
-import MypagePage from "./pages/MypagePage.jsx";
+import MypagePage from "./pages/member/MypagePage.jsx";
 import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
 import ReviewView from "./pages/restaurant/ReviewView.jsx";
 import TripMain from "./pages/trip/TripMain.jsx";
 import Main from "./pages/Main.jsx";
 
 function App() {
+  const location = useLocation();
   const token = useAuthStore((state) => state.token);
   useEffect(() => {
     if (token) {
@@ -31,7 +32,7 @@ function App() {
 
   return (
     <div className="wrap">
-      <Header />
+      <Header className={location.pathname === "/" ? null : "header"} />
       <div className="main">
         <Routes>
           <Route path="/" element={<Main />} />
