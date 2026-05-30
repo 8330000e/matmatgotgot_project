@@ -5,6 +5,7 @@
   background-color: var(--gray8);
   padding: 32px;
 }
+
 .board_view_wrap {
   border: 1px solid var(--border);
   padding: 16px;
@@ -15,6 +16,7 @@
   font-weight: 900;
   margin-bottom: 12px;
 }
+
 .category_prefix {
   font-weight: 800;
   margin-right: 8px;
@@ -23,11 +25,13 @@
 .board_view_header {
   border-bottom: 1px solid var(--border);
 }
+
 .board_writer {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 /* 게시글 작성자 프로필 */
 .member_thumb,
 .member_thumb_exists {
@@ -40,12 +44,14 @@
   align-items: center;
   justify-content: center;
 }
-.member_thumb > img,
-.member_thumb_exists > img {
+
+.member_thumb>img,
+.member_thumb_exists>img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .board_sub_info {
   display: flex;
   justify-content: space-between;
@@ -60,87 +66,103 @@
   margin: 12px 0px;
 }
 
-.board_action_wrap > div > div {
+.board_action_wrap>div>div {
   display: flex;
   align-items: center;
   gap: 4px;
 }
-.board_like_wrap > span {
+
+.board_like_wrap>span {
   color: var(--primary);
 }
-.board_like_wrap > svg {
+
+.board_like_wrap>svg {
   fill: var(--primary);
   cursor: pointer;
 }
 
-.board_action_wrap > div {
+.board_action_wrap>div {
   display: flex;
   gap: 8px;
   align-items: center;
 }
+
 .comment_wrap {
   margin-top: 32px;
 }
+
 .comment_regist_wrap {
   padding: 24px 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
 }
-.comment_regist_wrap > h3 {
+
+.comment_regist_wrap>h3 {
   margin-bottom: 24px;
 }
+
 .input_item {
   display: flex;
   gap: 16px;
 }
-.input_item > textarea {
+
+.input_item>textarea {
   width: fit-content;
   flex-grow: 1;
   min-height: 100px;
 }
+
 /* 등록 버튼 */
-.input_item > button {
+.input_item>button {
   width: 100px;
   height: auto;
   font-size: 15px;
   flex-shrink: 0;
 }
+
 .comment_list_wrap {
   margin-top: 32px;
 }
+
 .comment_item {
   list-style-type: none;
   border: 1px solid var(--border);
   padding: 12px;
   border-bottom: none;
 }
+
 .comment_item:last-child {
   border-bottom: 1px solid var(--border);
 }
+
 .comment_info {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .comment_writer_wrap {
   display: flex;
   align-items: center;
   gap: 4px;
 }
-.comment_writer_wrap > div {
+
+.comment_writer_wrap>div {
   width: 30px;
   height: 30px;
   padding: 4px;
   border-radius: 15px;
   background-color: var(--gray6);
 }
-.comment_writer_wrap > div > img {
+
+.comment_writer_wrap>div>img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
+
 /* 댓글 프로필 */
-.comment_writer_wrap > div {
+.comment_writer_wrap>div {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -151,23 +173,28 @@
   justify-content: center;
   padding: 0;
 }
-.comment_writer_wrap > div > img {
+
+.comment_writer_wrap>div>img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.comment_writer_wrap > span {
+
+.comment_writer_wrap>span {
   font-size: 14px;
 }
+
 .comment_date {
   font-size: 12px;
   color: var(--text2);
   flex-grow: 1;
 }
+
 .comment_content {
   margin-top: 16px;
 }
-.comment_content > textarea {
+
+.comment_content>textarea {
   min-height: 100px;
 }
 
@@ -177,6 +204,7 @@
   align-items: center;
   padding: 12px 0px;
 }
+
 .right_actions {
   display: flex;
   gap: 8px;
@@ -200,7 +228,8 @@
 /* 지도 마커 아이콘 */
 .location_icon {
   font-size: 28px !important;
-  fill: var(--color2) !important; /* color 대신 fill 사용 */
+  fill: var(--color2) !important;
+  /* color 대신 fill 사용 */
   color: var(--color2) !important;
   display: flex;
   align-items: center;
@@ -232,19 +261,22 @@
   line-height: 1.6;
 }
 
-.comment_content > div {
+.comment_content>div {
   width: 100%;
 }
+
 /* 관리자가 보는 비공개 댓글 (흐릿하게) */
 .comment_hidden_admin {
   opacity: 0.5;
 }
+
 /* 관리자 안내 문구 */
 .admin_notice {
   color: #ff0000;
   font-size: 12px;
   margin-top: 5px;
 }
+
 /* 일반 유저가 보는 비공개 박스*/
 .comment_blocked_msg {
   min-height: 100px;
@@ -276,6 +308,7 @@
 .board_view_content strong {
   font-weight: 800 !important;
 }
+
 .board_view_content p {
   margin: 0;
   min-height: 1.6em;
@@ -286,4 +319,33 @@
 .board_view_content ul,
 .board_view_content ol {
   padding-left: 20px;
+}
+
+.left_action {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.board_like_wrap,
+.board_report_wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.board_like_wrap svg,
+.board_report_wrap svg {
+  cursor: pointer;
+  font-size: 24px !important;
+}
+
+/* 좋아요 눌렀을 때 */
+.active_like {
+  color: #f4b400 !important;
+}
+
+/* 신고 눌렀을 때 */
+.active_report {
+  color: #ff5a5a !important;
 }

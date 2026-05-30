@@ -10,6 +10,8 @@ import { TextArea } from '../../components/ui/Form';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ReportIcon from '@mui/icons-material/Report';
+import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
 
 const BoardViewPage = () => {
   const navigate = useNavigate();
@@ -150,7 +152,10 @@ const BoardViewPage = () => {
           </div>
 
           <div className={styles.board_action_wrap}>
-            <Like boardNo={boardNo} />
+            <div className={styles.left_action}>
+              <Like boardNo={boardNo} />
+              <Report boardNo={boardNo} />
+            </div>
             <div className={styles.right_actions}>
               {/* 차단유저(2)가 아닐 때만 노출되는 버튼 구역 */}
               {!isBlocked && (
@@ -180,17 +185,17 @@ const BoardViewPage = () => {
                   {/* 관리자(1) 또는 작성자 본인: 삭제 버튼 */}
                   {(isAdmin ||
                     (memberId && memberId === board.boardWriter)) && (
-                    <Button
-                      className="btn primary outline"
-                      onClick={deleteBoard}
-                      style={{
-                        width: '70px',
-                        fontSize: '14px',
-                      }}
-                    >
-                      삭제
-                    </Button>
-                  )}
+                      <Button
+                        className="btn primary outline"
+                        onClick={deleteBoard}
+                        style={{
+                          width: '70px',
+                          fontSize: '14px',
+                        }}
+                      >
+                        삭제
+                      </Button>
+                    )}
                 </div>
               )}
             </div>
@@ -281,12 +286,98 @@ const Like = ({ boardNo }) => {
   );
 };
 
+const Report = ({ boardNo }) => {
+  const { memberNo, memberId } = useAuthStore();
+
+  const [reportInfo, setReportInfo] =
+    useState(null);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/reports`,
+      )
+      .then((res) => {
+        setReportInfo(res.data);
+      });
+  }, []);
+
+  const loginMsg = () => {
+    Swal.fire({
+      title: '로그인 후 이용 가능합니다.',
+      icon: 'info',
+    });
+  };
+
+  const reportOn = () => {
+    axios
+      .post(
+        `${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/reports`,
+      )
+      .then((res) => {
+        if (res.data === 1) {
+          setReportInfo({
+            ...reportInfo,
+            isReport: 1,
+            reportCount:
+              reportInfo.reportCount + 1,
+          });
+        }
+      });
+  };
+
+  const reportOff = () => {
+    axios
+      .delete(
+        `${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/reports`,
+      )
+      .then((res) => {
+        if (res.data === 1) {
+          setReportInfo({
+            ...reportInfo,
+            isReport: 0,
+            reportCount:
+              reportInfo.reportCount - 1,
+          });
+        }
+      });
+  };
+
+  return (
+    <>
+      {reportInfo && (
+        <div className={styles.board_report_wrap}>
+          {reportInfo.isReport === 1 ? (
+            <ReportIcon
+              className={styles.active_report}
+              onClick={reportOff}
+            />
+          ) : (
+            <OutlinedFlagIcon
+              onClick={
+                memberId
+                  ? reportOn
+                  : loginMsg
+              }
+            />
+          )}
+
+          <span>
+            {reportInfo.reportCount}
+          </span>
+        </div>
+      )}
+    </>
+  );
+};
+
 //댓글 전체 관리
 const BoardCommentComponent = ({ boardNo, isAdmin, isBlocked }) => {
-  const { memberId } = useAuthStore();
+  const { memberNo, memberId } = useAuthStore();
+
   const [boardComment, setBoardComment] = useState({
     boardCommentContent: '',
-    boardCommentWriter: memberId,
+    memberNo: memberNo,
     boardNo: boardNo,
   });
   //댓글 목록
@@ -446,7 +537,7 @@ const BoardComment = ({
   isBlocked,
   changeCommentStatus,
 }) => {
-  const { memberId } = useAuthStore();
+  const { memberNo, memberId } = useAuthStore();
   const [isModifyMode, setIsModifyMode] = useState(false);
   const [modifyComment, setModifyComment] = useState({
     boardCommentContent: comment.boardCommentContent,
@@ -473,7 +564,6 @@ const BoardComment = ({
         {memberId && !isBlocked && (
           <div style={{ display: 'flex', gap: '5px' }}>
             {isModifyMode ? (
-              /* 수정 모드일 때 (수정은 본인만 가능) */
               <>
                 <Button
                   className="btn primary sm"
@@ -485,6 +575,7 @@ const BoardComment = ({
                 >
                   수정완료
                 </Button>
+
                 <Button
                   className="btn primary outline"
                   onClick={() => {
@@ -519,8 +610,9 @@ const BoardComment = ({
                     {comment.commentStatus === 1 ? '비공개' : '공개'}
                   </Button>
                 )}
+
                 {/* 수정 버튼: 작성자 본인에게만 보임 */}
-                {memberId === comment.boardCommentWriter && (
+                {Number(memberNo) === Number(comment.memberNo) && (
                   <Button
                     className="btn primary"
                     onClick={() => setIsModifyMode(true)}
@@ -531,29 +623,30 @@ const BoardComment = ({
                 )}
 
                 {/* 삭제 버튼: 작성자 본인이거나 관리자(isAdmin)일 때 보임 */}
-                {(memberId === comment.boardCommentWriter || isAdmin) && (
-                  <Button
-                    className="btn primary outline sm"
-                    onClick={() => {
-                      Swal.fire({
-                        title: '댓글을 삭제하시겠습니까?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: '삭제',
-                        cancelButtonText: '취소',
-                        confirmButtonColor: 'var(--primary)',
-                        cancelButtonColor: 'var(--danger)',
-                      }).then((result) => {
-                        if (result.isConfirmed) {
-                          deleteComment(modifyComment.boardCommentNo);
-                        }
-                      });
-                    }}
-                    style={{ width: '70px', fontSize: '14px' }}
-                  >
-                    삭제
-                  </Button>
-                )}
+                {(Number(memberNo) === Number(comment.memberNo) ||
+                  isAdmin) && (
+                    <Button
+                      className="btn primary outline sm"
+                      onClick={() => {
+                        Swal.fire({
+                          title: '댓글을 삭제하시겠습니까?',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: '삭제',
+                          cancelButtonText: '취소',
+                          confirmButtonColor: 'var(--primary)',
+                          cancelButtonColor: 'var(--danger)',
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            deleteComment(modifyComment.boardCommentNo);
+                          }
+                        });
+                      }}
+                      style={{ width: '70px', fontSize: '14px' }}
+                    >
+                      삭제
+                    </Button>
+                  )}
               </>
             )}
           </div>
@@ -562,8 +655,8 @@ const BoardComment = ({
       <li className={styles.comment_content}>
         {/* 공개 상태(1)이거나 관리자인 경우 */}
         {comment.commentStatus === 1 ||
-        isAdmin ||
-        memberId === comment.boardCommentWriter ? (
+          isAdmin ||
+          memberNo === comment.memberNo ? (
           <div
             className={
               comment.commentStatus === 0 ? styles.comment_hidden_admin : ''

@@ -10,6 +10,7 @@ const NaverSearch = () => {
 
   const [query, setQuery] = useState('');
   const [places, setPlaces] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState(null);
 
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
@@ -53,11 +54,10 @@ const NaverSearch = () => {
       );
 
       const data = res.data;
-
       setPlaces(data);
 
       if (data && data.length > 0) {
-        handlePlaceClick(data[0], false);
+        handlePlaceClick(data[0]);
       }
     } catch (e) {
       console.error(e);
@@ -65,7 +65,7 @@ const NaverSearch = () => {
     }
   };
 
-  const handlePlaceClick = (place, isManual = true) => {
+  const handlePlaceClick = (place) => {
     if (!mapInstance.current) return;
 
     const rawX = Number(place.longitude);
@@ -74,11 +74,15 @@ const NaverSearch = () => {
     let latlng;
 
     if (rawX > 10000000) {
-      latlng = new window.naver.maps.LatLng(rawY / 10000000, rawX / 10000000);
+      latlng = new window.naver.maps.LatLng(
+        rawY / 10000000,
+        rawX / 10000000,
+      );
     } else if (window.naver.maps.TransCoord) {
       const tm128 = new window.naver.maps.Point(rawX, rawY);
 
-      latlng = window.naver.maps.TransCoord.fromTM128ToLatLng(tm128);
+      latlng =
+        window.naver.maps.TransCoord.fromTM128ToLatLng(tm128);
     }
 
     if (!latlng) return;
@@ -96,11 +100,10 @@ const NaverSearch = () => {
       animation: window.naver.maps.Animation.DROP,
     });
 
+    const cleanTitle = place.title.replace(/<[^>]*>?/gm, '');
+
     const infoWindow = new window.naver.maps.InfoWindow({
-      content: `<div class="info-window-content">${place.title.replace(
-        /<[^>]*>?/gm,
-        '',
-      )}</div>`,
+      content: `<div class="info-window-content">${cleanTitle}</div>`,
       borderWidth: 0,
       backgroundColor: 'transparent',
       disableAnchor: true,
@@ -110,39 +113,14 @@ const NaverSearch = () => {
 
     markers.current.clickedMarker = marker;
 
-    if (isManual) {
-      const cleanTitle = place.title.replace(/<[^>]*>?/gm, '');
-
-      Swal.fire({
-        icon: 'question',
-        iconColor: 'var(--primary)',
-        text: `'${cleanTitle}'을(를) 선택하시겠습니까?`,
-        showCancelButton: true,
-        confirmButtonColor: 'var(--primary)',
-        cancelButtonColor: 'var(--gray5)',
-        confirmButtonText: '선택',
-        cancelButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate('/board/write', {
-            state: {
-              selectedPlace: cleanTitle,
-              category: 2,
-              prevBoard: location.state?.prevBoard,
-            },
-          });
-        }
-      });
-    }
+    setSelectedPlace({
+      ...place,
+      cleanTitle,
+    });
   };
 
   return (
     <div className="naver-search-container">
-      <link
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        rel="stylesheet"
-      />
-
       <div className="search-box">
         <input
           value={query}
@@ -155,11 +133,10 @@ const NaverSearch = () => {
       </div>
 
       <div className="search-content">
-        {/* 왼쪽 리스트 */}
         <div className="places-section">
           <div className="search-result-title">
             검색결과
-            <span>(최대 8개)</span>
+            <span>(최대 5개)</span>
           </div>
 
           <div className="places-list">
@@ -167,32 +144,94 @@ const NaverSearch = () => {
               <div
                 key={i}
                 className="place-item"
-                onClick={() => handlePlaceClick(p, true)}
+                onClick={() => handlePlaceClick(p)}
               >
-                <span className="material-icons place-icon">location_on</span>
+                <span className="material-icons place-icon">
+                  location_on
+                </span>
 
                 <div className="place-info">
-                  <strong dangerouslySetInnerHTML={{ __html: p.title }} />
-
+                  <strong
+                    dangerouslySetInnerHTML={{
+                      __html: p.title,
+                    }}
+                  />
                   <p>{p.address}</p>
                 </div>
               </div>
             ))}
           </div>
-
-          <button className="add-place-btn">
-            + 검색 결과에 없는 장소 추가
+          <button
+            className="add-place-btn"
+            onClick={() =>
+              navigate('/boardAddress', {
+                state: {
+                  prevBoard: location.state?.prevBoard,
+                },
+              })
+            }
+          >
+            검색 결과에 없는 장소 추가
           </button>
         </div>
 
-        {/* 오른쪽 지도 */}
         <div className="map-section">
           <div className="map-view" ref={mapRef} />
 
-          <div className="bottom-buttons"></div>
+          <div className="bottom-buttons">
+            <button
+              className="cancel-btn"
+              onClick={() => navigate(-1)}
+            >
+              취소
+            </button>
+
+            <button
+              className="complete-btn"
+              onClick={() => {
+                if (!selectedPlace) {
+                  Swal.fire({
+                    icon: 'warning',
+                    text: '장소를 선택해주세요.',
+                    confirmButtonColor: 'var(--primary)',
+                  });
+                  return;
+                }
+
+                Swal.fire({
+                  icon: 'question',
+                  text: `'${selectedPlace.cleanTitle}'을(를) 선택하시겠습니까?`,
+                  showCancelButton: true,
+                  confirmButtonText: '선택',
+                  cancelButtonText: '취소',
+                  confirmButtonColor: 'var(--primary)',
+                  cancelButtonColor: 'var(--gray4)',
+                  color: 'var(--gray0)',
+                  iconColor: 'var(--primary)',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    navigate('/board/write', {
+                      state: {
+                        selectedPlace:
+                          selectedPlace.cleanTitle,
+
+                        placeNo:
+                          selectedPlace.placeNo,
+
+                        prevBoard:
+                          location.state?.prevBoard,
+                      },
+                    });
+                  }
+                });
+              }}
+            >
+              선택완료
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

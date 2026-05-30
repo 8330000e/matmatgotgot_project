@@ -35,6 +35,8 @@ public class SpringSecurityConfig {
                 .requestMatchers("/members/logout/**").permitAll()
                 .requestMatchers("/members/login", "/members/email-verification").permitAll()
                 .requestMatchers("/boards/**").permitAll()
+                    // 에디터 이미지 접근 허용
+                    .requestMatchers("/editor/**").permitAll()
                     // 네이버 검색 API 허용
                     .requestMatchers("/api/naver/**").permitAll()
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정

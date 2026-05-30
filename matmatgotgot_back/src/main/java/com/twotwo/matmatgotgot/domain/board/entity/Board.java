@@ -27,4 +27,7 @@ public class Board {
     private String boardWriter; //화면에 보여줄 작성자 닉네임/아이디용 변수
     private String placeName; //장소명
     private String addressName;
+
+    private Double placeLat;
+    private Double placeLng;
 }

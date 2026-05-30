@@ -171,4 +171,207 @@
 
     </select>
 
+    <!-- 장소 번호 조회 -->
+    <select id="selectPlaceNo"
+            parameterType="board"
+            resultType="int">
+
+        SELECT PLACE_NO
+        FROM BOARD_PLACE_TBL
+        WHERE PLACE_NAME = #{placeName}
+          AND ADDRESS_NAME = #{addressName}
+
+    </select>
+
+    <!-- 장소 저장 -->
+    <insert id="insertPlace"
+            parameterType="board"
+            useGeneratedKeys="true"
+            keyProperty="placeNo">
+
+        INSERT INTO BOARD_PLACE_TBL
+        (
+            PLACE_NAME,
+            ADDRESS_NAME,
+            PLACE_LAT,
+            PLACE_LNG
+        )
+        VALUES
+            (
+                #{placeName},
+                #{addressName},
+                #{placeLat},
+                #{placeLng}
+            )
+
+    </insert>
+
+    <!-- 좋아요 개수 -->
+    <select id="selectLikeCount" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_LIKE_TBL
+        WHERE BOARD_NO = #{boardNo}
+    </select>
+
+    <!-- 내가 좋아요 눌렀는지 -->
+    <select id="selectIsLike" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_LIKE_TBL
+        WHERE BOARD_NO = #{boardNo}
+          AND MEMBER_NO = #{memberNo}
+    </select>
+
+    <!-- 좋아요 -->
+    <insert id="insertLike">
+        INSERT INTO BOARD_LIKE_TBL
+        (
+            MEMBER_NO,
+            BOARD_NO
+        )
+        VALUES
+            (
+                #{memberNo},
+                #{boardNo}
+            )
+    </insert>
+
+    <!-- 좋아요 취소 -->
+    <delete id="deleteLike">
+        DELETE FROM BOARD_LIKE_TBL
+        WHERE MEMBER_NO = #{memberNo}
+          AND BOARD_NO = #{boardNo}
+    </delete>
+
+    <!-- 신고 개수 -->
+    <select id="selectReportCount" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_REPORT_TBL
+        WHERE BOARD_NO = #{boardNo}
+    </select>
+
+    <!-- 내가 신고했는지 -->
+    <select id="selectIsReport" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_REPORT_TBL
+        WHERE BOARD_NO = #{boardNo}
+          AND MEMBER_NO = #{memberNo}
+    </select>
+
+    <!-- 신고 -->
+    <insert id="insertReport">
+        INSERT INTO BOARD_REPORT_TBL
+        (
+            MEMBER_NO,
+            BOARD_NO,
+            REPORT_REASON
+        )
+        VALUES
+            (
+                #{memberNo},
+                #{boardNo},
+                '기타'
+            )
+    </insert>
+
+    <!-- 신고 취소 -->
+    <delete id="deleteReport">
+        DELETE FROM BOARD_REPORT_TBL
+        WHERE MEMBER_NO = #{memberNo}
+          AND BOARD_NO = #{boardNo}
+    </delete>
+
+    <select id="selectMemberNo" resultType="long">
+        SELECT MEMBER_NO
+        FROM MEMBER_TBL
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <select id="selectCommentList"
+            resultType="boardComment">
+
+        SELECT
+            BC.BOARD_COMMENT_NO,
+            BC.BOARD_COMMENT_CONTENT,
+
+            DATE_FORMAT(
+                    BC.BOARD_COMMENT_DATE,
+                    '%Y-%m-%d'
+            ) AS BOARD_COMMENT_DATE,
+
+            BC.BOARD_COMMENT_STATUS
+              AS COMMENT_STATUS,
+
+            BC.MEMBER_NO AS MEMBER_NO,
+
+            M.MEMBER_ID
+                AS BOARD_COMMENT_WRITER,
+
+            M.MEMBER_THUMB,
+
+            BC.BOARD_NO
+
+        FROM BOARD_COMMENT_TBL BC
+
+                 JOIN MEMBER_TBL M
+                      ON BC.MEMBER_NO = M.MEMBER_NO
+
+        WHERE BC.BOARD_NO = #{boardNo}
+
+        ORDER BY BC.BOARD_COMMENT_NO ASC
+
+    </select>
+
+    <insert id="insertComment"
+            parameterType="boardComment"
+            useGeneratedKeys="true"
+            keyProperty="boardCommentNo">
+
+        INSERT INTO BOARD_COMMENT_TBL
+        (
+            BOARD_COMMENT_CONTENT,
+            MEMBER_NO,
+            BOARD_NO
+        )
+        VALUES
+            (
+                #{boardCommentContent},
+                #{memberNo},
+                #{boardNo}
+            )
+
+    </insert>
+
+    <select id="selectOneComment"
+            resultType="boardComment">
+
+        SELECT
+            BC.BOARD_COMMENT_NO,
+            BC.BOARD_COMMENT_CONTENT,
+
+            DATE_FORMAT(
+                    BC.BOARD_COMMENT_DATE,
+                    '%Y-%m-%d'
+            ) AS BOARD_COMMENT_DATE,
+
+            BC.BOARD_COMMENT_STATUS
+              AS COMMENT_STATUS,
+
+            BC.MEMBER_NO,
+
+            M.MEMBER_ID
+              AS BOARD_COMMENT_WRITER,
+
+            M.MEMBER_THUMB,
+
+            BC.BOARD_NO
+
+        FROM BOARD_COMMENT_TBL BC
+
+                 JOIN MEMBER_TBL M
+                      ON BC.MEMBER_NO = M.MEMBER_NO
+
+        WHERE BC.BOARD_COMMENT_NO =
+              #{boardCommentNo}
+
+    </select>
 </mapper>
