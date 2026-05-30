@@ -19,6 +19,9 @@
 	<insert id="kakaoInsertMember">
 		insert into social_login_tbl (social_kakao) value (CURRENT_TIMESTAMP)
 	</insert>
+	<insert id="naverInsertMember">
+		insert into social_login_tbl (social_naver) value (CURRENT_TIMESTAMP)
+	</insert>
 	<insert id="logoutLog">
 		insert into login_log_tbl (member_no, login_status) value (#{memberNo}, 0)
 	</insert>

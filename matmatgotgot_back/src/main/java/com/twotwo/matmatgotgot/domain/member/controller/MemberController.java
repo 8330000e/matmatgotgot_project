@@ -364,7 +364,7 @@ public class MemberController {
 					// 비밀번호 구분을 위한 초기값 세팅 (예: naver_ 랜덤값)
 					newMember.setMemberPw("naver_" + sb); 
 					
-					int insertResult = memberService.insertMemberK(newMember);
+					int insertResult = memberService.insertMemberN(newMember);
 
 					if (insertResult <= 0) {
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 처리 중 오류가 발생했습니다.");

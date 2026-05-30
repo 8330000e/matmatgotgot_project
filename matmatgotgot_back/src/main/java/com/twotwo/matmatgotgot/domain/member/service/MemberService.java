@@ -99,4 +99,17 @@ public class MemberService {
         }
         return -1;
     }
+
+    public int insertMemberN(Member newMember) {
+        String memberPw = newMember.getMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        newMember.setMemberPw(encPw);
+        int result = memberMapper.insertMember(newMember);
+        if(result > 0) {
+            int socialResult = memberMapper.naverInsertMember(newMember);
+            memberMapper.loginLog(newMember.getMemberNo());
+            return socialResult;
+        }
+        return -1;
+    }
 }
