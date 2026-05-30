@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -27,12 +28,14 @@ public class RestaurantService {
     }//
 
 
-    public RestViewResponse restaurantView(HashMap<String, Long> paramMap) {
-        RestViewResponse restRes = restaurantMapper.restaurantView(paramMap);
+    public RestViewResponse restaurantViewInfo(HashMap<String, Long> paramMap) {
+        RestViewResponse restRes = restaurantMapper.restaurantViewInfo(paramMap);
+        List<String> tags = restaurantMapper.getTags(paramMap);
+        List<String> menus = restaurantMapper.getMenus(paramMap);
 
-//        String[] tags = restaurantMapper.getTags();
-//        String[] menus = restaurantMapper.getMenus();
+        restRes.setTags(tags);
+        restRes.setMenus(menus);
 
-        return null;
+        return restRes;
     }//
 }//

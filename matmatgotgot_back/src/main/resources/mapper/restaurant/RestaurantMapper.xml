@@ -7,9 +7,10 @@
         VALUES (#{memberNo}, #{restName}, #{restAddr}, #{lat}, #{lng}, #{category}, #{phone}, #{hours}, #{restContent}, #{restThumb}, current_timestamp());
     </insert>
 
-    <select id="restaurantView" resultType="restViewResponse">
+    <select id="restaurantViewInfo" resultType="restViewResponse">
         SELECT
             r.rest_name,
+            r.rest_addr,
             r.category,
             r.ai_review,
             r.rest_content,
@@ -19,8 +20,7 @@
             r.hours,
             r.rating_sum,
             r.review_total_count,
-            r.rest_status,
-
+            ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
             EXISTS (
                 SELECT 1
                 FROM rest_like_tbl rl
@@ -37,6 +37,22 @@
 
         FROM restaurant_tbl r
         WHERE r.rest_no = #{restNo} AND r.rest_status = 'NORMAL';
+    </select>
+
+    <select id="getTags" resultType="String">
+        SELECT t.name
+        FROM restaurant_tags_tbl rt
+            INNER JOIN tags_tbl t ON rt.tag_no = t.tag_no
+        WHERE rt.rest_no = #{restNo}
+    </select>
+
+    <select id="getMenus" resultType="String">
+        SELECT menu_name
+        FROM review_menu_tbl
+        WHERE review_no = (SELECT review_no
+                           FROM review_tbl
+                           WHERE rest_no = #{restNo}
+        );
     </select>
 
 </mapper>

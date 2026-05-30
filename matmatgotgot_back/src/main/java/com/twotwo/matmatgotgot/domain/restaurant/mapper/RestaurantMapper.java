@@ -5,12 +5,16 @@ import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Mapper
 public interface RestaurantMapper {
 
     int restaurantCreate(Restaurant restaurant);
 
-    RestViewResponse restaurantView(HashMap<String, Long> paramMap);
+    RestViewResponse restaurantViewInfo(HashMap<String, Long> paramMap);
 
+    List<String> getTags(HashMap<String, Long> paramMap);
+
+    List<String> getMenus(HashMap<String, Long> paramMap);
 }

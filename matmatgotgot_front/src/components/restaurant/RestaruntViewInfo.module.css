@@ -83,7 +83,7 @@
 /* 별 아이콘 — 노란색 */
 .stars {
   color: var(--primary);
-  font-size: 14px;
+  font-size: 18px;
   letter-spacing: 1px;
 }
 
@@ -127,7 +127,7 @@
   border-radius: 4px;
 }
 
-/* ========== info3: 리뷰된 메뉴 + AI 총평 / 지도 ========== */
+/* ========== info3: AI 총평 + 리뷰된 메뉴 / 지도 ========== */
 .info3 {
   display: flex;
   gap: 20px;
@@ -161,6 +161,49 @@
 .map_side {
   width: 350px;
   flex-shrink: 0;
+}
+
+/* AI 총평 내용 박스 — 서버 데이터 수신 전 빈 박스 */
+.ai_content {
+  /* min-height: 80px;
+  border: 1.5px solid var(--gray6);
+  border-radius: 8px;
+  background-color: var(--gray8); */
+
+  min-height: 80px;
+  border: 1.5px solid var(--gray6);
+  border-radius: 8px;
+  padding: 16px;
+  background-color: var(--gray8);
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text1);
+}
+
+/* 리뷰된 메뉴 섹션 wrapper */
+.reviewed_menu_section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 리뷰된 메뉴 pill 목록 */
+.reviewd_menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 메뉴 pill 아이템 — 노란색 배경으로 강조 */
+.menu_item {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--primary);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  color: var(--text1);
+  font-weight: 500;
 }
 
 /* 지도 div */

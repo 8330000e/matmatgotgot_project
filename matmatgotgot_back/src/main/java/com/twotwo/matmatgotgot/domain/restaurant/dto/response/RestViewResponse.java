@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
 
-@Builder
-@AllArgsConstructor
+import java.util.List;
+
 @Data
 @Alias("restViewResponse")
 public class RestViewResponse {
@@ -14,15 +14,17 @@ public class RestViewResponse {
     private String restName;
     private String restAddr;
     private String category;
-    private String aiContent;
+    private String aiReview;
     private String restContent;
     private Double lat;
     private Double lng;
     private String phone;
     private String hours;
-    private String[] tags;
-    private String[] menus;
+    private Integer ratingSum;
+    private Integer reviewTotalCount;
+    private Double ratingAvg;
     private Boolean isLike;
     private Boolean isReport;
-    private Double avgRating;
+    private List<String> tags;
+    private List<String> menus;
 }

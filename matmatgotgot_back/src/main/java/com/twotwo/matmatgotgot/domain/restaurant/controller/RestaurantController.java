@@ -63,13 +63,19 @@ public class RestaurantController {
     }//
 
     @GetMapping
-    public ResponseEntity<?> restaurantView(@RequestParam Long memberNo, @RequestParam Long restNo){
+    public ResponseEntity<?> restaurantViewInfo(@RequestParam Long memberNo, @RequestParam Long restNo){
         HashMap<String, Long> paramMap = new HashMap<>();
         paramMap.put("memberNo", memberNo);
         paramMap.put("restNo", restNo);
 
-        RestViewResponse restRes = restaurantService.restaurantView(paramMap);
+        RestViewResponse restRes = restaurantService.restaurantViewInfo(paramMap);
 
+        return ResponseEntity.ok(restRes);
+    }//
+
+    @GetMapping("reviews")
+    public ResponseEntity<?> restaurantViewReviews(@RequestParam Long restNo) {
+        RestReviewsResponse reviewRes = restaurantService.restaurantViewRevies(restNo);
 
         return null;
     }//

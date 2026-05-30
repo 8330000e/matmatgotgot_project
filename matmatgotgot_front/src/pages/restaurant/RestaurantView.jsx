@@ -10,8 +10,9 @@ const RestaurantView = () => {
   useEffect(() => {
     // 맛집 상세 정보 조회
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants?restNo=2&memberNo=1`)
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants?restNo=1&memberNo=1`)
       .then((res) => {
+        console.log(res.data);
         setRestView(res.data);
       })
       .catch((err) => {
@@ -29,7 +30,7 @@ const RestaurantView = () => {
           <button type="button">삭제</button>
         </div>
 
-        <RestaruntViewInfo restView={restView} />
+        {restView && <RestaruntViewInfo restView={restView} />}
 
         {/* 신고 / 찜 버튼 (좌하단) */}
         <div className={styles.btn_zone1}>

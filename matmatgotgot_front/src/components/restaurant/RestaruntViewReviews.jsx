@@ -12,15 +12,24 @@ const RestaruntViewReviews = () => {
   useEffect(() => {
     // 리뷰 목록 조회
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/reviews`)
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?restNo=1`)
       .then((res) => {
-        setRivewList(res.data.list);
-        setTotalPage(res.data.totalPage);
+        // setRivewList(res.data.list);
+        // setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setCategories([...categories, value]);
+    } else {
+      setCategories(categories.filter((item) => item !== value));
+    }
+  };
 
   return (
     <>
@@ -31,17 +40,10 @@ const RestaruntViewReviews = () => {
           <button type="button">리뷰 작성하기</button>
         </div>
       </div>
-      {/* 리뷰된 메뉴 — className 추가 */}
-      <div className={styles.reviewd_menu}>
-        <span className={styles.menu_item}>라면</span>
-        <span className={styles.menu_item}>김밥</span>
-        <span className={styles.menu_item}>돈까스</span>
-      </div>
 
       {/* 리뷰 카드 그리드 (2열) */}
       <div className={styles.review_wrap}>
         {reviewList.map((review) => (
-          // return 추가 — 기존에 return 없어서 렌더링 안 됐던 버그 수정
           <ReviewItem key={review.reviewNo} review={review} />
         ))}
       </div>
