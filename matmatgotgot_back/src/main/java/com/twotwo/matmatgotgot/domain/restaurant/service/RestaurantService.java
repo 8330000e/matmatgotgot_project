@@ -1,5 +1,7 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
@@ -38,4 +40,19 @@ public class RestaurantService {
 
         return restRes;
     }//
-}//
+
+    public List<RestReviewsResponse> restaurantViewReviews(RestViewReviewsRequest request) {
+        List<RestReviewsResponse> reviewResList = restaurantMapper.restaurantViewReviews(request);
+
+        for (RestReviewsResponse restReviewsResponse : reviewResList) {
+            List<String> menus = restaurantMapper.getMenusByReviewNo(restReviewsResponse.getReviewNo());
+            restReviewsResponse.setMenus(menus);
+        }
+
+        return reviewResList;
+    }//
+
+    public int restaurantViewReviewsCnt(RestViewReviewsRequest request) {
+        return restaurantMapper.restaurantViewReviewsCnt(request);
+    }//
+}

@@ -12,15 +12,18 @@ const RestaruntViewReviews = () => {
   useEffect(() => {
     // 리뷰 목록 조회
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?restNo=1`)
+      .get(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?page=${page}&size=${size}&restNo=1`,
+      )
       .then((res) => {
-        // setRivewList(res.data.list);
-        // setTotalPage(res.data.totalPage);
+        console.log(res.data);
+        setRivewList(res.data.list);
+        setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [page]);
 
   const handleCategoryChange = (e) => {
     const { value, checked } = e.target;

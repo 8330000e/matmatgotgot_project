@@ -1,12 +1,15 @@
 package com.twotwo.matmatgotgot.domain.restaurant.controller;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestCreateRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
 import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/restaurants")
@@ -74,9 +80,16 @@ public class RestaurantController {
     }//
 
     @GetMapping("reviews")
-    public ResponseEntity<?> restaurantViewReviews(@RequestParam Long restNo) {
-        RestReviewsResponse reviewRes = restaurantService.restaurantViewRevies(restNo);
+    public ResponseEntity<?> restaurantViewReviews(@ModelAttribute RestViewReviewsRequest request) {
+        List<RestReviewsResponse> reviewResList = restaurantService.restaurantViewReviews(request);
 
-        return null;
+        int count = restaurantService.restaurantViewReviewsCnt(request);
+        int totalPage = (int) Math.ceil(count / (double) request.getSize());
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("list", reviewResList);
+        res.put("totalPage", totalPage);
+
+        return ResponseEntity.ok(res);
     }//
 }
