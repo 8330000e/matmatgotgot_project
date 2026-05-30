@@ -4,7 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 let alertTimer = null;
 let logoutTimer = null;
@@ -43,6 +43,7 @@ const useAuthStore = create(
       updateToken: () => {},
 
       logout: async () => {
+        // eslint-disable-next-line no-undef
         if (typeof stopLoginTimer === "function") stopLoginTimer();
         else get().stopLoginTimer?.();
 

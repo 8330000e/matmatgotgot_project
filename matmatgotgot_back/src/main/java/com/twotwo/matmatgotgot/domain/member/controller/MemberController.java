@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -106,71 +107,79 @@ public class MemberController {
 	}
 
 	@PostMapping("/login/google")
-    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> request) {
-        String code = request.get("code");
-        
-        if (code == null || code.isEmpty()) {
-            return ResponseEntity.badRequest().body("인가 코드가 없습니다.");
-        }
+	public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> request) {
+		String code = request.get("code");
+		
+		if (code == null || code.isEmpty()) {
+			return ResponseEntity.badRequest().body("인가 코드가 없습니다.");
+		}
 
-        // STEP 1: 인가 코드로 구글 Access Token 받아오기
-        String accessToken = googleOAuthService.getGoogleAccessToken(code);
-        
-        // STEP 2: Access Token으로 구글 유저 프로필(이메일, 이름 등) 가져오기
-        GoogleUserProfile googleUser = googleOAuthService.getGoogleUserProfile(accessToken);
-        
-        // 확인용 로그
-        System.out.println("구글 로그인 유저 이메일: " + googleUser.getEmail());
-        System.out.println("구글 로그인 유저 이름: " + googleUser.getName());
-
+		// STEP 1: 인가 코드로 구글 Access Token 받아오기
+		String accessToken = googleOAuthService.getGoogleAccessToken(code);
+		
+		// STEP 2: Access Token으로 구글 유저 프로필 가져오기
+		GoogleUserProfile googleUser = googleOAuthService.getGoogleUserProfile(accessToken);
+		
+		// DB에서 이메일로 기존 회원 조회
 		Member member = memberService.member(googleUser.getEmail());
-		if(member == null) {
-			// DB에 해당 이메일로 가입된 회원이 없으므로, 신규 회원으로 판단하여 DB에 자동으로 회원가입 시키기
+
+		if (member == null) {
+			// [회원가입] DB에 해당 이메일로 가입된 회원이 없으므로 자동으로 가입 진행
 			String googleId = googleUser.getId();
 
 			Member newMember = new Member();
 			newMember.setMemberId(googleId);
 			newMember.setMemberEmail(googleUser.getEmail());
 			newMember.setMemberName(googleUser.getName());
-			// 구글 로그인은 비밀번호가 없으므로, 랜덤한 문자열을 비밀번호로 설정해줍니다.
-			newMember.setMemberPw("google" + googleId); // 예시: "google_1234567890"
+			newMember.setMemberPw("google" + googleId); 
 			newMember.setMemberNickname("google_" + googleId);
-			System.out.println(googleId);
-			int loginMember = memberService.insertMemberG(newMember);
-			member = newMember; // 가입된 회원 정보로 member 변수 업데이트
-			if(loginMember > 0) {
-				return ResponseEntity.status(404).build();
-			}else{
-				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
-				LoginResponseDto response = new LoginResponseDto();
-				response.setMemberNo(member.getMemberNo());
-				response.setMemberId(member.getMemberId());
-				response.setMemberNickname(member.getMemberNickname());
-				response.setMemberThumb(member.getMemberThumb());
-				response.setAdmin(false);
-				response.setToken(login.getToken());
-				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-				response.setValidity(validityMilli);
-				return ResponseEntity.ok(loginMember);
+
+			int insertResult = memberService.insertMemberG(newMember);
+			
+			if (insertResult <= 0) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 처리 중 오류가 발생했습니다.");
 			}
+			
+			// 가입 성공 후, 다음 토큰 생성을 위해 member에 새 회원 정보 주입
+			// 이 때 데이터베이스에서 auto_increment 등으로 생성된 memberNo가 필요하다면 재조회가 필요할 수 있습니다.
+			member = newMember;
+			System.out.println("신규 회원 자동 가입 완료: " + member.getMemberEmail());
+			
 		} else {
-			LoginMember loginMember = memberService.login(member);
-			if(loginMember!=null) {
-				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
-				LoginResponseDto response = new LoginResponseDto();
-				response.setMemberNo(member.getMemberNo());
-				response.setMemberId(member.getMemberId());
-				response.setMemberNickname(member.getMemberNickname());
-				response.setMemberThumb(member.getMemberThumb());
-				response.setAdmin(false);
-				response.setToken(login.getToken());
-				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-				response.setValidity(validityMilli);
-				System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
-			}
+			// // [기존 회원 로그인] 이미 가입된 회원이므로 서비스 로그인 로직 검증
+			// LoginMember loginCheck = memberService.login(member);
+			// if (loginCheck == null) {
+			// 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 올바르지 않습니다.");
+			// }
+			System.out.println("기존 회원 로그인 처리 진행: " + member.getMemberEmail());
 		}
-        return ResponseEntity.ok(googleUser); // 테스트를 위해 우선 유저 정보를 리턴
-    }
+
+		// STEP 3: 공통 처리 - 가입 혹은 로그인된 member 기반으로 JWT 토큰 생성
+		LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+
+		// STEP 4: 응답 DTO 생성 및 값 세팅
+		LoginResponseDto response = new LoginResponseDto();
+		response.setMemberNo(member.getMemberNo());
+		response.setMemberId(member.getMemberId());
+		response.setMemberNickname(member.getMemberNickname());
+		response.setMemberThumb(member.getMemberThumb());
+		response.setAdmin(false);
+		response.setToken(login.getToken());
+		
+		long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		response.setValidity(validityMilli);
+
+		// STEP 5: 콘솔창에 최종 response 값 출력
+		System.out.println("================ [GOOGLE LOGIN RESPONSE] ================");
+		System.out.println("Member No       : " + response.getMemberNo());
+		System.out.println("Member ID       : " + response.getMemberId());
+		System.out.println("Member Nickname : " + response.getMemberNickname());
+		System.out.println("Generated Token : " + response.getToken());
+		System.out.println("Validity (ms)   : " + response.getValidity());
+		System.out.println("========================================================");
+
+		return ResponseEntity.ok(response);
+	}
 
 	@PostMapping(value="/login/kakao")
 	public ResponseEntity<?> kakaoLogin(@RequestBody LoginResponseDto request) {
@@ -192,40 +201,50 @@ public class MemberController {
 			}
 			newMember.setMemberId("kakao_" + sb1);
 			newMember.setMemberPw("kakao_" + sb2);
-			int loginMember = memberService.insertMemberK(newMember);
+			
+			int insertResult = memberService.insertMemberK(newMember);
+
+			if (insertResult <= 0) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 처리 중 오류가 발생했습니다.");
+			}
+
 			member = newMember;
-			if(loginMember > 0) {
-				return ResponseEntity.status(404).build();
-			}else{
-				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
-				LoginResponseDto response = new LoginResponseDto();
-				response.setMemberNo(member.getMemberNo());
-				response.setMemberId(member.getMemberId());
-				response.setMemberNickname(member.getMemberNickname());
-				response.setMemberThumb(member.getMemberThumb());
-				response.setAdmin(false);
-				response.setToken(login.getToken());
-				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-				response.setValidity(validityMilli);
-				return ResponseEntity.ok(loginMember);
-			}
+        	System.out.println("신규 회원 자동 가입 완료: " + member.getMemberEmail());
+
 		} else {
-			LoginMember loginMember = memberService.login(member);			
-			if(loginMember!=null) {
-				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
-				LoginResponseDto response = new LoginResponseDto();
-				response.setMemberNo(member.getMemberNo());
-				response.setMemberId(member.getMemberId());
-				response.setMemberNickname(member.getMemberNickname());
-				response.setMemberThumb(member.getMemberThumb());
-				response.setAdmin(false);
-				response.setToken(login.getToken());
-				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-				response.setValidity(validityMilli);
-				System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
-			}
+			// LoginMember loginCheck = memberService.login(member);
+			// if (loginCheck == null) {
+			// 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 올바르지 않습니다.");
+			// }
+			System.out.println("기존 회원 로그인 처리 진행: " + member.getMemberEmail());
 		}
-		return ResponseEntity.ok("카카오 로그인");
+
+
+		// STEP 3: 공통 처리 - 가입 혹은 로그인된 member 기반으로 JWT 토큰 생성
+		LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+
+		// STEP 4: 응답 DTO 생성 및 값 세팅
+		LoginResponseDto response = new LoginResponseDto();
+		response.setMemberNo(member.getMemberNo());
+		response.setMemberId(member.getMemberId());
+		response.setMemberNickname(member.getMemberNickname());
+		response.setMemberThumb(member.getMemberThumb());
+		response.setAdmin(false);
+		response.setToken(login.getToken());
+		
+		long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		response.setValidity(validityMilli);
+
+		// STEP 5: 콘솔창에 최종 response 값 출력
+		System.out.println("================ [KAKAO LOGIN RESPONSE] ================");
+		System.out.println("Member No       : " + response.getMemberNo());
+		System.out.println("Member ID       : " + response.getMemberId());
+		System.out.println("Member Nickname : " + response.getMemberNickname());
+		System.out.println("Generated Token : " + response.getToken());
+		System.out.println("Validity (ms)   : " + response.getValidity());
+		System.out.println("========================================================");
+
+		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping(value="/email-verification")
