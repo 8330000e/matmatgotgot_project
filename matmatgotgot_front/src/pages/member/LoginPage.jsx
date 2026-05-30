@@ -98,6 +98,7 @@ const Login = () => {
 
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
+   
   const isCallbackMode = Boolean(code);
 
   const getKakaoUserInfo = async (accessToken) => {
@@ -212,7 +213,30 @@ const Login = () => {
   
 
   // 네이버 로그인
+  // 💡 1. 함수 앞에 반드시 async를 붙여줍니다!
+  const naverLogin = async () => {
+    const CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
+    const REDIRECT_URI = encodeURIComponent("http://localhost:5173/login/oauth2/code/naver"); 
 
+    try {
+      // 💡 2. 앞에 await을 붙이고, 뒤에 .data를 붙여서 '진짜 데이터(문자열)'만 쏙 꺼냅니다.
+      const response = await axios.get(`${import.meta.env.VITE_BACKSERVER}/members/ranchar`);
+      const STATE = response.data; // 백엔드가 준 랜덤 문자열 (예: "test")
+
+      console.log("🎯 백엔드에서 받아온 안전한 STATE 값:", STATE);
+
+      // 3. 이제 완벽한 문자열이 된 STATE를 주소창에 조립합니다.
+      const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
+
+      // 4. 주소 이동
+      window.location.assign(NAVER_AUTH_URL);
+
+    } catch (error) {
+      console.error("🚨 백엔드에서 랜덤 문자열(state)을 가져오는데 실패했습니다:", error);
+      alert("로그인 세션 생성 실패. 다시 시도해주세요.");
+    }
+  };
+  
   // 애플 로그인(상황에 따라 생략 가능성 높음)
 
   console.log("아이디: ", memberId, "\n토큰: ", token);
@@ -258,6 +282,7 @@ const Login = () => {
             </form>
             <button onClick={() => googleLogin()}>구글로 로그인하기</button>
             <button onClick={KakaoLogin}>카카오톡으로 로그인하기</button>
+            <button onClick={naverLogin}>네입로 로그인하기</button>
           </div>
         )}
       </div>

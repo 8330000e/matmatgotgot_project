@@ -2,12 +2,18 @@ package com.twotwo.matmatgotgot.domain.member.controller;
 
 import com.twotwo.matmatgotgot.global.util.EmailSender;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,8 +25,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
 import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
+import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
 import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
@@ -246,6 +255,166 @@ public class MemberController {
 
 		return ResponseEntity.ok(response);
 	}
+
+	@GetMapping(value = "/ranchar")
+	public String getMethodName() {
+		Random r = new Random();
+		StringBuffer sb = new StringBuffer();
+		for(int i=0;i<10;i++) {
+			char ranchar = (char)(r.nextInt(26)+65);
+			sb.append(ranchar);
+		}
+		String ranchar = sb.toString();
+		System.out.println(ranchar);
+		return ranchar;
+	}
+
+	@Value("${naver.client.id.k}")
+    private String clientId;
+
+	@Value("${naver.client.secret.k}")
+    private String clientSecret;
+
+	@PostMapping(value = "/login/naver")
+	public ResponseEntity<?> postMethodName(@RequestBody tokenDto request) {
+		String code = request.getCode(); 
+		String state = request.getState();
+
+		try {
+			// ==================== 1단계: 토큰 발급 ====================
+			String apiURL = "https://nid.naver.com/oauth2.0/token"
+					+ "?grant_type=authorization_code"
+					+ "&client_id=" + clientId
+					+ "&client_secret=" + clientSecret
+					+ "&code=" + code
+					+ "&state=" + state;
+
+			URL url = new URL(apiURL);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+			
+			int responseCode = con.getResponseCode();
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					responseCode == 200 ? con.getInputStream() : con.getErrorStream()
+			));
+			
+			String inputLine;
+			StringBuffer tokenResponse = new StringBuffer();
+			while ((inputLine = br.readLine()) != null) {
+				tokenResponse.append(inputLine);
+			}
+			br.close();
+			
+			System.out.println("1️⃣ 네이버 토큰 수신 완료");
+
+			// JSON 파싱
+			ObjectMapper objectMapper = new ObjectMapper();
+			JsonNode jsonNode = objectMapper.readTree(tokenResponse.toString());
+			String accessToken = jsonNode.get("access_token").asText();
+
+			// ==================== 2단계: 프로필 조회 ====================
+			String profileURL = "https://openapi.naver.com/v1/nid/me";
+			URL url2 = new URL(profileURL);
+			HttpURLConnection con2 = (HttpURLConnection) url2.openConnection();
+			con2.setRequestMethod("GET");
+			con2.setRequestProperty("Authorization", "Bearer " + accessToken);
+			
+			int profileResponseCode = con2.getResponseCode();
+			BufferedReader br2 = new BufferedReader(new InputStreamReader(
+					profileResponseCode == 200 ? con2.getInputStream() : con2.getErrorStream()
+			));
+			
+			StringBuffer profileResponse = new StringBuffer();
+			while ((inputLine = br2.readLine()) != null) {
+				profileResponse.append(inputLine);
+			}
+			br2.close();
+
+			System.out.println("2️⃣ 네이버 프로필 수신 완료");
+
+			ObjectMapper objectMapper1 = new ObjectMapper();
+			JsonNode rootNode = objectMapper1.readTree(profileResponse.toString());
+			JsonNode naverResponse = rootNode.get("response");
+
+			if (naverResponse != null) {
+				// 네이버 프로필 데이터 추출
+				String naverId = naverResponse.get("id").asText();
+				String email = naverResponse.get("email").asText();
+				String nickname = naverResponse.get("nickname").asText();
+				String thumb = naverResponse.get("profile_image").asText();
+				String name = naverResponse.get("name").asText();
+
+				// ==================== 3단계: 회원가입 분기 처리 ====================
+				Member member = memberService.member(email);
+				
+				if(member == null) {
+					Member newMember = new Member();
+					newMember.setMemberEmail(email);
+					newMember.setMemberNickname(nickname);
+					newMember.setMemberThumb(thumb);
+					newMember.setMemberName(name);
+					
+					Random r = new Random();
+					StringBuffer sb = new StringBuffer();
+					for(int i=0; i<6; i++) {
+						int num1 = r.nextInt(10);
+						sb.append(num1);
+					}
+					newMember.setMemberId(naverId);
+					// 비밀번호 구분을 위한 초기값 세팅 (예: naver_ 랜덤값)
+					newMember.setMemberPw("naver_" + sb); 
+					
+					int insertResult = memberService.insertMemberK(newMember);
+
+					if (insertResult <= 0) {
+						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 처리 중 오류가 발생했습니다.");
+					}
+
+					member = newMember;
+					System.out.println("🎉 신규 회원 자동 가입 완료: " + member.getMemberEmail());
+				} else {
+					System.out.println("🏠 기존 회원 로그인 처리 진행: " + member.getMemberEmail());
+				}
+
+				// ==================== 4단계: 서비스 전용 JWT 토큰 발급 및 가공 ====================
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
+
+				// 최종 로그 출력
+				System.out.println("================ [NAVER LOGIN RESPONSE] ================");
+				System.out.println("Member No       : " + response.getMemberNo());
+				System.out.println("Member ID       : " + response.getMemberId());
+				System.out.println("Member Nickname : " + response.getMemberNickname());
+				System.out.println("Generated Token : " + response.getToken());
+				System.out.println("Validity (ms)   : " + response.getValidity());
+				System.out.println("========================================================");
+
+				// ✨ 여기가 최종 출력(리액트로 데이터 전송) 역할을 수행합니다!
+				return ResponseEntity.ok(response);
+				
+			} else {
+				return ResponseEntity.status(400).body("네이버 프로필 정보를 가져오지 못했습니다.");
+			}
+			
+			// ❌ [삭제됨] 기존의 이 위치에 있던 잘못된 return 코드를 제거했습니다.
+
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			return ResponseEntity.status(500).body("백엔드 에러 발생: " + e.getMessage());
+		}
+	}	
+	
+	
 
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member) {

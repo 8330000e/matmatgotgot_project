@@ -16,6 +16,7 @@ import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
 import ReviewView from "./pages/restaurant/ReviewView.jsx";
 import TripMain from "./pages/trip/TripMain.jsx";
 import Main from "./pages/Main.jsx";
+import NaverCallbackPage from "./pages/member/NaverCallbackPage.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -38,6 +39,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
           <Route path="/rest" element={<RestaurantMain />} />
+          <Route path="/login/oauth2/code/naver" element={<NaverCallbackPage />} />
           <Route
             path="/rest/detailsearch"
             element={<RestaurantDetailSearch />}
