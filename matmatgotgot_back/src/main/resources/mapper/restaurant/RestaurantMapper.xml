@@ -74,7 +74,7 @@
 </select>
 
     <select id="getMenusByReviewNo" resultType="String">
-        SELECT *
+        SELECT menu_name
         FROM review_menu_tbl
         WHERE review_no = #{reviewNo}
     </select>

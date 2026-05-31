@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "./ReviewRegist.module.css";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const ReviewRegist = () => {
   const navigate = useNavigate();
@@ -92,10 +93,8 @@ const ReviewRegist = () => {
         console.log(err);
       });
   };
-  //죄송합니다. 화면을 보기위해 여러부분에 주석처리를 했고 쌩뚱맞은곳에 변수나 함수를 입력해두었습니다ㅜㅜ
   registReview;
 
-  // 별점 렌더링용 태그 목록
   const tagList = [
     { value: "outdoor", label: "야외석" },
     { value: "soup", label: "국물" },
@@ -163,12 +162,8 @@ const ReviewRegist = () => {
               type="date"
               name="reviewVisit"
               id="reviewVisit"
-              value={
-                review.reviewVisit
-              } /* ← 수정: reviewVisit → review.reviewVisit */
-              onChange={
-                inputReview
-              } /* ← 수정: setRestPhone → inputReview       */
+              value={review.reviewVisit}
+              onChange={inputReview}
             />
           </div>
 

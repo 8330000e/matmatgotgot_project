@@ -88,6 +88,7 @@ public class RestaurantController {
 
         Map<String, Object> res = new HashMap<>();
         res.put("list", reviewResList);
+        res.put("reviewsCnt", count);
         res.put("totalPage", totalPage);
 
         return ResponseEntity.ok(res);

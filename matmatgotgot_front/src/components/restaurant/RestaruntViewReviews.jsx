@@ -5,6 +5,7 @@ import axios from "axios";
 
 const RestaruntViewReviews = () => {
   const [reviewList, setRivewList] = useState([]);
+  const [reviewsCnt, setReviewsCnt] = useState(0);
   const [page, setPage] = useState(0);
   const [size] = useState(4); // 한 페이지에 보여줄 리뷰 수
   const [totalPage, setTotalPage] = useState(null);
@@ -16,8 +17,9 @@ const RestaruntViewReviews = () => {
         `${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?page=${page}&size=${size}&restNo=1`,
       )
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data.list);
         setRivewList(res.data.list);
+        setReviewsCnt(res.data.reviewsCnt);
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
@@ -25,20 +27,11 @@ const RestaruntViewReviews = () => {
       });
   }, [page]);
 
-  const handleCategoryChange = (e) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setCategories([...categories, value]);
-    } else {
-      setCategories(categories.filter((item) => item !== value));
-    }
-  };
-
   return (
     <>
       {/* 리뷰 수 헤더 */}
       <div className={styles.review_top}>
-        <div className={styles.review_count}>리뷰 수 24개</div>
+        <div className={styles.review_count}>리뷰 수 {reviewsCnt}개</div>
         <div className={styles.btn_zone_reviews}>
           <button type="button">리뷰 작성하기</button>
         </div>
@@ -64,7 +57,6 @@ const RestaruntViewReviews = () => {
   );
 };
 
-// props 구조분해 수정: (review) → ({ review })
 const ReviewItem = ({ review }) => {
   return (
     <div className={styles.review_item}>
@@ -72,11 +64,11 @@ const ReviewItem = ({ review }) => {
       <div className={styles.review_writer}>
         {/* 프로필 이미지: 없으면 기본 회색 원 표시 */}
         <div
-          className={`${styles.member_thumb} ${review.memberThumb ? styles.thumb_exists : styles.thumb_default}`}
+          className={`${styles.member_thumb} ${review.writerThumb ? styles.thumb_exists : styles.thumb_default}`}
         >
-          {review.memberThumb && (
+          {review.writerThumb && (
             <img
-              src={`${import.meta.env.VITE_BACKSERVER}/member/thumb/${review.memberThumb}`}
+              src={`${import.meta.env.VITE_BACKSERVER}/member/thumb/${review.writerThumb}`}
               alt="프로필 이미지"
             />
           )}
@@ -85,25 +77,31 @@ const ReviewItem = ({ review }) => {
         <div className={styles.writer_info}>
           {/* 이름 + 현지인 뱃지 행 — 현지인 뱃지 추가 */}
           <div className={styles.name_badge_row}>
-            <span className={styles.member_name}>{review.memberName}</span>
+            <span className={styles.member_name}>{review.writer}</span>
             {/* 현지인 여부에 따라 뱃지 표시 (memberType 등 실제 필드명에 맞게 조정) */}
             {review.isLocal && (
               <span className={styles.member_badge}>현지인</span>
             )}
           </div>
-          {/* 별점: **** → ★★★★★ (실제 별점으로 변환 예정) */}
-          <div className={styles.review_rating}>★★★★★</div>
+          <div className={styles.review_rating}>
+            {"★".repeat(Math.round(review.rating) || 5)}
+            <span className={styles.rating_num}>{review.rating}</span>
+          </div>
         </div>
       </div>
 
       {/* 리뷰 본문 */}
       <div className={styles.review_content}>{review.reviewContent}</div>
-
-      {/* 날짜 + 메뉴 */}
       <div className={styles.review_meta}>
-        <span className={styles.review_date}>{review.reviewDate}</span>
-        {/* "메뉴: " 접두어 추가 */}
-        <span className={styles.review_menu}>메뉴: {review.reviewMenu}</span>
+        <span className={styles.review_date}>
+          {review.visitDate ? review.visitDate : " - "}
+        </span>
+        <span className={styles.review_menu}>
+          메뉴:{" "}
+          {Array.isArray(review.menus)
+            ? review.menus.join(" · ")
+            : review.menus}
+        </span>
       </div>
     </div>
   );
