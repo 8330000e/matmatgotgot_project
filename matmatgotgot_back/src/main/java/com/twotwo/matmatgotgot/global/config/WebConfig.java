@@ -14,10 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/restaurants/**")			// 요청 패턴
+                .addResourceHandler("/restaurants/**")	// 요청 패턴
                 .addResourceLocations("file:///" + root + "restaurant/");	// 실제 경로
 
     }//
-
-
 }

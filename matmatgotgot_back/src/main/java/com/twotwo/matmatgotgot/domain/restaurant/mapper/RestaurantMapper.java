@@ -32,4 +32,10 @@ public interface RestaurantMapper {
 
     int insertReviewMenus(@Param("reviewNo") Long reviewNo,
                            @Param("menuList") List<String> menuList);
+
+    int insertReviewTags(@Param("reviewNo") Long reviewNo,
+                          @Param("tagList") List<String> tagList);
+
+    int insertReviewImages(@Param("reviewNo") Long reviewNo,
+                           @Param("imageUrls") List<String> imageUrls);
 }

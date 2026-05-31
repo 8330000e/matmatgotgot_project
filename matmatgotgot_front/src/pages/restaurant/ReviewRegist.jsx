@@ -95,11 +95,11 @@ const ReviewRegist = () => {
   };
 
   const tagList = [
-    { value: "outdoor", label: "야외석" },
-    { value: "soup", label: "국물" },
-    { value: "vibe", label: "분위기" },
-    { value: "alone", label: "혼밥" },
-    { value: "date", label: "데이트" },
+    { value: "야외석", label: "야외석" },
+    { value: "국물", label: "국물" },
+    { value: "분위기", label: "분위기" },
+    { value: "혼밥", label: "혼밥" },
+    { value: "데이트", label: "데이트" },
   ];
 
   return (

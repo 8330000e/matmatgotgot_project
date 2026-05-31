@@ -6,11 +6,16 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsRespons
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
+import com.twotwo.matmatgotgot.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +27,10 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     private final RestaurantMapper restaurantMapper;
+    private final FileUtil fileUtil;
+
+    @Value("${file.root}")
+    private String root;
 
     @Transactional
     public int restaurantCreate(Restaurant restaurant) {
@@ -63,7 +72,7 @@ public class RestaurantService {
     public boolean reviewCreate(ReviewCreateRequest request) {
         int res1 = restaurantMapper.reviewInsert(request);
         if (res1 != 1) {
-            return false;
+            throw new RuntimeException("리뷰 저장 실패");
         }
 
         if (request.getReviewMenu() != null && !request.getReviewMenu().isBlank()) {
@@ -72,11 +81,38 @@ public class RestaurantService {
                     .collect(Collectors.toList());
 
             int res2 = restaurantMapper.insertReviewMenus(request.getReviewNo(), menuList);
-            if (res2 != 1) {
-                return false;
+            if (res2 != menuList.size()) {
+                throw new RuntimeException("메뉴 저장 실패");
             }
         }
 
+        if (request.getTags() != null && !request.getTags().isEmpty()) {
+            int res3 = restaurantMapper.insertReviewTags(request.getReviewNo(), request.getTags());
+            if (res3 != request.getTags().size()) {
+                throw new RuntimeException("태그 저장 실패");
+            }
+        }
+
+        if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+            String savepath = root + "restaurant/";
+            new File(savepath).mkdirs(); // 디렉토리 없으면 생성
+
+            List<String> imageUrls = new ArrayList<>();
+
+            for (MultipartFile file : request.getFiles()) {
+                if (file.isEmpty()) continue;
+
+                String savedFileName = fileUtil.upload(savepath, file); // UUID 파일명 반환
+                imageUrls.add(savedFileName);
+            }
+
+            if (!imageUrls.isEmpty()) {
+                int res4 = restaurantMapper.insertReviewImages(request.getReviewNo(), imageUrls);
+                if (res4 != imageUrls.size()) {
+                    throw new RuntimeException("이미지 저장 실패");
+                }
+            }
+        }
 
         return true;
     }//

@@ -101,4 +101,19 @@
         </foreach>
     </insert>
 
+    <insert id="insertReviewTags">
+        INSERT INTO review_tags_tbl (review_no, tag_name)
+        VALUES
+        <foreach collection="tagList" item="tag" separator=",">
+            (#{reviewNo}, #{tag})
+        </foreach>
+    </insert>
+
+    <insert id="insertReviewImages">
+        INSERT INTO review_images_tbl (review_no, image_url)
+        VALUES
+        <foreach collection="imageUrls" item="url" separator=",">
+            (#{reviewNo}, #{url})
+        </foreach>
+    </insert>
 </mapper>
