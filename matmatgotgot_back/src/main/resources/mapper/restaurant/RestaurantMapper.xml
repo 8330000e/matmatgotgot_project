@@ -88,4 +88,17 @@
         ORDER BY r.visit_date DESC
     </select>
 
+    <insert id="reviewInsert" useGeneratedKeys="true" keyProperty="reviewNo">
+        INSERT INTO review_tbl (member_no, rest_no, review_content, rating, visit_date)
+        VALUES(#{memberNo}, #{restNo}, #{reviewContent}, #{rating}, #{reviewVisit})
+    </insert>
+
+    <insert id="insertReviewMenus">
+        INSERT INTO review_menu_tbl (review_no, menu_name)
+        VALUES
+        <foreach collection="menuList" item="menu" separator=",">
+            (#{reviewNo}, #{menu})
+        </foreach>
+    </insert>
+
 </mapper>

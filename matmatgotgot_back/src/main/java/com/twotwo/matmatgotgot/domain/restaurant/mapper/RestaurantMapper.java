@@ -1,10 +1,12 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,4 +27,9 @@ public interface RestaurantMapper {
     List<String> getMenusByReviewNo(Long reviewNo);
 
     int restaurantViewReviewsCnt(RestViewReviewsRequest request);
+
+    int reviewInsert(ReviewCreateRequest request);
+
+    int insertReviewMenus(@Param("reviewNo") Long reviewNo,
+                           @Param("menuList") List<String> menuList);
 }

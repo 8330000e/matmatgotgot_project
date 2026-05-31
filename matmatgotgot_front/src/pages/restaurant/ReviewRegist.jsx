@@ -7,8 +7,6 @@ import Rating from "@mui/material/Rating";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const ReviewRegist = () => {
-  const navigate = useNavigate();
-
   // 폼 필드 상태
   const [review, setReview] = useState({
     restName: "",
@@ -69,6 +67,8 @@ const ReviewRegist = () => {
 
     // 파일 포함 요청 → FormData 사용
     const form = new FormData();
+    form.append("memberNo", 1);
+    form.append("restNo", 1);
     form.append("restName", review.restName);
     form.append("restAddr", review.restAddr);
     form.append("reviewMenu", review.reviewMenu);
@@ -79,14 +79,14 @@ const ReviewRegist = () => {
     files.forEach((file) => form.append("files", file));
 
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/review`, form, {
+      .post(`${import.meta.env.VITE_BACKSERVER}/restaurants/review`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
         if (res.data > 0) {
-          Swal.fire({ title: "리뷰 작성 완료", icon: "success" }).then(() => {
-            navigate("/review/list");
-          });
+          Swal.fire({ title: "리뷰 작성 완료", icon: "success" }).then(
+            () => {},
+          );
         }
       })
       .catch((err) => {
@@ -98,7 +98,6 @@ const ReviewRegist = () => {
     { value: "outdoor", label: "야외석" },
     { value: "soup", label: "국물" },
     { value: "vibe", label: "분위기" },
-    { value: "mixed", label: "혼합" },
     { value: "alone", label: "혼밥" },
     { value: "date", label: "데이트" },
   ];

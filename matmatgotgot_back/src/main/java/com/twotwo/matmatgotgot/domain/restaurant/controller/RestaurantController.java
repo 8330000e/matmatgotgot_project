@@ -2,11 +2,11 @@ package com.twotwo.matmatgotgot.domain.restaurant.controller;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
-import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/restaurants")
+@RequestMapping(value = "/restaurants")
 public class RestaurantController {
 
     @Value("${file.root}")
@@ -60,8 +60,8 @@ public class RestaurantController {
         return ResponseEntity.ok(result);
     }//
 
-    @PostMapping(value="/image-upload")
-    public ResponseEntity<?> imageUpload(@RequestParam MultipartFile image){
+    @PostMapping(value = "/image-upload")
+    public ResponseEntity<?> imageUpload(@RequestParam MultipartFile image) {
         String savepath = root + "restaurant/";
         String filepath = fileUtil.upload(savepath, image);
 
@@ -69,7 +69,7 @@ public class RestaurantController {
     }//
 
     @GetMapping
-    public ResponseEntity<?> restaurantViewInfo(@RequestParam Long memberNo, @RequestParam Long restNo){
+    public ResponseEntity<?> restaurantViewInfo(@RequestParam Long memberNo, @RequestParam Long restNo) {
         HashMap<String, Long> paramMap = new HashMap<>();
         paramMap.put("memberNo", memberNo);
         paramMap.put("restNo", restNo);
@@ -79,7 +79,7 @@ public class RestaurantController {
         return ResponseEntity.ok(restRes);
     }//
 
-    @GetMapping("reviews")
+    @GetMapping("/reviews")
     public ResponseEntity<?> restaurantViewReviews(@ModelAttribute RestViewReviewsRequest request) {
         List<RestReviewsResponse> reviewResList = restaurantService.restaurantViewReviews(request);
 
@@ -92,5 +92,12 @@ public class RestaurantController {
         res.put("totalPage", totalPage);
 
         return ResponseEntity.ok(res);
+    }//
+
+    @PostMapping("/review")
+    public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request) {
+        boolean success = restaurantService.reviewCreate(request);
+
+        return null;
     }//
 }

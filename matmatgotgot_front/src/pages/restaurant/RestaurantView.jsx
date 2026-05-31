@@ -21,7 +21,7 @@ const RestaurantView = () => {
   }, []);
 
   return (
-    <>
+    <div className={styles.wrap}>
       {/* ===== 맛집 정보 영역 ===== */}
       <section className={styles.rest_info}>
         {/* 수정 / 삭제 버튼 (우상단) */}
@@ -43,7 +43,7 @@ const RestaurantView = () => {
       <section className={styles.rest_reviews}>
         <RestaruntViewReviews />
       </section>
-    </>
+    </div>
   );
 };
 
