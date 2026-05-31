@@ -1,9 +1,13 @@
 import axios from "axios";
-// import styles from "./LoginPage.module.css";
+import styles from "./LoginPage.module.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuthStore } from "../../store/useAuthStore";
+import googlelogo from "../../assets/logo/google.svg";
+import kakaologo from "../../assets/logo/kakao.svg";
+import naverlogo from "../../assets/logo/naver.svg";
+import Input from "../../components/ui/Input.jsx";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -243,16 +247,17 @@ const Login = () => {
 
   return (
     <>
-      <div style={{ textAlign: "center", padding: "100px 0" }}>
+      <div>
         {isCallbackMode ? (
           // 주소창에 code가 있을 때 (토큰 요청 중인 빈 화면 상태)
-          <div>
+          <div style={{ textAlign: "center", padding: "100px 0" }}>
             <h3>카카오 로그인 처리 중입니다...</h3>
             <p>잠시만 기다려주세요.</p>
           </div>
         ) : (
-          <div>
-            <h1>Login</h1>
+          <div className={styles.wrap}>
+            <h1>로그인</h1>
+            <div className={styles.login_wrap}>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -260,29 +265,49 @@ const Login = () => {
               }}
               autoComplete="off"
             >
-              <label htmlFor="memberId">Username:</label>
-              <input
+            <div>
+              <div className={styles.inputLabel}>
+                  <label htmlFor="memberId">아이디</label>
+              </div>
+              <Input
                 type="text"
                 id="memberId"
                 name="memberId"
                 value={members.memberId}
                 onChange={inputMember}
               />
-              <br />
-              <label htmlFor="memberPw">Password:</label>
-              <input
+             </div>
+
+             <div>
+                 <div className={styles.inputLabel}>
+              <label htmlFor="memberPw">비밀번호</label>
+              </div>
+              <Input
                 type="password"
                 id="memberPw"
                 name="memberPw"
                 value={members.memberPw}
                 onChange={inputMember}
               />
-              <br />
-              <button type="submit">Login</button>
+              </div>
+              <div className={styles.idpw}>아이디/비밀번호 찾기</div>
+              <button type="submit" className={styles.submit}>로그인</button>
             </form>
-            <button onClick={() => googleLogin()}>구글로 로그인하기</button>
-            <button onClick={KakaoLogin}>카카오톡으로 로그인하기</button>
-            <button onClick={naverLogin}>네입로 로그인하기</button>
+              <div className={styles.social_wrap}>
+                <p>소셜 로그인</p>
+                <div className={styles.social}>
+                  <button onClick={googleLogin}><img src={googlelogo} alt="google login"/></button>
+                  <button onClick={KakaoLogin}><img src={kakaologo} alt="kakaotalk login"/></button>
+                  <button onClick={naverLogin}><img src={naverlogo} alt="naver login"/></button>
+                </div>
+              </div>
+              <div className={styles.horizen}><hr/></div>
+              <div className={styles.signup}>
+                <Link to={"/signup"}>
+                  <p>아직 회원이 아니신가요?</p>
+                </Link>
+                </div>
+              </div>
           </div>
         )}
       </div>

@@ -5,14 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="360bc756-0ced-4946-9768-93539bd9b427" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/assets/check.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/assets/logo/google.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/assets/logo/kakao.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/assets/logo/naver.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/global/util/EmailSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/global/util/EmailSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/components/commons/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/components/commons/Header.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/Main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/Main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/restaurant/ReviewRegist.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/restaurant/ReviewRegist.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/components/ui/Input.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/components/ui/Input.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/components/ui/Style.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/components/ui/Style.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/LoginPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/LoginPage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/LoginPage.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +47,7 @@
     "git-widget-placeholder": "kgy",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/user1/Desktop/matmatgotgot_project",
+    "last_opened_file_path": "D:/CODING/KH_JONGNO_CLASS/matmatgotgot_project/matmatgotgot_front/src/assets",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -59,6 +62,10 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODING\KH_JONGNO_CLASS\matmatgotgot_project\matmatgotgot_front\src\assets" />
+      <recent name="D:\CODING\KH_JONGNO_CLASS\matmatgotgot_project\matmatgotgot_front\src\assets\logo" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\user1\Desktop\matmatgotgot_project\matmatgotgot_front\src\pages\member" />
       <recent name="D:\CODING\KH_JONGNO_CLASS\matmatgotgot_project\matmatgotgot_back\src\main\java\com\twotwo" />
@@ -68,7 +75,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
       </set>
     </attachedChunks>
   </component>
