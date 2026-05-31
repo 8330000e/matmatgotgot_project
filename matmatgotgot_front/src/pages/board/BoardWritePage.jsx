@@ -175,8 +175,8 @@ const BoardWritePage = () => {
           //백엔드의 Board 엔티티 멤버 변수와 일치시켜 데이터 전송
           placeName: board.locationName, // 화면에 표시된 장소명
           addressName: placeInfo?.roadAddress || placeInfo?.jibunAddress || board.locationName, // 도로명/지번 주소 (없으면 장소명 대체)
-          placeLat: placeInfo?.latitude || 0.0, // 위도 (없으면 기본값 0.0)
-          placeLng: placeInfo?.longitude || 0.0, // 경도 (없으면 기본값 0.0)
+          placeLat: placeInfo?.latitude ?? null,
+          placeLng: placeInfo?.longitude ?? null,
         },
       )
       .then((res) => {

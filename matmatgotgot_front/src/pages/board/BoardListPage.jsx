@@ -17,10 +17,11 @@ const BoardListPage = () => {
   const navigate = useNavigate();
 
   // zustand에서 로그인 정보 가져오기
-  const { admin } = useAuthStore();
+  const { admin, memberStatus } = useAuthStore();
 
   // admin === 1 이 관리자라고 가정
   const isAdmin = Number(admin) === 1;
+  const isBlocked = Number(memberStatus) >= 1;
 
   const [boardList, setBoardList] = useState([]); //게시글 목록 저장
   const [page, setPage] = useState(0); //현재 페이지 번호
@@ -43,8 +44,8 @@ const BoardListPage = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const handleWriteClick = () => {
-    // admin === 2 : 차단 회원
-    if (Number(admin) === 2) {
+    // isBlocked = memberStatus >= 1 (회원상태 1:비정상, 3:정지)
+    if (isBlocked) {
       Swal.fire({
         title: '게시글 작성 불가',
         text: '차단된 회원은 게시글을 작성할 수 없습니다.',

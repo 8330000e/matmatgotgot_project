@@ -57,6 +57,50 @@ public class BoardController {
         return ResponseEntity.ok(filePath);
     }
 
+    // 게시글 수정
+    @PutMapping("/{boardNo}")
+    public ResponseEntity<?> updateBoard(
+            @PathVariable Integer boardNo,
+            @RequestBody Board board
+    ) {
+        board.setBoardNo(boardNo);
+
+        Document doc = Jsoup.parse(board.getBoardContent());
+        Element firstImg = doc.selectFirst("img");
+        String boardThumb = null;
+
+        if (firstImg != null) {
+            String imgSrc = firstImg.attr("src");
+
+            if (imgSrc.contains("/editor/")) {
+                boardThumb = imgSrc.substring(imgSrc.lastIndexOf("/editor/") + 8);
+            } else if (imgSrc.contains("/")) {
+                boardThumb = imgSrc.substring(imgSrc.lastIndexOf("/") + 1);
+            } else {
+                boardThumb = imgSrc;
+            }
+
+            if (boardThumb.contains("?")) {
+                boardThumb = boardThumb.substring(0, boardThumb.indexOf("?"));
+            }
+        }
+
+        board.setBoardThumb(boardThumb);
+
+        int result = boardService.updateBoard(board);
+
+        return ResponseEntity.ok(result);
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/{boardNo}")
+    public ResponseEntity<?> deleteBoard(
+            @PathVariable Integer boardNo
+    ) {
+        int result = boardService.deleteBoard(boardNo);
+        return ResponseEntity.ok(result);
+    }
+
     // 게시글 등록
     @PostMapping
     public ResponseEntity<?> insertBoard(
@@ -92,8 +136,6 @@ public class BoardController {
 
         // placeNo가 없더라도 직접 입력한 장소명과 주소가 들어왔다면 DB에서 조회하거나 새로 생성
         if (board.getPlaceNo() == null && board.getPlaceName() != null && board.getAddressName() != null) {
-            if (board.getPlaceLat() == null) board.setPlaceLat(0.0);
-            if (board.getPlaceLng() == null) board.setPlaceLng(0.0);
 
             Integer generatedPlaceNo = boardService.getOrCreatePlaceNo(board);
             board.setPlaceNo(generatedPlaceNo);
@@ -126,12 +168,17 @@ public class BoardController {
         );
     }
 
-    // 좋아요
+    // 좋아요 등록
     @PostMapping("/{boardNo}/likes")
     public ResponseEntity<?> likeOn(
             @PathVariable Integer boardNo,
-            @RequestHeader(name = "Authorization")
-            String token
+
+            // 로그인 구현 완료 시 사용할 코드
+            // @RequestHeader(name = "Authorization") String token
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+            //
     ) {
         int result =
                 boardService.insertLike(boardNo, token);
@@ -143,8 +190,13 @@ public class BoardController {
     @DeleteMapping("/{boardNo}/likes")
     public ResponseEntity<?> likeOff(
             @PathVariable Integer boardNo,
-            @RequestHeader(name = "Authorization")
-            String token
+
+            // 로그인 구현 완료 시 사용할 코드
+            // @RequestHeader(name = "Authorization") String token
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+            //
     ) {
         int result =
                 boardService.deleteLike(boardNo, token);
@@ -167,12 +219,17 @@ public class BoardController {
         );
     }
 
-    // 신고
+    // 신고 등록
     @PostMapping("/{boardNo}/reports")
     public ResponseEntity<?> reportOn(
             @PathVariable Integer boardNo,
-            @RequestHeader(name = "Authorization")
-            String token
+
+            // 로그인 구현 완료 시 사용할 코드
+            // @RequestHeader(name = "Authorization") String token
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+            //
     ) {
         int result =
                 boardService.insertReport(boardNo, token);
@@ -184,8 +241,13 @@ public class BoardController {
     @DeleteMapping("/{boardNo}/reports")
     public ResponseEntity<?> reportOff(
             @PathVariable Integer boardNo,
-            @RequestHeader(name = "Authorization")
-            String token
+
+            // 로그인 구현 완료 시 사용할 코드
+            // @RequestHeader(name = "Authorization") String token
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+            //
     ) {
         int result =
                 boardService.deleteReport(boardNo, token);
@@ -193,11 +255,17 @@ public class BoardController {
         return ResponseEntity.ok(result);
     }
 
+    //댓글 등록
     @PostMapping("/comments")
     public ResponseEntity<?> insertComment(
             @RequestBody BoardComment comment,
-            @RequestHeader("Authorization")
-            String token
+
+            // 로그인 구현 완료 시 사용할 코드
+            // @RequestHeader("Authorization") String token
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+            //
     ) {
         BoardComment result =
                 boardService.insertComment(comment, token);
@@ -213,5 +281,19 @@ public class BoardController {
         return ResponseEntity.ok(
                 boardService.selectCommentList(boardNo)
         );
+    }
+
+    // 댓글 수정
+    @PutMapping("/comments/{boardCommentNo}")
+    public ResponseEntity<?> updateComment(
+            @PathVariable Integer boardCommentNo,
+            @RequestBody BoardComment comment
+    ) {
+        comment.setBoardCommentNo(boardCommentNo);
+
+        int result =
+                boardService.updateComment(comment);
+
+        return ResponseEntity.ok(result);
     }
 }

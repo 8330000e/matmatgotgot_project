@@ -25,6 +25,29 @@ public class BoardService {
     private final BoardMapper boardMapper;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // 로그인 회원 번호 가져오기
+    private Long getLoginMemberNo(String token) {
+        /*
+        // 로그인 구현 완료 시 사용할 코드
+        String memberId =
+                jwtTokenProvider.getMemberId(token);
+
+        return boardMapper.selectMemberNo(memberId);
+        */
+
+        // 로그인 구현 전 테스트용 코드
+        if (token == null || token.isBlank()) {
+            return 1L;
+        }
+
+        String memberId =
+                jwtTokenProvider.getMemberId(token);
+
+        return boardMapper.selectMemberNo(memberId);
+        //여기까지 지움
+    }
+
+
     // 게시글 목록 조회
     public ListResponse selectBoardList(ListItem request) {
 
@@ -57,6 +80,18 @@ public class BoardService {
     public int insertBoard(Board board) {
 
         return boardMapper.insertBoard(board);
+    }
+
+    // 게시글 수정
+    @Transactional
+    public int updateBoard(Board board) {
+        return boardMapper.updateBoard(board);
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public int deleteBoard(Integer boardNo) {
+        return boardMapper.deleteBoard(boardNo);
     }
 
     // 상세 조회
@@ -94,13 +129,10 @@ public class BoardService {
 
         likeInfo.put("likeCount", likeCount);
 
-        if (token != null) {
-
-            String memberId =
-                    jwtTokenProvider.getMemberId(token);
+        if (token != null && !token.isBlank()) {
 
             Long memberNo =
-                    boardMapper.selectMemberNo(memberId);
+                    getLoginMemberNo(token);
 
             Map<String, Object> params =
                     new HashMap<>();
@@ -120,18 +152,15 @@ public class BoardService {
         return likeInfo;
     }
 
-    // 좋아요 추가
+    // 좋아요 등록
     @Transactional
     public int insertLike(
             Integer boardNo,
             String token
     ) {
 
-        String memberId =
-                jwtTokenProvider.getMemberId(token);
-
         Long memberNo =
-                boardMapper.selectMemberNo(memberId);
+                getLoginMemberNo(token);
 
         Map<String, Object> map =
                 new HashMap<>();
@@ -149,11 +178,8 @@ public class BoardService {
             String token
     ) {
 
-        String memberId =
-                jwtTokenProvider.getMemberId(token);
-
         Long memberNo =
-                boardMapper.selectMemberNo(memberId);
+                getLoginMemberNo(token);
 
         Map<String, Object> map =
                 new HashMap<>();
@@ -181,13 +207,10 @@ public class BoardService {
                 reportCount
         );
 
-        if (token != null) {
-
-            String memberId =
-                    jwtTokenProvider.getMemberId(token);
+        if (token != null && !token.isBlank()) {
 
             Long memberNo =
-                    boardMapper.selectMemberNo(memberId);
+                    getLoginMemberNo(token);
 
             Map<String, Object> params =
                     new HashMap<>();
@@ -214,18 +237,15 @@ public class BoardService {
         return reportInfo;
     }
 
-    // 신고 추가
+    // 신고 등록
     @Transactional
     public int insertReport(
             Integer boardNo,
             String token
     ) {
 
-        String memberId =
-                jwtTokenProvider.getMemberId(token);
-
         Long memberNo =
-                boardMapper.selectMemberNo(memberId);
+                getLoginMemberNo(token);
 
         Map<String, Object> map =
                 new HashMap<>();
@@ -243,11 +263,8 @@ public class BoardService {
             String token
     ) {
 
-        String memberId =
-                jwtTokenProvider.getMemberId(token);
-
         Long memberNo =
-                boardMapper.selectMemberNo(memberId);
+                getLoginMemberNo(token);
 
         Map<String, Object> map =
                 new HashMap<>();
@@ -258,17 +275,15 @@ public class BoardService {
         return boardMapper.deleteReport(map);
     }
 
+    //댓글 등록
     @Transactional
     public BoardComment insertComment(
             BoardComment comment,
             String token
     ) {
 
-        String memberId =
-                jwtTokenProvider.getMemberId(token);
-
         Long memberNo =
-                boardMapper.selectMemberNo(memberId);
+                getLoginMemberNo(token);
 
         comment.setMemberNo(memberNo);
 
@@ -283,5 +298,10 @@ public class BoardService {
             Integer boardNo
     ) {
         return boardMapper.selectCommentList(boardNo);
+    }
+    // 댓글 수정
+    @Transactional
+    public int updateComment(BoardComment comment) {
+        return boardMapper.updateComment(comment);
     }
 }

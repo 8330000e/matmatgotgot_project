@@ -64,13 +64,14 @@ const MenuBar = ({ editor }) => {
       const form = new FormData();
       form.append('image', file);
       axios
-        .post(`${import.meta.env.VITE_IMG_SERVER}/boards/image-upload`, form, {
+        //이미지 업로드 API 요청
+        .post(`${import.meta.env.VITE_BACKSERVER}/boards/image-upload`, form, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
         .then((res) => {
-          //공용폴더 이미지
+          //업로드 후 에디터에 표시할 이미지 주소 /이미지 보여주기(S3)
           const imageUrl = `${import.meta.env.VITE_IMG_SERVER}/editor/${res.data}`;
           editor.chain().focus().setImage({ src: imageUrl }).run();
         })

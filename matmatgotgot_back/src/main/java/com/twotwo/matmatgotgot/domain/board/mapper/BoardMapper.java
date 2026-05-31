@@ -17,6 +17,10 @@ public interface BoardMapper {
 
     int getNewBoardNo();
 
+    int updateBoard(Board board);
+
+    int deleteBoard(Integer boardNo);
+    
     int insertBoard(Board board);
 
     Board selectOneBoard(Integer boardNo);
@@ -57,4 +61,5 @@ public interface BoardMapper {
             Integer boardCommentNo
     );
 
+    int updateComment(BoardComment comment);
 }

@@ -73,7 +73,7 @@
   margin: 50px auto 0;
 }
 
-.btn_wrap > button {
+.btn_wrap>button {
   width: 100% !important;
   height: 50px !important;
   font-size: 18px !important;
@@ -134,4 +134,36 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* 게시글 수정 */
+.readonly_place_box {
+  margin-top: 12px;
+  padding: 10px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.readonly_place_icon {
+  font-size: 28px;
+  color: var(--color2);
+}
+
+.readonly_place_text {
+  display: flex;
+  flex-direction: column;
+}
+
+.readonly_place_name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color2);
+}
+
+.readonly_place_address {
+  font-size: 13px;
+  color: var(--gray4);
 }

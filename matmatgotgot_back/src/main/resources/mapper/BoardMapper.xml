@@ -60,7 +60,7 @@
         B.BOARD_STATUS,
         DATE_FORMAT(B.BOARD_DATE, '%Y-%m-%d') AS BOARD_DATE,
 
-        M.MEMBER_NICKNAME AS BOARD_WRITER,
+        M.MEMBER_ID AS BOARD_WRITER,
         M.MEMBER_THUMB
 
         FROM BOARD_TBL B
@@ -138,6 +138,30 @@
 
     </insert>
 
+    <!-- 게시글 수정 -->
+    <update id="updateBoard"
+            parameterType="board">
+
+        UPDATE BOARD_TBL
+        SET
+            BOARD_CATEGORY = #{boardCategory},
+            BOARD_TITLE = #{boardTitle},
+            BOARD_CONTENT = #{boardContent},
+            BOARD_THUMB = #{boardThumb}
+        WHERE BOARD_NO = #{boardNo}
+
+    </update>
+
+    <!-- 게시글 삭제 -->
+    <update id="deleteBoard"
+            parameterType="int">
+
+        UPDATE BOARD_TBL
+        SET BOARD_STATUS = 2
+        WHERE BOARD_NO = #{boardNo}
+
+    </update>
+
     <!-- 게시글 상세 -->
     <select id="selectOneBoard"
             parameterType="int"
@@ -154,18 +178,21 @@
             DATE_FORMAT(B.BOARD_DATE, '%Y-%m-%d') AS BOARD_DATE,
             B.PLACE_NO,
 
-            M.MEMBER_NICKNAME AS BOARD_WRITER,
+            M.MEMBER_ID AS BOARD_WRITER,
             M.MEMBER_THUMB,
 
-            P.PLACE_NAME
+            P.PLACE_NAME,
+            P.ADDRESS_NAME,
+            P.PLACE_LAT,
+            P.PLACE_LNG
 
         FROM BOARD_TBL B
 
-        JOIN MEMBER_TBL M
-        ON B.MEMBER_NO = M.MEMBER_NO
+                 JOIN MEMBER_TBL M
+                      ON B.MEMBER_NO = M.MEMBER_NO
 
-        JOIN BOARD_PLACE_TBL P
-        ON B.PLACE_NO = P.PLACE_NO
+                 JOIN BOARD_PLACE_TBL P
+                      ON B.PLACE_NO = P.PLACE_NO
 
         WHERE B.BOARD_NO = #{boardNo}
 
@@ -374,4 +401,14 @@
               #{boardCommentNo}
 
     </select>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComment"
+            parameterType="boardComment">
+
+        UPDATE BOARD_COMMENT_TBL
+        SET BOARD_COMMENT_CONTENT = #{boardCommentContent}
+        WHERE BOARD_COMMENT_NO = #{boardCommentNo}
+
+    </update>
 </mapper>
