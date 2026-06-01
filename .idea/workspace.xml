@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="360bc756-0ced-4946-9768-93539bd9b427" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Finding.module.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Finding.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Finding.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Finding.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Finding.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +39,7 @@
     "git-widget-placeholder": "kgy",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/CODING/KH_JONGNO_CLASS/matmatgotgot_project/matmatgotgot_front/src/assets",
+    "last_opened_file_path": "C:/Users/user1/Desktop/matmatgotgot_project",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -81,6 +81,7 @@
       <updated>1778885653476</updated>
       <workItem from="1779429043039" duration="2938000" />
       <workItem from="1779754088144" duration="171000" />
+      <workItem from="1780355471248" duration="533000" />
     </task>
     <servers />
   </component>
