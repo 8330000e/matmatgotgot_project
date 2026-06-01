@@ -7,20 +7,19 @@
 .pageHeaderTitle {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 15px;
+  gap: 5px;
+  margin-bottom: 5px;
 }
 
-.pageHeaderTitle h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
-  color: var(--text1);
+.pageHeaderTitle svg,
+.pageHeaderTitle div {
+  display: flex;
+  align-items: center;
 }
 
-.flagIcon {
-  font-size: 26px !important;
-  color: var(--text1);
+.pageHeaderTitle div {
+  font-weight: 600;
+  font-size: 1.22em;
 }
 
 .mainBoard {
@@ -147,7 +146,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  user-select: none; /* 이전 드래그 방지 규칙 적용 */
+  user-select: none;
 }
 
 .normalCardText,

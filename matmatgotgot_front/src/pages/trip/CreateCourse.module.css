@@ -1,7 +1,6 @@
 .pageWrapper {
-  width: 1200px;
-  margin: 30px auto;
-  font-family: sans-serif;
+  width: 1160px;
+  margin: 20px auto;
 }
 
 .mainHeader {
@@ -32,6 +31,7 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
+  height: 905px;
 }
 
 /* ================= LEFT SIDE PANELS ================= */
@@ -46,6 +46,20 @@
   flex-direction: column;
   scrollbar-color: var(--gray6) transparent;
   scrollbar-width: thin !important;
+}
+
+.searchStatusNotice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  font-size: 14px;
+  color: var(--gray4);
+  line-height: 1.6;
+  padding: 40px 20px;
+  background-color: var(--bg); /* 은은한 크림톤 배경 주입 */
+  border-radius: 12px;
 }
 
 .searchBar {
@@ -118,13 +132,16 @@
   height: 500px;
   overflow: hidden;
   position: relative;
+  padding: 20px;
+  scrollbar-color: var(--gray6) transparent;
+  scrollbar-width: thin !important;
 }
 
 .panelScrollArea {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 24px;
+  /* padding: 24px; */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -251,8 +268,7 @@
 
 /* 💡 강력해진 메뉴 다중 선택 강조 피드백 테마 적용 */
 .activeMenu {
-  border: 2.5px solid var(--text1) !important;
-  background-color: var(--primary) !important;
+  border: 2px solid var(--primary) !important;
   transform: translateY(-3px) scale(1.02) !important;
   box-shadow: 0 8px 20px rgba(255, 217, 90, 0.4) !important;
 }
@@ -410,6 +426,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
+  overflow: hidden;
 }
 
 .mapPlaceholderPanel h2 {
@@ -417,4 +435,324 @@
   color: var(--gray5);
   font-weight: bold;
   letter-spacing: 2px;
+}
+
+/* 이동수단 박스 레이아웃 조정 */
+.transitText {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 버튼은 왼쪽, 시간은 오른쪽에 배치 */
+  width: 100%;
+  gap: 12px;
+}
+
+/* 버튼들을 묶어주는 그룹 */
+.transitBtnGroup {
+  display: flex;
+  gap: 6px;
+  background-color: #f1f3f5;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+/* 개별 이동수단 버튼 기본 스타일 */
+.transitBtn {
+  border: none;
+  background: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #868e96;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.transitBtn:hover {
+  color: #495057;
+}
+
+/* 클릭되어 활성화된 버튼 스타일 */
+.activeTransit {
+  background-color: #ffffff;
+  color: #228be6; /* 서비스 메인 테마 색상으로 수정하세요 */
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 소요 시간 텍스트 정렬 */
+.durationText {
+  font-size: 14px;
+  color: #212529;
+  white-space: nowrap;
+}
+
+/* 메뉴 리스트 내부 등록하기 트리거 카드 스타일 */
+.addMenuTriggerCard {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 110px;
+}
+
+.addMenuTriggerCard:hover {
+  background-color: #f3f4f6;
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.addMenuIcon {
+  font-size: 28px !important;
+  margin-bottom: 6px;
+  color: #9ca3af;
+}
+
+.addMenuTriggerCard:hover .addMenuIcon {
+  color: #007bff;
+}
+
+.menuThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* ================= CUSTOM MENU ADD & MODAL THEME UNIFICATION ================= */
+
+/* 메뉴 리스트 내부 등록하기 트리거 카드 스타일 */
+.addMenuTriggerCard {
+  border: 2px dashed var(--gray5);
+  border-radius: 8px;
+  background-color: var(--gray7); /* 내부 배경과 일치하도록 자연스럽게 맵핑 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 110px;
+  color: var(--gray3);
+}
+
+.addMenuTriggerCard:hover {
+  background-color: var(--bg);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.addMenuIcon {
+  font-size: 28px !important;
+  margin-bottom: 6px;
+  color: var(--gray4);
+}
+
+.addMenuTriggerCard:hover .addMenuIcon {
+  color: var(--primary);
+}
+
+.menuThumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* 글로벌 모달 팝업 레이아웃 스타일 */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* 딤드 배경 약간 더 고급스럽게 조정 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: var(--header, var(--gray8)); /* 다크모드 대응 배경 결합 */
+  border: 1px solid var(--gray6);
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--gray7);
+  padding-bottom: 12px;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text1);
+}
+
+.modalCloseBtn {
+  cursor: pointer;
+  color: var(--gray4);
+  transition: color 0.15s;
+}
+
+.modalCloseBtn:hover {
+  color: var(--gray2);
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray2);
+}
+
+.required {
+  color: #ef4444; /* 경고성 시스템 컬러 유지 */
+}
+
+.optional {
+  font-size: 12px;
+  color: var(--gray4);
+  font-weight: normal;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--gray5);
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  background-color: var(--gray7);
+  color: var(--text1);
+  transition: border-color 0.2s;
+}
+
+.formGroup input:focus {
+  border-color: var(--primary);
+}
+
+/* 이미지 업로더 디자인 추가 */
+.imageUploadWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.imageUploadWrapper input[type="file"] {
+  display: none;
+}
+
+.fileSelectBtn {
+  background-color: var(--gray6);
+  color: var(--text1);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-block;
+  border: 1px solid var(--gray5);
+  transition: background-color 0.15s;
+}
+
+.fileSelectBtn:hover {
+  background-color: var(--gray5);
+}
+
+.previewContainer {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--gray5);
+  background-color: var(--gray7);
+}
+
+.imgPreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 모달 하단 제어 행 */
+.modalActionRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cancelBtn {
+  background-color: var(--gray7);
+  color: var(--gray2);
+  border: 1px solid var(--gray6);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.cancelBtn:hover {
+  background-color: var(--gray6);
+}
+
+.saveBtn {
+  background: var(--primary);
+  color: var(--text1);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: opacity 0.15s;
+}
+
+.saveBtn:hover {
+  opacity: 0.9; /* 테마 컬러를 보존하면서 효과를 주는 안전한 방식 */
 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.twotwo.matmatgotgot.domain.trip.mapper.TripMapper">
+
+    <select id="findByChosung" resultType="restaurantDTO">
+        SELECT * FROM RESTAURANT_TBL
+        <where>
+            <choose>
+                <when test='"ㄱ".equals(keyword)'>
+                    rest_name &gt;= '가' AND rest_name &lt; '나'
+                </when>
+
+                <when test='"ㄴ".equals(keyword)'>
+                    rest_name &gt;= '나' AND rest_name &lt; '다'
+                </when>
+
+                <when test='"ㄷ".equals(keyword)'>
+                    rest_name &gt;= '다' AND rest_name &lt; '라'
+                </when>
+
+                <when test='"ㄹ".equals(keyword)'>
+                    rest_name &gt;= '라' AND rest_name &lt; '마'
+                </when>
+
+                <when test='"ㅁ".equals(keyword)'>
+                    rest_name &gt;= '마' AND rest_name &lt; '바'
+                </when>
+
+                <when test='"ㅂ".equals(keyword)'>
+                    rest_name &gt;= '바' AND rest_name &lt; '사'
+                </when>
+
+                <when test='"ㅅ".equals(keyword)'>
+                    rest_name &gt;= '사' AND rest_name &lt; '아'
+                </when>
+
+                <when test='"ㅇ".equals(keyword)'>
+                    rest_name &gt;= '아' AND rest_name &lt; '자'
+                </when>
+
+                <when test='"ㅈ".equals(keyword)'>
+                    rest_name &gt;= '자' AND rest_name &lt; '차'
+                </when>
+
+                <when test='"ㅊ".equals(keyword)'>
+                    rest_name &gt;= '차' AND rest_name &lt; '카'
+                </when>
+
+                <when test='"ㅋ".equals(keyword)'>
+                    rest_name &gt;= '카' AND rest_name &lt; '타'
+                </when>
+
+                <when test='"ㅌ".equals(keyword)'>
+                    rest_name &gt;= '타' AND rest_name &lt; '파'
+                </when>
+
+                <when test='"ㅍ".equals(keyword)'>
+                    rest_name &gt;= '파' AND rest_name &lt; '하'
+                </when>
+
+                <when test='"ㅎ".equals(keyword)'>
+                    rest_name &gt;= '하' AND rest_name &lt; '힣'
+                </when>
+
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY rest_name ASC
+    </select>
+
+    <select id="findByKeyword" resultType="restaurantDTO">
+        SELECT * FROM RESTAURANT_TBL
+        WHERE rest_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY
+            CASE
+                WHEN rest_name LIKE CONCAT(#{keyword}, '%') THEN 1
+                ELSE 2
+                END,
+            rest_name ASC
+    </select>
+
+</mapper>

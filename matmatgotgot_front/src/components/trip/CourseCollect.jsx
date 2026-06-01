@@ -71,7 +71,7 @@ const CourseCollect = () => {
     <div className={styles.collectPageContainer}>
       <div className={styles.pageHeaderTitle}>
         <OutlinedFlagIcon className={styles.flagIcon} />
-        <h2>코스 모아보기</h2>
+        <div>코스 모아보기</div>
       </div>
 
       <div className={styles.mainBoard}>

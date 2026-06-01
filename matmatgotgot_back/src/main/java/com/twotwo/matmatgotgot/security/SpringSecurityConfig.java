@@ -35,7 +35,8 @@ public class SpringSecurityConfig {
                 .requestMatchers("/members/logout/**").permitAll()
                 .requestMatchers("/members/login", "/members/email-verification").permitAll()
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
-                .anyRequest().authenticated() 
+                .requestMatchers("/trips/**").permitAll()
+                .anyRequest().authenticated()
             );
 
         return http.build();
