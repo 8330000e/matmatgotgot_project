@@ -328,7 +328,9 @@ const Login = () => {
                 onChange={inputMember}
               />
               </div>
+              <Link to={"/finding"}>
               <div className={styles.idpw}>아이디/비밀번호 찾기</div>
+              </Link>
               <button type="submit" className={styles.submit}>로그인</button>
             </form>
               <div className={styles.social_wrap}>

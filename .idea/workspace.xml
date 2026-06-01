@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="360bc756-0ced-4946-9768-93539bd9b427" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/Finding.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/LoginPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
