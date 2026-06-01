@@ -7,6 +7,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsRespons
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -62,4 +63,6 @@ public interface RestaurantMapper {
                       @Param("content") String content);
 
     int deleteComment(Long commentNo);
+
+    List<Recommand> getPopular(Long memberNo);
 }

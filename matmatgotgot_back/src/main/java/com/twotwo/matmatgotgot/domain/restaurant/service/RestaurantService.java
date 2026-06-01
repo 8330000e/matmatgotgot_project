@@ -7,6 +7,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsRespons
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
@@ -169,5 +170,11 @@ public class RestaurantService {
         if (result < 1) {
             throw new RuntimeException("댓글 삭제 실패");
         }
+    }//
+
+    public List<Recommand> getPopular(Long memberNo) {
+        List<Recommand> popular = restaurantMapper.getPopular(memberNo);
+
+        return popular;
     }//
 }

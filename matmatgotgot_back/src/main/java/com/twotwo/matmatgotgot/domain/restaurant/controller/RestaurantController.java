@@ -5,6 +5,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsRespons
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
@@ -150,7 +151,9 @@ public class RestaurantController {
 
     // 맛집 메인화면 추천 리스트
     @GetMapping("/recommand")
-    public ResponseEntity<?> getRecommandLists() {
+    public ResponseEntity<?> getRecommandLists(@RequestBody Long memberNo) {
+        List<Recommand> popular = restaurantService.getPopular(memberNo);
+
 
     }//
 
