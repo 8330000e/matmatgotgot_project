@@ -30,6 +30,15 @@ const Join = () => {
     }
     return true;
   };
+  const [isCheckedAll, setCheckedAll] = useState({
+    age: false,
+    terms: false,
+    privacy: false,
+    location: false,
+    marketing: false,
+    email: false,
+    sms: false,
+  });
   const sendMail = () => {
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/members/email-verification`, {
@@ -228,7 +237,7 @@ const Join = () => {
               <p>{STIPULATION_TEXT}</p>
               </div>
           </div>
-          <div>
+          <div className={styles.stipulationcheck}>
             <ul>
               <li>
                 <button><img src={check} alt="체크여부"/></button>
@@ -236,20 +245,34 @@ const Join = () => {
               </li>
               <li>
                 <button><img src={check} alt="체크여부"/></button>
+                <div>[필수] 만 14세 이상</div>
+              </li>
+              <li>
+                <button><img src={check} alt="체크여부"/></button>
                 <div>[필수] 서비스 이용약관 동의</div>
               </li>
               <li>
                 <button><img src={check} alt="체크여부"/></button>
-                <div>[필수] 개인정보 수집 및 이용 동의</div>
+                <div>[필수] 개인정보 처리 동의</div>
               </li>
               <li>
                 <button><img src={check} alt="체크여부"/></button>
-                <div>[선택] 마케팅 목적 개인정보 수집 및 이용 동의</div>
+                <div>[선택] 위치기반 서비스 동의</div>
               </li>
               <li>
                 <button><img src={check} alt="체크여부"/></button>
-                <div>[선택] 광고성 정보 수신 동의 (E-mail / SMS / 앱 푸시 등)</div>
+                <div>[선택] 마케팅 활용 동의</div>
               </li>
+              <ul>
+                <li>
+                  <button><img src={check} alt="체크여부"/></button>
+                  <div>[선택] 이메일 수신 동의</div>
+                </li>
+                <li>
+                  <button><img src={check} alt="체크여부"/></button>
+                  <div>[선택] SMS 수신 동의</div>
+                </li>
+              </ul>
             </ul>
           </div>
         </div>

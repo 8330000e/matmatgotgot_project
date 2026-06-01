@@ -75,3 +75,45 @@
     white-space: pre-wrap;
     margin: 0; /* p태그 기본 마진 리셋 */
 }
+.stipulationcheck {
+    margin: 15px 0;
+}
+.stipulationcheck > ul{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.stipulationcheck > ul > li {
+    display: flex;
+    gap: 5px;
+}
+.stipulationcheck > ul > li > button {
+    border: none;
+    outline: none;
+    background: none;
+    color: var(--text1);
+    opacity: 0.5;
+    height: max-content;
+    cursor: pointer;
+    font-weight: 800;
+}
+.stipulationcheck > ul > ul{
+    padding-left: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.stipulationcheck > ul > ul > li {
+    display: flex;
+    gap: 5px;
+}
+.stipulationcheck > ul > ul > li > button {
+    border: none;
+    outline: none;
+    background: none;
+    color: var(--text1);
+    opacity: 0.5;
+    height: max-content;
+    cursor: pointer;
+    font-weight: 800;
+}
