@@ -1,4 +1,4 @@
-import { Input } from '../ui/Form';
+import { Input } from '../ui/Form.jsx';
 import styles from './BoardFrm.module.css';
 import TextEditor from '../ui/TextEditor';
 

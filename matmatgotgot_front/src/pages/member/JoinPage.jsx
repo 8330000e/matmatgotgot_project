@@ -2,7 +2,7 @@ import axios from "axios";
 import styles from "./JoinPage.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Input} from "../../components/ui/form.jsx";
+import {Input} from "../../components/ui/Form.jsx";
 import check from "../../assets/check.svg"
 
 const Join = () => {
@@ -220,7 +220,7 @@ const Join = () => {
             인증하기
           </button>
                 </div>
-        <div className={styles.horizen}><hr/></div>
+        <div className={styles.horizon}><hr/></div>
         <div>
           <div className={styles.stipulation}>
             <div>회원가입 약관 및 동의 항목 안내</div>

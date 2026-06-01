@@ -7,7 +7,8 @@ import { useAuthStore } from "../../store/useAuthStore";
 import googlelogo from "../../assets/logo/google.svg";
 import kakaologo from "../../assets/logo/kakao.svg";
 import naverlogo from "../../assets/logo/naver.svg";
-import Input from "../../components/ui/Input.jsx";
+import { Input } from "../../components/ui/Form.jsx";
+import Swal from 'sweetalert2'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -39,10 +40,47 @@ const Login = () => {
       if (response.data) {
         // 🔥 여기서 스토어의 login을 실행해야 localStorage에 "auth-key"가 생성됩니다!
         login(response.data);
+        Swal.mixin({
+          toast: true,
+          position: "top-end",
+          topLayer: true,
+          background: "#ffd95a",
+          color: "#2b1b17",
+          fontWeight: "600",
+          iconColor: "#fff",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        }).fire({
+          icon: "success",
+          title: "로그인 성공",
+        });
         navigate("/");
       }
     } catch (error) {
       console.error("로그인 실패:", error);
+      Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      }).fire({
+        title: '로그인 실패',
+        text: '아이디 또는 비밀번호를 확인하세요.',
+        icon: 'error'
+      });
     }
   };
 
@@ -301,7 +339,7 @@ const Login = () => {
                   <button onClick={naverLogin}><img src={naverlogo} alt="naver login"/></button>
                 </div>
               </div>
-              <div className={styles.horizen}><hr/></div>
+              <div className={styles.horizon}><hr/></div>
               <div className={styles.signup}>
                 <Link to={"/signup"}>
                   <p>아직 회원이 아니신가요?</p>

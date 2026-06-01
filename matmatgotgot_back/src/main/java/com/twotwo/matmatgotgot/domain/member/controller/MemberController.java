@@ -65,7 +65,6 @@ public class MemberController {
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
 		Member loginInput = new Member();
-		loginInput.setMemberNo(dto.getMemberNo());
 		loginInput.setMemberId(dto.getMemberId());
 		loginInput.setMemberPw(dto.getMemberPw());
 
