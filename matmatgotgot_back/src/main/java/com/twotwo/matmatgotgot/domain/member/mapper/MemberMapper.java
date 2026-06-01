@@ -22,5 +22,7 @@ public interface MemberMapper {
     int loginLog(Long memberNo);
 
     int logoutLog(Long memberNo);
+
+    int kakaoInsertMember(Member newMember);
 	
 }

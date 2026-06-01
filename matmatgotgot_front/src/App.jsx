@@ -11,7 +11,7 @@ import RestaurantMain from './pages/restaurant/RestaurantMain';
 import RestaurantDetailSearch from './pages/restaurant/RestaurantDetailSearch.jsx';
 import RestaurantRegist from './pages/restaurant/RestaurantRegist.jsx';
 import RestaurantView from './pages/restaurant/RestaurantView.jsx';
-import MypagePage from './pages/MypagePage.jsx';
+import MypagePage from '../src/components/mypage/Mypage.jsx';
 import ReviewRegist from './pages/restaurant/ReviewRegist.jsx';
 import ReviewView from './pages/restaurant/ReviewView.jsx';
 import TripMain from './pages/trip/TripMain.jsx';
@@ -57,11 +57,8 @@ function App() {
           <Route path="/board/write" element={<BoardWritePage />} />
           <Route path="/board/view/:boardNo" element={<BoardViewPage />} />
           <Route path="/boardNavermap" element={<NaverSearch />} />
-          <Route path='/boardAddress' element={<BoardAddress />} />
-          <Route
-            path="/board/modify/:boardNo"
-            element={<BoardModifyPage />}
-          />
+          <Route path="/boardAddress" element={<BoardAddress />} />
+          <Route path="/board/modify/:boardNo" element={<BoardModifyPage />} />
           <Route path="/trip" element={<TripMain />} />
         </Routes>
       </div>

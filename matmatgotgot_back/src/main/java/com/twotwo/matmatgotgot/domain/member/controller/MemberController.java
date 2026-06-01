@@ -66,7 +66,7 @@ public class MemberController {
 		}
 
 		Member member = memberService.findMember(dto.getMemberId());
-		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), member.isAdmin());
+		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
 
 		LoginResponseDto response = new LoginResponseDto();
 		response.setMemberNo(loginMember.getMemberNo());
@@ -141,11 +141,31 @@ public class MemberController {
 			if(loginMember > 0) {
 				return ResponseEntity.status(404).build();
 			}else{
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
 				return ResponseEntity.ok(loginMember);
 			}
 		} else {
 			LoginMember loginMember = memberService.login(member);
 			if(loginMember!=null) {
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
 				System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
 			}
 		}
@@ -153,14 +173,59 @@ public class MemberController {
     }
 
 	@PostMapping(value="/login/kakao")
-	public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> request) {
-		String code = request.get("code");
-
-		if (code == null || code.isEmpty()) {
-			return ResponseEntity.badRequest().body("인가 코드가 없습니다.");
+	public ResponseEntity<?> kakaoLogin(@RequestBody LoginResponseDto request) {
+		Member member = memberService.member(request.getMemberEmail());
+		if(member == null) {
+			Member newMember = new Member();
+			newMember.setMemberEmail(request.getMemberEmail());
+			newMember.setMemberNickname(request.getMemberNickname());
+			newMember.setMemberThumb(request.getMemberThumb());
+			newMember.setMemberName(request.getMemberNickname());
+			Random r = new Random();
+			StringBuffer sb1 = new StringBuffer();
+			StringBuffer sb2 = new StringBuffer();
+			for(int i=0; i<6; i++) {
+				int num1 = r.nextInt(10);
+				int num2 = r.nextInt(10);
+				sb1.append(num1);
+				sb2.append(num2);
+			}
+			newMember.setMemberId("kakao_" + sb1);
+			newMember.setMemberPw("kakao_" + sb2);
+			int loginMember = memberService.insertMemberK(newMember);
+			member = newMember;
+			if(loginMember > 0) {
+				return ResponseEntity.status(404).build();
+			}else{
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
+				return ResponseEntity.ok(loginMember);
+			}
+		} else {
+			LoginMember loginMember = memberService.login(member);			
+			if(loginMember!=null) {
+				LoginMember login = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+				LoginResponseDto response = new LoginResponseDto();
+				response.setMemberNo(member.getMemberNo());
+				response.setMemberId(member.getMemberId());
+				response.setMemberNickname(member.getMemberNickname());
+				response.setMemberThumb(member.getMemberThumb());
+				response.setAdmin(false);
+				response.setToken(login.getToken());
+				long validityMilli = login.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+				response.setValidity(validityMilli);
+				System.out.println("기존 회원 로그인 처리 완료: " + member.getMemberEmail());
+			}
 		}
-
-		return ResponseEntity.ok("카카오 로그인은 아직 구현되지 않았습니다.");
+		return ResponseEntity.ok("카카오 로그인");
 	}
 
 	@PostMapping(value="/email-verification")

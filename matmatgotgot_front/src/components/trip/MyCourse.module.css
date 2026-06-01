@@ -1,0 +1,16 @@
+.myCourseListWrap {
+  gap: 10px;
+  overflow-y: scroll;
+  height: 300px;
+}
+
+.myCourseList {
+  width: 98%;
+  border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
+  height: 80px;
+  margin-bottom: 5px;
+}
+
+.myCourseList:last-child {
+  margin-bottom: none;
+}

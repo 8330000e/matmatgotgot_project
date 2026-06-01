@@ -15,7 +15,7 @@ import jakarta.mail.internet.MimeMessage;
 @Component
 public class EmailSender {
 	@Autowired
-	private JavaMailSender sender;
+    private JavaMailSender sender;
 	
 	public void sendMail(String emailTitle, String receiver, String emailContent) {
 		MimeMessage message = sender.createMimeMessage();

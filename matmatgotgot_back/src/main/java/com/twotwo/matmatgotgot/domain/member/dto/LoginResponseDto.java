@@ -6,6 +6,8 @@ import lombok.Data;
 public class LoginResponseDto {
     private Long memberNo;
     private String memberId;
+    private String memberName;
+    private String memberEmail;
     private String memberNickname;
     private String memberThumb;
     private Boolean admin;

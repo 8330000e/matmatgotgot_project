@@ -1,21 +1,26 @@
-import React from 'react';
 import styles from './Header.module.css';
 import { FiBell, FiMail, FiUser, FiSettings } from 'react-icons/fi';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
+import logo from '../../assets/logo/맛맛곳곳로고_300x398.png';
 
-export default function Header({ isLoggedIn = true }) {
+export default function Header() {
   const location = useLocation();
+  const { memberId } = useAuthStore();
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logoArea}>
-          <h1 className={styles.logo}>
-            <Link to="/">맛맛곳곳</Link>
-          </h1>
+          <div className={styles.logo}>
+            <Link to="/">
+              <img src={logo} alt="맛맛곳곳 로고" className={styles.logoImg} />
+              <div className={styles.logoText}>맛맛곳곳</div>
+            </Link>
+          </div>
         </div>
 
-        {isLoggedIn && (
+        {memberId && (
           <nav className={styles.centerMenu}>
             <button
               className={
@@ -46,7 +51,7 @@ export default function Header({ isLoggedIn = true }) {
         )}
 
         <div className={styles.rightArea}>
-          {isLoggedIn ? (
+          {memberId ? (
             <div className={styles.userMenu}>
               <button aria-label="알림" className={styles.iconBtn}>
                 <FiBell />
@@ -56,9 +61,11 @@ export default function Header({ isLoggedIn = true }) {
                 <FiMail />
               </button>
 
-              <button aria-label="마이페이지" className={styles.iconBtn}>
-                <FiUser />
-              </button>
+              <Link to="/mypage">
+                <button aria-label="마이페이지" className={styles.iconBtn}>
+                  <FiUser />
+                </button>
+              </Link>
 
               <button aria-label="설정" className={styles.iconBtn}>
                 <FiSettings />
