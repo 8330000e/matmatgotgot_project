@@ -60,20 +60,20 @@ const ReviewViewInfo = ({ review }) => {
       </div>
 
       {/* ── 사진 Swiper 캐러셀 ── */}
-      {images.length > 0 && (
+      {review.images.length > 0 && (
         <div className={styles.photo_swiper}>
           <Swiper
             modules={[Navigation, Pagination]}
-            navigation /* 좌우 화살표 버튼 */
+            navigation={review.images.length > 1} /* 좌우 화살표 버튼 */
             pagination={{ clickable: true }} /* 하단 도트 */
             spaceBetween={0}
             slidesPerView={1}
           >
-            {images.map((image) => (
-              <SwiperSlide key={image.reviewImageNo}>
+            {review.images.map((image, idx) => (
+              <SwiperSlide key={idx}>
                 <img
                   className={styles.swiper_img}
-                  src={`${imgBaseUrl}/matgot/review/${image.marketFilePath}`}
+                  src={`${imgBaseUrl}/restaurants/${image}`}
                   alt="리뷰 이미지"
                 />
               </SwiperSlide>
@@ -107,7 +107,7 @@ const ReviewViewInfo = ({ review }) => {
         {/* 메뉴 */}
         <div className={styles.meta_item}>
           <p className={styles.meta_label}>메뉴</p>
-          <p className={styles.meta_value}>{review.reviewMenu}</p>
+          <p className={styles.meta_value}>{review.reviewMenu?.join(", ")}</p>
         </div>
 
         {/* 별점 — grid에서 full-width 배치 (meta_full 클래스) */}

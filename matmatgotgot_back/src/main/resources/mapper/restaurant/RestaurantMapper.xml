@@ -116,4 +116,36 @@
             (#{reviewNo}, #{url})
         </foreach>
     </insert>
+
+    <select id="getReviewView" resultType="reviewViewResponse">
+        SELECT
+            m.member_thumb,
+            m.member_name,
+            r.review_content,
+            r.visit_date AS review_visit,
+            r.rating
+
+        FROM review_tbl r
+                 INNER JOIN member_tbl m
+                            ON r.member_no = m.member_no
+        WHERE review_no = #{reviewNo};
+    </select>
+
+    <select id="getReviewImages" resultType="String">
+        SELECT image_url
+        FROM review_images_tbl
+        WHERE review_no = #{reviewNo};
+    </select>
+
+    <select id="getReviewMenu" resultType="String">
+        SELECT menu_name
+        FROM review_menu_tbl
+        WHERE review_no = #{reviewNo};
+    </select>
+
+    <select id="getReviewTags" resultType="String">
+        SELECT tag_name
+        FROM review_tags_tbl
+        WHERE review_no = #{reviewNo};
+    </select>
 </mapper>

@@ -27,7 +27,7 @@ const ReviewView = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}`)
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         setReview(res.data);
       })
       .catch((err) => {

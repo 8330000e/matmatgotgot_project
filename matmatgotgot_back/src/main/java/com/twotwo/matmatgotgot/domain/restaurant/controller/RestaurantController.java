@@ -5,6 +5,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequ
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
@@ -97,7 +98,6 @@ public class RestaurantController {
 
     @PostMapping("/review")
     public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request) {
-        log.info("request1: {}", request);
         try {
             boolean result = restaurantService.reviewCreate(request);
             return ResponseEntity.ok(result);
@@ -105,5 +105,12 @@ public class RestaurantController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
         }
+    }//
+
+    @GetMapping("/review/{reviewNo}")
+    public ResponseEntity<?> getReviewView(@PathVariable Long reviewNo) {
+        ReviewViewResponse res = restaurantService.getReviewView(reviewNo);
+
+        return ResponseEntity.ok(res);
     }//
 }

@@ -4,6 +4,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequ
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
@@ -115,5 +116,18 @@ public class RestaurantService {
         }
 
         return true;
+    }//
+
+    public ReviewViewResponse getReviewView(Long reviewNo) {
+        ReviewViewResponse res = restaurantMapper.getReviewView(reviewNo);
+        List<String> images = restaurantMapper.getReviewImages(reviewNo);
+        List<String> menu = restaurantMapper.getReviewMenu(reviewNo);
+        List<String> tags = restaurantMapper.getReviewTags(reviewNo);
+
+        res.setImages(images);
+        res.setReviewMenu(menu);
+        res.setTags(tags);
+
+        return res;
     }//
 }

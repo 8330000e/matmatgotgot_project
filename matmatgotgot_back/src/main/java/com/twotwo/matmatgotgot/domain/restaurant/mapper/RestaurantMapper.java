@@ -4,6 +4,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequ
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,12 @@ public interface RestaurantMapper {
 
     int insertReviewImages(@Param("reviewNo") Long reviewNo,
                            @Param("imageUrls") List<String> imageUrls);
+
+    ReviewViewResponse getReviewView(Long reviewNo);
+
+    List<String> getReviewImages(Long reviewNo);
+
+    List<String> getReviewMenu(Long reviewNo);
+
+    List<String> getReviewTags(Long reviewNo);
 }

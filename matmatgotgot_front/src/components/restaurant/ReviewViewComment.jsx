@@ -22,7 +22,7 @@ import axios from "axios";
 // ============================================================
 const ReviewViewComment = ({ reviewNo }) => {
   // 로그인한 회원 번호 (본인 댓글 수정/삭제 여부 판단에 사용)
-  const { memberId: loginMemberNo } = useAuthStore();
+  // const { memberId: loginMemberNo } = useAuthStore();
 
   // 서버에서 받은 전체 댓글 flat list
   const [commentList, setCommentList] = useState([]);
