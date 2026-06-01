@@ -45,7 +45,7 @@
 }
 /* 제목 input 스타일 */
 .input_wrap input {
-  font-size: 16px;
-  font-family: 'Pretendard';
+  font-size: 13px;
+  font-family: 'Noto Sans KR';
   padding: 8px 16px;
 }

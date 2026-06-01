@@ -10,8 +10,8 @@ import { TextArea } from '../../components/ui/Form';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined';
 import ReportIcon from '@mui/icons-material/Report';
-import OutlinedFlagIcon from '@mui/icons-material/OutlinedFlag';
 
 const BoardViewPage = () => {
   const navigate = useNavigate();
@@ -40,13 +40,14 @@ const BoardViewPage = () => {
   const isReady = true;
   //
 
-  /* 관리자인 경우
+  /*
+  // 관리자인 경우
   const memberId = 'admin01';
   const memberNo = 9;
   const admin = 1;
   const memberStatus = 0;
   const isReady = true;
-  */
+*/
 
   const isAdmin = Number(admin) === 1;
   const isBlocked = Number(memberStatus) >= 1;
@@ -68,7 +69,7 @@ const BoardViewPage = () => {
     Swal.fire({
       title: '로그인 후 이용 가능합니다.',
       icon: 'info',
-      confirmButtonColor: 'var(--color1)',
+      confirmButtonColor: 'var(--primary)',
     });
   };
 
@@ -80,7 +81,7 @@ const BoardViewPage = () => {
       confirmButtonText: '삭제',
       cancelButtonText: '취소',
       confirmButtonColor: 'var(--primary)',
-      cancelButtonColor: 'var(--danger)',
+      cancelButtonColor: 'var(--gray4)',
     }).then((result) => {
       if (result.isConfirmed) {
         axios
@@ -109,7 +110,7 @@ const BoardViewPage = () => {
           Swal.fire({
             title: `게시글이 ${newStatus === 1 ? '공개' : '비공개'} 처리되었습니다.`,
             icon: 'success',
-            confirmButtonColor: 'var(--color1)',
+            confirmButtonColor: 'var(--primary)',
           });
         }
       })
@@ -184,8 +185,18 @@ const BoardViewPage = () => {
 
           <div className={styles.board_action_wrap}>
             <div className={styles.left_action}>
-              <Like boardNo={boardNo} memberId={memberId} loginMsg={loginMsg} />
-              <Report boardNo={boardNo} memberId={memberId} loginMsg={loginMsg} />
+              <Like
+                boardNo={boardNo}
+                memberId={memberId}
+                memberNo={memberNo}
+                loginMsg={loginMsg}
+              />
+              <Report
+                boardNo={boardNo}
+                memberId={memberId}
+                memberNo={memberNo}
+                loginMsg={loginMsg}
+              />
             </div>
 
             <div className={styles.right_actions}>
@@ -193,9 +204,13 @@ const BoardViewPage = () => {
                 <>
                   {isAdmin && (
                     <Button
-                      className="btn info"
+                      className="btn primary outline"
                       onClick={changeBoardStatus}
-                      style={{ width: '70px', fontSize: '14px' }}
+                      style={{
+                        width: '70px',
+                        fontSize: '14px',
+                        color: 'var(--text1)',
+                      }}
                     >
                       {board.boardStatus === 1 ? '비공개' : '공개'}
                     </Button>
@@ -211,7 +226,8 @@ const BoardViewPage = () => {
                     </Button>
                   )}
 
-                  {(isAdmin || (memberId && memberId === board.boardWriter)) && (
+                  {(isAdmin ||
+                    (memberId && memberId === board.boardWriter)) && (
                     <Button
                       className="btn primary outline"
                       onClick={deleteBoard}
@@ -239,7 +255,7 @@ const BoardViewPage = () => {
   );
 };
 
-const Like = ({ boardNo, memberId, loginMsg }) => {
+const Like = ({ boardNo, memberId, memberNo, loginMsg }) => {
   const [likeInfo, setLikeInfo] = useState(null);
 
   useEffect(() => {
@@ -251,7 +267,10 @@ const Like = ({ boardNo, memberId, loginMsg }) => {
 
   const likeOn = () => {
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/likes`)
+      .post(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/likes`, {
+        memberNo: memberNo,
+        boardNo: boardNo,
+      })
       .then((res) => {
         if (res.data === 1) {
           setLikeInfo({
@@ -284,7 +303,10 @@ const Like = ({ boardNo, memberId, loginMsg }) => {
       {likeInfo && (
         <div className={styles.board_like_wrap}>
           {likeInfo.isLike === 1 ? (
-            <ThumbUpAltIcon onClick={memberId ? likeOff : loginMsg} />
+            <ThumbUpAltIcon
+              className={styles.active_like}
+              onClick={memberId ? likeOff : loginMsg}
+            />
           ) : (
             <ThumbUpOffAltIcon onClick={memberId ? likeOn : loginMsg} />
           )}
@@ -306,8 +328,51 @@ const Report = ({ boardNo, memberId, loginMsg }) => {
   }, [boardNo]);
 
   const reportOn = () => {
+    Swal.fire({
+      title: '신고 사유 선택',
+      input: 'select',
+      inputOptions: {
+        허위정보: '허위정보',
+        욕설비방: '욕설비방',
+        광고스팸: '광고스팸',
+        기타: '기타',
+      },
+      inputPlaceholder: '신고 사유를 선택하세요.',
+      showCancelButton: true,
+      confirmButtonText: '다음',
+      cancelButtonText: '취소',
+      confirmButtonColor: 'var(--primary)',
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
+      const reportReason = result.value;
+
+      if (reportReason === '기타') {
+        Swal.fire({
+          title: '상세 사유 입력',
+          input: 'textarea',
+          inputPlaceholder: '신고 내용을 입력하세요.',
+          showCancelButton: true,
+          confirmButtonText: '신고',
+          cancelButtonText: '취소',
+          confirmButtonColor: 'var(--primary)',
+        }).then((detailResult) => {
+          if (!detailResult.isConfirmed) return;
+
+          sendReport(reportReason, detailResult.value);
+        });
+      } else {
+        sendReport(reportReason, null);
+      }
+    });
+  };
+
+  const sendReport = (reportReason, detail) => {
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/reports`)
+      .post(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/reports`, {
+        reportReason,
+        detail,
+      })
       .then((res) => {
         if (res.data === 1) {
           setReportInfo({
@@ -340,9 +405,12 @@ const Report = ({ boardNo, memberId, loginMsg }) => {
       {reportInfo && (
         <div className={styles.board_report_wrap}>
           {reportInfo.isReport === 1 ? (
-            <ReportIcon className={styles.active_report} onClick={memberId ? reportOff : loginMsg} />
+            <ReportIcon
+              className={styles.active_report}
+              onClick={memberId ? reportOff : loginMsg}
+            />
           ) : (
-            <OutlinedFlagIcon onClick={memberId ? reportOn : loginMsg} />
+            <ReportOutlinedIcon onClick={memberId ? reportOn : loginMsg} />
           )}
           <span>{reportInfo.reportCount}</span>
         </div>
@@ -413,7 +481,9 @@ const BoardCommentComponent = ({
 
   const deleteComment = (boardCommentNo) => {
     axios
-      .delete(`${import.meta.env.VITE_BACKSERVER}/boards/comments/${boardCommentNo}`)
+      .delete(
+        `${import.meta.env.VITE_BACKSERVER}/boards/comments/${boardCommentNo}`,
+      )
       .then((res) => {
         if (res.data === 1) {
           setBoardCommentList(
@@ -436,7 +506,7 @@ const BoardCommentComponent = ({
       Swal.fire({
         title: '차단된 회원은 댓글을 작성할 수 없습니다.',
         icon: 'warning',
-        confirmButtonColor: 'var(--color1)',
+        confirmButtonColor: 'var(--primary)',
       });
       return;
     }
@@ -513,10 +583,21 @@ const BoardComment = ({
 }) => {
   const [isModifyMode, setIsModifyMode] = useState(false);
 
+  const [isCommentReport, setIsCommentReport] = useState(0);
+
   const [modifyComment, setModifyComment] = useState({
     boardCommentContent: comment.boardCommentContent,
     boardCommentNo: comment.boardCommentNo,
   });
+
+  useEffect(() => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKSERVER}/boards/comments/${comment.boardCommentNo}/reports`,
+      )
+      .then((res) => setIsCommentReport(res.data))
+      .catch((err) => console.log(err));
+  }, [comment.boardCommentNo]);
 
   const reportComment = () => {
     if (!memberId) {
@@ -525,10 +606,78 @@ const BoardComment = ({
     }
 
     Swal.fire({
-      title: '댓글 신고 기능은 댓글 신고 API 연결 후 사용 가능합니다.',
-      icon: 'info',
-      confirmButtonColor: 'var(--color1)',
+      title: '댓글 신고 사유 선택',
+      input: 'select',
+      inputOptions: {
+        허위정보: '허위정보',
+        욕설비방: '욕설비방',
+        광고스팸: '광고스팸',
+        기타: '기타',
+      },
+      inputPlaceholder: '신고 사유를 선택하세요.',
+      showCancelButton: true,
+      confirmButtonText: '다음',
+      cancelButtonText: '취소',
+      confirmButtonColor: 'var(--primary)',
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
+      const reportReason = result.value;
+
+      if (reportReason === '기타') {
+        Swal.fire({
+          title: '상세 사유 입력',
+          input: 'textarea',
+          inputPlaceholder: '신고 내용을 입력하세요.',
+          showCancelButton: true,
+          confirmButtonText: '신고',
+          cancelButtonText: '취소',
+          confirmButtonColor: 'var(--primary)',
+        }).then((detailResult) => {
+          if (!detailResult.isConfirmed) return;
+
+          sendCommentReport(reportReason, detailResult.value);
+        });
+      } else {
+        sendCommentReport(reportReason, null);
+      }
     });
+  };
+
+  const sendCommentReport = (reportReason, detail) => {
+    axios
+      .post(
+        `${import.meta.env.VITE_BACKSERVER}/boards/comments/${comment.boardCommentNo}/reports`,
+        {
+          reportReason,
+          detail,
+        },
+      )
+      .then((res) => {
+        if (res.data === 1) {
+          setIsCommentReport(1);
+
+          Swal.fire({
+            title: '신고가 접수되었습니다.',
+            icon: 'success',
+            confirmButtonColor: 'var(--primary)',
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const deleteCommentReport = () => {
+    axios
+      .delete(
+        `${import.meta.env.VITE_BACKSERVER}/boards/comments/${comment.boardCommentNo}/reports`,
+      )
+      .then((res) => {
+        if (res.data === 1) {
+          setIsCommentReport(0);
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   const isWriter =
@@ -540,7 +689,9 @@ const BoardComment = ({
       <li className={styles.comment_info}>
         <div className={styles.comment_left_info}>
           <div className={styles.comment_writer_wrap}>
-            <div className={comment.memberThumb ? styles.member_thumb_exists : ''}>
+            <div
+              className={comment.memberThumb ? styles.member_thumb_exists : ''}
+            >
               <img
                 src={
                   comment.memberThumb
@@ -553,12 +704,21 @@ const BoardComment = ({
             <span>{comment.boardCommentWriter}</span>
           </div>
 
-          <span className={styles.comment_date}>{comment.boardCommentDate}</span>
+          <span className={styles.comment_date}>
+            {comment.boardCommentDate}
+          </span>
 
-          <OutlinedFlagIcon
-            className={styles.comment_report_icon}
-            onClick={reportComment}
-          />
+          {isCommentReport === 1 ? (
+            <ReportIcon
+              className={styles.active_report}
+              onClick={deleteCommentReport}
+            />
+          ) : (
+            <ReportOutlinedIcon
+              className={styles.comment_report_icon}
+              onClick={reportComment}
+            />
+          )}
         </div>
 
         {memberId && !isBlocked && (
@@ -594,18 +754,18 @@ const BoardComment = ({
               <>
                 {isAdmin && (
                   <Button
-                    className={
-                      comment.commentStatus === 1
-                        ? 'btn info sm'
-                        : 'btn secondary sm'
-                    }
+                    className="btn primary outline sm"
                     onClick={() =>
                       changeCommentStatus(
                         comment.boardCommentNo,
                         comment.commentStatus,
                       )
                     }
-                    style={{ width: '70px', fontSize: '14px' }}
+                    style={{
+                      width: '70px',
+                      fontSize: '14px',
+                      color: 'var(--text1)',
+                    }}
                   >
                     {comment.commentStatus === 1 ? '비공개' : '공개'}
                   </Button>
@@ -632,7 +792,7 @@ const BoardComment = ({
                         confirmButtonText: '삭제',
                         cancelButtonText: '취소',
                         confirmButtonColor: 'var(--primary)',
-                        cancelButtonColor: 'var(--danger)',
+                        cancelButtonColor: 'var(--gray4)',
                       }).then((result) => {
                         if (result.isConfirmed) {
                           deleteComment(comment.boardCommentNo);

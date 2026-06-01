@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -223,16 +224,22 @@ public class BoardController {
     @PostMapping("/{boardNo}/reports")
     public ResponseEntity<?> reportOn(
             @PathVariable Integer boardNo,
+            @RequestBody Map<String, Object> reportData,
 
-            // 로그인 구현 완료 시 사용할 코드
-            // @RequestHeader(name = "Authorization") String token
+        /*
+        // 로그인 구현 완료 시 사용할 코드
+        @RequestHeader("Authorization") String token
+        */
 
             // 로그인 구현 전 테스트용 코드
             @RequestHeader(required = false, name = "Authorization") String token
-            //
     ) {
         int result =
-                boardService.insertReport(boardNo, token);
+                boardService.insertReport(
+                        boardNo,
+                        token,
+                        reportData
+                );
 
         return ResponseEntity.ok(result);
     }
@@ -296,4 +303,109 @@ public class BoardController {
 
         return ResponseEntity.ok(result);
     }
+
+    // 게시글 공개/비공개 변경
+    @PatchMapping("/{boardNo}/status")
+    public ResponseEntity<?> updateBoardStatus(
+            @PathVariable Integer boardNo,
+            @RequestBody Board board
+    ) {
+        board.setBoardNo(boardNo);
+
+        int result =
+                boardService.updateBoardStatus(board);
+
+        return ResponseEntity.ok(result);
+    }
+
+    // 댓글 공개/비공개 변경
+    @PatchMapping("/comments/{boardCommentNo}/status")
+    public ResponseEntity<?> updateCommentStatus(
+            @PathVariable Integer boardCommentNo,
+            @RequestBody BoardComment comment
+    ) {
+        comment.setBoardCommentNo(boardCommentNo);
+
+        int result =
+                boardService.updateCommentStatus(comment);
+
+        return ResponseEntity.ok(result);
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/comments/{boardCommentNo}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable Integer boardCommentNo
+    ) {
+        int result =
+                boardService.deleteComment(boardCommentNo);
+
+        return ResponseEntity.ok(result);
+    }
+
+    // 댓글 신고 등록
+    @PostMapping("/comments/{boardCommentNo}/reports")
+    public ResponseEntity<?> insertCommentReport(
+            @PathVariable Integer boardCommentNo,
+            @RequestBody Map<String, Object> reportData,
+
+        /*
+        // 로그인 구현 완료 시 사용할 코드
+        @RequestHeader("Authorization") String token
+        */
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+    ) {
+        int result =
+                boardService.insertCommentReport(
+                        boardCommentNo,
+                        reportData,
+                        token
+                );
+
+        return ResponseEntity.ok(result);
+    }
+
+    // 댓글 신고 여부 조회
+    @GetMapping("/comments/{boardCommentNo}/reports")
+    public ResponseEntity<?> selectCommentReportInfo(
+            @PathVariable Integer boardCommentNo,
+
+        /*
+        // 로그인 구현 완료 시 사용할 코드
+        @RequestHeader("Authorization") String token
+        */
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+    ) {
+        return ResponseEntity.ok(
+                boardService.selectIsCommentReport(boardCommentNo, token)
+        );
+    }
+
+    // 댓글 신고 취소
+    @DeleteMapping("/comments/{boardCommentNo}/reports")
+    public ResponseEntity<?> deleteCommentReport(
+            @PathVariable Integer boardCommentNo,
+
+        /*
+        // 로그인 구현 완료 시 사용할 코드
+        @RequestHeader("Authorization") String token
+        */
+
+            // 로그인 구현 전 테스트용 코드
+            @RequestHeader(required = false, name = "Authorization") String token
+    ) {
+        int result =
+                boardService.deleteCommentReport(
+                        boardCommentNo,
+                        token
+                );
+
+        return ResponseEntity.ok(result);
+    }
+
+
 }

@@ -7,7 +7,7 @@
 }
 
 .board_view_wrap {
-  border: 1px solid var(--border);
+  border: 1px solid var(--gray5);
   padding: 16px;
   border-radius: 8px;
   background-color: #fff;
@@ -58,8 +58,8 @@
   justify-content: center;
 }
 
-.member_thumb>img,
-.member_thumb_exists>img {
+.member_thumb > img,
+.member_thumb_exists > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -93,7 +93,7 @@
 
 .selected_place_name {
   font-size: 17px;
-  color: var(--color2);
+  color: var(--text1);
   font-weight: 700;
 }
 
@@ -153,16 +153,20 @@
   gap: 6px;
 }
 
-.board_like_wrap>span {
-  color: var(--primary);
+.board_like_wrap > span {
+  color: #2b1b17;
 }
 
-.board_like_wrap>svg {
-  fill: var(--primary);
+.board_like_wrap > svg {
+  color: #2b1b17;
   cursor: pointer;
 }
 
-.board_report_wrap>svg {
+.active_like {
+  color: #f4c542 !important;
+}
+
+.board_report_wrap > svg {
   cursor: pointer;
 }
 
@@ -176,12 +180,12 @@
 
 .comment_regist_wrap {
   padding: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--gray5);
   border-radius: 8px;
   background-color: #fff;
 }
 
-.comment_regist_wrap>h3 {
+.comment_regist_wrap > h3 {
   margin-bottom: 8px;
   font-size: 14px;
 }
@@ -191,7 +195,7 @@
   gap: 8px;
 }
 
-.input_item>textarea {
+.input_item > textarea {
   width: fit-content;
   flex-grow: 1;
   min-height: 38px;
@@ -199,7 +203,7 @@
   resize: none;
 }
 
-.input_item>button {
+.input_item > button {
   width: 60px;
   height: 38px;
   font-size: 14px;
@@ -212,9 +216,8 @@
 
 .comment_item {
   list-style-type: none;
-  border: 1px solid var(--border);
+  border: 1px solid var(--gray5);
   padding: 12px;
-  margin-bottom: 12px;
   border-radius: 8px;
   background-color: #fff;
 }
@@ -238,7 +241,7 @@
   gap: 4px;
 }
 
-.comment_writer_wrap>div {
+.comment_writer_wrap > div {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -249,13 +252,13 @@
   justify-content: center;
 }
 
-.comment_writer_wrap>div>img {
+.comment_writer_wrap > div > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.comment_writer_wrap>span {
+.comment_writer_wrap > span {
   font-size: 14px;
 }
 
@@ -279,7 +282,7 @@
   margin-top: 16px;
 }
 
-.comment_content>div {
+.comment_content > div {
   width: 100%;
 }
 
@@ -311,4 +314,29 @@
   color: var(--text2);
   font-size: 14px;
   font-style: italic;
+}
+
+.board_view_header {
+  border-bottom: none;
+}
+
+.board_sub_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.board_title {
+  color: var(--text1);
+}
+
+.board_writer > span {
+  color: var(--text1);
+}
+
+.selected_place_name {
+  color: var(--text1);
 }

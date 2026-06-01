@@ -6,39 +6,46 @@ import ResizeImage from 'tiptap-extension-resize-image';
 import axios from 'axios';
 import { useEffect } from 'react';
 
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import ImageIcon from '@mui/icons-material/Image';
+import UndoIcon from '@mui/icons-material/Undo';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
+import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
+import RedoIcon from '@mui/icons-material/Redo';
+import TextAlign from '@tiptap/extension-text-align';
+
 const BoardTextEditor = ({ data, setData }) => {
   const editor = useEditor({
-    extensions: [StarterKit, Image, ResizeImage],
+    extensions: [
+      StarterKit,
+      Image,
+      ResizeImage,
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+    ],
     content: data || '',
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       setData(editor.getHTML());
     },
   });
+
   useEffect(() => {
     if (editor && data && editor.isEmpty) {
-      // 에디터가 있고, data가 들어왔는데 현재 에디터가 비어있다면 내용을 세팅함
       editor.commands.setContent(data);
     }
   }, [editor, data]);
+
   return (
     <div className={styles.editor_wrap}>
       <MenuBar editor={editor} />
+
       <div style={{ position: 'relative' }}>
-        {!data && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 10,
-              left: 20,
-              color: 'gray',
-              pointerEvents: 'none',
-              userSelect: 'none',
-            }}
-          >
-            내용을 입력하세요.
-          </div>
-        )}
+        {!data && <div className={styles.placeholder}>내용을 입력하세요.</div>}
+
         <EditorContent editor={editor} className={styles.editor_content} />
       </div>
     </div>
@@ -46,9 +53,7 @@ const BoardTextEditor = ({ data, setData }) => {
 };
 
 const MenuBar = ({ editor }) => {
-  if (!editor) {
-    return null;
-  }
+  if (!editor) return null;
 
   const addImage = () => {
     const input = document.createElement('input');
@@ -58,20 +63,18 @@ const MenuBar = ({ editor }) => {
 
     input.onchange = () => {
       const file = input.files && input.files[0];
-      if (!file) {
-        return;
-      }
+      if (!file) return;
+
       const form = new FormData();
       form.append('image', file);
+
       axios
-        //이미지 업로드 API 요청
         .post(`${import.meta.env.VITE_BACKSERVER}/boards/image-upload`, form, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
         .then((res) => {
-          //업로드 후 에디터에 표시할 이미지 주소 /이미지 보여주기(S3)
           const imageUrl = `${import.meta.env.VITE_IMG_SERVER}/editor/${res.data}`;
           editor.chain().focus().setImage({ src: imageUrl }).run();
         })
@@ -85,53 +88,109 @@ const MenuBar = ({ editor }) => {
     <div className={styles.menu_bar}>
       <button
         type="button"
-        className={editor.isActive('bold') ? styles.active : ''}
-        onClick={() => {
-          editor.chain().focus().toggleBold().run();
-        }}
+        className={
+          editor.isActive('heading', { level: 1 }) ? styles.active : ''
+        }
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
       >
-        Bold
+        H1
       </button>
-      <button
-        type="button"
-        className={editor.isActive('italic') ? styles.active : ''}
-        onClick={() => {
-          editor.chain().focus().toggleItalic().run();
-        }}
-      >
-        Italic
-      </button>
+
       <button
         type="button"
         className={
           editor.isActive('heading', { level: 2 }) ? styles.active : ''
         }
-        onClick={() => {
-          editor.chain().focus().toggleHeading({ level: 2 }).run();
-        }}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
       >
         H2
       </button>
+
+      <span className={styles.toolbar_divider}></span>
+
+      <button
+        type="button"
+        className={editor.isActive('bold') ? styles.active : ''}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+      >
+        <FormatBoldIcon fontSize="small" />
+      </button>
+
+      <button
+        type="button"
+        className={editor.isActive('italic') ? styles.active : ''}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+      >
+        <FormatItalicIcon fontSize="small" />
+      </button>
+
+      <span className={styles.toolbar_divider}></span>
+
       <button
         type="button"
         className={editor.isActive('bulletList') ? styles.active : ''}
-        onClick={() => {
-          editor.chain().focus().toggleBulletList().run();
-        }}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
       >
-        List
-      </button>
-      <button type="button" onClick={addImage}>
-        Image
+        <FormatListBulletedIcon fontSize="small" />
       </button>
 
-      {/* --- 되돌리기 버튼 추가 --- */}
+      <button
+        type="button"
+        className={editor.isActive('orderedList') ? styles.active : ''}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <FormatListNumberedIcon fontSize="small" />
+      </button>
+
+      <span className={styles.toolbar_divider}></span>
+
+      <button
+        type="button"
+        className={editor.isActive({ textAlign: 'left' }) ? styles.active : ''}
+        onClick={() => editor.chain().focus().setTextAlign('left').run()}
+      >
+        <FormatAlignLeftIcon fontSize="small" />
+      </button>
+
+      <button
+        type="button"
+        className={
+          editor.isActive({ textAlign: 'center' }) ? styles.active : ''
+        }
+        onClick={() => editor.chain().focus().setTextAlign('center').run()}
+      >
+        <FormatAlignCenterIcon fontSize="small" />
+      </button>
+
+      <button
+        type="button"
+        className={editor.isActive({ textAlign: 'right' }) ? styles.active : ''}
+        onClick={() => editor.chain().focus().setTextAlign('right').run()}
+      >
+        <FormatAlignRightIcon fontSize="small" />
+      </button>
+
+      <span className={styles.toolbar_divider}></span>
+
+      <button type="button" onClick={addImage}>
+        <ImageIcon fontSize="small" />
+      </button>
+
+      <span className={styles.toolbar_divider}></span>
       <button
         type="button"
         onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().undo()} // 되돌릴 내용이 없을 때 버튼 비활성화 (선택 사항)
+        disabled={!editor.can().undo()}
       >
-        Undo
+        <UndoIcon fontSize="small" />
+      </button>
+
+      <button
+        type="button"
+        onClick={() => editor.chain().focus().redo().run()}
+        disabled={!editor.can().redo()}
+      >
+        <RedoIcon fontSize="small" />
       </button>
     </div>
   );

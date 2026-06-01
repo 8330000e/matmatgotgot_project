@@ -115,7 +115,6 @@ public class BoardService {
         return board.getPlaceNo();
     }
 
-    //좋아요 조회
     public Map<String, Object> selectLikeInfo(
             Integer boardNo,
             String token
@@ -129,25 +128,43 @@ public class BoardService {
 
         likeInfo.put("likeCount", likeCount);
 
-        if (token != null && !token.isBlank()) {
+    /*
+    // 로그인 구현 완료 시 사용할 코드
 
-            Long memberNo =
-                    getLoginMemberNo(token);
+    if (token != null && !token.isBlank()) {
 
-            Map<String, Object> params =
-                    new HashMap<>();
+        Long memberNo =
+                getLoginMemberNo(token);
 
-            params.put("boardNo", boardNo);
-            params.put("memberNo", memberNo);
+        Map<String, Object> params =
+                new HashMap<>();
 
-            int isLike =
-                    boardMapper.selectIsLike(params);
+        params.put("boardNo", boardNo);
+        params.put("memberNo", memberNo);
 
-            likeInfo.put("isLike", isLike);
+        int isLike =
+                boardMapper.selectIsLike(params);
 
-        } else {
-            likeInfo.put("isLike", 0);
-        }
+        likeInfo.put("isLike", isLike);
+
+    } else {
+        likeInfo.put("isLike", 0);
+    }
+    */
+
+        Long memberNo =
+                getLoginMemberNo(token);
+
+        Map<String, Object> params =
+                new HashMap<>();
+
+        params.put("boardNo", boardNo);
+        params.put("memberNo", memberNo);
+
+        int isLike =
+                boardMapper.selectIsLike(params);
+
+        likeInfo.put("isLike", isLike);
 
         return likeInfo;
     }
@@ -190,7 +207,6 @@ public class BoardService {
         return boardMapper.deleteLike(map);
     }
 
-    //신고 조회
     public Map<String, Object> selectReportInfo(
             Integer boardNo,
             String token
@@ -207,54 +223,57 @@ public class BoardService {
                 reportCount
         );
 
-        if (token != null && !token.isBlank()) {
+    /*
+    // 로그인 구현 완료 시 사용할 코드
 
-            Long memberNo =
-                    getLoginMemberNo(token);
-
-            Map<String, Object> params =
-                    new HashMap<>();
-
-            params.put("boardNo", boardNo);
-            params.put("memberNo", memberNo);
-
-            int isReport =
-                    boardMapper.selectIsReport(params);
-
-            reportInfo.put(
-                    "isReport",
-                    isReport
-            );
-
-        } else {
-
-            reportInfo.put(
-                    "isReport",
-                    0
-            );
-        }
-
-        return reportInfo;
-    }
-
-    // 신고 등록
-    @Transactional
-    public int insertReport(
-            Integer boardNo,
-            String token
-    ) {
+    if (token != null && !token.isBlank()) {
 
         Long memberNo =
                 getLoginMemberNo(token);
 
-        Map<String, Object> map =
+        Map<String, Object> params =
                 new HashMap<>();
 
-        map.put("boardNo", boardNo);
-        map.put("memberNo", memberNo);
+        params.put("boardNo", boardNo);
+        params.put("memberNo", memberNo);
 
-        return boardMapper.insertReport(map);
+        int isReport =
+                boardMapper.selectIsReport(params);
+
+        reportInfo.put(
+                "isReport",
+                isReport
+        );
+
+    } else {
+
+        reportInfo.put(
+                "isReport",
+                0
+        );
     }
+    */
+
+        Long memberNo =
+                getLoginMemberNo(token);
+
+        Map<String, Object> params =
+                new HashMap<>();
+
+        params.put("boardNo", boardNo);
+        params.put("memberNo", memberNo);
+
+        int isReport =
+                boardMapper.selectIsReport(params);
+
+        reportInfo.put(
+                "isReport",
+                isReport
+        );
+
+        return reportInfo;
+    }
+
 
     // 신고 취소
     @Transactional
@@ -303,5 +322,96 @@ public class BoardService {
     @Transactional
     public int updateComment(BoardComment comment) {
         return boardMapper.updateComment(comment);
+    }
+
+    @Transactional
+    public int updateBoardStatus(Board board) {
+        return boardMapper.updateBoardStatus(board);
+    }
+
+    @Transactional
+    public int updateCommentStatus(BoardComment comment) {
+        return boardMapper.updateCommentStatus(comment);
+    }
+
+    @Transactional
+    public int deleteComment(Integer boardCommentNo) {
+        return boardMapper.deleteComment(boardCommentNo);
+    }
+
+    //신고 등록
+    @Transactional
+    public int insertReport(
+            Integer boardNo,
+            String token,
+            Map<String, Object> reportData
+    ) {
+
+        Long memberNo =
+                getLoginMemberNo(token);
+
+        Map<String, Object> map =
+                new HashMap<>();
+
+        map.put("memberNo", memberNo);
+        map.put("boardNo", boardNo);
+        map.put("reportReason", reportData.get("reportReason"));
+        map.put("detail", reportData.get("detail"));
+
+        return boardMapper.insertReport(map);
+    }
+
+    // 댓글 신고 등록
+    @Transactional
+    public int insertCommentReport(
+            Integer boardCommentNo,
+            Map<String, Object> reportData,
+            String token
+    ) {
+        Long memberNo =
+                getLoginMemberNo(token);
+
+        Map<String, Object> map =
+                new HashMap<>();
+
+        map.put("memberNo", memberNo);
+        map.put("boardCommentNo", boardCommentNo);
+        map.put("reportReason", reportData.get("reportReason"));
+        map.put("detail", reportData.get("detail"));
+
+        return boardMapper.insertCommentReport(map);
+    }
+
+    public int selectIsCommentReport(
+            Integer boardCommentNo,
+            String token
+    ) {
+        Long memberNo =
+                getLoginMemberNo(token);
+
+        Map<String, Object> params =
+                new HashMap<>();
+
+        params.put("memberNo", memberNo);
+        params.put("boardCommentNo", boardCommentNo);
+
+        return boardMapper.selectIsCommentReport(params);
+    }
+
+    @Transactional
+    public int deleteCommentReport(
+            Integer boardCommentNo,
+            String token
+    ) {
+        Long memberNo =
+                getLoginMemberNo(token);
+
+        Map<String, Object> map =
+                new HashMap<>();
+
+        map.put("memberNo", memberNo);
+        map.put("boardCommentNo", boardCommentNo);
+
+        return boardMapper.deleteCommentReport(map);
     }
 }

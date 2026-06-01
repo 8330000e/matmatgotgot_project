@@ -290,13 +290,15 @@
         (
             MEMBER_NO,
             BOARD_NO,
-            REPORT_REASON
+            REPORT_REASON,
+            DETAIL
         )
         VALUES
             (
                 #{memberNo},
                 #{boardNo},
-                '기타'
+                #{reportReason},
+                #{detail}
             )
     </insert>
 
@@ -411,4 +413,58 @@
         WHERE BOARD_COMMENT_NO = #{boardCommentNo}
 
     </update>
+
+    <!-- 댓글 신고 -->
+    <insert id="insertCommentReport">
+        INSERT INTO BOARD_COMMENT_REPORT_TBL
+        (
+            MEMBER_NO,
+            BOARD_COMMENT_NO,
+            REPORT_REASON,
+            DETAIL
+        )
+        VALUES
+            (
+                #{memberNo},
+                #{boardCommentNo},
+                #{reportReason},
+                #{detail}
+            )
+    </insert>
+
+    <!-- 게시글 공개/비공개 -->
+    <update id="updateBoardStatus" parameterType="board">
+        UPDATE BOARD_TBL
+        SET BOARD_STATUS = #{boardStatus}
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <!-- 댓글 공개/비공개 -->
+    <update id="updateCommentStatus" parameterType="boardComment">
+        UPDATE BOARD_COMMENT_TBL
+        SET BOARD_COMMENT_STATUS = #{commentStatus}
+        WHERE BOARD_COMMENT_NO = #{boardCommentNo}
+    </update>
+
+    <!-- 댓글 삭제 -->
+    <update id="deleteComment" parameterType="int">
+        UPDATE BOARD_COMMENT_TBL
+        SET BOARD_COMMENT_STATUS = 2
+        WHERE BOARD_COMMENT_NO = #{boardCommentNo}
+    </update>
+
+    <!-- 내가 댓글 신고했는지 -->
+    <select id="selectIsCommentReport" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_COMMENT_REPORT_TBL
+        WHERE BOARD_COMMENT_NO = #{boardCommentNo}
+          AND MEMBER_NO = #{memberNo}
+    </select>
+
+    <!-- 댓글 신고 취소 -->
+    <delete id="deleteCommentReport">
+        DELETE FROM BOARD_COMMENT_REPORT_TBL
+        WHERE MEMBER_NO = #{memberNo}
+          AND BOARD_COMMENT_NO = #{boardCommentNo}
+    </delete>
 </mapper>

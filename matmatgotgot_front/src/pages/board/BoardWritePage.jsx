@@ -54,16 +54,13 @@ const BoardWritePage = () => {
         ...(location.state.prevBoard || prev),
 
         boardCategory:
-          location.state.prevBoard?.boardCategory ??
-          prev.boardCategory,
+          location.state.prevBoard?.boardCategory ?? prev.boardCategory,
 
         // 장소명 (string 그대로 or placeInfo 우선)
         locationName:
-          location.state.placeInfo?.placeName ||
-          location.state.selectedPlace,
+          location.state.placeInfo?.placeName || location.state.selectedPlace,
 
-        placeNo:
-          location.state.placeNo || null,
+        placeNo: location.state.placeNo || null,
       }));
     }
   }, [location.state]);
@@ -111,25 +108,36 @@ const BoardWritePage = () => {
        return;
      }
  */
+
+    // 제목 + 내용 둘 다 비었을 때
+    if (
+      board.boardTitle.trim() === '' &&
+      (!board.boardContent || board.boardContent === '<p></p>')
+    ) {
+      Swal.fire({
+        title: '제목과 내용을 입력해주세요.',
+        icon: 'warning',
+        confirmButtonColor: 'var(--primary)',
+      });
+      return;
+    }
+
     // 제목 검사
     if (board.boardTitle.trim() === '') {
       Swal.fire({
         title: '제목을 입력해주세요.',
         icon: 'warning',
-        confirmButtonColor: 'var(--color1)',
+        confirmButtonColor: 'var(--primary)',
       });
       return;
     }
 
     // 내용 검사
-    if (
-      !board.boardContent ||
-      board.boardContent === '<p></p>'
-    ) {
+    if (!board.boardContent || board.boardContent === '<p></p>') {
       Swal.fire({
         title: '내용을 입력해주세요.',
         icon: 'warning',
-        confirmButtonColor: 'var(--color1)',
+        confirmButtonColor: 'var(--primary)',
       });
       return;
     }
@@ -138,9 +146,9 @@ const BoardWritePage = () => {
     if (!board.placeNo && !board.locationName) {
       Swal.fire({
         title: '장소를 선택해주세요.',
-        text: '지도 아이콘을 클릭하여 장소를 지정해야 합니다.',
+        text: '마커 아이콘을 클릭하여 장소를 지정해야 합니다.',
         icon: 'warning',
-        confirmButtonColor: 'var(--color1)',
+        confirmButtonColor: 'var(--primary)',
         width: '600px',
       });
 
@@ -162,23 +170,23 @@ const BoardWritePage = () => {
     });
 
     axios
-      .post(
-        `${import.meta.env.VITE_BACKSERVER}/boards`,
-        {
-          // memberNo, // 로그인시 주석 풀거임
-          memberNo: 1, // 테스트용 (로그인 구현되면 지울거임)
-          boardTitle: board.boardTitle,
-          boardContent: board.boardContent,
-          boardCategory: Number(board.boardCategory),
-          placeNo: board.placeNo, // 기존 장소 선택 시 ID값(Integer), 직접 입력 시 null
+      .post(`${import.meta.env.VITE_BACKSERVER}/boards`, {
+        // memberNo, // 로그인시 주석 풀거임
+        memberNo: 1, // 테스트용 (로그인 구현되면 지울거임)
+        boardTitle: board.boardTitle,
+        boardContent: board.boardContent,
+        boardCategory: Number(board.boardCategory),
+        placeNo: board.placeNo, // 기존 장소 선택 시 ID값(Integer), 직접 입력 시 null
 
-          //백엔드의 Board 엔티티 멤버 변수와 일치시켜 데이터 전송
-          placeName: board.locationName, // 화면에 표시된 장소명
-          addressName: placeInfo?.roadAddress || placeInfo?.jibunAddress || board.locationName, // 도로명/지번 주소 (없으면 장소명 대체)
-          placeLat: placeInfo?.latitude ?? null,
-          placeLng: placeInfo?.longitude ?? null,
-        },
-      )
+        //백엔드의 Board 엔티티 멤버 변수와 일치시켜 데이터 전송
+        placeName: board.locationName, // 화면에 표시된 장소명
+        addressName:
+          placeInfo?.roadAddress ||
+          placeInfo?.jibunAddress ||
+          board.locationName, // 도로명/지번 주소 (없으면 장소명 대체)
+        placeLat: placeInfo?.latitude ?? null,
+        placeLng: placeInfo?.longitude ?? null,
+      })
       .then((res) => {
         if (res.data > 0) {
           Swal.fire({
@@ -198,8 +206,7 @@ const BoardWritePage = () => {
           title: '게시글 등록 실패',
           text: '잠시 후 다시 시도해주세요.',
           icon: 'error',
-          confirmButtonColor:
-            'var(--color1)',
+          confirmButtonColor: 'var(--color1)',
         });
       });
   };
@@ -216,25 +223,19 @@ const BoardWritePage = () => {
             name="boardCategory"
             value={board.boardCategory}
             onChange={(e) => {
-              const newCategory =
-                Number(e.target.value);
+              const newCategory = Number(e.target.value);
 
               // 카테고리 바꾸면 장소 초기화
               setBoard((prev) => ({
                 ...prev,
-                boardCategory:
-                  newCategory,
+                boardCategory: newCategory,
                 placeNo: null,
                 locationName: '',
               }));
             }}
           >
-            <option value={1}>
-              여행후기
-            </option>
-            <option value={2}>
-              자유게시글
-            </option>
+            <option value={1}>여행후기</option>
+            <option value={2}>자유게시글</option>
           </select>
 
           {/* 지도 버튼 */}
@@ -251,13 +252,8 @@ const BoardWritePage = () => {
           </span>
 
           {/* 선택 장소명 */}
-          <span
-            className={
-              styles.selected_place_name
-            }
-          >
-            {board.locationName ||
-              '장소 선택'}
+          <span className={styles.selected_place_name}>
+            {board.locationName || '장소 선택'}
           </span>
         </div>
       </div>
@@ -265,16 +261,11 @@ const BoardWritePage = () => {
       <BoardFrm
         board={board}
         inputBoard={inputBoard}
-        inputBoardContent={
-          inputBoardContent
-        }
+        inputBoardContent={inputBoardContent}
       />
 
       <div className={styles.btn_wrap}>
-        <Button
-          className="btn primary lg"
-          onClick={registBoard}
-        >
+        <Button className="btn primary lg" onClick={registBoard}>
           작성하기
         </Button>
       </div>

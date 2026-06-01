@@ -62,4 +62,16 @@ public interface BoardMapper {
     );
 
     int updateComment(BoardComment comment);
+
+    int updateBoardStatus(Board board);
+
+    int updateCommentStatus(BoardComment comment);
+
+    int deleteComment(Integer boardCommentNo);
+
+    int insertCommentReport(Map<String, Object> map);
+
+    int selectIsCommentReport(Map<String, Object> params);
+
+    int deleteCommentReport(Map<String, Object> map);
 }
