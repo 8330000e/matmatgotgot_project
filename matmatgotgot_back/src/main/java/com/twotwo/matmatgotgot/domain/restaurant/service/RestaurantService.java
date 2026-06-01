@@ -1,9 +1,11 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
@@ -43,10 +45,10 @@ public class RestaurantService {
     }//
 
 
-    public RestViewResponse restaurantViewInfo(HashMap<String, Long> paramMap) {
-        RestViewResponse restRes = restaurantMapper.restaurantViewInfo(paramMap);
-        List<String> tags = restaurantMapper.getTags(paramMap);
-        List<String> menus = restaurantMapper.getMenus(paramMap);
+    public RestViewResponse restaurantViewInfo(Long memberNo, Long restNo) {
+        RestViewResponse restRes = restaurantMapper.restaurantViewInfo(memberNo, restNo);
+        List<String> tags = restaurantMapper.getTags(restNo);
+        List<String> menus = restaurantMapper.getMenus(restNo);
 
         restRes.setTags(tags);
         restRes.setMenus(menus);
@@ -96,7 +98,10 @@ public class RestaurantService {
 
         if (request.getFiles() != null && !request.getFiles().isEmpty()) {
             String savepath = root + "restaurant/";
-            new File(savepath).mkdirs(); // 디렉토리 없으면 생성
+            File dir = new File(savepath);  // 디렉토리 없으면 생성
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
 
             List<String> imageUrls = new ArrayList<>();
 
@@ -129,5 +134,40 @@ public class RestaurantService {
         res.setTags(tags);
 
         return res;
+    }//
+
+    // 댓글/대댓글 목록 조회
+    // depth=0(댓글), depth=1(대댓글) 를 flat list 로 반환
+    public List<ReviewCommentResponse> commentList(Long reviewNo) {
+        return restaurantMapper.selectCommentList(reviewNo);
+    }//
+
+    // 댓글/대댓글 등록
+    // 등록 후 생성된 댓글을 단건 조회해서 반환 (프론트 로컬 상태에 바로 추가)
+    @Transactional
+    public ReviewCommentResponse commentRegist(Long reviewNo, ReviewCommentRequest request) {
+        int result = restaurantMapper.insertComment(reviewNo, request);
+        if (result != 1) {
+            throw new RuntimeException("댓글 저장 실패");
+        }
+        return restaurantMapper.selectComment(request.getCommentNo());
+    }//
+
+    // 댓글/대댓글 내용 수정
+    @Transactional
+    public void commentUpdate(Long commentNo, String content) {
+        int result = restaurantMapper.updateComment(commentNo, content);
+        if (result != 1) {
+            throw new RuntimeException("댓글 수정 실패");
+        }
+    }//
+
+    // 댓글/대댓글 삭제
+    @Transactional
+    public void commentDelete(Long commentNo) {
+        int result = restaurantMapper.deleteComment(commentNo);
+        if (result < 1) {
+            throw new RuntimeException("댓글 삭제 실패");
+        }
     }//
 }

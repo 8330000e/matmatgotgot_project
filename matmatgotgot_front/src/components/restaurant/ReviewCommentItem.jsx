@@ -102,7 +102,7 @@ const ReviewCommentItem = ({
                 alt="프로필"
               />
             ) : (
-              // 프로필 이미지 없을 때 기본 아이콘 (Material Icons CDN 필요)
+              // 프로필 이미지 없을 때 기본 아이콘
               <span className="material-icons">account_circle</span>
             )}
           </div>
@@ -323,9 +323,7 @@ const ReplyItem = ({ reply, loginMemberNo, onUpdate, onDelete }) => {
           />
         </div>
 
-        {/* ── 신고 버튼만 표시
-              ⚠ 답글 버튼 없음 — depth=1 은 대댓글을 달 수 없음
-                 (DB: depth CHECK (0,1) 제약 + parent_comment 구조) ── */}
+        {/* 답글 버튼 없음 — depth=1 은 대댓글을 달 수 없음 */}
         <div className={styles.comment_actions}>
           <button
             type="button"

@@ -2,13 +2,13 @@ import { useState, useEffect } from "react"; // useEffect 추가
 import ReviewCommentItem from "./ReviewCommentItem";
 import styles from "./ReviewViewComment.module.css";
 import axios from "axios";
-
-// useAuthStore import 필요 — 실제 프로젝트의 auth store 경로에 맞게 조정
-// 예: import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const ReviewViewComment = ({ reviewNo }) => {
   // 로그인한 회원 번호 (본인 댓글 수정/삭제 여부 판단에 사용)
-  // const { memberId: loginMemberNo } = useAuthStore();
+  const authStore = useAuthStore();
+  // const loginMemberNo = authStore.memberId;
+  const loginMemberNo = 1;
 
   // 서버에서 받은 전체 댓글 flat list
   const [commentList, setCommentList] = useState([]);

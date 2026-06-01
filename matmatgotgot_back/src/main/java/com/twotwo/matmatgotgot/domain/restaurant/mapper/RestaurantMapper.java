@@ -1,9 +1,11 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,11 +19,12 @@ public interface RestaurantMapper {
 
     int restaurantCreate(Restaurant restaurant);
 
-    RestViewResponse restaurantViewInfo(HashMap<String, Long> paramMap);
+    RestViewResponse restaurantViewInfo(@Param("memberNo") Long memberNo,
+                                        @Param("restNo") Long restNo);
 
-    List<String> getTags(HashMap<String, Long> paramMap);
+    List<String> getTags(Long restNo);
 
-    List<String> getMenus(HashMap<String, Long> paramMap);
+    List<String> getMenus(Long restNo);
 
     List<RestReviewsResponse> restaurantViewReviews(RestViewReviewsRequest request);
 
@@ -47,4 +50,16 @@ public interface RestaurantMapper {
     List<String> getReviewMenu(Long reviewNo);
 
     List<String> getReviewTags(Long reviewNo);
+
+    List<ReviewCommentResponse> selectCommentList(Long reviewNo);
+
+    int insertComment(@Param("reviewNo") Long reviewNo,
+                      @Param("req") ReviewCommentRequest request);
+
+    ReviewCommentResponse selectComment(Long commentNo);
+
+    int updateComment(@Param("commentNo") Long commentNo,
+                      @Param("content") String content);
+
+    int deleteComment(Long commentNo);
 }

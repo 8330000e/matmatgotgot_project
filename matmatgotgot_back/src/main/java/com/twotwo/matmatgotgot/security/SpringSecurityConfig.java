@@ -55,7 +55,7 @@ public class SpringSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         
         config.setAllowedOrigins(List.of("http://localhost:5173")); // 프론트엔드 주소 허용
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // OPTIONS 포함 필수
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // OPTIONS 포함 필수
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // 👈 핵심: axios의 withCredentials와 맞물리는 설정!
 

@@ -148,4 +148,58 @@
         FROM review_tags_tbl
         WHERE review_no = #{reviewNo};
     </select>
+
+    <select id="selectCommentList" resultType="reviewCommentResponse">
+        SELECT
+            c.comment_no,
+            c.member_no,
+            m.member_name     AS writerName,
+            m.member_thumb,
+            c.content,
+            c.created_at,
+            c.depth,
+            c.parent_comment
+
+        FROM review_comment_tbl c
+                 INNER JOIN member_tbl m ON c.member_no = m.member_no
+        WHERE c.review_no = #{reviewNo} AND c.com_status = 0
+        ORDER BY
+            COALESCE(c.parent_comment, c.comment_no),
+            c.depth,
+            c.comment_no
+    </select>
+
+    <select id="selectComment" resultType="reviewCommentResponse">
+        SELECT
+            c.comment_no,
+            c.member_no,
+            m.member_name     AS writerName,
+            m.member_thumb,
+            c.content,
+            c.created_at,
+            c.depth,
+            c.parent_comment
+
+        FROM review_comment_tbl c
+                 INNER JOIN member_tbl m ON c.member_no = m.member_no
+        WHERE c.comment_no = #{commentNo}
+    </select>
+
+    <insert id="insertComment" useGeneratedKeys="true" keyProperty="req.commentNo">
+        INSERT INTO review_comment_tbl
+            (review_no, member_no, parent_comment, depth, content)
+        VALUES
+            (#{reviewNo}, #{req.memberNo}, #{req.parentComment}, #{req.depth}, #{req.content})
+    </insert>
+
+    <update id="updateComment">
+        UPDATE review_comment_tbl
+        SET content = #{content}
+        WHERE comment_no = #{commentNo}
+    </update>
+
+    <delete id="deleteComment">
+        DELETE FROM review_comment_tbl
+        WHERE comment_no = #{commentNo}
+    </delete>
 </mapper>

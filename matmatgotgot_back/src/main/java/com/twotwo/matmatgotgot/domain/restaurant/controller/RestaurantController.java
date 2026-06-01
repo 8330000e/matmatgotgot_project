@@ -1,10 +1,9 @@
 package com.twotwo.matmatgotgot.domain.restaurant.controller;
 
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestCreateRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +36,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
     private final FileUtil fileUtil;
 
+    // 맛집 등록
     @PostMapping
     public ResponseEntity<?> restaurantCreate(@RequestBody RestCreateRequest request) {
         Restaurant restaurant = Restaurant.builder()
@@ -62,21 +63,24 @@ public class RestaurantController {
         return ResponseEntity.ok(result);
     }//
 
+    // tip tap 이미지 등록
     @PostMapping(value = "/image-upload")
     public ResponseEntity<?> imageUpload(@RequestParam MultipartFile image) {
         String savepath = root + "restaurant/";
+        File dir = new File(savepath);  // 디렉토리 없으면 생성
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
         String filepath = fileUtil.upload(savepath, image);
 
         return ResponseEntity.ok(filepath);
     }//
 
+    //
     @GetMapping
     public ResponseEntity<?> restaurantViewInfo(@RequestParam Long memberNo, @RequestParam Long restNo) {
-        HashMap<String, Long> paramMap = new HashMap<>();
-        paramMap.put("memberNo", memberNo);
-        paramMap.put("restNo", restNo);
-
-        RestViewResponse restRes = restaurantService.restaurantViewInfo(paramMap);
+        RestViewResponse restRes = restaurantService.restaurantViewInfo(memberNo, restNo);
 
         return ResponseEntity.ok(restRes);
     }//
@@ -113,4 +117,43 @@ public class RestaurantController {
 
         return ResponseEntity.ok(res);
     }//
+
+    // 댓글/대댓글 목록 조회
+    @GetMapping("/review/{reviewNo}/comments")
+    public ResponseEntity<?> commentList(@PathVariable Long reviewNo) {
+        List<ReviewCommentResponse> list = restaurantService.commentList(reviewNo);
+        return ResponseEntity.ok(list);
+    }//
+
+    // 댓글/대댓글 등록
+    @PostMapping("/review/{reviewNo}/comments")
+    public ResponseEntity<?> commentRegist(@PathVariable Long reviewNo,
+                                           @RequestBody ReviewCommentRequest request) {
+        ReviewCommentResponse saved = restaurantService.commentRegist(reviewNo, request);
+        return ResponseEntity.ok(saved);
+    }//
+
+    // 댓글/대댓글 수정
+    @PatchMapping("/review/comment/{commentNo}")
+    public ResponseEntity<?> commentUpdate(@PathVariable Long commentNo,
+                                           @RequestBody ReviewCommentUpdateRequest request) {
+        restaurantService.commentUpdate(commentNo, request.getContent());
+        return ResponseEntity.ok().build();
+    }//
+
+    // 댓글/대댓글 삭제
+    @DeleteMapping("/review/comment/{commentNo}")
+    public ResponseEntity<?> commentDelete(@PathVariable Long commentNo) {
+        restaurantService.commentDelete(commentNo);
+        return ResponseEntity.ok().build();
+    }//
+
+    // 맛집 메인화면 추천 리스트
+    @GetMapping("/recommand")
+    public ResponseEntity<?> getRecommandLists() {
+
+    }//
+
+
+
 }
