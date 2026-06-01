@@ -89,7 +89,7 @@
                     </when>
 
                     <when test="searchType == 2">
-                        AND M.MEMBER_NICKNAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                        AND M.MEMBER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
 
                 </choose>
