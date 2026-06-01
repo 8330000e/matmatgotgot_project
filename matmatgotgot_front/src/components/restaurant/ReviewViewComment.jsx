@@ -6,20 +6,6 @@ import axios from "axios";
 // useAuthStore import 필요 — 실제 프로젝트의 auth store 경로에 맞게 조정
 // 예: import { useAuthStore } from "../../store/authStore";
 
-// ============================================================
-// ReviewViewComment
-// 역할: 댓글 목록 전체 관리 (상태 + CRUD + 대댓글 등록)
-//
-// DB 구조 (review_comment_tbl):
-//   depth = 0 → 댓글   (parent_comment = NULL)
-//   depth = 1 → 대댓글 (parent_comment = 부모 comment_no)
-//   depth는 0, 1 만 허용 → 대댓글에 대댓글 불가
-//
-// 상태 관리 전략:
-//   서버에서 flat list 로 받아 클라이언트에서 댓글/대댓글로 분류
-//   rootComments  → depth === 0
-//   getReplies()  → 특정 댓글의 depth === 1 목록
-// ============================================================
 const ReviewViewComment = ({ reviewNo }) => {
   // 로그인한 회원 번호 (본인 댓글 수정/삭제 여부 판단에 사용)
   // const { memberId: loginMemberNo } = useAuthStore();
@@ -30,7 +16,7 @@ const ReviewViewComment = ({ reviewNo }) => {
   // 새 댓글 입력값
   const [newCommentContent, setNewCommentContent] = useState("");
 
-  // ── 댓글 목록 조회 ──────────────────────────────────────
+  // 댓글 목록 조회
   // reviewNo 가 바뀔 때마다 재조회
   useEffect(() => {
     fetchComments();
@@ -49,7 +35,7 @@ const ReviewViewComment = ({ reviewNo }) => {
       });
   };
 
-  // ── 새 댓글 등록 (depth = 0) ─────────────────────────────
+  // 새 댓글 등록 (depth = 0)
   const registComment = () => {
     if (!newCommentContent.trim()) return; // 빈 내용 방지
 
@@ -73,7 +59,7 @@ const ReviewViewComment = ({ reviewNo }) => {
       });
   };
 
-  // ── 댓글/대댓글 수정 ────────────────────────────────────
+  // 댓글/대댓글 수정
   // commentNo : 수정할 댓글 번호
   // newContent: 수정된 내용
   const updateComment = (commentNo, newContent) => {
@@ -97,7 +83,7 @@ const ReviewViewComment = ({ reviewNo }) => {
       });
   };
 
-  // ── 댓글/대댓글 삭제 ────────────────────────────────────
+  // 댓글/대댓글 삭제
   // DB에서 ON DELETE CASCADE 로 대댓글도 함께 삭제되므로
   // 프론트에서도 해당 댓글과 그 대댓글을 모두 목록에서 제거
   const deleteComment = (commentNo) => {
@@ -119,7 +105,7 @@ const ReviewViewComment = ({ reviewNo }) => {
       });
   };
 
-  // ── 대댓글 등록 (depth = 1) ──────────────────────────────
+  // 대댓글 등록 (depth = 1)
   // parentCommentNo : 부모 댓글 번호 (parent_comment 컬럼)
   // replyContent    : 대댓글 내용
   const registReply = (parentCommentNo, replyContent) => {
@@ -144,7 +130,7 @@ const ReviewViewComment = ({ reviewNo }) => {
       });
   };
 
-  // ── 렌더링용 그룹화 헬퍼 ────────────────────────────────
+  // 렌더링용 그룹화 헬퍼
   // depth=0 인 루트 댓글만 필터링
   const rootComments = commentList.filter((c) => c.depth === 0);
 
@@ -152,7 +138,6 @@ const ReviewViewComment = ({ reviewNo }) => {
   const getReplies = (commentNo) =>
     commentList.filter((c) => c.parentComment === commentNo);
 
-  // ─────────────────────────────────────────────────────────
   return (
     <div className={styles.comment_section}>
       {/* ── 댓글 수 표시 ── */}

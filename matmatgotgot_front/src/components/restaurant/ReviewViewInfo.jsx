@@ -16,7 +16,6 @@ const ReviewViewInfo = ({ review }) => {
   const images = review.images ?? [];
 
   // 별점 렌더링 헬퍼
-  // rating (1~5 숫자) → ★(채움) / ★(빈) span 배열 반환
   const renderStars = (rating = 0) =>
     [1, 2, 3, 4, 5].map((n) => (
       <span

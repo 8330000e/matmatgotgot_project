@@ -11,10 +11,6 @@
   margin-bottom: 16px;
 }
 
-/* ========== 리뷰 버튼 ========== */
-.btn_zone_reviews {
-}
-
 .btn_zone_reviews button {
   background-color: var(--text1);
   color: var(--gray8);
@@ -33,7 +29,7 @@
   background-color: var(--footer);
 }
 
-/* ========== 리뷰 카드 그리드 (2열) ========== */
+/* 리뷰 카드 그리드 (2열) */
 .review_wrap {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -41,7 +37,7 @@
   margin-bottom: 24px;
 }
 
-/* ========== 리뷰 카드 1개 ========== */
+/* 리뷰 카드 1개 */
 .review_item {
   display: flex;
   flex-direction: column;
@@ -52,7 +48,7 @@
   border: 1.5px solid var(--gray6);
 }
 
-/* ── 작성자 정보 행 ── */
+/* 작성자 정보 행 */
 .review_writer {
   display: flex;
   align-items: flex-start;

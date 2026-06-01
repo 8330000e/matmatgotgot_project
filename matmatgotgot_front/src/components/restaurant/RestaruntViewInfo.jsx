@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"; // useEffect, useRef 추가
+import { useEffect, useRef } from "react";
 import styles from "./RestaruntViewInfo.module.css";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
@@ -76,7 +76,7 @@ const RestaruntViewInfo = ({ restView }) => {
         </div>
       </section>
 
-      {/* ===== info2: 본문 내용 (HTML 렌더링) ===== */}
+      {/*info2: 본문 내용 (HTML 렌더링) */}
       <section className={styles.info2}>
         <div
           className={styles.content}
@@ -87,7 +87,7 @@ const RestaruntViewInfo = ({ restView }) => {
         />
       </section>
 
-      {/* ===== info3: ai 리뷰 총평 + 리뷰된 메뉴 (좌) / 지도 (우) ===== */}
+      {/* info3: ai 리뷰 총평 + 리뷰된 메뉴 (좌) / 지도 (우) */}
       <section className={styles.info3}>
         {/* 좌측: AI 총평(상단) → 리뷰된 메뉴(하단) — 이미지 기준 순서 */}
         <div className={styles.menu_ai_side}>

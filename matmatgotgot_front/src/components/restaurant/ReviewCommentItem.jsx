@@ -2,20 +2,7 @@ import { useEffect, useRef, useState } from "react"; // useRef 추가
 import styles from "./ReviewCommentItem.module.css";
 import Swal from "sweetalert2";
 
-// ============================================================
 // ReviewCommentItem  (depth = 0, 일반 댓글)
-//
-// 역할: 댓글 1개 + 그 아래 대댓글 목록을 렌더링
-//       답글 버튼으로 대댓글 입력창 토글
-//
-// props:
-//   comment       : 댓글 객체 { commentNo, memberNo, writerName, memberThumb, content, createdAt }
-//   replies       : 이 댓글의 대댓글 배열 (depth=1)
-//   loginMemberNo : 현재 로그인한 회원 번호 (본인 확인용)
-//   onUpdate      : (commentNo, newContent) => void  — 수정 콜백
-//   onDelete      : (commentNo) => void              — 삭제 콜백
-//   onReplyAdd    : (parentCommentNo, content) => void — 대댓글 등록 콜백
-// ============================================================
 const ReviewCommentItem = ({
   comment,
   replies = [], // 기본값: 빈 배열 (대댓글 없을 때 오류 방지)
@@ -55,7 +42,7 @@ const ReviewCommentItem = ({
     }
   }, [replyContent]);
 
-  // ── 댓글 수정 ───────────────────────────────────────────
+  // 댓글 수정
   // "수정" 클릭 → 편집 모드 진입
   // "완료" 클릭 → onUpdate 콜백 호출 후 편집 모드 종료
   const handleUpdate = () => {
@@ -68,7 +55,7 @@ const ReviewCommentItem = ({
     setIsEditing(!isEditing);
   };
 
-  // ── 댓글 삭제 ───────────────────────────────────────────
+  // 댓글 삭제
   // 삭제 시 해당 댓글의 대댓글도 DB CASCADE 로 함께 삭제됨
   const handleDelete = () => {
     Swal.fire({
@@ -85,7 +72,7 @@ const ReviewCommentItem = ({
     });
   };
 
-  // ── 대댓글 등록 ─────────────────────────────────────────
+  // 대댓글 등록
   const handleReplySubmit = () => {
     if (!replyContent.trim()) return;
     onReplyAdd(comment.commentNo, replyContent); // 부모 commentNo 전달
@@ -98,7 +85,7 @@ const ReviewCommentItem = ({
 
   return (
     <div className={styles.comment_wrap}>
-      {/* ── 작성자 정보 + 수정/삭제 버튼 ── */}
+      {/* 작성자 정보 + 수정/삭제 버튼 */}
       <div className={styles.comment_header}>
         {/* 프로필 + 이름 + 날짜 */}
         <div className={styles.writer}>
@@ -224,8 +211,8 @@ const ReviewCommentItem = ({
               key={reply.commentNo}
               reply={reply}
               loginMemberNo={loginMemberNo}
-              onUpdate={onUpdate} // 부모와 동일한 콜백 재사용
-              onDelete={onDelete} // 부모와 동일한 콜백 재사용
+              onUpdate={onUpdate}
+              onDelete={onDelete}
             />
           ))}
         </div>
@@ -234,18 +221,6 @@ const ReviewCommentItem = ({
   );
 };
 
-// ============================================================
-// ReplyItem  (depth = 1, 대댓글)
-//
-// 역할: 대댓글 1개를 렌더링
-//       ⚠ 답글 버튼 없음 — depth=1 은 대댓글 불가 (DB CHECK 제약 반영)
-//
-// props:
-//   reply         : 대댓글 객체 { commentNo, memberNo, writerName, memberThumb, content, createdAt }
-//   loginMemberNo : 현재 로그인한 회원 번호
-//   onUpdate      : (commentNo, newContent) => void
-//   onDelete      : (commentNo) => void
-// ============================================================
 const ReplyItem = ({ reply, loginMemberNo, onUpdate, onDelete }) => {
   // 수정 모드 여부
   const [isEditing, setIsEditing] = useState(false);
@@ -263,7 +238,7 @@ const ReplyItem = ({ reply, loginMemberNo, onUpdate, onDelete }) => {
     }
   }, [editContent, isEditing]);
 
-  // ── 대댓글 수정 ─────────────────────────────────────────
+  // 대댓글 수정
   const handleUpdate = () => {
     if (isEditing) {
       if (editContent.trim() && editContent !== reply.content) {
@@ -273,7 +248,7 @@ const ReplyItem = ({ reply, loginMemberNo, onUpdate, onDelete }) => {
     setIsEditing(!isEditing);
   };
 
-  // ── 대댓글 삭제 ─────────────────────────────────────────
+  // 대댓글 삭제
   const handleDelete = () => {
     Swal.fire({
       title: "삭제하시겠습니까?",
@@ -337,7 +312,7 @@ const ReplyItem = ({ reply, loginMemberNo, onUpdate, onDelete }) => {
           )}
         </div>
 
-        {/* ── 대댓글 내용 ── */}
+        {/* 대댓글 내용 */}
         <div className={styles.comment_content}>
           <textarea
             ref={textareaRef}
