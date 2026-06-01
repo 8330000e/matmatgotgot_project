@@ -38,7 +38,9 @@ const ReviewViewComment = ({ reviewNo }) => {
 
   const fetchComments = () => {
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/review/${reviewNo}/comments`)
+      .get(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}/comments`,
+      )
       .then((res) => {
         setCommentList(res.data);
       })
@@ -52,12 +54,15 @@ const ReviewViewComment = ({ reviewNo }) => {
     if (!newCommentContent.trim()) return; // 빈 내용 방지
 
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/review/${reviewNo}/comments`, {
-        memberNo: loginMemberNo,
-        content: newCommentContent,
-        depth: 0, // 일반 댓글
-        parentComment: null, // 부모 없음
-      })
+      .post(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}/comments`,
+        {
+          memberNo: loginMemberNo,
+          content: newCommentContent,
+          depth: 0, // 일반 댓글
+          parentComment: null, // 부모 없음
+        },
+      )
       .then((res) => {
         // 등록된 댓글을 목록 끝에 추가
         setCommentList([...commentList, res.data]);
@@ -73,9 +78,12 @@ const ReviewViewComment = ({ reviewNo }) => {
   // newContent: 수정된 내용
   const updateComment = (commentNo, newContent) => {
     axios
-      .patch(`${import.meta.env.VITE_BACKSERVER}/review/comment/${commentNo}`, {
-        content: newContent,
-      })
+      .patch(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review/comment/${commentNo}`,
+        {
+          content: newContent,
+        },
+      )
       .then(() => {
         // 로컬 상태의 해당 댓글 내용만 업데이트
         setCommentList(
@@ -94,7 +102,9 @@ const ReviewViewComment = ({ reviewNo }) => {
   // 프론트에서도 해당 댓글과 그 대댓글을 모두 목록에서 제거
   const deleteComment = (commentNo) => {
     axios
-      .delete(`${import.meta.env.VITE_BACKSERVER}/review/comment/${commentNo}`)
+      .delete(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review/comment/${commentNo}`,
+      )
       .then(() => {
         setCommentList(
           commentList.filter(
@@ -116,12 +126,15 @@ const ReviewViewComment = ({ reviewNo }) => {
     if (!replyContent.trim()) return; // 빈 내용 방지
 
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/review/${reviewNo}/comments`, {
-        memberNo: loginMemberNo,
-        content: replyContent,
-        depth: 1, // 대댓글
-        parentComment: parentCommentNo, // 부모 댓글 번호
-      })
+      .post(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}/comments`,
+        {
+          memberNo: loginMemberNo,
+          content: replyContent,
+          depth: 1, // 대댓글
+          parentComment: parentCommentNo, // 부모 댓글 번호
+        },
+      )
       .then((res) => {
         // 등록된 대댓글을 목록에 추가 (렌더링 시 부모 아래에 그룹화됨)
         setCommentList([...commentList, res.data]);

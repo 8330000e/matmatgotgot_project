@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import styles from "./ReviewViewInfo.module.css";
-import {
-  Navigation,
-  Pagination,
-} from "swiper/modules"; /* ← 수정: 모듈 경로 추가 */
+import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/navigation"; /* ← 추가: 네비게이션 화살표 CSS */
-import "swiper/css/pagination"; /* ← 추가: 페이지네이션 도트 CSS */
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const ReviewViewInfo = ({ review }) => {
   // review 데이터가 아직 없을 때 렌더링 생략
@@ -18,7 +15,7 @@ const ReviewViewInfo = ({ review }) => {
   // 이미지 배열 (없으면 빈 배열)
   const images = review.images ?? [];
 
-  // ── 별점 렌더링 헬퍼 ─────────────────────────────────────
+  // 별점 렌더링 헬퍼
   // rating (1~5 숫자) → ★(채움) / ★(빈) span 배열 반환
   const renderStars = (rating = 0) =>
     [1, 2, 3, 4, 5].map((n) => (
@@ -43,7 +40,7 @@ const ReviewViewInfo = ({ review }) => {
           >
             {review.memberThumb ? (
               <img
-                src={`${imgBaseUrl}/member/thumb/${review.memberThumb}`}
+                src={`${imgBaseUrl}/matgot/member/${review.memberThumb}`}
                 alt="프로필 이미지"
               />
             ) : (
@@ -76,7 +73,7 @@ const ReviewViewInfo = ({ review }) => {
               <SwiperSlide key={image.reviewImageNo}>
                 <img
                   className={styles.swiper_img}
-                  src={`${imgBaseUrl}/review/image/${image.marketFilePath}`}
+                  src={`${imgBaseUrl}/matgot/review/${image.marketFilePath}`}
                   alt="리뷰 이미지"
                 />
               </SwiperSlide>

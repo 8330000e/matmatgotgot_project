@@ -38,6 +38,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
+
           <Route path="/rest" element={<RestaurantMain />} />
           <Route
             path="/rest/detailsearch"
@@ -46,7 +47,7 @@ function App() {
           <Route path="/rest/regist" element={<RestaurantRegist />} />
           <Route path="/rest/view" element={<RestaurantView />} />
           <Route path="/rest/review/regist" element={<ReviewRegist />} />
-          <Route path="/rest/review/view" element={<ReviewView />} />
+          <Route path="/rest/review/view/:reviewNo" element={<ReviewView />} />
           <Route path="/receipt" element={<ReceiptCheck />} />
 
           <Route path="/mypage" element={<MypagePage />} />
