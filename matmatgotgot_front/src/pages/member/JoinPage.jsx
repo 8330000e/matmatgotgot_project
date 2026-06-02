@@ -360,36 +360,36 @@ const Join = () => {
           <div className={styles.stipulationcheck}>
             <ul>
               <li>
-                <button onClick={handleToggleAll}><img src={check} alt="체크여부"/></button>
+                <button type="button" onClick={handleToggleAll} className={`${isCheckedAll. ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                 <div>전체동의</div>
               </li>
               <li>
-                <button id="age" onClick={() => toggleCheck("age")} className={`${isCheckedAll.age ? "styles.on" : "styles.off"}`}><img src={check} alt="체크여부"/></button>
+                <button id="age" type="button" onClick={() => toggleCheck("age")} className={`${isCheckedAll.age ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                 <label htmlFor="age">[필수] 만 14세 이상</label>
               </li>
               <li>
-                <button id="terms"><img src={check} alt="체크여부"/></button>
+                <button id="terms" type="button" onClick={() => toggleCheck("terms")} className={`${isCheckedAll.terms ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                 <label htmlFor="terms">[필수] 서비스 이용약관 동의</label>
               </li>
               <li>
-                <button id="privacy"><img src={check} alt="체크여부"/></button>
+                <button id="privacy" type="button" onClick={() => toggleCheck("privacy")} className={`${isCheckedAll.privacy ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                 <label htmlFor="privacy">[필수] 개인정보 처리 동의</label>
               </li>
               <li>
-                <button id="location"><img src={check} alt="체크여부"/></button>
+                <button id="location" type="button" onClick={() => toggleCheck("location")} className={`${isCheckedAll.location ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                 <label htmlFor="location">[선택] 위치기반 서비스 동의</label>
               </li>
               <li>
-                <button id="marketing"><img src={check} alt="체크여부"/></button>
+                <button id="marketing" type="button" onClick={() => toggleCheck("marketing")} className={`${isCheckedAll.marketing ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                 <label htmlFor="marketing">[선택] 마케팅 활용 동의</label>
               </li>
               <ul>
                 <li>
-                  <button id="email"><img src={check} alt="체크여부"/></button>
+                  <button id="email" type="button" onClick={() => toggleCheck("email")} className={`${isCheckedAll.email ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                   <label htmlFor="email">[선택] 이메일 수신 동의</label>
                 </li>
                 <li>
-                  <button id="sms"><img src={check} alt="체크여부"/></button>
+                  <button id="sms" type="button" onClick={() => toggleCheck("sms")} className={`${isCheckedAll.sms ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                   <label htmlFor="sms">[선택] SMS 수신 동의</label>
                 </li>
               </ul>

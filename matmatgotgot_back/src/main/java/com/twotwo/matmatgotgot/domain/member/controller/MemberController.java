@@ -58,7 +58,7 @@ public class MemberController {
 
 	@PostMapping
 	public ResponseEntity<?> insertMember(@RequestBody Member member) {
-		int result = memberService.insertMember(member);
+		Integer result = memberService.insertMember(member);
 		return ResponseEntity.ok(result);
 	}
 

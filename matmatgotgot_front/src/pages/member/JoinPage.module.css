@@ -101,8 +101,6 @@
     border: none;
     outline: none;
     background: none;
-    color: var(--text1);
-    opacity: 0.5;
     height: max-content;
     cursor: pointer;
     font-weight: 800;
@@ -121,15 +119,13 @@
     border: none;
     outline: none;
     background: none;
-    color: var(--text1);
-    opacity: 0.5;
     height: max-content;
     cursor: pointer;
     font-weight: 800;
 }
-.on {
+.on > img {
     opacity: 1;
 }
-.off {
-    opacity: 1;
+.off > img  {
+    opacity: 0.35;
 }

@@ -28,7 +28,7 @@ public class MemberResponse {
         response.memberThumb = member.getMemberThumb();
         response.memberStatus = member.getMemberStatus();
         response.enrollDate = member.getEnrollDate();
-        response.admin = member.isAdmin();
+        response.admin = member.getAdmin();
         return response;
     }
 }

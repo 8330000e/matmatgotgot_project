@@ -32,11 +32,11 @@ public class MemberService {
     }
 
     @Transactional
-    public int insertMember(Member member) {
+    public Integer insertMember(Member member) {
         String memberPw = member.getMemberPw();
         String encPw = bcrypt.encode(memberPw);
         member.setMemberPw(encPw);
-        int result = memberMapper.insertMember(member);
+        Integer result = memberMapper.insertMember(member);
         return result;
     }
 

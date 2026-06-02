@@ -11,7 +11,7 @@ public interface MemberMapper {
 
 	List<Member> selectAll();
 
-    int insertMember(Member member);
+    Integer insertMember(Member member);
 
     Member selectOneMember(String memberId);
 
