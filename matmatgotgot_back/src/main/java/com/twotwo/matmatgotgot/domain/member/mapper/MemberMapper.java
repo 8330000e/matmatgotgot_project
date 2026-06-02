@@ -11,7 +11,7 @@ public interface MemberMapper {
 
 	List<Member> selectAll();
 
-    int insertMember(Member member);
+    Integer insertMember(Member member);
 
     Member selectOneMember(String memberId);
 
@@ -24,5 +24,8 @@ public interface MemberMapper {
     int logoutLog(Long memberNo);
 
     int kakaoInsertMember(Member newMember);
-	
+
+    int naverInsertMember(Member newMember);
+
+    Member searchId(String memberId);
 }

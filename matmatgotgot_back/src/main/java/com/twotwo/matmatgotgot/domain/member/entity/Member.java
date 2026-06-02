@@ -22,9 +22,9 @@ public class Member {
     private String memberEmail;
     private String memberNickname;
     private String memberThumb;
-    private int memberStatus;
+    private Integer memberStatus;
     private LocalDateTime enrollDate;
-    private boolean admin;
+    private Boolean admin;
     private String socialLogin;
 
     

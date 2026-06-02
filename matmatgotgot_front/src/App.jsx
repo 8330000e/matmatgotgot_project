@@ -23,6 +23,8 @@ import NaverSearch from './pages/board/NaverSearch.jsx';
 import BoardAddress from './pages/board/BoardAddress.jsx';
 import BoardModifyPage from './pages/board/BoardModifyPage.jsx';
 import AdminPage from './pages/admin/AdminPage.jsx';
+import NaverCallbackPage from './pages/member/NaverCallbackPage.jsx';
+import Finding from './pages/member/Finding.jsx';
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -45,6 +47,11 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
           <Route path="/rest" element={<RestaurantMain />} />
+          <Route
+            path="/login/oauth2/code/naver"
+            element={<NaverCallbackPage />}
+          />
+          <Route path="/finding" element={<Finding />} />
           <Route
             path="/rest/detailsearch"
             element={<RestaurantDetailSearch />}

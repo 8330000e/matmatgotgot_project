@@ -6,7 +6,7 @@ import userImage from '../../assets/board/user.png';
 import Button from '../../components/ui/Button';
 import { useAuthStore } from '../../store/useAuthStore';
 import Swal from 'sweetalert2';
-import { TextArea } from '../../components/ui/Form';
+import { TextArea } from '../../components/ui/Form.jsx';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import LocationOnIcon from '@mui/icons-material/LocationOn';

@@ -1,9 +1,17 @@
 .input {
-  padding: 8px;
-  border-radius: 8px;
-  border: solid 1px var(--gray5);
-  outline: none;
   width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--text1);
+  border-radius: 10px;
+  padding: 10px 20px;
+}
+.input:focus {
+  border: 1px solid var(--primary);
+}
+
+.input:read-only,
+.input:disabled {
+  background-color: var(--gray7);
 }
 
 .textarea {

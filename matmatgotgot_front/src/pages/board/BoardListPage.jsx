@@ -3,7 +3,7 @@ import styles from './Board.module.css';
 import axios from 'axios';
 import BoardList from '../../components/board/BoardList';
 import Pagination from '../../components/ui/Pagination';
-import { Input } from '../../components/ui/Form';
+import { Input } from '../../components/ui/Form.jsx';
 import Button from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
