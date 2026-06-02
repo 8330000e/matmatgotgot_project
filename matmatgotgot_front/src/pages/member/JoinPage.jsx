@@ -23,6 +23,7 @@ const Join = () => {
   };
   const [mailAuth, setMailAuth] = useState(0);
   const [mailAuthCode, setMailAuthCode] = useState(null);
+  const [mailAuthInput, setMailAuthInput] = useState("");
   const idDupCheck = () => {
     console.log(member);
     const idReg = /^[a-zA-Z0-9]{6,20}$/;
@@ -37,6 +38,9 @@ const Join = () => {
             setCheckId(0);
           }
           if (res.data) {
+            if(member.memberId ==="" || member.memberId == undefined){
+              return setCheckId(0);
+            }
             setCheckId(2);
           }else{
             setCheckId(1);
@@ -50,21 +54,20 @@ const Join = () => {
       setCheckId(4);
     }
     if (member.memberPw === memberPwRe) {
+      if(member.memberPw ===""){
+        return setCheckPw(0);
+      }
       setCheckPw(1);
     } else {
+      if(member.memberPw ===""){
+        return setCheckPw(0);
+      }
       setCheckPw(2);
     }
     return true;
   };
-  const [isCheckedAll, setCheckedAll] = useState({
-    age: false,
-    terms: false,
-    privacy: false,
-    location: false,
-    marketing: false,
-    email: false,
-    sms: false,
-  });
+  const [time, setTime] = useState(180);
+  const [timeout, setTimeout] = useState(null);
   const sendMail = () => {
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/members/email-verification`, {
@@ -73,10 +76,19 @@ const Join = () => {
       .then((res) => {
         console.log(res);
         setMailAuthCode(res.data.data);
+        setMailAuth(2);
+        window.setInterval(() => {
+          setTime(time - 1);
+        }, 1000);
       })
       .catch((err) => {
         console.error(err);
       });
+  };
+  const showTime = () => {
+    const min = Math.floor(time/60);
+    const sec = String(time%60).padStart(2, "0");
+    return `${min}:${sec}`;
   };
   const joinMember = () => {
     axios
@@ -91,6 +103,40 @@ const Join = () => {
         console.log(err);
       });
   };
+  const [isCheckedAll, setCheckedAll] = useState({
+    age: false,
+    terms: false,
+    privacy: false,
+    location: false,
+    marketing: false,
+    email: false,
+    sms: false,
+  });
+  const toggleCheck = (key) => {
+    setCheckedAll((prev) => ({
+      ...prev,
+      [key]: !prev[key], // 클릭된 key(예: 'privacy')의 상태만 반전
+    }));
+  };
+  const handleToggleAll = () => {
+    // 현재 모든 항목이 true인지 확인
+    const isAllChecked = Object.values(isCheckedAll).every((val) => val === true);
+
+    // 전부 다 켜져있었다면 전부 false로, 하나라도 꺼져있었다면 전부 true로 세팅
+    const nextState = !isAllChecked;
+
+    setCheckedAll({
+      age: nextState,
+      terms: nextState,
+      privacy: nextState,
+      location: nextState,
+      marketing: nextState,
+      email: nextState,
+      sms: nextState,
+    });
+  };
+  console.log(isCheckedAll.age);
+
 
   const STIPULATION_TEXT = `1. [필수] 서비스 이용약관
 제 1 조 (목적)
@@ -269,9 +315,40 @@ const Join = () => {
             disabled={mailAuth === 1 || mailAuth === 3}
             className={styles.submit}
           >
-            인증하기
+            메일전송
           </button>
-                </div>
+                {mailAuth > 1 && (<div>
+                  <div className={styles.inputLabel}>
+                    <label htmlFor="mailAuthInput">이메일 확인</label>
+                  </div>
+                  <div>
+                    <Input
+                        type="text"
+                        name="mailAuthInput"
+                        id="mailAuthInput"
+                        value={mailAuthInput}
+                        onChange={(e)=>{
+                          setMailAuthInput(e.target.value);
+                        }}
+                        disabled={mailAuth === 3}
+                    />
+                    <button
+                        className={styles.submit}
+                        type="button"
+                        onClick={()=> {
+                          if(mailAuthCode === mailAuthInput) {
+                            setMailAuth(3);
+                          }
+                        }}
+                    >
+                      인증하기
+                    </button>
+                  </div>
+                  <p className={styles.check_msg}>
+                    {mailAuth === 3 ? "인증되었습니다.": showTime()}
+                  </p>
+                </div>)}
+          </div>
         <div className={styles.horizon}><hr/></div>
         <div>
           <div className={styles.stipulation}>
@@ -283,37 +360,37 @@ const Join = () => {
           <div className={styles.stipulationcheck}>
             <ul>
               <li>
-                <button><img src={check} alt="체크여부"/></button>
+                <button onClick={handleToggleAll}><img src={check} alt="체크여부"/></button>
                 <div>전체동의</div>
               </li>
               <li>
-                <button><img src={check} alt="체크여부"/></button>
-                <div>[필수] 만 14세 이상</div>
+                <button id="age" onClick={() => toggleCheck("age")} className={`${isCheckedAll.age ? "styles.on" : "styles.off"}`}><img src={check} alt="체크여부"/></button>
+                <label htmlFor="age">[필수] 만 14세 이상</label>
               </li>
               <li>
-                <button><img src={check} alt="체크여부"/></button>
-                <div>[필수] 서비스 이용약관 동의</div>
+                <button id="terms"><img src={check} alt="체크여부"/></button>
+                <label htmlFor="terms">[필수] 서비스 이용약관 동의</label>
               </li>
               <li>
-                <button><img src={check} alt="체크여부"/></button>
-                <div>[필수] 개인정보 처리 동의</div>
+                <button id="privacy"><img src={check} alt="체크여부"/></button>
+                <label htmlFor="privacy">[필수] 개인정보 처리 동의</label>
               </li>
               <li>
-                <button><img src={check} alt="체크여부"/></button>
-                <div>[선택] 위치기반 서비스 동의</div>
+                <button id="location"><img src={check} alt="체크여부"/></button>
+                <label htmlFor="location">[선택] 위치기반 서비스 동의</label>
               </li>
               <li>
-                <button><img src={check} alt="체크여부"/></button>
-                <div>[선택] 마케팅 활용 동의</div>
+                <button id="marketing"><img src={check} alt="체크여부"/></button>
+                <label htmlFor="marketing">[선택] 마케팅 활용 동의</label>
               </li>
               <ul>
                 <li>
-                  <button><img src={check} alt="체크여부"/></button>
-                  <div>[선택] 이메일 수신 동의</div>
+                  <button id="email"><img src={check} alt="체크여부"/></button>
+                  <label htmlFor="email">[선택] 이메일 수신 동의</label>
                 </li>
                 <li>
-                  <button><img src={check} alt="체크여부"/></button>
-                  <div>[선택] SMS 수신 동의</div>
+                  <button id="sms"><img src={check} alt="체크여부"/></button>
+                  <label htmlFor="sms">[선택] SMS 수신 동의</label>
                 </li>
               </ul>
             </ul>
