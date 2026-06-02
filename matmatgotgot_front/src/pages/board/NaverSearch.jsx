@@ -74,15 +74,11 @@ const NaverSearch = () => {
     let latlng;
 
     if (rawX > 10000000) {
-      latlng = new window.naver.maps.LatLng(
-        rawY / 10000000,
-        rawX / 10000000,
-      );
+      latlng = new window.naver.maps.LatLng(rawY / 10000000, rawX / 10000000);
     } else if (window.naver.maps.TransCoord) {
       const tm128 = new window.naver.maps.Point(rawX, rawY);
 
-      latlng =
-        window.naver.maps.TransCoord.fromTM128ToLatLng(tm128);
+      latlng = window.naver.maps.TransCoord.fromTM128ToLatLng(tm128);
     }
 
     if (!latlng) return;
@@ -146,9 +142,7 @@ const NaverSearch = () => {
                 className="place-item"
                 onClick={() => handlePlaceClick(p)}
               >
-                <span className="material-icons place-icon">
-                  location_on
-                </span>
+                <span className="material-icons place-icon">location_on</span>
 
                 <div className="place-info">
                   <strong
@@ -179,10 +173,7 @@ const NaverSearch = () => {
           <div className="map-view" ref={mapRef} />
 
           <div className="bottom-buttons">
-            <button
-              className="cancel-btn"
-              onClick={() => navigate(-1)}
-            >
+            <button className="cancel-btn" onClick={() => navigate(-1)}>
               취소
             </button>
 
@@ -212,14 +203,11 @@ const NaverSearch = () => {
                   if (result.isConfirmed) {
                     navigate('/board/write', {
                       state: {
-                        selectedPlace:
-                          selectedPlace.cleanTitle,
+                        selectedPlace: selectedPlace.cleanTitle,
 
-                        placeNo:
-                          selectedPlace.placeNo,
+                        placeNo: selectedPlace.placeNo,
 
-                        prevBoard:
-                          location.state?.prevBoard,
+                        prevBoard: location.state?.prevBoard,
                       },
                     });
                   }
@@ -231,7 +219,7 @@ const NaverSearch = () => {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

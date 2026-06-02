@@ -22,6 +22,7 @@ import BoardViewPage from './pages/board/BoardViewPage.jsx';
 import NaverSearch from './pages/board/NaverSearch.jsx';
 import BoardAddress from './pages/board/BoardAddress.jsx';
 import BoardModifyPage from './pages/board/BoardModifyPage.jsx';
+import AdminPage from './pages/admin/AdminPage.jsx';
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -60,6 +61,7 @@ function App() {
           <Route path="/boardAddress" element={<BoardAddress />} />
           <Route path="/board/modify/:boardNo" element={<BoardModifyPage />} />
           <Route path="/trip" element={<TripMain />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </div>
       <Footer />
