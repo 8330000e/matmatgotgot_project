@@ -4,7 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 let alertTimer = null;
 let logoutTimer = null;
@@ -14,11 +14,11 @@ let logoutTimer = null;
 const useAuthStore = create(
   persist(
     (set, get) => ({
-      //memberNo: null,  // 작성자 본인 비교, 댓글 작성자 비교
+      memberNo: null,  // 작성자 본인 비교, 댓글 작성자 비교
       memberId: null,
       memberThumb: null,
       memberNickname: null,
-      //memberStatus: null, // 차단 회원 글쓰기/댓글 제한
+      memberStatus: null, // 차단 회원 글쓰기/댓글 제한
       admin: null,
       token: null,
       endTime: null,
@@ -32,11 +32,11 @@ const useAuthStore = create(
 
       login: (data) => {
         set({
-          //memberNo: data.memberNo,
+          memberNo: data.memberNo,
           memberId: data.memberId,
           memberThumb: data.memberThumb,
           memberNickname: data.memberNickname,
-          //memberStatus: data.memberStatus,
+          memberStatus: data.memberStatus,
           admin: data.admin,
           token: data.token,
           endTime: data.endTime,
@@ -68,11 +68,11 @@ const useAuthStore = create(
         }
 
         set({
-          // memberNo: null,
+          memberNo: null, //로그인 구현 전
           memberId: null,
           memberThumb: null,
           memberNickname: null,
-          //memberStatus: null,
+          memberStatus: null, //로그인 구현 전
           admin: null,
           token: null,
           endTime: null,
@@ -120,11 +120,11 @@ const useAuthStore = create(
       storage: createJSONStorage(() => localStorage),
 
       partialize: (state) => ({
-        // memberNo: state.memberNo,
+        memberNo: state.memberNo, //로그인 구현 전
         memberId: state.memberId,
         memberThumb: state.memberThumb,
         memberNickname: state.memberNickname,
-        // memberStatus: state.memberStatus,
+        memberStatus: state.memberStatus, //로그인 구현 전
         admin: state.admin,
         token: state.token,
         endTime: state.endTime,

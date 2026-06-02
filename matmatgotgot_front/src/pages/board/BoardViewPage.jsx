@@ -20,9 +20,9 @@ const BoardViewPage = () => {
 
   const [board, setBoard] = useState(null);
 
-  /*
-  로그인 구현 완료 시 사용할 코드
-  
+
+  //로그인 구현 완료 시 사용할 코드
+
   const {
     memberId,
     memberNo,
@@ -30,8 +30,9 @@ const BoardViewPage = () => {
     memberStatus = 0,
     isReady,
   } = useAuthStore();
-  */
+  //
 
+  /*
   // 로그인 구현 전 테스트용 코드(일반 유저)
   const memberId = 'user01';
   const memberNo = 1;
@@ -228,14 +229,14 @@ const BoardViewPage = () => {
 
                   {(isAdmin ||
                     (memberId && memberId === board.boardWriter)) && (
-                    <Button
-                      className="btn primary outline"
-                      onClick={deleteBoard}
-                      style={{ width: '70px', fontSize: '14px' }}
-                    >
-                      삭제
-                    </Button>
-                  )}
+                      <Button
+                        className="btn primary outline"
+                        onClick={deleteBoard}
+                        style={{ width: '70px', fontSize: '14px' }}
+                      >
+                        삭제
+                      </Button>
+                    )}
                 </>
               )}
             </div>

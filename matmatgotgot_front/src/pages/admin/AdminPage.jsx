@@ -7,12 +7,11 @@ import Pagination from '../../components/ui/Pagination';
 import { Input } from '../../components/ui/Form';
 import Swal from 'sweetalert2';
 import ReportIcon from '@mui/icons-material/Report';
-// import { useAuthStore } from '../../store/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const AdminPage = () => {
   const navigate = useNavigate();
 
-  /*
   // 로그인 구현 완료 시 사용할 코드
   const { admin, isReady } = useAuthStore();
 
@@ -30,9 +29,7 @@ const AdminPage = () => {
       });
     }
   }, [admin, isReady, navigate]);
-  */
-
-  const isReady = true;
+  //
 
   const [menu, setMenu] = useState(
     sessionStorage.getItem('adminMenu') || 'member',
@@ -472,13 +469,12 @@ const ReportManage = ({ navigate }) => {
             >
               <div className={styles.process_row}>
                 <span
-                  className={`${styles.status_badge} ${
-                    Number(report.reportStatus) === 0
-                      ? styles.wait
-                      : Number(report.reportStatus) === 1
-                        ? styles.done
-                        : styles.reject
-                  }`}
+                  className={`${styles.status_badge} ${Number(report.reportStatus) === 0
+                    ? styles.wait
+                    : Number(report.reportStatus) === 1
+                      ? styles.done
+                      : styles.reject
+                    }`}
                 >
                   {Number(report.reportStatus) === 0
                     ? '처리대기'

@@ -175,11 +175,11 @@ public class BoardController {
             @PathVariable Integer boardNo,
 
             // 로그인 구현 완료 시 사용할 코드
-            // @RequestHeader(name = "Authorization") String token
+            @RequestHeader(name = "Authorization") String token
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
-            //
+            //@RequestHeader(required = false, name = "Authorization") String token
+
     ) {
         int result =
                 boardService.insertLike(boardNo, token);
@@ -193,10 +193,10 @@ public class BoardController {
             @PathVariable Integer boardNo,
 
             // 로그인 구현 완료 시 사용할 코드
-            // @RequestHeader(name = "Authorization") String token
+            @RequestHeader(name = "Authorization") String token
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
+            //@RequestHeader(required = false, name = "Authorization") String token
             //
     ) {
         int result =
@@ -226,13 +226,13 @@ public class BoardController {
             @PathVariable Integer boardNo,
             @RequestBody Map<String, Object> reportData,
 
-        /*
+
         // 로그인 구현 완료 시 사용할 코드
         @RequestHeader("Authorization") String token
-        */
+
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
+            //@RequestHeader(required = false, name = "Authorization") String token
     ) {
         int result =
                 boardService.insertReport(
@@ -250,10 +250,10 @@ public class BoardController {
             @PathVariable Integer boardNo,
 
             // 로그인 구현 완료 시 사용할 코드
-            // @RequestHeader(name = "Authorization") String token
+            @RequestHeader(name = "Authorization") String token
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
+            //@RequestHeader(required = false, name = "Authorization") String token
             //
     ) {
         int result =
@@ -268,10 +268,10 @@ public class BoardController {
             @RequestBody BoardComment comment,
 
             // 로그인 구현 완료 시 사용할 코드
-            // @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String token
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
+            //@RequestHeader(required = false, name = "Authorization") String token
             //
     ) {
         BoardComment result =
@@ -349,13 +349,12 @@ public class BoardController {
             @PathVariable Integer boardCommentNo,
             @RequestBody Map<String, Object> reportData,
 
-        /*
         // 로그인 구현 완료 시 사용할 코드
         @RequestHeader("Authorization") String token
-        */
+
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
+            //@RequestHeader(required = false, name = "Authorization") String token
     ) {
         int result =
                 boardService.insertCommentReport(
@@ -372,13 +371,13 @@ public class BoardController {
     public ResponseEntity<?> selectCommentReportInfo(
             @PathVariable Integer boardCommentNo,
 
-        /*
+
         // 로그인 구현 완료 시 사용할 코드
         @RequestHeader("Authorization") String token
-        */
+
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
+            // @RequestHeader(required = false, name = "Authorization") String token
     ) {
         return ResponseEntity.ok(
                 boardService.selectIsCommentReport(boardCommentNo, token)
@@ -390,13 +389,13 @@ public class BoardController {
     public ResponseEntity<?> deleteCommentReport(
             @PathVariable Integer boardCommentNo,
 
-        /*
+
         // 로그인 구현 완료 시 사용할 코드
         @RequestHeader("Authorization") String token
-        */
+
 
             // 로그인 구현 전 테스트용 코드
-            @RequestHeader(required = false, name = "Authorization") String token
+            //@RequestHeader(required = false, name = "Authorization") String token
     ) {
         int result =
                 boardService.deleteCommentReport(

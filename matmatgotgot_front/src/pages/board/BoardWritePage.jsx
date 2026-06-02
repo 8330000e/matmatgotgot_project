@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styles from './Board.module.css';
-//import { useAuthStore } from '../../store/useAuthStore'; //////////////////////////로그인 기능 구현 후 주석 지울 예정
+import { useAuthStore } from '../../store/useAuthStore'; //////////////////////////로그인 기능 구현 후 주석 지울 예정
 import BoardFrm from '../../components/board/BoardFrm';
 import Button from '../../components/ui/Button';
 import axios from 'axios';
@@ -11,7 +11,7 @@ const BoardWritePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  /* ////////////////////////////////////////////////////////////////////로그인 기능 구현 후 주석 지울 예정
+  ////////////////////////////////////////////////////////////////////로그인 기능 구현 후 주석 지울 예정
   // zustand 로그인 정보
   const {
     memberNo,
@@ -34,7 +34,7 @@ const BoardWritePage = () => {
       });
     }
   }, [isReady, memberStatus, navigate]);
-  */
+
 
   // 게시글 상태
   const [board, setBoard] = useState({
@@ -95,19 +95,19 @@ const BoardWritePage = () => {
 
   // 게시글 등록
   const registBoard = () => {
-    /* /////////////////////////////////////////////////////////////////////로그인 기능 구현 후 주석 지울 예정
-     // 로그인 체크
-     if (!memberNo) {
-       Swal.fire({
-         title: '로그인이 필요합니다.',
-         icon: 'warning',
-         confirmButtonColor: 'var(--color1)',
-       });
- 
-       navigate('/login');
-       return;
-     }
- */
+    /////////////////////////////////////////////////////////////////////로그인 기능 구현 후 주석 지울 예정
+    // 로그인 체크
+    if (!memberNo) {
+      Swal.fire({
+        title: '로그인이 필요합니다.',
+        icon: 'warning',
+        confirmButtonColor: 'var(--color1)',
+      });
+
+      navigate('/login');
+      return;
+    }
+    //
 
     // 제목 + 내용 둘 다 비었을 때
     if (
@@ -171,8 +171,8 @@ const BoardWritePage = () => {
 
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/boards`, {
-        // memberNo, // 로그인시 주석 풀거임
-        memberNo: 1, // 테스트용 (로그인 구현되면 지울거임)
+        memberNo, // 로그인시 주석 풀거임
+        //memberNo: 1, // 테스트용 (로그인 구현되면 지울거임)
         boardTitle: board.boardTitle,
         boardContent: board.boardContent,
         boardCategory: Number(board.boardCategory),

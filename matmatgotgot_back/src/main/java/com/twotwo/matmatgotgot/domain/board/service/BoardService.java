@@ -27,14 +27,8 @@ public class BoardService {
 
     // 로그인 회원 번호 가져오기
     private Long getLoginMemberNo(String token) {
+
         /*
-        // 로그인 구현 완료 시 사용할 코드
-        String memberId =
-                jwtTokenProvider.getMemberId(token);
-
-        return boardMapper.selectMemberNo(memberId);
-        */
-
         // 로그인 구현 전 테스트용 코드
         if (token == null || token.isBlank()) {
             return 1L;
@@ -44,8 +38,25 @@ public class BoardService {
                 jwtTokenProvider.getMemberId(token);
 
         return boardMapper.selectMemberNo(memberId);
-        //여기까지 지움
+        */
+/*
+        // 로그인 구현 완료 시 사용할 코드
+        String memberId =
+                jwtTokenProvider.getMemberId(token);
+
+        return boardMapper.selectMemberNo(memberId);
+
     }
+    */
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+
+            String memberId =
+                    jwtTokenProvider.getMemberId(token);
+
+            return boardMapper.selectMemberNo(memberId);
+        }
 
 
     // 게시글 목록 조회
@@ -128,43 +139,26 @@ public class BoardService {
 
         likeInfo.put("likeCount", likeCount);
 
-    /*
-    // 로그인 구현 완료 시 사용할 코드
+        // 로그인 구현 완료 시 사용할 코드
+        if (token != null && !token.isBlank()) {
 
-    if (token != null && !token.isBlank()) {
+            Long memberNo =
+                    getLoginMemberNo(token);
 
-        Long memberNo =
-                getLoginMemberNo(token);
+            Map<String, Object> params =
+                    new HashMap<>();
 
-        Map<String, Object> params =
-                new HashMap<>();
+            params.put("boardNo", boardNo);
+            params.put("memberNo", memberNo);
 
-        params.put("boardNo", boardNo);
-        params.put("memberNo", memberNo);
+            int isLike =
+                    boardMapper.selectIsLike(params);
 
-        int isLike =
-                boardMapper.selectIsLike(params);
+            likeInfo.put("isLike", isLike);
 
-        likeInfo.put("isLike", isLike);
-
-    } else {
-        likeInfo.put("isLike", 0);
-    }
-    */
-
-        Long memberNo =
-                getLoginMemberNo(token);
-
-        Map<String, Object> params =
-                new HashMap<>();
-
-        params.put("boardNo", boardNo);
-        params.put("memberNo", memberNo);
-
-        int isLike =
-                boardMapper.selectIsLike(params);
-
-        likeInfo.put("isLike", isLike);
+        } else {
+            likeInfo.put("isLike", 0);
+        }
 
         return likeInfo;
     }
@@ -223,53 +217,33 @@ public class BoardService {
                 reportCount
         );
 
-    /*
-    // 로그인 구현 완료 시 사용할 코드
+        // 로그인 구현 완료 시 사용할 코드
+        if (token != null && !token.isBlank()) {
 
-    if (token != null && !token.isBlank()) {
+            Long memberNo =
+                    getLoginMemberNo(token);
 
-        Long memberNo =
-                getLoginMemberNo(token);
+            Map<String, Object> params =
+                    new HashMap<>();
 
-        Map<String, Object> params =
-                new HashMap<>();
+            params.put("boardNo", boardNo);
+            params.put("memberNo", memberNo);
 
-        params.put("boardNo", boardNo);
-        params.put("memberNo", memberNo);
+            int isReport =
+                    boardMapper.selectIsReport(params);
 
-        int isReport =
-                boardMapper.selectIsReport(params);
+            reportInfo.put(
+                    "isReport",
+                    isReport
+            );
 
-        reportInfo.put(
-                "isReport",
-                isReport
-        );
+        } else {
 
-    } else {
-
-        reportInfo.put(
-                "isReport",
-                0
-        );
-    }
-    */
-
-        Long memberNo =
-                getLoginMemberNo(token);
-
-        Map<String, Object> params =
-                new HashMap<>();
-
-        params.put("boardNo", boardNo);
-        params.put("memberNo", memberNo);
-
-        int isReport =
-                boardMapper.selectIsReport(params);
-
-        reportInfo.put(
-                "isReport",
-                isReport
-        );
+            reportInfo.put(
+                    "isReport",
+                    0
+            );
+        }
 
         return reportInfo;
     }

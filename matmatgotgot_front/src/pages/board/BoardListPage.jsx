@@ -26,9 +26,9 @@ const BoardListPage = () => {
   const [boardList, setBoardList] = useState([]); //게시글 목록 저장
   const [page, setPage] = useState(0); //현재 페이지 번호
   const [size, setSize] = useState(8); //한 페이지에 몇 개 보여줄지(8개)
-  const [totalPage, setTotalPage] = useState(null); //전체 페이지 개수
+  //const [totalPage, setTotalPage] = useState(null); //전체 페이지 개수
 
-  //const [totalPage, setTotalPage] = useState(5); //지울거
+  const [totalPage, setTotalPage] = useState(5); //지울거
 
   const [order, setOrder] = useState(1); //정렬 방식(1: 최신순, 2: 작성순)
 

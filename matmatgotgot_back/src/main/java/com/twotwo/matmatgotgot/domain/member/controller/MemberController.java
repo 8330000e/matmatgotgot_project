@@ -84,7 +84,8 @@ public class MemberController {
 		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
 
 		LoginResponseDto response = new LoginResponseDto();
-		response.setMemberNo(loginMember.getMemberNo());
+		//response.setMemberNo(loginMember.getMemberNo());
+		response.setMemberNo(member.getMemberNo()); //임시 DB에서 memberNo 가져옴
 		response.setMemberId(loginMember.getMemberId());
 		response.setMemberNickname(loginMember.getMemberNickname());
 		response.setMemberThumb(member.getMemberThumb());
