@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import styles from "./ReceiptCheck.module.css";
 import axios from "axios";
 
-// ── 가격 포맷 헬퍼 (컴포넌트 외부 — ResultCard/ReceiptCheck 공용) ──
+// 가격 포맷 헬퍼 (컴포넌트 외부 — ResultCard/ReceiptCheck 공용)
 // 숫자 또는 문자열 → "N,NNN원" 형식 반환 / 값 없으면 null
 const formatPrice = (value) => {
   if (value === null || value === undefined || value === "") return null;
@@ -21,7 +21,7 @@ const ReceiptCheck = () => {
   const [dragOver, setDragOver] = useState(false); // 드래그 오버 여부
   const inputRef = useRef(null); // 숨겨진 file input 참조
 
-  // ── 파일 선택 공통 처리 (input change / 드래그 드롭) ──────
+  // 파일 선택 공통 처리 (input change / 드래그 드롭)
   const handleFile = useCallback((selectedFile) => {
     if (!selectedFile) return;
 
@@ -47,12 +47,12 @@ const ReceiptCheck = () => {
     reader.readAsDataURL(selectedFile);
   }, []);
 
-  // ── input[type=file] change 이벤트 ─────────────────────────
+  // input[type=file] change 이벤트
   const handleInputChange = (e) => {
     handleFile(e.target.files[0]);
   };
 
-  // ── 드래그 이벤트 핸들러 ───────────────────────────────────
+  // 드래그 이벤트 핸들러
   const handleDragOver = (e) => {
     e.preventDefault();
     setDragOver(true);
@@ -68,7 +68,7 @@ const ReceiptCheck = () => {
     handleFile(e.dataTransfer.files[0]);
   };
 
-  // ── 이미지 제거 ────────────────────────────────────────────
+  // 이미지 제거
   const handleRemove = (e) => {
     e.stopPropagation();
     setFile(null);
@@ -78,7 +78,7 @@ const ReceiptCheck = () => {
     if (inputRef.current) inputRef.current.value = "";
   };
 
-  // ── OCR 분석 API 호출 ──────────────────────────────────────
+  // OCR 분석 API 호출
   const handleAnalyze = () => {
     if (!file) return;
 
@@ -118,13 +118,13 @@ const ReceiptCheck = () => {
   return (
     <div className={styles.receipt}>
       <div className={styles.receipt_inner}>
-        {/* ── 페이지 헤더 ── */}
+        {/* 페이지 헤더 */}
         <header className={styles.receipt_header}>
           <h1>영수증 OCR 분석기</h1>
           <p>영수증 이미지를 업로드하면 가게명, 메뉴를 자동으로 추출합니다.</p>
         </header>
 
-        {/* ── 업로드 카드 ── */}
+        {/* 업로드 카드 */}
         <div className={styles.upload_card}>
           {/* 드롭존 */}
           <div
@@ -300,7 +300,7 @@ const NaverMapSection = ({ initialAddress }) => {
   const [coords, setCoords] = useState(null);
   const [error, setError] = useState("");
 
-  // ── 지도 초기화 + initialAddress 자동 이동 ──────────────────
+  // 지도 초기화 + initialAddress 자동 이동
   useEffect(() => {
     if (!mapDivRef.current || !window.naver) return;
 
@@ -383,9 +383,9 @@ const NaverMapSection = ({ initialAddress }) => {
         },
       );
     }
-  }, []); // 마운트 1회 실행 — initialAddress는 마운트 시점에 이미 고정값
+  }, []);
 
-  // ── 주소 검색 (검색 버튼 / Enter 키) ───────────────────────
+  // 주소 검색 (검색 버튼 / Enter 키)
   const handleSearch = () => {
     const query = address.trim();
     if (!query) {

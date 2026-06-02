@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
+import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
@@ -181,9 +182,10 @@ public class RestaurantService {
         return restaurantMapper.getLike(memberNo);
     }//
 
-    public List<Recommand> getRegion(Long memberNo) {
-        List<Recommand> region = restaurantMapper.getRegion(memberNo);
-        return region
+    public List<Recommand> getRegion(Long memberNo, Coords coords) {
+        List<Recommand> region = restaurantMapper.getRegion(memberNo, coords);
+
+        return region;
     }//
 
 }

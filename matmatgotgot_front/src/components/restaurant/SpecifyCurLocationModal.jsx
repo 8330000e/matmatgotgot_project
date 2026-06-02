@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./SpecifyCurLocationModal.module.css";
 import { useKakaoPostcode } from "@clroot/react-kakao-postcode";
+import axios from "axios";
 
-const SpecifyCurLocationModal = ({}) => {
+const SpecifyCurLocationModal = ({ setLocation, setModalOpen }) => {
   const mapDivRef = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
@@ -139,6 +140,22 @@ const SpecifyCurLocationModal = ({}) => {
     },
   });
 
+  const confirm = () => {
+    axios
+      .patch(
+        `${import.meta.env.VITE_BACKSERVER}/members/location?memberNo=1}`,
+        coords,
+      )
+      .then((res) => {
+        console.log(res);
+        setLocation(coords);
+        setModalOpen(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className={styles.api_content_wrap}>
       {/* ── 주소 입력 영역 ── */}
@@ -155,25 +172,18 @@ const SpecifyCurLocationModal = ({}) => {
           />
 
           {/* 카카오 우편번호 팝업 버튼: 클릭 시 팝업 오픈 */}
-          <button type="button" className="btn primary sm" onClick={open}>
+          <button type="button" onClick={open}>
             주소 찾기
           </button>
         </div>
       </div>
 
-      {/* 위도/경도 표시 영역 */}
-      {/* <p className={styles.lat_lng}>
-        {coords ? (
-          <>
-            위도: <strong>{coords.lat.toFixed(7)}</strong>
-            &nbsp; 경도: <strong>{coords.lng.toFixed(7)}</strong>
-          </>
-        ) : (
-          <span>지도를 클릭하거나 주소를 입력하면 좌표가 표시됩니다.</span>
-        )}
-      </p> */}
-
       <div className={styles.map_div} ref={mapDivRef} />
+      <div className={styles.input_row}>
+        <button type="button" className={styles.confirm} onClick={confirm}>
+          확인
+        </button>
+      </div>
     </div>
   );
 };

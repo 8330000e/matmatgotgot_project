@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.controller;
 
+import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import com.twotwo.matmatgotgot.global.util.EmailSender;
 
 import java.time.ZoneId;
@@ -9,14 +10,9 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
 import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
@@ -253,4 +249,16 @@ public class MemberController {
 						emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
 		return ResponseEntity.ok(ApiResponse.success(authCode));
 	}
+
+	@PatchMapping("/location")
+	public ResponseEntity<?> updateLocation (@ModelAttribute Coords coords, @RequestParam Long memberNo, Authentication auth) {
+//		String memberId1 = SecurityContextHolder.getContext().getAuthentication().getName();
+//		System.out.println("memberId1: " + memberId1);
+//		String memberId2 = auth.getName();
+//		System.out.println("memberId2: " + memberId2);
+
+		int result = memberService.updateLocation(memberNo, coords);
+		return ResponseEntity.ok(result);
+	}//
+
 }

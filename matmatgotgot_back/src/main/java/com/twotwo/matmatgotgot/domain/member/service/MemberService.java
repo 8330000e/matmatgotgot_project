@@ -2,6 +2,7 @@ package com.twotwo.matmatgotgot.domain.member.service;
 
 import java.util.List;
 
+import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,4 +100,9 @@ public class MemberService {
         }
         return -1;
     }
+
+    @Transactional
+    public int updateLocation(Long memberNo, Coords coords) {
+        return memberMapper.updateLocation(memberNo, coords);
+    }//
 }

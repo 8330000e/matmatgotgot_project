@@ -8,41 +8,33 @@
   background-color: #ffffff;
   width: 600px;
   margin: 0 auto;
-  border: 1px solid black;
+  border: 1px solid var(--gray6);
 }
 
-/* ── 주소 입력 영역 ───────────────────────────────────────── */
-/* form_group + addr_rows 가 함께 적용되는 블록 */
+/* 주소 입력 영역 */
 .form_group {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* input_row 와 error_msg 사이 간격 */
+  gap: 6px;
 }
 
-/* form_group 과 함께 쓰이므로 필요 시 addr_rows 전용 스타일 추가 */
-.addr_rows {
-}
-
-/* ── label + input + 버튼들 한 줄 ────────────────────────── */
 /* label / input / 검색버튼 / 주소찾기버튼 을 가로로 나열 */
 .input_row {
   display: flex;
   align-items: center;
-  gap: 8px; /* 요소 간 가로 간격 */
+  gap: 8px;
 }
 
 /* "주소" 라벨 */
 .label {
-  flex-shrink: 0; /* 너비 줄어들지 않도록 고정 */
+  flex-shrink: 0;
   width: 40px;
   font-size: 14px;
   font-weight: 600;
   color: #333;
 }
 
-/* 주소 입력 input
-   - flex: 1 로 남은 공간 모두 차지
-   - 직접 타이핑 / 카카오 팝업 / 역지오코딩 세 가지로 채워짐 */
+/* 주소 입력 input */
 .input_row input[type="text"] {
   flex: 1; /* 버튼들 제외한 나머지 너비 */
   min-width: 0; /* flex 자식의 overflow 방지 */
@@ -57,19 +49,7 @@
   outline: none;
 }
 
-.input_row input[type="text"]::placeholder {
-  color: #aaa;
-}
-
-/* 포커스 시 파란 테두리 강조 */
-.input_row input[type="text"]:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-}
-
-/* 검색 / 주소찾기 버튼
-   JSX 에서 "btn primary sm" 전역 클래스를 사용하므로
-   전역 스타일이 없을 경우를 대비한 폴백 스타일 */
+/* 주소찾기 버튼  */
 .input_row button {
   flex-shrink: 0;
   height: 38px;
@@ -79,8 +59,8 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  white-space: nowrap; /* 버튼 텍스트 줄바꿈 방지 */
-  background-color: #4a90e2;
+  white-space: nowrap;
+  background-color: var(--gray1);
   color: #fff;
   transition:
     background-color 0.2s,
@@ -88,51 +68,13 @@
 }
 
 .input_row button:hover {
-  background-color: #357abd;
+  background-color: var(--gray2);
 }
 
 .input_row button:active {
   opacity: 0.8;
 }
 
-/* ── 에러 메시지 ─────────────────────────────────────────── */
-/* 빈 입력 / 검색 결과 없음 등 → 주소 입력창 바로 아래 표시 */
-.error_msg {
-  margin: 0;
-  padding: 0 2px;
-  font-size: 12px;
-  color: #e53e3e; /* 붉은 계열 강조 */
-}
-
-/* ── 위도/경도 표시 ──────────────────────────────────────── */
-/* "위도: X.XXXXXXX  경도: Y.YYYYYYY" 또는 초기 안내 문구 표시 */
-.lat_lng {
-  margin: 0;
-  padding: 10px 14px;
-  background-color: #f5f8ff; /* 연한 파란 배경으로 시각적 구분 */
-  border: 1px solid #dce8f8;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #555;
-  line-height: 1.5;
-}
-
-/* 좌표값 강조 (<strong> 태그) */
-.lat_lng strong {
-  color: #2563eb;
-  font-weight: 700;
-}
-
-/* 초기 안내 문구 (<span> 태그) — coords 가 null 일 때 */
-.lat_lng span {
-  color: #888;
-  font-style: italic;
-}
-
-/* ── 지도 컨테이너 ───────────────────────────────────────── */
-/* ⚠ Naver 지도는 이 div 에 width / height 가 없으면 표시되지 않음.
-      width: 100% 와 height 를 반드시 지정해야 함.
-      JSX 인라인 style 에도 height: 450px 를 지정하고 있어 이중 보장됨. */
 .map_div {
   width: 100%;
   height: 450px; /* 지도 표시 높이 — 필요에 따라 조정 */
@@ -140,4 +82,12 @@
   border-radius: 8px;
   overflow: hidden; /* border-radius 가 지도에도 적용되도록 */
   border: 1px solid #ddd;
+}
+
+.btnzone {
+  display: flex;
+}
+
+.confirm {
+  margin: 0 auto;
 }

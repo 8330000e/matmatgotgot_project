@@ -50,7 +50,6 @@ function App() {
           <Route path="/rest/review/regist" element={<ReviewRegist />} />
           <Route path="/rest/review/view/:reviewNo" element={<ReviewView />} />
           <Route path="/receipt" element={<ReceiptCheck />} />
-          <Route path="/mapmodal" element={<SepcifyCurLocationModal />} />
 
           <Route path="/mypage" element={<MypagePage />} />
           {/* <Route path="/board/list" element={<BoardListPage />} /> */}

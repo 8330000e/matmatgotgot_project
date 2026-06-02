@@ -1,10 +1,8 @@
 package com.twotwo.matmatgotgot.domain.restaurant.controller;
 
+import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
@@ -151,13 +149,23 @@ public class RestaurantController {
 
     // 맛집 메인화면 추천 리스트
     @GetMapping("/recommand")
-    public ResponseEntity<?> getRecommandLists(@RequestBody Long memberNo) {
+    public ResponseEntity<?> getRecommandLists(@RequestParam Long memberNo) {
         List<Recommand> popular = restaurantService.getPopular(memberNo);
         List<Recommand> like = restaurantService.getLike(memberNo);
 
+        RecommandResponse res = RecommandResponse.builder()
+                .popular(popular)
+                .like(like)
+                .build();
 
+        return ResponseEntity.ok(res);
     }//
 
+    // 맛집 메인화면 근처
+    @GetMapping("/region")
+    public ResponseEntity<?> getRegionList(@RequestParam Long memberNo, @ModelAttribute Coords coords) {
+       List<Recommand> region = restaurantService.getRegion(memberNo, coords);
 
-
+        return ResponseEntity.ok(region);
+    }//
 }

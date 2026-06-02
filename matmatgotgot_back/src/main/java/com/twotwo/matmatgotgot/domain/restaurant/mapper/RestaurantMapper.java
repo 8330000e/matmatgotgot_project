@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
+import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
@@ -68,4 +69,6 @@ public interface RestaurantMapper {
 
     List<Recommand> getLike(Long memberNo);
 
+    List<Recommand> getRegion(@Param("memberNo") Long memberNo,
+                              @Param("coords") Coords coords);
 }
