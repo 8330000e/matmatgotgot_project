@@ -6,7 +6,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CloseIcon from "@mui/icons-material/Close";
-import TripRoute from "../../components/trip/CourseRouteMap";
 import CourseRouteMap from "../../components/trip/CourseRouteMap";
 
 const CourseDetail = () => {

@@ -83,4 +83,125 @@
             rest_name ASC
     </select>
 
+    <select id="selectTags" resultType="map">
+        SELECT tag_no, tag_name
+        FROM TAG_TBL
+    </select>
+
+    <select id="selectMenus" resultType="menuDTO">
+        SELECT
+            MENU_NO,
+            REST_NO,
+            MENU_NAME AS name,
+            MENU_PRICE AS price,
+            CONCAT('http://localhost:9999/menu/', MENU_IMG) AS imagePreview
+        FROM MENU_TBL
+        WHERE REST_NO = #{restNo}
+    </select>
+
+    <insert id="insertMenu">
+        INSERT INTO MENU_TBL
+        (
+            REST_NO,
+            MENU_NAME,
+            MENU_PRICE,
+            MENU_IMG
+        )
+        VALUES
+            (
+                #{restNo},
+                #{menuName},
+                #{menuPrice},
+                #{menuImg}
+            )
+    </insert>
+
+    <insert id="insertTravelPlan" parameterType="map">
+        <selectKey keyProperty="tplan_no" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO TRAVEL_PLAN_TBL (
+        member_no, tplan_title, tplan_desc, tplan_region, tplan_days, tplan_total_price
+        ) VALUES (
+        #{memberNo}, #{tplanTitle}, #{tplanDesc}, #{tplanRegion}, #{tplanDays}, #{tplanTotalPrice}
+        )
+    </insert>
+
+    <insert id="insertPlanTag">
+        INSERT INTO PLAN_TAG_TBL (tplan_no, tag_no)
+        VALUES (#{tplanNo}, #{tagNo})
+    </insert>
+
+    <insert id="insertTravelSchedule" parameterType="map">
+        <selectKey keyProperty="tsche_no" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO TRAVEL_SCHEDULE_TBL (
+        tplan_no, tsche_day_no, tsche_order_no, rest_no
+        ) VALUES (
+        #{tplanNo}, #{tscheDayNo}, #{tscheOrderNo}, #{restNo}
+        )
+    </insert>
+
+    <insert id="insertRecommendMenu">
+        INSERT INTO RECOMMEND_MENU_TBL (tsche_no, menu_no)
+        VALUES (#{tscheNo}, #{menuNo})
+    </insert>
+
+    <insert id="createTripCourse">
+        INSERT INTO TRAVEL_ROUTE_TBL (from_tsche_no, to_tsche_no, transit_type)
+        VALUES (#{fromTscheNo}, #{toTscheNo}, #{transitType})
+    </insert>
+
+    <sql id="selectThumImg">
+        (SELECT CONCAT('http://localhost:9999/menu/', r.rest_thumb)
+         FROM TRAVEL_SCHEDULE_TBL s
+                  JOIN RESTAURANT_TBL r ON s.rest_no = r.rest_no
+         WHERE s.tplan_no = tp.tplan_no
+         ORDER BY s.tsche_day_no ASC, s.tsche_order_no ASC
+             LIMIT 1) AS imgName
+    </sql>
+
+    <select id="selectAllPlans" resultType="tripCourseResponse">
+        SELECT
+        tp.member_no AS memberNo,
+        tp.tplan_no AS tplanNo,
+        tp.tplan_title AS title,
+        tp.tplan_desc AS `desc`,
+        tp.tplan_days AS tplanDays,
+        tp.tplan_like AS tplanLike,
+        tp.tplan_view AS tplanView,
+        <include refid="selectThumImg"/>
+
+        FROM TRAVEL_PLAN_TBL tp
+
+        WHERE tp.tplan_status = 1
+
+        ORDER BY tp.created_at DESC
+    </select>
+
+    <select id="selectFavoritePlans"
+            resultType="tripCourseResponse">
+
+        SELECT
+        tp.member_no AS memberNo,
+        tp.tplan_no AS tplanNo,
+        tp.tplan_title AS title,
+        tp.tplan_desc AS `desc`,
+        tp.tplan_days AS tplanDays,
+        tp.tplan_like AS tplanLike,
+        tp.tplan_view AS tplanView,
+        <include refid="selectThumImg"/>
+
+        FROM FAVORITE_PLAN_TBL fp
+
+        JOIN TRAVEL_PLAN_TBL tp
+        ON fp.tplan_no = tp.tplan_no
+
+        WHERE fp.member_no = #{memberNo}
+        AND tp.tplan_status = 1
+
+        ORDER BY fp.created_at DESC
+
+    </select>
 </mapper>

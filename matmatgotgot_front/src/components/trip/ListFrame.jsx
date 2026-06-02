@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom"; // 1. useNavigate 임포트
 import styles from "./ListFrame.module.css";
 import ControlPointSharpIcon from "@mui/icons-material/ControlPointSharp";
 
 const ListFrame = ({ order, iconText, items }) => {
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
+  const navigate = useNavigate(); // 2. navigate 함수 생성
 
   const scrollRef = useRef(null);
 
@@ -53,6 +55,17 @@ const ListFrame = ({ order, iconText, items }) => {
     handleScroll();
   }, [items]);
 
+  // 카드 클릭 시 디테일 페이지 이동 함수
+  const handleCardClick = (tplanNo) => {
+    if (!tplanNo) return;
+    navigate(`/trip/detail/${tplanNo}`);
+  };
+
+  // 3. 새 코스 만들기 버튼 클릭 시 이동 함수
+  const handleCreateCourseClick = () => {
+    navigate("/trip/create");
+  };
+
   return (
     <div className={styles.frameContainer}>
       <div className={styles.titleSection}>
@@ -76,7 +89,12 @@ const ListFrame = ({ order, iconText, items }) => {
           style={{ cursor: "grab" }}
         >
           {order === 0 && (
-            <div className={styles.createCourseBtn}>
+            /* 4. 새 코스 만들기 버튼에 onClick 이벤트 및 커서 스타일 추가 */
+            <div
+              className={styles.createCourseBtn}
+              onClick={handleCreateCourseClick}
+              style={{ cursor: "pointer" }}
+            >
               <div className={styles.plusIcon}>
                 <ControlPointSharpIcon />
               </div>
@@ -85,14 +103,21 @@ const ListFrame = ({ order, iconText, items }) => {
           )}
 
           {items.map((item, index) => {
-            const imgSrc = new URL(
-              `../../assets/restaurant/${item.imgName}`,
-              import.meta.url,
-            ).href;
-            console.log(imgSrc);
+            const isFullUrl = item.imgName?.startsWith("http");
+            const imgSrc = isFullUrl
+              ? item.imgName
+              : new URL(
+                  `../../assets/restaurant/${item.imgName}`,
+                  import.meta.url,
+                ).href;
 
             return (
-              <div key={`listFrame-${index}`} className={styles.cardItem}>
+              <div
+                key={`listFrame-${index}`}
+                className={styles.cardItem}
+                onClick={() => handleCardClick(item.tplanNo)}
+                style={{ cursor: "pointer" }}
+              >
                 <div className={styles.thumbnailBox}>
                   <img
                     src={imgSrc}

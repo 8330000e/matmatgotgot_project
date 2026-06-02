@@ -56,7 +56,7 @@ function App() {
 
           <Route path="/trip" element={<TripMain />} />
           <Route path="/trip/create" element={<CreateCourse />} />
-          <Route path="/trip/detail" element={<CourseDetail />} />
+          <Route path="/trip/detail/:tplanNo" element={<CourseDetail />} />
         </Routes>
       </div>
       <Footer />

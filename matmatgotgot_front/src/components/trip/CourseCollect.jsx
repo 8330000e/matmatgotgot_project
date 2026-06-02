@@ -3,13 +3,12 @@ import styles from "./CourseCollect.module.css";
 import SearchIcon from "@mui/icons-material/Search";
 import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
 
-const CourseCollect = () => {
+const CourseCollect = ({ items }) => {
   const [showTagPopup, setShowTagPopup] = useState(false);
   const [isInfinite, setIsInfinite] = useState(false);
   const [visibleCount, setVisibleCount] = useState(12);
   const observerRef = useRef(null);
 
-  // 60개의 임시 테스트 데이터 생성
   const allCourseItems = Array(60)
     .fill(null)
     .map((_, i) => ({
@@ -19,18 +18,6 @@ const CourseCollect = () => {
     }));
 
   const currentItems = allCourseItems.slice(0, visibleCount);
-
-  // 제공해주신 색상 매칭을 위한 테마 맞춤 태그 상태
-  const [tagList, setTagList] = useState([
-    { id: 1, text: "#감성", active: false },
-    { id: 2, text: "#집", active: false },
-    { id: 3, text: "#가고 싶다", active: false },
-    { id: 4, text: "#집", active: true },
-    { id: 5, text: "#가고 싶다", active: false },
-    { id: 6, text: "#가고 싶다", active: false },
-    { id: 7, text: "#집", active: false },
-    { id: 8, text: "#감성", active: false },
-  ]);
 
   const toggleTag = (id) => {
     setTagList((prev) =>
