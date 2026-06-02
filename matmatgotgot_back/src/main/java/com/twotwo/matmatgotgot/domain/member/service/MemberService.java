@@ -26,6 +26,11 @@ public class MemberService {
         return memberList.stream().map(MemberResponse::from).toList();
     }
 
+    public Member selectOneMember(String memberId) {
+        Member member = memberMapper.selectOneMember(memberId);
+        return member;
+    }
+
     @Transactional
     public int insertMember(Member member) {
         String memberPw = member.getMemberPw();
@@ -112,4 +117,6 @@ public class MemberService {
         }
         return -1;
     }
+
+
 }

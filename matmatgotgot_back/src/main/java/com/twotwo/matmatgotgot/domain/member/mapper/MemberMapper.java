@@ -26,5 +26,6 @@ public interface MemberMapper {
     int kakaoInsertMember(Member newMember);
 
     int naverInsertMember(Member newMember);
-	
+
+    Member searchId(String memberId);
 }

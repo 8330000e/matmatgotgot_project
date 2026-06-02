@@ -62,6 +62,12 @@ public class MemberController {
 		return ResponseEntity.ok(result);
 	}
 
+	@PostMapping(value = "/exists")
+	public ResponseEntity<?> dupCheckId(@RequestParam String memberId) {
+		Member m = memberService.selectOneMember(memberId);
+		return ResponseEntity.ok(m==null);
+	}
+
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
 		Member loginInput = new Member();

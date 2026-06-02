@@ -14,6 +14,8 @@ const Join = () => {
     memberNickname: "",
     memberEmail: "",
   });
+  const [checkId, setCheckId] = useState(0);
+  const [checkPw, setCheckPw] = useState(0);
   const [memberPwRe, setMemberPwRe] = useState("");
   const inputMember = (e) => {
     const { name, value } = e.target;
@@ -21,12 +23,36 @@ const Join = () => {
   };
   const [mailAuth, setMailAuth] = useState(0);
   const [mailAuthCode, setMailAuthCode] = useState(null);
+  const idDupCheck = () => {
+    console.log(member);
+    const idReg = /^[a-zA-Z0-9]{6,20}$/;
+    if(idReg.test(member.memberId)){
+      setCheckId(4);
+    }
+    axios
+        .post(`${import.meta.env.VITE_BACKSERVER}/members/exists?memberId=${member.memberId}`)
+        .then((res)=>{
+          console.log(res);
+          if(res.data.length === 0){
+            setCheckId(0);
+          }
+          if (res.data) {
+            setCheckId(2);
+          }else{
+            setCheckId(1);
+          }
+        })
+        .catch((err)=>{console.log(err);});
+  };
   const pwDupCheck = () => {
-    const pw = document.getElementById("memberPw").value;
-    const pwConfirm = document.getElementById("memberPwConfirm").value;
-    if (pw !== pwConfirm) {
-      alert("Passwords do not match.");
-      return false;
+    const idReg = /^[a-zA-Z0-9]{8,50}$/;
+    if(idReg.test(member.memberPw)){
+      setCheckId(4);
+    }
+    if (member.memberPw === memberPwRe) {
+      setCheckPw(1);
+    } else {
+      setCheckPw(2);
     }
     return true;
   };
@@ -152,7 +178,13 @@ const Join = () => {
           name="memberId"
           value={member.memberId}
           onChange={inputMember}
+          onBlur={idDupCheck}
         />
+          {checkId < 0 ? (
+              checkId === 1
+              ? <div className={styles.idcheckf}>이미 사용 중인 아이디입니다.</div>
+              : <div className={styles.idcheckt}>사용 가능한 아이디입니다.</div>
+          ): checkId > 0 ? <div className={styles.idcheckf}>아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.</div> : null}
         </div>
         <div>
           <div className={styles.inputLabel}>
@@ -164,21 +196,32 @@ const Join = () => {
           name="memberPw"
           value={member.memberPw}
           onChange={inputMember}
+          onBlur={pwDupCheck}
         />
+          {checkPw > 0 ?
+            <div className={styles.pwcheckf}>최소 8자 이상 영문과 숫자를 혼합하여주십시오.</div>
+              : null
+          }
         </div>
         <div>
           <div className={styles.inputLabel}>
-        <label htmlFor="memberPwConfirm">비밀번호 확인</label>
+        <label htmlFor="memberPwRe">비밀번호 확인</label>
           </div>
           <Input
           type="password"
-          id="memberPwConfirm"
-          name="memberPwConfirm"
+          id="memberPwRe"
+          name="memberPwRe"
           value={memberPwRe}
           onChange={(e) => {
             setMemberPwRe(e.target.value);
           }}
+          onBlur={pwDupCheck}
         />
+          {checkPw > 0 && (
+              checkPw === 1
+                  ? <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
+                  : <div className={styles.pwcheckf}>비밀번호가 일치하지 않습니다.</div>
+          )}
         </div>
           <div>
             <div className={styles.inputLabel}>
