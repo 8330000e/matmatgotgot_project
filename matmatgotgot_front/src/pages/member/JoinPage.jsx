@@ -1,9 +1,10 @@
 import axios from "axios";
 import styles from "./JoinPage.module.css";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {Input} from "../../components/ui/Form.jsx";
 import check from "../../assets/check.svg"
+import Swal from "sweetalert2";
 
 const Join = () => {
   const navigate = useNavigate();
@@ -67,6 +68,11 @@ const Join = () => {
   const [time, setTime] = useState(180);
   const [timeout, setTimeout] = useState(null);
   const sendMail = () => {
+    setTime(180);
+    if (timeout) {
+      window.clearInterval(timeout);
+    }
+    setMailAuth(1);
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/members/email-verification`, {
         memberEmail: member.memberEmail,
@@ -75,14 +81,25 @@ const Join = () => {
         console.log(res);
         setMailAuthCode(res.data.data);
         setMailAuth(2);
-        window.setInterval(() => {
-          setTime(time - 1);
+        const intervalId = window.setInterval(() => {
+          setTime((prev) => {
+            return prev - 1;
+          });
         }, 1000);
+        setTimeout(intervalId);
       })
       .catch((err) => {
         console.error(err);
       });
   };
+  useEffect(() => {
+    if (time === 0) {
+      window.clearInterval(timeout);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMailAuthCode(null);
+      setTimeout(null);
+    }
+  }, [time])
   const showTime = () => {
     const min = Math.floor(time/60);
     const sec = String(time%60).padStart(2, "0");
@@ -94,6 +111,25 @@ const Join = () => {
       .then((res) => {
         console.log(res);
         if (res.data === 1) {
+          Swal.mixin({
+            toast: true,
+            position: "top-end",
+            topLayer: true,
+            background: "#ffd95a",
+            color: "#2b1b17",
+            fontWeight: "600",
+            iconColor: "#fff",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          }).fire({
+            icon: "success",
+            title: "회원가입 성공",
+          });
           navigate("/login");
         }
       })
@@ -344,10 +380,15 @@ const Join = () => {
                         className={styles.submit}
                         type="button"
                         onClick={()=> {
-                          if(mailAuthCode === mailAuthInput) {
+                          if (mailAuthCode === mailAuthInput) {
                             setMailAuth(3);
+                            window.clearInterval(timeout);
+                            setTimeout(null);
+                          } else {
+                            alert("인증코드가 올바르지 않습니다.");
                           }
                         }}
+                        disabled = {mailAuth === 3}
                     >
                       인증하기
                     </button>
