@@ -16,6 +16,7 @@ const Join = () => {
   });
   const [checkId, setCheckId] = useState(0);
   const [checkPw, setCheckPw] = useState(0);
+  const [checkPwRe, setCheckPwRe] = useState(0);
   const [memberPwRe, setMemberPwRe] = useState("");
   const inputMember = (e) => {
     const { name, value } = e.target;
@@ -26,10 +27,6 @@ const Join = () => {
   const [mailAuthInput, setMailAuthInput] = useState("");
   const idDupCheck = () => {
     console.log(member);
-    const idReg = /^[a-zA-Z0-9]{6,20}$/;
-    if(idReg.test(member.memberId)){
-      setCheckId(4);
-    }
     axios
         .post(`${import.meta.env.VITE_BACKSERVER}/members/exists?memberId=${member.memberId}`)
         .then((res)=>{
@@ -41,30 +38,31 @@ const Join = () => {
             if(member.memberId ==="" || member.memberId == undefined){
               return setCheckId(0);
             }
-            setCheckId(2);
+            setCheckId(3);
           }else{
+            setCheckId(2);
+          }
+          const idReg = /^[a-zA-Z0-9]{6,20}$/;
+          if(idReg.test(member.memberId)){
             setCheckId(1);
           }
         })
         .catch((err)=>{console.log(err);});
   };
   const pwDupCheck = () => {
+    if (member.memberPw === memberPwRe) {
+      return setCheckPwRe(1);
+    } else {
+      return setCheckPwRe(2);
+    }
+  };
+  const pwReg = () => {
     const idReg = /^[a-zA-Z0-9]{8,50}$/;
     if(idReg.test(member.memberPw)){
-      setCheckId(4);
-    }
-    if (member.memberPw === memberPwRe) {
-      if(member.memberPw ===""){
-        return setCheckPw(0);
-      }
-      setCheckPw(1);
-    } else {
-      if(member.memberPw ===""){
-        return setCheckPw(0);
-      }
       setCheckPw(2);
+    }else{
+      setCheckPw(1);
     }
-    return true;
   };
   const [time, setTime] = useState(180);
   const [timeout, setTimeout] = useState(null);
@@ -104,6 +102,7 @@ const Join = () => {
       });
   };
   const [isCheckedAll, setCheckedAll] = useState({
+    all: false,
     age: false,
     terms: false,
     privacy: false,
@@ -126,6 +125,7 @@ const Join = () => {
     const nextState = !isAllChecked;
 
     setCheckedAll({
+      all: nextState,
       age: nextState,
       terms: nextState,
       privacy: nextState,
@@ -226,11 +226,13 @@ const Join = () => {
           onChange={inputMember}
           onBlur={idDupCheck}
         />
-          {checkId < 0 ? (
-              checkId === 1
-              ? <div className={styles.idcheckf}>이미 사용 중인 아이디입니다.</div>
-              : <div className={styles.idcheckt}>사용 가능한 아이디입니다.</div>
-          ): checkId > 0 ? <div className={styles.idcheckf}>아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.</div> : null}
+          {checkId > 0
+              ? checkId === 1
+                  ? checkId === 2
+                      ? checkId === 3 && <div className={styles.idcheckf}>이미 사용 중인 아이디입니다.</div>
+                      : <div className={styles.idcheckt}>사용 가능한 아이디입니다.</div>
+                  : <div className={styles.idcheckf}>아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.</div>
+             : null}
         </div>
         <div>
           <div className={styles.inputLabel}>
@@ -242,10 +244,12 @@ const Join = () => {
           name="memberPw"
           value={member.memberPw}
           onChange={inputMember}
-          onBlur={pwDupCheck}
+          onBlur={pwReg}
         />
-          {checkPw > 0 ?
-            <div className={styles.pwcheckf}>최소 8자 이상 영문과 숫자를 혼합하여주십시오.</div>
+          {checkPw > 0
+              ? checkPw === 1
+                      ? <div className={styles.pwcheckf}>최소 8자 이상 영문과 숫자를 혼합하여주십시오.</div>
+                      : null
               : null
           }
         </div>
@@ -263,10 +267,14 @@ const Join = () => {
           }}
           onBlur={pwDupCheck}
         />
-          {checkPw > 0 && (
-              checkPw === 1
+          {checkPwRe > 0 && (
+              checkPwRe.length > 0 ?
+              checkPwRe === 1
                   ? <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
                   : <div className={styles.pwcheckf}>비밀번호가 일치하지 않습니다.</div>
+              : checkPwRe === 2
+                  ? <div className={styles.pwcheckf}>비밀번호가 일치하지 않습니다.</div>
+                  : <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
           )}
         </div>
           <div>
@@ -360,7 +368,7 @@ const Join = () => {
           <div className={styles.stipulationcheck}>
             <ul>
               <li>
-                <button type="button" onClick={handleToggleAll} className={`${isCheckedAll. ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
+                <button type="button" onClick={handleToggleAll} className={`${isCheckedAll.all? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
                 <div>전체동의</div>
               </li>
               <li>
