@@ -153,6 +153,7 @@ public class RestaurantController {
     @GetMapping("/recommand")
     public ResponseEntity<?> getRecommandLists(@RequestBody Long memberNo) {
         List<Recommand> popular = restaurantService.getPopular(memberNo);
+        List<Recommand> like = restaurantService.getLike(memberNo);
 
 
     }//

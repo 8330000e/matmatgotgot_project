@@ -216,9 +216,25 @@
                 SELECT 1
                 FROM rest_like_tbl rl
                 WHERE rl.rest_no = r.rest_no
-                  AND rl.member_no = 1
+                  AND rl.member_no = #{memberNo}
             ) AS is_like
 
         FROM restaurant_tbl r
+    </select>
+
+    <select id="getLike" resultType="recommand">
+        SELECT
+            r.rest_no,
+            r.rest_name,
+            r.rest_thumb,
+            r.rest_addr,
+            r.category,
+            ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
+            TRUE AS is_like
+
+        FROM restaurant_tbl r
+                 INNER JOIN rest_like_tbl rl
+                            ON r.rest_no = rl.rest_no
+        WHERE rl.member_no = #{memberNo}
     </select>
 </mapper>

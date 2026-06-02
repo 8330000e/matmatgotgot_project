@@ -65,4 +65,7 @@ public interface RestaurantMapper {
     int deleteComment(Long commentNo);
 
     List<Recommand> getPopular(Long memberNo);
+
+    List<Recommand> getLike(Long memberNo);
+
 }

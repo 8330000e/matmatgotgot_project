@@ -173,8 +173,17 @@ public class RestaurantService {
     }//
 
     public List<Recommand> getPopular(Long memberNo) {
-        List<Recommand> popular = restaurantMapper.getPopular(memberNo);
 
-        return popular;
+        return restaurantMapper.getPopular(memberNo);
     }//
+
+    public List<Recommand> getLike(Long memberNo) {
+        return restaurantMapper.getLike(memberNo);
+    }//
+
+    public List<Recommand> getRegion(Long memberNo) {
+        List<Recommand> region = restaurantMapper.getRegion(memberNo);
+        return region
+    }//
+
 }
