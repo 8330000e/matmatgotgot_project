@@ -13,7 +13,7 @@ public interface MemberMapper {
 
 	List<Member> selectAll();
 
-    int insertMember(Member member);
+    Integer insertMember(Member member);
 
     Member selectOneMember(String memberId);
 
@@ -30,4 +30,7 @@ public interface MemberMapper {
     int updateLocation(@Param("memberNo") Long memberNo,
                        @Param("coords") Coords coords);
 
+    int naverInsertMember(Member newMember);
+
+    Member searchId(String memberId);
 }

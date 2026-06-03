@@ -27,12 +27,17 @@ public class MemberService {
         return memberList.stream().map(MemberResponse::from).toList();
     }
 
+    public Member selectOneMember(String memberId) {
+        Member member = memberMapper.selectOneMember(memberId);
+        return member;
+    }
+
     @Transactional
-    public int insertMember(Member member) {
+    public Integer insertMember(Member member) {
         String memberPw = member.getMemberPw();
         String encPw = bcrypt.encode(memberPw);
         member.setMemberPw(encPw);
-        int result = memberMapper.insertMember(member);
+        Integer result = memberMapper.insertMember(member);
         return result;
     }
 
@@ -105,4 +110,19 @@ public class MemberService {
     public int updateLocation(Long memberNo, Coords coords) {
         return memberMapper.updateLocation(memberNo, coords);
     }//
+    
+    public int insertMemberN(Member newMember) {
+        String memberPw = newMember.getMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        newMember.setMemberPw(encPw);
+        int result = memberMapper.insertMember(newMember);
+        if(result > 0) {
+            int socialResult = memberMapper.naverInsertMember(newMember);
+            memberMapper.loginLog(newMember.getMemberNo());
+            return socialResult;
+        }
+        return -1;
+    }
+
+
 }
