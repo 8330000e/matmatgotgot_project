@@ -1,6 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.controller;
 
-import com.twotwo.matmatgotgot.domain.member.entity.Coords;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.global.util.EmailSender;
 
 import java.io.BufferedReader;
@@ -86,6 +86,8 @@ public class MemberController {
 		response.setMemberThumb(member.getMemberThumb());
 		response.setAdmin(loginMember.isAdmin());
 		response.setToken(loginMember.getToken());
+		response.setLat(member.getLat());
+		response.setLng(member.getLng());
 
 		long validityMilli = loginMember.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		response.setValidity(validityMilli);
@@ -444,13 +446,8 @@ public class MemberController {
 	}
 
 	@PatchMapping("/location")
-	public ResponseEntity<?> updateLocation (@ModelAttribute Coords coords, @RequestParam Long memberNo, Authentication auth) {
-//		String memberId1 = SecurityContextHolder.getContext().getAuthentication().getName();
-//		System.out.println("memberId1: " + memberId1);
-//		String memberId2 = auth.getName();
-//		System.out.println("memberId2: " + memberId2);
-
-		int result = memberService.updateLocation(memberNo, coords);
+	public ResponseEntity<?> updateLocation (@ModelAttribute Coords coords, Authentication auth) {
+		int result = memberService.updateLocation(auth.getName(), coords);
 		return ResponseEntity.ok(result);
 	}//
 

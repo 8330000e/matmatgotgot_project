@@ -1,3 +1,24 @@
+/* ════════════════════════════════════
+   최상위 페이지 컨테이너
+   RestaurantMain(슬라이더) + 필터+목록 영역을 세로로 쌓음
+   ════════════════════════════════════ */
+.recommand_filter {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* 전체 페이지를 1200px로 제한하고 가운데 정렬 */
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* RestaurantMain 슬라이더 영역 컨테이너 — 하단 구분선으로 분리 */
+.reccomand {
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--gray6);
+  padding-bottom: 8px;
+}
+
 /* ========== 전체 페이지 래퍼 ========== */
 .page_wrap {
   display: flex;
@@ -9,11 +30,15 @@
 
 /* ========== 좌측: 필터 사이드바 ========== */
 .filter_section {
-  width: 148px;
-  flex-shrink: 0; /* 화면이 좁아져도 너비 유지 */
+  width: 200px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px;
+  background-color: var(--gray8);
+  border: 1px solid var(--gray6);
+  border-radius: 8px;
+  padding: 10px 20px;
+  height: 100%;
 }
 
 /* 필터 대제목 */
@@ -38,7 +63,7 @@
 .region input {
   width: 100%;
   /* 노란색 배경으로 강조 */
-  background-color: var(--primary);
+  background-color: var(--gray7);
   border: none;
   border-radius: 8px;
   padding: 7px 10px;
@@ -118,9 +143,10 @@
   transition: background-color 0.15s ease;
 }
 
-/* 선택된 상태: 노란색 배경 */
+/* 선택된 상태: 어두운 배경 + 흰 글씨 (이미지 디자인 반영 — 카테고리와 구분) */
 .order label:has(input:checked) {
-  background-color: var(--primary);
+  background-color: var(--text1);
+  color: var(--gray8);
   font-weight: 600;
 }
 
@@ -131,7 +157,6 @@
 /* ========== 필터 적용 버튼 ========== */
 /* margin-top: auto 로 사이드바 최하단에 자동 배치 */
 .filter_btn {
-  margin-top: auto;
 }
 
 .filter_btn button {
@@ -146,6 +171,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  margin-top: 20px;
 }
 
 .filter_btn button:hover {
@@ -165,6 +191,7 @@
 .list_top {
   display: flex;
   margin-bottom: 16px;
+  margin-left: auto;
 }
 
 /* ========== 맛집 이름 검색 바 ========== */

@@ -39,7 +39,6 @@ public class JwtAuthFilter extends GenericFilter {
             chain.doFilter(request, response);
             return;
         }
-        log.info("token2222222: {}", token);
 
         SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
         // 토큰 검증 및 claims 추출
@@ -49,8 +48,6 @@ public class JwtAuthFilter extends GenericFilter {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
-            log.info("claims = {}", claims);
 
             String memberId = claims.getSubject();
 

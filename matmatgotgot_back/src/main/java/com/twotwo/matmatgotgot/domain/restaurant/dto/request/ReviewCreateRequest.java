@@ -9,7 +9,7 @@ import java.util.List;
 public class ReviewCreateRequest {
 
     private Long reviewNo;
-    private Long memberNo;
+    private String memberId;
     private Long restNo;
     private String restName;
     private String restAddr;

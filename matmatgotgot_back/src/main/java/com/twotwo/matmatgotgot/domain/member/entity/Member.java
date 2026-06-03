@@ -26,6 +26,6 @@ public class Member {
     private LocalDateTime enrollDate;
     private Boolean admin;
     private String socialLogin;
-
-    
+    private Double lat;
+    private Double lng;
 }

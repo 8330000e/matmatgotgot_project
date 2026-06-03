@@ -1,6 +1,5 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
-import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
@@ -8,6 +7,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsRespons
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
@@ -43,8 +43,8 @@ public class RestaurantService {
     }//
 
 
-    public RestViewResponse restaurantViewInfo(Long memberNo, Long restNo) {
-        RestViewResponse restRes = restaurantMapper.restaurantViewInfo(memberNo, restNo);
+    public RestViewResponse restaurantViewInfo(String memberId, Long restNo) {
+        RestViewResponse restRes = restaurantMapper.restaurantViewInfo(memberId, restNo);
         List<String> tags = restaurantMapper.getTags(restNo);
         List<String> menus = restaurantMapper.getMenus(restNo);
 
@@ -169,17 +169,17 @@ public class RestaurantService {
         }
     }//
 
-    public List<Recommand> getPopular(Long memberNo) {
+    public List<Recommand> getPopular(String memberId) {
 
-        return restaurantMapper.getPopular(memberNo);
+        return restaurantMapper.getPopular(memberId);
     }//
 
-    public List<Recommand> getLike(Long memberNo) {
-        return restaurantMapper.getLike(memberNo);
+    public List<Recommand> getLike(String memberId) {
+        return restaurantMapper.getLike(memberId);
     }//
 
-    public List<Recommand> getRegion(Long memberNo, Coords coords) {
-        List<Recommand> region = restaurantMapper.getRegion(memberNo, coords);
+    public List<Recommand> getRegion(String memberId, Coords coords) {
+        List<Recommand> region = restaurantMapper.getRegion(memberId, coords);
 
         return region;
     }//

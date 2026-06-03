@@ -1,4 +1,4 @@
-package com.twotwo.matmatgotgot.domain.member.entity;
+package com.twotwo.matmatgotgot.domain.restaurant.entity;
 
 import lombok.Data;
 

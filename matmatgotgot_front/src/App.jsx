@@ -42,16 +42,12 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
 
-          <Route path="/rest" element={<RestaurantMain />} />
+          <Route path="/rest" element={<RestaurantDetailSearch />} />
           <Route
             path="/login/oauth2/code/naver"
             element={<NaverCallbackPage />}
           />
           <Route path="/finding" element={<Finding />} />
-          <Route
-            path="/rest/detailsearch"
-            element={<RestaurantDetailSearch />}
-          />
           <Route path="/rest/regist" element={<RestaurantRegist />} />
           <Route path="/rest/view" element={<RestaurantView />} />
           <Route path="/rest/review/regist" element={<ReviewRegist />} />

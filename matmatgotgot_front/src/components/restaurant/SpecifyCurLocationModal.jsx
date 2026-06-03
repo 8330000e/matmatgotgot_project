@@ -2,8 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./SpecifyCurLocationModal.module.css";
 import { useKakaoPostcode } from "@clroot/react-kakao-postcode";
 import axios from "axios";
+import { useAuthStore } from "../../store/useAuthStore";
 
-const SpecifyCurLocationModal = ({ setLocation, setModalOpen }) => {
+const SpecifyCurLocationModal = ({ setModalOpen }) => {
+  const setLat = useAuthStore((state) => state.setLat);
+  const setLng = useAuthStore((state) => state.setLng);
+  const lat = useAuthStore((state) => state.lat);
+  const lng = useAuthStore((state) => state.lng);
   const mapDivRef = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
@@ -15,8 +20,10 @@ const SpecifyCurLocationModal = ({ setLocation, setModalOpen }) => {
     // 지도 div 또는 Naver Maps SDK 가 아직 로드되지 않았으면 중단
     if (!mapDivRef.current || !window.naver) return;
 
-    // 기본 중심 좌표 (서울 시청)
-    const defaultCenter = new naver.maps.LatLng(37.5662952, 126.9779451);
+    const defaultCenter =
+      lat == null || lng == null
+        ? new naver.maps.LatLng(37.5662952, 126.9779451) // 기본 위치 (서울 시청)
+        : new naver.maps.LatLng(lat, lng);
 
     // 지도 생성
     const map = new naver.maps.Map(mapDivRef.current, {
@@ -32,7 +39,7 @@ const SpecifyCurLocationModal = ({ setLocation, setModalOpen }) => {
 
     // 인포윈도우 생성 (마커 위에 말풍선으로 주소 표시)
     const infoWindow = new naver.maps.InfoWindow({
-      content: "<div style='padding:8px 12px'><p>서울 시청</p></div>",
+      content: "<div style='padding:8px 12px'><p></p></div>",
     });
 
     // 이후 handleSearch·역지오코딩 함수에서도 접근할 수 있도록 ref에 저장
@@ -142,13 +149,10 @@ const SpecifyCurLocationModal = ({ setLocation, setModalOpen }) => {
 
   const confirm = () => {
     axios
-      .patch(
-        `${import.meta.env.VITE_BACKSERVER}/members/location?memberNo=1`,
-        coords,
-      )
+      .patch(`${import.meta.env.VITE_BACKSERVER}/members/location`, coords)
       .then((res) => {
-        console.log(res);
-        setLocation(coords);
+        setLat(coords.lat);
+        setLng(coords.lng);
         setModalOpen(false);
       })
       .catch((err) => {

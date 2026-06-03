@@ -19,6 +19,11 @@ const useAuthStore = create(
       token: null,
       endTime: null,
       isReady: false,
+      lat: null,
+      lng: null,
+
+      setLat: (lat) => set({ lat }),
+      setLng: (lng) => set({ lng }),
 
       //타이머 정지 함수
       stopLoginTimer: () => {
@@ -34,6 +39,8 @@ const useAuthStore = create(
           admin: data.admin,
           token: data.token,
           endTime: data.endTime,
+          lng: data.lng,
+          lat: data.lat,
         });
         axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
@@ -68,6 +75,8 @@ const useAuthStore = create(
           admin: null,
           token: null,
           endTime: null,
+          lat: null,
+          lng: null,
         });
 
         delete axios.defaults.headers.common["Authorization"];
@@ -118,6 +127,8 @@ const useAuthStore = create(
         admin: state.admin,
         token: state.token,
         endTime: state.endTime,
+        lat: state.lat,
+        lng: state.lng,
       }),
 
       onRehydrateStorage: () => (state) => {

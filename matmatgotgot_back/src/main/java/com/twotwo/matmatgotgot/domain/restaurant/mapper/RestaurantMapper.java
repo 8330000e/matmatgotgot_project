@@ -1,6 +1,5 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
-import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
@@ -8,6 +7,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsRespons
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,7 +21,7 @@ public interface RestaurantMapper {
 
     int restaurantCreate(Restaurant restaurant);
 
-    RestViewResponse restaurantViewInfo(@Param("memberNo") Long memberNo,
+    RestViewResponse restaurantViewInfo(@Param("memberId") String memberId,
                                         @Param("restNo") Long restNo);
 
     List<String> getTags(Long restNo);
@@ -65,10 +65,10 @@ public interface RestaurantMapper {
 
     int deleteComment(Long commentNo);
 
-    List<Recommand> getPopular(Long memberNo);
+    List<Recommand> getPopular(String memberId);
 
-    List<Recommand> getLike(Long memberNo);
+    List<Recommand> getLike(String memberId);
 
-    List<Recommand> getRegion(@Param("memberNo") Long memberNo,
+    List<Recommand> getRegion(@Param("memberId") String memberId,
                               @Param("coords") Coords coords);
 }

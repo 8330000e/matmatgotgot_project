@@ -25,14 +25,14 @@
                 SELECT 1
                 FROM rest_like_tbl rl
                 WHERE rl.rest_no = r.rest_no
-                  AND rl.member_no = #{memberNo}
+                  AND rl.member_id = #{memberId}
             ) AS is_like,
 
             EXISTS (
                 SELECT 1
                 FROM rest_report_tbl rr
                 WHERE rr.rest_no = r.rest_no
-                  AND rr.member_no = #{memberNo}
+                  AND rr.member_id = #{memberId}
             ) AS is_report
 
         FROM restaurant_tbl r
@@ -89,8 +89,8 @@
     </select>
 
     <insert id="reviewInsert" useGeneratedKeys="true" keyProperty="reviewNo">
-        INSERT INTO review_tbl (member_no, rest_no, review_content, rating, visit_date)
-        VALUES(#{memberNo}, #{restNo}, #{reviewContent}, #{rating}, #{reviewVisit})
+        INSERT INTO review_tbl (member_id, rest_no, review_content, rating, visit_date)
+        VALUES(#{memberId}, #{restNo}, #{reviewContent}, #{rating}, #{reviewVisit})
     </insert>
 
     <insert id="insertReviewMenus">
@@ -216,7 +216,7 @@
                 SELECT 1
                 FROM rest_like_tbl rl
                 WHERE rl.rest_no = r.rest_no
-                  AND rl.member_no = #{memberNo}
+                  AND rl.member_id = #{memberId}
             ) AS is_like
 
         FROM restaurant_tbl r
@@ -235,7 +235,7 @@
         FROM restaurant_tbl r
                  INNER JOIN rest_like_tbl rl
                             ON r.rest_no = rl.rest_no
-        WHERE rl.member_no = #{memberNo}
+        WHERE rl.member_id = #{memberId}
     </select>
 
     <select id="getRegion" resultType="recommand">
@@ -251,7 +251,7 @@
         SELECT 1
         FROM rest_like_tbl rl
         WHERE rl.rest_no = r.rest_no
-        AND rl.member_no = #{memberNo}
+        AND rl.member_id = #{memberId}
         ) AS is_like,
 
         (

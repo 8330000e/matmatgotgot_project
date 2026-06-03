@@ -1,8 +1,8 @@
 package com.twotwo.matmatgotgot.domain.restaurant.controller;
 
-import com.twotwo.matmatgotgot.domain.member.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
@@ -79,8 +79,8 @@ public class RestaurantController {
 
     //
     @GetMapping
-    public ResponseEntity<?> restaurantViewInfo(@RequestParam Long memberNo, @RequestParam Long restNo) {
-        RestViewResponse restRes = restaurantService.restaurantViewInfo(memberNo, restNo);
+    public ResponseEntity<?> restaurantViewInfo(@RequestParam Long restNo, Authentication auth) {
+        RestViewResponse restRes = restaurantService.restaurantViewInfo(auth.getName(), restNo);
 
         return ResponseEntity.ok(restRes);
     }//
@@ -101,7 +101,8 @@ public class RestaurantController {
     }//
 
     @PostMapping("/review")
-    public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request) {
+    public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request, Authentication auth) {
+        request.setMemberId(auth.getName());
         try {
             boolean result = restaurantService.reviewCreate(request);
             return ResponseEntity.ok(result);
@@ -148,26 +149,28 @@ public class RestaurantController {
         return ResponseEntity.ok().build();
     }//
 
-    // 맛집 메인화면 추천 리스트
-    @GetMapping("/recommand")
-    public ResponseEntity<?> getRecommandLists(@RequestParam Long memberNo) {
-        List<Recommand> popular = restaurantService.getPopular(memberNo);
-        List<Recommand> like = restaurantService.getLike(memberNo);
+    // 맛집 메인화면 인기
+    @GetMapping("/popular")
+    public ResponseEntity<?> getPopular(Authentication auth) {
+        List<Recommand> popular = restaurantService.getPopular(auth.getName());
 
-        RecommandResponse res = RecommandResponse.builder()
-                .popular(popular)
-                .like(like)
-                .build();
+        return ResponseEntity.ok(popular);
+    }//
 
-        return ResponseEntity.ok(res);
+    // 맛집 메인화면 찜
+    @GetMapping("/like")
+    public ResponseEntity<?> getLike(Authentication auth) {
+        List<Recommand> like = restaurantService.getLike(auth.getName());
+
+        return ResponseEntity.ok(like);
     }//
 
     // 맛집 메인화면 근처
     @GetMapping("/region")
     public ResponseEntity<?> getRegionList(@ModelAttribute Coords coords, Authentication auth) {
-//       List<Recommand> region = restaurantService.getRegion(memberNo, coords);
-//        return ResponseEntity.ok(region);
-        return null;
+       List<Recommand> region = restaurantService.getRegion(auth.getName(), coords);
+
+        return ResponseEntity.ok(region);
     }//
 
 }
