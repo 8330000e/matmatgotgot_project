@@ -14,6 +14,7 @@ const Join = () => {
     memberName: "",
     memberNickname: "",
     memberEmail: "",
+    adContent: 0.
   });
   const [checkId, setCheckId] = useState(0);
   const [checkPw, setCheckPw] = useState(0);
@@ -36,7 +37,7 @@ const Join = () => {
             setCheckId(0);
           }
           if (res.data) {
-            if(member.memberId ==="" || member.memberId == undefined){
+            if(member.memberId ==="" || member.memberId == ""){
               return setCheckId(0);
             }
             setCheckId(3);
@@ -192,6 +193,19 @@ const Join = () => {
       ...prev,
       [key]: !prev[key], // 클릭된 key(예: 'privacy')의 상태만 반전
     }));
+    if(isCheckedAll["marketing"]===true) {
+      setMember((prev)=>({
+        ...prev, ["marketing"]: 3
+      }))
+    } else if(isCheckedAll["email"]===true) {
+      setMember(((prev)=>({
+        ...prev, ["email"]: 1
+      })))
+    } else if(isCheckedAll["sms"]===true) {
+      setMember((prev)=>({
+        ...prev, ["sms"]: 2
+      }))
+    }
   };
   const handleToggleAll = () => {
     // 현재 모든 항목이 true인지 확인
@@ -257,7 +271,7 @@ const Join = () => {
       return;
     }
 
-
+    return joinMember();
   };
 
 

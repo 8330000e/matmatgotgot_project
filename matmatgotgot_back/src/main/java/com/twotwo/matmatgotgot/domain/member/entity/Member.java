@@ -1,13 +1,12 @@
 package com.twotwo.matmatgotgot.domain.member.entity;
 
-import java.time.LocalDateTime;
-
-import org.apache.ibatis.type.Alias;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.type.Alias;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +25,9 @@ public class Member {
     private LocalDateTime enrollDate;
     private Boolean admin;
     private String socialLogin;
+    private Double lat;
+    private Double lng;
+    private Integer adContent;
 
     
 }
