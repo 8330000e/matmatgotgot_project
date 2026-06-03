@@ -38,7 +38,7 @@ public class RestaurantController {
 
     // 맛집 등록
     @PostMapping
-    public ResponseEntity<?> restaurantCreate(@RequestBody RestCreateRequest request) {
+    public ResponseEntity<?> restaurantCreate(@RequestBody RestCreateRequest request, Authentication auth) {
         Restaurant restaurant = Restaurant.builder()
                 .restName(request.getRestName())
                 .restAddr(request.getRestAddr())
@@ -48,7 +48,7 @@ public class RestaurantController {
                 .restContent(request.getContent())
                 .lat(request.getLat())
                 .lng(request.getLng())
-                .memberNo(1L) // request 에 memberNo 있다고 가정
+                .memberId(auth.getName())
                 .build();
 
         Document doc = Jsoup.parse(request.getContent());
@@ -165,7 +165,9 @@ public class RestaurantController {
     // 맛집 메인화면 근처
     @GetMapping("/region")
     public ResponseEntity<?> getRegionList(@ModelAttribute Coords coords, Authentication auth) {
-       List<Recommand> region = restaurantService.getRegion(memberNo, coords);
-        return ResponseEntity.ok(region);
+//       List<Recommand> region = restaurantService.getRegion(memberNo, coords);
+//        return ResponseEntity.ok(region);
+        return null;
     }//
+
 }

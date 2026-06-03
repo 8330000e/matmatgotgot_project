@@ -15,7 +15,7 @@ import org.apache.ibatis.type.Alias;
 public class Restaurant {
 
     private Long restNo;
-    private Long memberNo;
+    private String memberId;
     private String restName;
     private String restAddr;
     private Double lat; // 위도

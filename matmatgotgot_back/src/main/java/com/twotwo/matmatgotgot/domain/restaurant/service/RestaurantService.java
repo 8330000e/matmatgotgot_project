@@ -39,11 +39,7 @@ public class RestaurantService {
 
     @Transactional
     public int restaurantCreate(Restaurant restaurant) {
-        int result = restaurantMapper.restaurantCreate(restaurant);
-
-        log.info("restaurant: {}", restaurant);
-
-        return result;
+        return restaurantMapper.restaurantCreate(restaurant);
     }//
 
 
