@@ -214,23 +214,17 @@ const BoardAddress = () => {
                 </div>
 
                 {/* 버튼 */}
-                <div className="bottom-buttons">
+                <div className="address-bottom-buttons">
                     <button
                         className="cancel-btn"
-                        onClick={() =>
-                            navigate(
-                                -1,
-                            )
-                        }
+                        onClick={() => navigate(-1)}
                     >
                         취소
                     </button>
 
                     <button
                         className="complete-btn"
-                        onClick={
-                            completeSelect
-                        }
+                        onClick={completeSelect}
                     >
                         선택완료
                     </button>

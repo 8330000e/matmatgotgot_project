@@ -68,11 +68,11 @@ const useAuthStore = create(
         }
 
         set({
-          memberNo: null, //로그인 구현 전
+          memberNo: null, //
           memberId: null,
           memberThumb: null,
           memberNickname: null,
-          memberStatus: null, //로그인 구현 전
+          memberStatus: null, //
           admin: null,
           token: null,
           endTime: null,
@@ -120,11 +120,11 @@ const useAuthStore = create(
       storage: createJSONStorage(() => localStorage),
 
       partialize: (state) => ({
-        memberNo: state.memberNo, //로그인 구현 전
+        memberNo: state.memberNo, //
         memberId: state.memberId,
         memberThumb: state.memberThumb,
         memberNickname: state.memberNickname,
-        memberStatus: state.memberStatus, //로그인 구현 전
+        memberStatus: state.memberStatus,  //
         admin: state.admin,
         token: state.token,
         endTime: state.endTime,

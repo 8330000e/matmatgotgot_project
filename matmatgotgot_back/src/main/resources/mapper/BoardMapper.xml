@@ -344,7 +344,7 @@
                  JOIN MEMBER_TBL M
                       ON BC.MEMBER_NO = M.MEMBER_NO
 
-        WHERE BC.BOARD_NO = #{boardNo}
+        WHERE BC.BOARD_NO = #{boardNo}  AND BC.BOARD_COMMENT_STATUS != 2
 
         ORDER BY BC.BOARD_COMMENT_NO ASC
 

@@ -122,14 +122,21 @@ const MemberManage = () => {
           }}
         >
           <Input
+            className={styles.admin_search_input}
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             placeholder="아이디를 입력하세요."
           />
 
           <Button
+            type="submit"
             className="btn primary"
-            style={{ width: '60px', height: '30px' }}
+            style={{
+              width: '60px',
+              height: '30px',
+              fontSize: '14px',
+              lineHeight: '1',
+            }}
           >
             검색
           </Button>
@@ -363,14 +370,21 @@ const ReportManage = ({ navigate }) => {
           </select>
 
           <Input
+            className={styles.admin_search_input}
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             placeholder="검색어를 입력하세요."
           />
 
           <Button
+            type="submit"
             className="btn primary"
-            style={{ width: '60px', height: '30px' }}
+            style={{
+              width: '60px',
+              height: '30px',
+              fontSize: '14px',
+              lineHeight: '1',
+            }}
           >
             검색
           </Button>

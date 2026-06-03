@@ -41,7 +41,8 @@ public class JwtTokenProvider {
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(validityInstant)) 
                 .signWith(secretKey)
-                .claim(admin ? "일반회원" : "관리자", admin)
+               // .claim(admin ? "일반회원" : "관리자", admin)
+                .claim("admin", admin) //지연//////
                 .compact();
 
         LocalDateTime validityLDT = LocalDateTime.ofInstant(validityInstant, ZoneId.systemDefault());

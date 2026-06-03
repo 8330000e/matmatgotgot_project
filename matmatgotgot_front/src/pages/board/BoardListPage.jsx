@@ -17,11 +17,12 @@ const BoardListPage = () => {
   const navigate = useNavigate();
 
   // zustand에서 로그인 정보 가져오기
-  const { admin, memberStatus } = useAuthStore();
+  const { admin, memberStatus, memberNo } = useAuthStore();
 
   // admin === 1 이 관리자라고 가정
   const isAdmin = Number(admin) === 1;
   const isBlocked = Number(memberStatus) >= 1;
+  const isLogin = memberNo != null; //로그인한 사용자인지 확인
 
   const [boardList, setBoardList] = useState([]); //게시글 목록 저장
   const [page, setPage] = useState(0); //현재 페이지 번호
@@ -146,7 +147,7 @@ const BoardListPage = () => {
 
       <BoardList boardList={boardList} />
 
-      {!isAdmin && (
+      {isLogin && (
         <div className={styles.write_btn_zone}>
           <Button
             className="btn primary"

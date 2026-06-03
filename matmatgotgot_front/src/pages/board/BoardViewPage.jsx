@@ -51,6 +51,9 @@ const BoardViewPage = () => {
 */
 
   const isAdmin = Number(admin) === 1;
+  console.log('현재 로그인 memberId:', memberId);
+  console.log('현재 로그인 admin:', admin);
+  console.log('isAdmin:', isAdmin);
   const isBlocked = Number(memberStatus) >= 1;
 
   useEffect(() => {
@@ -70,6 +73,7 @@ const BoardViewPage = () => {
     Swal.fire({
       title: '로그인 후 이용 가능합니다.',
       icon: 'info',
+      iconColor: 'var(--primary)',
       confirmButtonColor: 'var(--primary)',
     });
   };
@@ -498,7 +502,7 @@ const BoardCommentComponent = ({
   };
 
   const registComment = () => {
-    if (!memberId) {
+    if (!memberNo) {
       loginMsg();
       return;
     }
@@ -517,10 +521,18 @@ const BoardCommentComponent = ({
     }
 
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/boards/comments`, boardComment)
+      .post(`${import.meta.env.VITE_BACKSERVER}/boards/comments`, {
+        ...boardComment,
+        memberNo,
+        boardNo,
+      })
       .then((res) => {
         setBoardCommentList([...boardCommentList, res.data]);
-        setBoardComment({ ...boardComment, boardCommentContent: '' });
+        setBoardComment({
+          boardCommentContent: '',
+          memberNo,
+          boardNo,
+        });
       })
       .catch((err) => console.log(err));
   };
@@ -540,7 +552,7 @@ const BoardCommentComponent = ({
                 boardCommentContent: e.target.value,
               });
             }}
-            disabled={!memberId}
+          //disabled={!memberId}
           />
 
           <Button className="btn primary" onClick={registComment}>
@@ -592,13 +604,15 @@ const BoardComment = ({
   });
 
   useEffect(() => {
+    if (!memberId) return;
+
     axios
       .get(
         `${import.meta.env.VITE_BACKSERVER}/boards/comments/${comment.boardCommentNo}/reports`,
       )
       .then((res) => setIsCommentReport(res.data))
       .catch((err) => console.log(err));
-  }, [comment.boardCommentNo]);
+  }, [comment.boardCommentNo, memberId]);
 
   const reportComment = () => {
     if (!memberId) {

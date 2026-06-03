@@ -58,6 +58,7 @@
 .places-section {
   width: 320px;
   flex-shrink: 0;
+  padding-top: 15px;
 }
 
 .search-result-title {

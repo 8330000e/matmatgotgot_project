@@ -81,7 +81,7 @@ public class MemberController {
 		}
 
 		Member member = memberService.findMember(dto.getMemberId());
-		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
+		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(),   member.getAdmin());//false);지연
 
 		LoginResponseDto response = new LoginResponseDto();
 		//response.setMemberNo(loginMember.getMemberNo());
@@ -89,7 +89,8 @@ public class MemberController {
 		response.setMemberId(loginMember.getMemberId());
 		response.setMemberNickname(loginMember.getMemberNickname());
 		response.setMemberThumb(member.getMemberThumb());
-		response.setAdmin(loginMember.isAdmin());
+		//response.setAdmin(loginMember.isAdmin());
+		response.setAdmin(member.getAdmin()); //지연 관리자 파트 수정해둠
 		response.setToken(loginMember.getToken());
 
 		long validityMilli = loginMember.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();

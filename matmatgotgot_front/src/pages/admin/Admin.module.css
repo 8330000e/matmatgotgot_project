@@ -11,7 +11,7 @@
   flex-shrink: 0;
 }
 
-.admin_side > h2 {
+.admin_side>h2 {
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 18px;
@@ -336,4 +336,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.admin_search_input {
+  width: 190px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 12px !important;
+  box-sizing: border-box;
+
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 6px !important;
+
+  font-size: 14px !important;
 }

@@ -159,7 +159,8 @@ const BoardWritePage = () => {
     const placeInfo = location.state?.placeInfo;
 
     console.log('등록 요청 데이터:', {
-      memberNo: 1,
+      //memberNo: 1, //로그인 구현 전 테스트 코드
+      memberNo: memberNo,
       boardTitle: board.boardTitle,
       boardContent: board.boardContent,
       boardCategory: Number(board.boardCategory),
