@@ -1,45 +1,31 @@
 package com.twotwo.matmatgotgot.domain.member.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
+import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
+import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
+import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
+import com.twotwo.matmatgotgot.domain.member.entity.Member;
+import com.twotwo.matmatgotgot.domain.member.service.MemberService;
+import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.EmailSender;
+import com.twotwo.matmatgotgot.security.GoogleOAuthService;
+import com.twotwo.matmatgotgot.security.GoogleUserProfile;
+import com.twotwo.matmatgotgot.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
-import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
-import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
-import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
-import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
-import com.twotwo.matmatgotgot.domain.member.entity.Member;
-import com.twotwo.matmatgotgot.domain.member.service.MemberService;
-import com.twotwo.matmatgotgot.global.response.ApiResponse;
-import com.twotwo.matmatgotgot.security.GoogleOAuthService;
-import com.twotwo.matmatgotgot.security.GoogleUserProfile;
-import com.twotwo.matmatgotgot.security.JwtTokenProvider;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -81,14 +67,14 @@ public class MemberController {
 		}
 
 		Member member = memberService.findMember(dto.getMemberId());
-		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(), false);
-
+		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(),   member.getAdmin());
 		LoginResponseDto response = new LoginResponseDto();
 		response.setMemberNo(loginMember.getMemberNo());
+		response.setMemberNo(member.getMemberNo());
 		response.setMemberId(loginMember.getMemberId());
 		response.setMemberNickname(loginMember.getMemberNickname());
 		response.setMemberThumb(member.getMemberThumb());
-		response.setAdmin(loginMember.isAdmin());
+		response.setAdmin(member.getAdmin());
 		response.setToken(loginMember.getToken());
 
 		long validityMilli = loginMember.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -111,7 +97,6 @@ public class MemberController {
 	public ResponseEntity<?> logout(@PathVariable("currentId") String memberId) {
 		
 		boolean isSuccess = memberService.logout(memberId);
-		System.out.println("로그아웃 시도한 회원 ID: " + memberId);
 		
 		if(isSuccess) {
 			return ResponseEntity.ok("로그아웃 성공");
