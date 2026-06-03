@@ -143,7 +143,7 @@ const SpecifyCurLocationModal = ({ setLocation, setModalOpen }) => {
   const confirm = () => {
     axios
       .patch(
-        `${import.meta.env.VITE_BACKSERVER}/members/location?memberNo=1}`,
+        `${import.meta.env.VITE_BACKSERVER}/members/location?memberNo=1`,
         coords,
       )
       .then((res) => {

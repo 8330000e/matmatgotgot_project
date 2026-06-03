@@ -28,11 +28,18 @@ const RestaurantMain = () => {
   }, []);
 
   useEffect(() => {
+    if (!location) {
+      console.log("위치정보X");
+      return;
+    }
+
     axios
-      .get(
-        `${import.meta.env.VITE_BACKSERVER}/restaurants/region?memberNo=1`,
-        location,
-      )
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/region`, {
+        params: {
+          lat: location.lat,
+          lng: location.lng,
+        },
+      })
       .then((res) => {
         console.log(res.data);
         setRegionList(res.data);

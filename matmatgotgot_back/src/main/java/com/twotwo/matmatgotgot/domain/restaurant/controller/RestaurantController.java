@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -163,9 +164,8 @@ public class RestaurantController {
 
     // 맛집 메인화면 근처
     @GetMapping("/region")
-    public ResponseEntity<?> getRegionList(@RequestParam Long memberNo, @ModelAttribute Coords coords) {
+    public ResponseEntity<?> getRegionList(@ModelAttribute Coords coords, Authentication auth) {
        List<Recommand> region = restaurantService.getRegion(memberNo, coords);
-
         return ResponseEntity.ok(region);
     }//
 }

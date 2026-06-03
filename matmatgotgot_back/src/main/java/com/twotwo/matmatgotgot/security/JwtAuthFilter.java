@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 public class JwtAuthFilter extends GenericFilter {
     @Value("${jwt.secret}")
@@ -37,6 +39,7 @@ public class JwtAuthFilter extends GenericFilter {
             chain.doFilter(request, response);
             return;
         }
+        log.info("token2222222: {}", token);
 
         SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
         // 토큰 검증 및 claims 추출
@@ -47,13 +50,18 @@ public class JwtAuthFilter extends GenericFilter {
                     .parseClaimsJws(token)
                     .getBody();
 
+            log.info("claims = {}", claims);
+
+            String memberId = claims.getSubject();
+
             // Authentication 객체 생성
             List<GrantedAuthority> authorities = new ArrayList<>();
-            UserDetails userDetails = new User(claims.get("memberId", String.class), "", authorities);
+            UserDetails userDetails = new User(memberId, "", authorities);
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "",
                     userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
+            log.error("JWT 검증 실패", e);
             httpServletResponse.setStatus(401);
             return;
         }

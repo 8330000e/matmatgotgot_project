@@ -7,5 +7,4 @@ public class Coords {
 
     private Double lat; // 위도
     private Double lng; // 경도
-
 }

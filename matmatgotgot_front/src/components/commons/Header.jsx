@@ -29,7 +29,7 @@ export default function Header() {
                   : ""
               }
             >
-              <Link to="/restaurant">맛집</Link>
+              <Link to="/rest">맛집</Link>
             </button>
 
             <button
