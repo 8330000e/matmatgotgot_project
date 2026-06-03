@@ -1,11 +1,21 @@
 import styles from './Form.module.css';
 
 const Input = (props) => {
-  return <input className={styles.input} {...props} />;
+  const safeValue = props.value ?? "";
+  return <input
+      className={styles.input}
+      {...props}
+      value={safeValue}
+  />;
 };
 
 const TextArea = (props) => {
-  return <textarea className={styles.textarea} {...props}></textarea>;
+  const safeValue = props.value ?? "";
+  return <textarea
+      className={styles.textarea}
+      {...props}
+      value={safeValue}
+  />;
 };
 
 export { Input, TextArea };

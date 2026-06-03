@@ -68,6 +68,26 @@ const Join = () => {
   const [time, setTime] = useState(180);
   const [timeout, setTimeout] = useState(null);
   const sendMail = () => {
+    if(!member.memberEmail) {
+      Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      }).fire({
+        title: '인증 메일전송 실패',
+        text: '이메일을 입력해주세요.',
+        icon: 'error'
+      });
+    }
     setTime(180);
     if (timeout) {
       window.clearInterval(timeout);
@@ -90,6 +110,26 @@ const Join = () => {
       })
       .catch((err) => {
         console.error(err);
+        Swal.mixin({
+          toast: true,
+          color: "#2b1b17",
+          borderRadius: "15px",
+          fontWeight: "800",
+          padding: "20px 10px",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        }).fire({
+          title: '인증 메일전송 실패',
+          text: '올바른 이메일을 입력해주세요.',
+          icon: 'error'
+        });
+        setMailAuth(0);
+        return;
       });
   };
   useEffect(() => {
@@ -171,7 +211,54 @@ const Join = () => {
       sms: nextState,
     });
   };
-  console.log(isCheckedAll.age);
+  const handleJoin= (e) => {
+    e.preventDefault();
+    if(!member.memberId||!member.memberPw||!memberPwRe||!member.memberName||!member.memberNickname||!member.memberEmail){
+      Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      }).fire({
+        title: '회원가입 실패',
+        text: `${member.memberId ? member.memberPw ? (memberPwRe ? (member.memberName ? (member.memberNickname ? (member.memberEmail? null : "이메일을 입력하세요.") : "닉네임을 입력하세요") : "이름을 입력하세요.") : "비밀번호를 다시 입력하세요") : "비밀번호를 입력하세요" : "아이디를 입력하세요."}`,
+        icon: 'error'
+      });
+      return;
+    }
+
+    if (!isCheckedAll.age||!isCheckedAll.terms||!isCheckedAll.privacy) {
+      Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      }).fire({
+        title: '회원가입 실패',
+        text: '필수약관에 동의해주세요.',
+        icon: 'error'
+      });
+      return;
+    }
+
+
+  };
 
 
   const STIPULATION_TEXT = `1. [필수] 서비스 이용약관
@@ -261,6 +348,7 @@ const Join = () => {
           value={member.memberId}
           onChange={inputMember}
           onBlur={idDupCheck}
+          required
         />
           {checkId > 0
               ? checkId === 1
@@ -281,6 +369,7 @@ const Join = () => {
           value={member.memberPw}
           onChange={inputMember}
           onBlur={pwReg}
+          required
         />
           {checkPw > 0
               ? checkPw === 1
@@ -302,6 +391,7 @@ const Join = () => {
             setMemberPwRe(e.target.value);
           }}
           onBlur={pwDupCheck}
+          required
         />
           {checkPwRe > 0 && (
               checkPwRe.length > 0 ?
@@ -324,6 +414,7 @@ const Join = () => {
           name="memberName"
           value={member.memberName}
           onChange={inputMember}
+          required
         />
             </div>
             <div>
@@ -336,6 +427,7 @@ const Join = () => {
           name="memberNickname"
           value={member.memberNickname}
           onChange={inputMember}
+          required
         />
           </div>
               <div>
@@ -349,6 +441,7 @@ const Join = () => {
             id="memberEmail"
             value={member.memberEmail}
             onChange={inputMember}
+            required
             readOnly={mailAuth === 1 || mailAuth === 3}
           />
         </div>
@@ -445,7 +538,7 @@ const Join = () => {
             </ul>
           </div>
         </div>
-        <button type="submit" className={styles.submit}>회원가입</button>
+        <button type="submit" className={styles.submit} onClick={handleJoin}>회원가입</button>
       </form>
     </div>
     </div>
