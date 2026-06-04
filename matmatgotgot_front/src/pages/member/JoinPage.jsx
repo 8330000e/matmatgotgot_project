@@ -96,7 +96,7 @@ const Join = () => {
     setMailAuth(1);
     axios
       .post(
-        `${import.meta.env.VITE_BACKSERVER}/api/members/email-verification`,
+        `${import.meta.env.VITE_BACKSERVER}/members/email-verification`,
         {
           memberEmail: member.memberEmail,
         },
@@ -151,7 +151,7 @@ const Join = () => {
   };
   const joinMember = () => {
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/api/members`, member)
+      .post(`${import.meta.env.VITE_BACKSERVER}/members`, member)
       .then((res) => {
         console.log(res);
         if (res.data === 1) {
