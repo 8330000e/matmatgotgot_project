@@ -10,12 +10,56 @@ import google from "../../assets/logo/google.svg";
 import kakao from "../../assets/logo/kakao.svg"
 import naver from "../../assets/logo/naver_green.svg"
 import axios from "axios";
+import {useEffect, useState} from "react";
 
 export const MypagePage = () => {
    const location = useLocation();
    const logout = useAuthStore((state) => state.logout);
    const path = location.pathname.substring(8);
-   const { memberId} = useAuthStore();
+    const { memberId, memberNickname, token } = useAuthStore();
+    const [memberInfo, setMemberInfo] = useState(null);
+    useEffect(() => {
+        // 💡 가드 조건 강화: memberId와 token이 '둘 다 확실히 존재할 때만' 요청을 보냅니다.
+        if (memberId && memberId !== "null" && token) {
+
+            console.log("🚀 인증 토큰과 함께 회원정보 요청 중...", token);
+
+            axios.get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`, {
+                // 💡 중요: 헤더에 Bearer 토큰을 직접 수동으로 꽂아줍니다.
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+                .then((res) => {
+                    console.log("✅ 회원정보 로드 성공:", res.data);
+                    setMemberInfo(res.data);
+                })
+                .catch((err) => {
+                    console.error("🚨 회원정보 로드 실패:", err);
+                });
+
+        } else {
+            console.log("⏳ 아직 memberId나 token이 준비되지 않아 요청을 대기합니다.");
+        }
+    }, [memberId, token]);
+    useEffect(() => {
+        // 💡 중요: memberId가 존재하고, 'null'이라는 문자열도 아닐 때만 실행하도록 가드를 칩니다.
+        if (memberId && memberId !== "null") {
+
+            // ⭕ {memberId} 앞에 '$'를 붙여서 실제 변수 값이 주소에 들어가도록 수정했습니다!
+            axios.get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
+                .then((res) => {
+                    console.log("✅ 회원정보 로드 성공:", res.data);
+                    setMemberInfo(res.data);
+                })
+                .catch((err) => {
+                    console.error("🚨 회원정보 로드 실패:", err);
+                });
+
+        } else {
+            console.log("⏳ 아직 Zustand 스토어에 memberId가 준비되지 않았습니다. (현재 값: " + memberId + ")");
+        }
+    }, [memberId]);
    const imgChange = () => {
     return null;
   };
@@ -78,7 +122,7 @@ export const MypagePage = () => {
                 </div>
             </div>
             <div className={styles.content_wrap}>
-                {path === "myinfo" && <Myinfo />}
+                {path === "myinfo" && <Myinfo memberInfo={memberInfo} />}
                 {path === "myreview" && <Myreview />}
                 {path === "zzim" && <Zzim />}
                 {path === "matzip" && <Matzip />}
@@ -92,7 +136,7 @@ export const MypagePage = () => {
   );
 };
 
-export const Myinfo = () => {
+export const Myinfo = ({ memberInfo }) => {
     return (<>
         <div className={styles.content_menu_wrap}>
             <div className={styles.info_profile}>

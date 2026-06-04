@@ -13,6 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -55,6 +56,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/menu/**").permitAll()
                 .anyRequest().authenticated()
             );
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -74,6 +76,10 @@ public class SpringSecurityConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")); // OPTIONS 포함 필수
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // 👈 핵심: axios의 withCredentials와 맞물리는 설정!
+
+        Configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+
+        Configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config); // 모든 URL 경로에 위의 CORS 설정 적용
