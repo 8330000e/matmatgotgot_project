@@ -14,7 +14,7 @@ const Join = () => {
     memberName: "",
     memberNickname: "",
     memberEmail: "",
-    adContent: 0.
+    adContent: 0,
   });
   const [checkId, setCheckId] = useState(0);
   const [checkPw, setCheckPw] = useState(0);
