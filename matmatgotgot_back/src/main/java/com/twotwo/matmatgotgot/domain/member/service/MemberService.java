@@ -149,4 +149,9 @@ public class MemberService {
 
         return htmlContent;
     }
+
+    public Member selectOne(String memberId) {
+        Member member = memberMapper.selectOneMember(memberId);
+        return member;
+    }
 }

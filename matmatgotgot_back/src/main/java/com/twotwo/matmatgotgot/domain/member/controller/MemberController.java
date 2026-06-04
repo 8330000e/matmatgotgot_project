@@ -65,6 +65,12 @@ public class MemberController {
 		return ResponseEntity.ok(ApiResponse.success(memberService.selectAll()));
 	}
 
+	@GetMapping(value = "/{memberId}")
+	public ResponseEntity<?> selectOne(@PathVariable String memberId) {
+		Member member = memberService.selectOne(memberId);
+		return ResponseEntity.ok(member);
+	}
+
 	@PostMapping
 	public ResponseEntity<?> insertMember(@RequestBody Member member) {
 		Integer result = memberService.insertMember(member);
