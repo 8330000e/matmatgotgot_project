@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class TripService {
     private final TripMapper tripMapper;
 
-    @Value("${file.upload-path}")
+    @Value("${file.root}")
     private String uploadPath;
 
     public List<RestaurantDTO> searchRestaurants(String keyword) {

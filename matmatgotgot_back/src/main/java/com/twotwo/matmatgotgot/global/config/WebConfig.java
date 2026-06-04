@@ -33,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
 
                 
         registry.addResourceHandler("/menu/**")
-                .addResourceLocations("file:///C:/matmatgotgot/uploads/menu/");
+                .addResourceLocations("file:///" + root + "menu/");
 
     }
 }
