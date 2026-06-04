@@ -8,26 +8,20 @@ import Button from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import Swal from 'sweetalert2';
-import { height } from '@mui/system';
-import defaultBoardImage from '../../assets/board/image.png';
-import defaultUserImage from '../../assets/board/user.png';
 
 // 게시글 목록 페이지
 const BoardListPage = () => {
   const navigate = useNavigate();
 
   // zustand에서 로그인 정보 가져오기
-  const { admin, memberStatus, memberNo } = useAuthStore();
+  const { memberStatus, memberNo } = useAuthStore();
 
-  // admin === 1 이 관리자라고 가정
-  const isAdmin = Number(admin) === 1;
   const isBlocked = Number(memberStatus) >= 1;
   const isLogin = memberNo != null; //로그인한 사용자인지 확인
 
   const [boardList, setBoardList] = useState([]); //게시글 목록 저장
   const [page, setPage] = useState(0); //현재 페이지 번호
-  const [size, setSize] = useState(8); //한 페이지에 몇 개 보여줄지(8개)
-  //const [totalPage, setTotalPage] = useState(null); //전체 페이지 개수
+  const size = 8; //한 페이지에 몇 개 보여줄지(8개)
 
   const [totalPage, setTotalPage] = useState(5); //지울거
 

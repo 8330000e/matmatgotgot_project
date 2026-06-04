@@ -468,13 +468,26 @@ const ReportManage = ({ navigate }) => {
             </div>
 
             <div className={styles.report_middle}>
-              <p>
-                <b>신고 사유:</b> {report.reportReason}
-              </p>
+              <div className={styles.report_reason_box}>
+                <p>
+                  <b>신고 사유:</b> {report.reportReason}
+                </p>
 
-              {report.detail && (
-                <p className={styles.detail_text}>{report.detail}</p>
-              )}
+                {report.detail && (
+                  <p className={styles.detail_text}>{report.detail}</p>
+                )}
+              </div>
+
+              <div className={styles.report_meta_group}>
+                <span className={styles.report_writer}>{report.writer}</span>
+
+                <span className={styles.report_date}>{report.reportDate}</span>
+
+                <span className={styles.report_count}>
+                  <ReportIcon className={styles.report_count_icon} />
+                  {report.reportCount}
+                </span>
+              </div>
             </div>
 
             <div
@@ -483,12 +496,13 @@ const ReportManage = ({ navigate }) => {
             >
               <div className={styles.process_row}>
                 <span
-                  className={`${styles.status_badge} ${Number(report.reportStatus) === 0
-                    ? styles.wait
-                    : Number(report.reportStatus) === 1
-                      ? styles.done
-                      : styles.reject
-                    }`}
+                  className={`${styles.status_badge} ${
+                    Number(report.reportStatus) === 0
+                      ? styles.wait
+                      : Number(report.reportStatus) === 1
+                        ? styles.done
+                        : styles.reject
+                  }`}
                 >
                   {Number(report.reportStatus) === 0
                     ? '처리대기'
@@ -513,22 +527,12 @@ const ReportManage = ({ navigate }) => {
                 </select>
               </div>
 
-              <div className={styles.bottom_row}>
-                <span className={styles.report_writer}>{report.writer}</span>
-                <span className={styles.report_date}>{report.reportDate}</span>
-
-                <span className={styles.report_count}>
-                  <ReportIcon className={styles.report_count_icon} />
-                  {report.reportCount}
-                </span>
-
-                <button
-                  className={styles.reject_btn}
-                  onClick={() => rejectReport(report)}
-                >
-                  반려
-                </button>
-              </div>
+              <button
+                className={styles.reject_btn}
+                onClick={() => rejectReport(report)}
+              >
+                반려
+              </button>
             </div>
           </div>
         ))}

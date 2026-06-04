@@ -13,11 +13,7 @@ const BoardWritePage = () => {
 
   ////////////////////////////////////////////////////////////////////로그인 기능 구현 후 주석 지울 예정
   // zustand 로그인 정보
-  const {
-    memberNo,
-    memberStatus,
-    isReady,
-  } = useAuthStore();
+  const { memberNo, memberStatus, isReady } = useAuthStore();
 
   // 차단 유저 접근 제한
   useEffect(() => {
@@ -35,35 +31,22 @@ const BoardWritePage = () => {
     }
   }, [isReady, memberStatus, navigate]);
 
+  // 장소 선택 후 돌아왔을 때 //게시글 상태
+  const [board, setBoard] = useState(() => {
+    const prevBoard = location.state?.prevBoard;
 
-  // 게시글 상태
-  const [board, setBoard] = useState({
-    boardTitle: '',
-    boardContent: '',
-    boardCategory: 1, // 1: 여행후기, 2: 자유게시글
-    placeNo: null,
-    locationName: '',
+    return {
+      boardTitle: prevBoard?.boardTitle || '',
+      boardContent: prevBoard?.boardContent || '',
+      boardCategory: prevBoard?.boardCategory || 1,
+      placeNo: location.state?.placeNo || null,
+      locationName:
+        location.state?.placeInfo?.placeName ||
+        location.state?.selectedPlace ||
+        prevBoard?.locationName ||
+        '',
+    };
   });
-
-  // 장소 선택 후 돌아왔을 때
-  useEffect(() => {
-    console.log('location.state : ', location.state);
-
-    if (location.state?.selectedPlace) {
-      setBoard((prev) => ({
-        ...(location.state.prevBoard || prev),
-
-        boardCategory:
-          location.state.prevBoard?.boardCategory ?? prev.boardCategory,
-
-        // 장소명 (string 그대로 or placeInfo 우선)
-        locationName:
-          location.state.placeInfo?.placeName || location.state.selectedPlace,
-
-        placeNo: location.state.placeNo || null,
-      }));
-    }
-  }, [location.state]);
 
   // input 변경
   const inputBoard = (e) => {

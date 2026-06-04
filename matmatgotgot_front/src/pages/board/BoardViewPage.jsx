@@ -12,6 +12,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined';
 import ReportIcon from '@mui/icons-material/Report';
+import { useCallback } from 'react';
 
 const BoardViewPage = () => {
   const navigate = useNavigate();
@@ -19,7 +20,6 @@ const BoardViewPage = () => {
   const boardNo = params.boardNo;
 
   const [board, setBoard] = useState(null);
-
 
   //로그인 구현 완료 시 사용할 코드
 
@@ -233,14 +233,14 @@ const BoardViewPage = () => {
 
                   {(isAdmin ||
                     (memberId && memberId === board.boardWriter)) && (
-                      <Button
-                        className="btn primary outline"
-                        onClick={deleteBoard}
-                        style={{ width: '70px', fontSize: '14px' }}
-                      >
-                        삭제
-                      </Button>
-                    )}
+                    <Button
+                      className="btn primary outline"
+                      onClick={deleteBoard}
+                      style={{ width: '70px', fontSize: '14px' }}
+                    >
+                      삭제
+                    </Button>
+                  )}
                 </>
               )}
             </div>
@@ -440,16 +440,16 @@ const BoardCommentComponent = ({
 
   const [boardCommentList, setBoardCommentList] = useState([]);
 
-  const getCommentList = () => {
+  const getCommentList = useCallback(() => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/comments`)
       .then((res) => setBoardCommentList(res.data))
       .catch((err) => console.log(err));
-  };
+  }, [boardNo]);
 
   useEffect(() => {
     getCommentList();
-  }, [boardNo]);
+  }, [getCommentList]);
 
   const changeCommentStatus = (boardCommentNo, currentStatus) => {
     const newStatus = currentStatus === 1 ? 0 : 1;
@@ -552,7 +552,7 @@ const BoardCommentComponent = ({
                 boardCommentContent: e.target.value,
               });
             }}
-          //disabled={!memberId}
+            //disabled={!memberId}
           />
 
           <Button className="btn primary" onClick={registComment}>
