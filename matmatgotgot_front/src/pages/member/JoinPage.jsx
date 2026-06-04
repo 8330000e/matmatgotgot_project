@@ -95,9 +95,12 @@ const Join = () => {
     }
     setMailAuth(1);
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/members/email-verification`, {
-        memberEmail: member.memberEmail,
-      })
+      .post(
+        `${import.meta.env.VITE_BACKSERVER}/api/members/email-verification`,
+        {
+          memberEmail: member.memberEmail,
+        },
+      )
       .then((res) => {
         console.log(res);
         setMailAuthCode(res.data.data);
@@ -148,7 +151,7 @@ const Join = () => {
   };
   const joinMember = () => {
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/members`, member)
+      .post(`${import.meta.env.VITE_BACKSERVER}/api/members`, member)
       .then((res) => {
         console.log(res);
         if (res.data === 1) {

@@ -43,7 +43,6 @@ public class SpringSecurityConfig {
                 // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
                 .requestMatchers("/members/logout/**","/members/login/kakao","/members/login/google","/login").permitAll()
                 .requestMatchers("/members/login", "/members/email-verification").permitAll()
-                .requestMatchers("/**").permitAll() // 임시 -> 반드시 삭제!!!
                 .requestMatchers("/members/**","/members/join","/members/email-verification","/members/logout/**","/members/login/kakao","/members/login/google","/members/login", "/members/email-verification","/members/ranchar","/members/login/naver","/login").permitAll()
                 .requestMatchers("/boards/**").permitAll()
                     // 에디터 이미지 접근 허용
@@ -52,7 +51,9 @@ public class SpringSecurityConfig {
                     .requestMatchers("/api/naver/**").permitAll()
                     .requestMatchers("/admin/**").permitAll()
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
-                .anyRequest().authenticated() 
+                .requestMatchers("/api/trips/**").permitAll()
+                .requestMatchers("/menu/**").permitAll()
+                .anyRequest().authenticated()
             );
 
         return http.build();

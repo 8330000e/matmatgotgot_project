@@ -31,5 +31,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceHandler("/restaurants/**")	// 요청 패턴
                 .addResourceLocations("file:///" + root + "restaurant/");	// 실제 경로
 
+                
+        registry.addResourceHandler("/menu/**")
+                .addResourceLocations("file:///C:/matmatgotgot/uploads/menu/");
+
     }
 }

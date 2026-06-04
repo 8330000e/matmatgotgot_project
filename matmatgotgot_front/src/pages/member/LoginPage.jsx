@@ -17,7 +17,7 @@ const Login = () => {
   const inputMember = (e) => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
-  // const [isCallbackMode, setIsCallbackMode] = useState(false);
+  const [isCallbackMode, setIsCallbackMode] = useState(false);
 
   // 일반로그인
   const login = useAuthStore((state) => state.login);
@@ -27,7 +27,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKSERVER}/members/login`,
+        `${import.meta.env.VITE_BACKSERVER}/api/members/login`,
         {
           memberId: members.memberId,
           memberPw: members.memberPw,
@@ -96,7 +96,7 @@ const Login = () => {
       // 백엔드 서버로 인가 코드 전송
       try {
         const res = await axios.post(
-          `${import.meta.env.VITE_BACKSERVER}/members/login/google`,
+          `${import.meta.env.VITE_BACKSERVER}/api/members/login/google`,
           { code: codeResponse.code },
           { withCredentials: true }, // 아까 설정한 쿠키 공유 옵션!
         );

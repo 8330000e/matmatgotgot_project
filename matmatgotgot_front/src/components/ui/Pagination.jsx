@@ -1,4 +1,4 @@
-import styles from './Pagination.module.css';
+import styles from "./Pagination.module.css";
 
 const Pagination = ({ page, setPage, totalPage, naviSize }) => {
   if (totalPage === null || totalPage < 1) {
@@ -32,7 +32,7 @@ const Pagination = ({ page, setPage, totalPage, naviSize }) => {
         disabled={isFirst}
         title="첫 페이지"
       >
-        {'<<'}
+        {"<<"}
       </button>
 
       {/* 이전 페이지로 이동 */}
@@ -42,13 +42,13 @@ const Pagination = ({ page, setPage, totalPage, naviSize }) => {
         disabled={isFirst}
         title="이전 페이지"
       >
-        {'<'}
+        {"<"}
       </button>
 
       {/* 페이지 번호 목록 — 현재 페이지에 .active 클래스 적용 */}
       {pages.map((p, i) => (
         <button
-          key={'pagination-' + i}
+          key={"pagination-" + i}
           className={p === current ? styles.active : styles.page_btn}
           onClick={() => setPage(p - 1)}
         >
@@ -63,7 +63,7 @@ const Pagination = ({ page, setPage, totalPage, naviSize }) => {
         disabled={isLast}
         title="다음 페이지"
       >
-        {'>'}
+        {">"}
       </button>
 
       {/* 마지막 페이지로 이동 */}
@@ -73,7 +73,7 @@ const Pagination = ({ page, setPage, totalPage, naviSize }) => {
         disabled={isLast}
         title="마지막 페이지"
       >
-        {'>>'}
+        {">>"}
       </button>
     </div>
   );

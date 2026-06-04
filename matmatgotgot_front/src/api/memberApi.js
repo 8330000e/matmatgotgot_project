@@ -1,12 +1,12 @@
 // api/memberApi.js - 기능별 API 분리
-import apiClient from './index';
+import apiClient from "./index";
 
 const memberApi = {
-    getMember:    (id)       => apiClient.get(`/members/${id}`),
-    getMembers:   (params)   => apiClient.get('/members', { params }),
-    createMember: (data)     => apiClient.post('/members', data),
-    updateMember: (id, data) => apiClient.put(`/members/${id}`, data),
-    deleteMember: (id)       => apiClient.delete(`/members/${id}`),
+  getMember: (id) => apiClient.get(`/api/members/${id}`),
+  getMembers: (params) => apiClient.get("/api/members", { params }),
+  createMember: (data) => apiClient.post("/api/members", data),
+  updateMember: (id, data) => apiClient.put(`/api/members/${id}`, data),
+  deleteMember: (id) => apiClient.delete(`/api/members/${id}`),
 };
 
 export default memberApi;

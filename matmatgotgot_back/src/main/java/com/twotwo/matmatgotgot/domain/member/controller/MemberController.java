@@ -50,7 +50,7 @@ import java.util.Random;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value="/members")
+@RequestMapping(value="/api/members")
 public class MemberController {
 	
 	private final EmailSender emailSender;

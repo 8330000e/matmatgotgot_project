@@ -15,7 +15,6 @@ import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
 import ReviewRegist from "./pages/restaurant/ReviewRegist.jsx";
 import ReviewView from "./pages/restaurant/ReviewView.jsx";
 import TripMain from "./pages/trip/TripMain.jsx";
-import Main from "./pages/Main.jsx";
 import ReceiptCheck from "./pages/restaurant/ReceiptCheck.jsx";
 import SepcifyCurLocationModal from "./components/restaurant/SpecifyCurLocationModal.jsx";
 import NaverCallbackPage from "./pages/member/NaverCallbackPage.jsx";
@@ -28,6 +27,10 @@ import BoardAddress from "./pages/board/BoardAddress.jsx";
 import BoardModifyPage from "./pages/board/BoardModifyPage.jsx";
 import AdminPage from "./pages/admin/AdminPage.jsx";
 import NaverCallbackPage from "./pages/member/NaverCallbackPage.jsx";
+import Main from "./pages/main/Main.jsx";
+import Main_login from "./pages/main/Main_login.jsx";
+import CreateCourse from "./pages/trip/CreateCourse.jsx";
+import CourseDetail from "./pages/trip/CourseDetail.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -47,6 +50,7 @@ function App() {
       <div className="main">
         <Routes>
           <Route path="/" element={<Main />} />
+          <Route path="/test" element={<Main_login />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
           <Route path="/finding" element={<Finding />} />
@@ -71,6 +75,8 @@ function App() {
           <Route path="/board/modify/:boardNo" element={<BoardModifyPage />} />
           <Route path="/trip" element={<TripMain />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/trip/create" element={<CreateCourse />} />
+          <Route path="/trip/detail/:tplanNo" element={<CourseDetail />} />
         </Routes>
       </div>
       <Footer />

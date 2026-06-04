@@ -1,0 +1,156 @@
+.frameContainer {
+  margin-bottom: 20px;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.titleIcon,
+.titleText {
+  display: flex;
+  align-items: center;
+}
+
+.titleText {
+  font-weight: 600;
+  font-size: 1.22em;
+}
+
+.contentSection {
+  display: flex;
+  gap: 10px;
+  background-color: var(--gray8);
+  padding: 15px;
+  border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.fadeOverlayLeft,
+.fadeOverlayRight {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 40px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.fadeOverlayLeft {
+  left: 0;
+  background: linear-gradient(to left, transparent, var(--gray8));
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.fadeOverlayRight {
+  right: 0;
+  background: linear-gradient(to right, transparent, var(--gray8));
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.fadeOverlayLeft.hide,
+.fadeOverlayRight.hide {
+  opacity: 0;
+}
+
+.myListItems {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.myListItems::-webkit-scrollbar {
+  display: none;
+}
+
+.cardItem {
+  width: 200px;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: pointer;
+}
+
+.thumbnailBox {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.thumbnailBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+.fadeOverlayLeft,
+.fadeOverlayRight {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 40px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.fadeOverlayLeft {
+  left: 0;
+  background: linear-gradient(to left, transparent, var(--gray8));
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.fadeOverlayRight {
+  right: 0;
+  background: linear-gradient(to right, transparent, var(--gray8));
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.fadeOverlayLeft.hide,
+.fadeOverlayRight.hide {
+  opacity: 0;
+}
+
+.createCourseBtn {
+  width: 150px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plusIcon,
+.btnText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

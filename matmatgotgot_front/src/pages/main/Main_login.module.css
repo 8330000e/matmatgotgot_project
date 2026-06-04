@@ -1,0 +1,182 @@
+.tripMainWrap {
+  width: 1160px;
+  margin: 20px auto 0;
+}
+
+.tripMainWrap > div {
+  margin-bottom: 20px;
+}
+
+.tripMainWrap .topSection {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.tripMainWrap .topSection .leftSection {
+  width: 55%;
+}
+
+.leftSection .myCourseSection {
+  margin-bottom: 20px;
+}
+
+.leftSection .myCourseContent {
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tripMainWrap .mapSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tripMainWrap .mapSection .mapTitle {
+  display: flex;
+  justify-content: end;
+  height: 35px;
+  margin-bottom: 5px;
+  font-size: 1.2em;
+  gap: 10px;
+}
+
+.tripMainWrap .mapSection .mapTitle > div {
+  align-content: center;
+}
+
+.tripMainWrap .mapSection .mapTitle > div:not(.mapTitleDivider) {
+  cursor: pointer;
+}
+
+.tripMainWrap .mapSection .mapTitle .nonActiveMapTitle {
+  color: color-mix(in srgb, var(--text1) 25%, transparent);
+}
+
+.tripMainWrap .mapSection .mapContainer {
+  flex: 1;
+}
+
+.myListContent,
+.tasteRestaurantContent {
+  padding: 15px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.howAboutHereList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 70px;
+  padding: 50px 30px;
+  justify-content: center;
+}
+
+.howAboutHereList > div {
+  transform: scale(1.25);
+  margin-bottom: 17px;
+}
+
+.howAboutHereContent.isCollapsed {
+  position: relative;
+  overflow: hidden;
+}
+
+.fadeOverlayBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, var(--gray8));
+  pointer-events: none;
+  z-index: 5;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.buttonContainer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 25px;
+}
+
+.moreButton {
+  background-color: var(--primary);
+  color: var(--bg);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--text1) 30%, transparent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  min-width: 180px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 40%, transparent); /* 버튼 자체 하단 그림자 */
+  transition: all 0.25s ease;
+}
+
+.moreButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--primary) 50%, transparent);
+  filter: brightness(1.05);
+}
+
+.moreButton:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
+  filter: brightness(0.95);
+}
+
+.tripMainWrap .title .titleText,
+.tripMainWrap .mapSection .mapTitle > div {
+  font-weight: 600;
+}
+
+.tripMainWrap .title {
+  display: flex;
+  align-content: center;
+  height: 35px;
+  margin-bottom: 5px;
+}
+
+.tripMainWrap .title .titleIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 35px;
+}
+
+.tripMainWrap .title .titleIcon svg {
+  transform: scale(1.15);
+}
+
+.tripMainWrap .title .titleIcon svg path {
+  color: var(--text1);
+}
+
+.tripMainWrap .title .titleText {
+  font-size: 1.2em;
+  flex: 1;
+  align-content: center;
+}
+
+.tripMainWrap .myCourseContent,
+.tripMainWrap .myListContent,
+.tripMainWrap .mapContainer,
+.tripMainWrap .tasteRestaurantContent,
+.tripMainWrap .howAboutHereContent {
+  background-color: var(--gray8);
+  border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
+  border-radius: 20px;
+}
