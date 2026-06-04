@@ -17,7 +17,6 @@ const Login = () => {
   const inputMember = (e) => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
-  const [isCallbackMode, setIsCallbackMode] = useState(false);
 
   // 일반로그인
   const login = useAuthStore((state) => state.login);
