@@ -176,6 +176,30 @@
     border-radius: 10px;
     padding: 10px 15px;
 }
+.info_social > ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+}
+.info_social > ul > li {
+    display: flex;
+    padding: 5px 15px;
+    border: 1px solid var(--text1);
+    border-radius: 8px;
+    gap: 5px;
+    cursor: pointer;
+}
+.info_social > ul > li > img {
+    width: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.info_social > ul > li:last-child > img{
+    width: 15px;
+    margin: 1px;
+}
 .info_delete {
     width: 60%;
     border: 1px solid var(--text1);
@@ -190,7 +214,7 @@
     background-color: var(--text1);
     color: #fff;
     border: none;
-    padding: 8px 18px;
+    padding: 8px 16px;
     font-size: 12px;
     font-weight: 600;;
     outline: none;
@@ -202,7 +226,7 @@
     background-color: #E52121;
     color: #fff;
     border: none;
-    padding: 8px 20px;
+    padding: 8px 18px;
     font-size: 12px;
     font-weight: 600;;
     outline: none;

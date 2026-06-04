@@ -6,6 +6,9 @@ import changeImg from "../../assets/img/changeImg.svg"
 import native from "../../assets/img/native.svg"
 import nativeIcon from "../../assets/img/nativeIcon.svg"
 import navigate from "../../assets/img/navigate.svg"
+import google from "../../assets/logo/google.svg";
+import kakao from "../../assets/logo/kakao.svg"
+import naver from "../../assets/logo/naver_green.svg"
 import axios from "axios";
 
 export const MypagePage = () => {
@@ -144,9 +147,9 @@ export const Myinfo = () => {
                 <div className={styles.info_social}>
                     <p className={styles.info_title}>소셜 계정 연동</p>
                     <ul>
-                        <li>구글 계정 연동하기</li>
-                        <li>카카오 계정 연동하기</li>
-                        <li>네이버 계정 연동하기</li>
+                        <li><img src={google} /><span>구글 계정 연동하기</span></li>
+                        <li><img src={kakao} /><span>카카오 계정 연동하기</span></li>
+                        <li><img src={naver} /><span>네이버 계정 연동하기</span></li>
                     </ul>
                 </div>
                 <div className={styles.info_delete}>
