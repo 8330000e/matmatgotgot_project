@@ -173,4 +173,10 @@ public class RestaurantController {
         return ResponseEntity.ok(region);
     }//
 
+    @GetMapping("/main")
+    public ResponseEntity<?> getMainList(@ModelAttribute MainListRequest req, Authentication auth) {
+
+        return null;
+    }//
+
 }

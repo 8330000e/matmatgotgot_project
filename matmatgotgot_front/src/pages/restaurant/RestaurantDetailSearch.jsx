@@ -17,15 +17,18 @@ const RestaurantDetailSearch = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/search`)
+      .get(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/main?order=${order}&categories=${categories}`,
+      )
       .then((res) => {
+        console.log(res.data);
         setRestList(res.data.list);
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [order, categories]);
 
   // 카테고리 체크박스 핸들러 (다중 선택 가능)
   const handleCategoryChange = (e) => {
@@ -86,16 +89,6 @@ const RestaurantDetailSearch = () => {
           <div className={styles.category}>
             <div className={styles.filter_label}>카테고리</div>
             <div className={styles.ckbox}>
-              {/* 전체 추가 */}
-              <label>
-                <input
-                  type="checkbox"
-                  value="all"
-                  checked={categories.includes("all")}
-                  onChange={handleCategoryChange}
-                />
-                전체
-              </label>
               <label>
                 <input
                   type="checkbox"
@@ -117,27 +110,24 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="jp"
-                  checked={categories.includes("jp")}
-                  onChange={handleCategoryChange}
-                />
-                일식
-              </label>
-              <label>
-                <input
-                  type="checkbox"
                   value="ch"
                   checked={categories.includes("ch")}
                   onChange={handleCategoryChange}
                 />
                 중식
               </label>
+              <label>
+                <input
+                  type="checkbox"
+                  value="jp"
+                  checked={categories.includes("jp")}
+                  onChange={handleCategoryChange}
+                />
+                일식
+              </label>
             </div>
           </div>
 
-          {/* 정렬 방식 단일 선택
-            실제 radio는 숨기고, label을 pill 버튼처럼 스타일링
-            조회순 → 별점순으로 변경 (이미지 디자인 반영) */}
           <div className={styles.sort}>
             <div className={styles.filter_label}>정렬</div>
             <div className={styles.order}>
@@ -160,6 +150,26 @@ const RestaurantDetailSearch = () => {
                   onChange={(e) => setOrder(e.target.value)}
                 />
                 별점순
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="order"
+                  value="oldest"
+                  checked={order === "oldest"}
+                  onChange={(e) => setOrder(e.target.value)}
+                />
+                등록순
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="order"
+                  value="reviews"
+                  checked={order === "reviews"}
+                  onChange={(e) => setOrder(e.target.value)}
+                />
+                리뷰수순
               </label>
             </div>
           </div>

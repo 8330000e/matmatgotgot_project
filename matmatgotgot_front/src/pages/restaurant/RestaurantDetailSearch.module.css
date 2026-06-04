@@ -1,7 +1,3 @@
-/* ════════════════════════════════════
-   최상위 페이지 컨테이너
-   RestaurantMain(슬라이더) + 필터+목록 영역을 세로로 쌓음
-   ════════════════════════════════════ */
 .recommand_filter {
   display: flex;
   flex-direction: column;
@@ -267,9 +263,10 @@
 
 /* ========== 맛집 등록 버튼 (우하단 고정) ========== */
 .regist_btn {
-  position: fixed;
   bottom: 24px;
   right: 24px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .regist_btn button {
