@@ -11,7 +11,7 @@ import RestaurantMain from './pages/restaurant/RestaurantMain';
 import RestaurantDetailSearch from './pages/restaurant/RestaurantDetailSearch.jsx';
 import RestaurantRegist from './pages/restaurant/RestaurantRegist.jsx';
 import RestaurantView from './pages/restaurant/RestaurantView.jsx';
-import MypagePage from '../src/components/mypage/Mypage.jsx';
+import MypagePage from './pages/member/MypagePage.jsx';
 import ReviewRegist from './pages/restaurant/ReviewRegist.jsx';
 import ReviewView from './pages/restaurant/ReviewView.jsx';
 import TripMain from './pages/trip/TripMain.jsx';
