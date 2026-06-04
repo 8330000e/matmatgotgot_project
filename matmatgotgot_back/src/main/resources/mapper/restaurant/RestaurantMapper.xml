@@ -220,6 +220,12 @@
             ) AS is_like
 
         FROM restaurant_tbl r
+
+        ORDER BY
+            rating_avg DESC,
+            r.review_total_count DESC
+
+        LIMIT 10
     </select>
 
     <select id="getLike" resultType="recommand">
@@ -276,5 +282,87 @@
         )
         ) <= 10
         ]]>
+    </select>
+
+    <select id="getMainList" resultType="recommand">
+        SELECT
+        r.rest_no,
+        r.rest_name,
+        r.rest_thumb,
+        r.rest_addr,
+        r.category,
+
+        ROUND( r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
+
+        EXISTS (
+        SELECT 1
+        FROM rest_like_tbl rl
+        WHERE rl.rest_no = r.rest_no
+        AND rl.member_id = #{memberId}
+        ) AS is_like
+
+        FROM restaurant_tbl r
+
+        <where>
+            <if test="req.region != null and req.region != ''">
+                r.rest_addr LIKE CONCAT('%', #{req.region}, '%')
+            </if>
+
+            <if test="req.categories != null and req.categories.length > 0">
+                AND r.category IN
+                <foreach collection="req.categories"
+                         item="category"
+                         open="("
+                         separator=","
+                         close=")">
+                    #{category}
+                </foreach>
+            </if>
+        </where>
+
+        <choose>
+            <when test="req.order == 'latest'">
+                ORDER BY r.created_at DESC
+            </when>
+
+            <when test="req.order == 'star'">
+                ORDER BY rating_avg DESC
+            </when>
+
+            <when test="req.order == 'oldest'">
+                ORDER BY r.created_at ASC
+            </when>
+
+            <when test="req.order == 'reviews'">
+                ORDER BY r.review_total_count DESC
+            </when>
+
+            <otherwise>
+                ORDER BY r.created_at DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{req.size} OFFSET #{req.offset}
+    </select>
+
+    <select id="getMainListCount" resultType="int">
+        SELECT COUNT(*)
+        FROM restaurant_tbl r
+        <where>
+            <if test="req.region != null and req.region != ''">
+                r.rest_addr LIKE CONCAT('%', #{req.region}, '%')
+            </if>
+
+            <if test="req.categories != null and req.categories.length > 0">
+                AND r.category IN
+                <foreach collection="req.categories"
+                         item="category"
+                         open="("
+                         separator=","
+                         close=")">
+                    #{category}
+                </foreach>
+            </if>
+        </where>
     </select>
 </mapper>

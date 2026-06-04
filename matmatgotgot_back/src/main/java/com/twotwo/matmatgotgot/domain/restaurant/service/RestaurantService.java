@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.MainListRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
@@ -145,9 +146,11 @@ public class RestaurantService {
     @Transactional
     public ReviewCommentResponse commentRegist(Long reviewNo, ReviewCommentRequest request) {
         int result = restaurantMapper.insertComment(reviewNo, request);
+
         if (result != 1) {
             throw new RuntimeException("댓글 저장 실패");
         }
+
         return restaurantMapper.selectComment(request.getCommentNo());
     }//
 
@@ -155,6 +158,7 @@ public class RestaurantService {
     @Transactional
     public void commentUpdate(Long commentNo, String content) {
         int result = restaurantMapper.updateComment(commentNo, content);
+
         if (result != 1) {
             throw new RuntimeException("댓글 수정 실패");
         }
@@ -164,13 +168,13 @@ public class RestaurantService {
     @Transactional
     public void commentDelete(Long commentNo) {
         int result = restaurantMapper.deleteComment(commentNo);
+
         if (result < 1) {
             throw new RuntimeException("댓글 삭제 실패");
         }
     }//
 
     public List<Recommand> getPopular(String memberId) {
-
         return restaurantMapper.getPopular(memberId);
     }//
 
@@ -179,9 +183,14 @@ public class RestaurantService {
     }//
 
     public List<Recommand> getRegion(String memberId, Coords coords) {
-        List<Recommand> region = restaurantMapper.getRegion(memberId, coords);
-
-        return region;
+        return restaurantMapper.getRegion(memberId, coords);
     }//
 
+    public List<Recommand> getMainList(MainListRequest req, String memberId) {
+        return restaurantMapper.getMainList(req, memberId);
+    }//
+
+    public int getMainListCount(MainListRequest req, String memberId) {
+       return restaurantMapper.getMainListCount(req, memberId);
+    }//
 }

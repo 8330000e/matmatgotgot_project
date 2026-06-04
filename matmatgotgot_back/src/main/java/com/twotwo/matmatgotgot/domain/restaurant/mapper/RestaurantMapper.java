@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.MainListRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
@@ -71,4 +72,10 @@ public interface RestaurantMapper {
 
     List<Recommand> getRegion(@Param("memberId") String memberId,
                               @Param("coords") Coords coords);
+
+    List<Recommand> getMainList(@Param("req") MainListRequest req,
+                                @Param("memberId") String memberId);
+
+    int getMainListCount(@Param("req") MainListRequest req,
+                             @Param("String") String memberId);
 }

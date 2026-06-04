@@ -7,8 +7,11 @@ import RestaurantMain from "./RestaurantMain";
 
 const RestaurantDetailSearch = () => {
   const [region, setRegion] = useState("");
+  const [filterRegion, setFilterReigon] = useState("");
   const [categories, setCategories] = useState([]);
-  const [order, setOrder] = useState("latest"); // 기본값: 최신순
+  const [filterCategories, setFilterCategories] = useState([]);
+  const [order, setOrder] = useState("latest");
+  const [filterOrder, setFilterOrder] = useState("latest");
   const [restList, setRestList] = useState([]);
   const [page, setPage] = useState(0);
   const [size] = useState(12);
@@ -18,7 +21,7 @@ const RestaurantDetailSearch = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BACKSERVER}/restaurants/main?order=${order}&categories=${categories}`,
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/main?page=${page}&size=${size}&region=${filterRegion}&order=${filterOrder}&categories=${categories}`,
       )
       .then((res) => {
         console.log(res.data);
@@ -28,7 +31,7 @@ const RestaurantDetailSearch = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [order, categories]);
+  }, [filterRegion, filterOrder, filterCategories, page]);
 
   // 카테고리 체크박스 핸들러 (다중 선택 가능)
   const handleCategoryChange = (e) => {
@@ -55,6 +58,13 @@ const RestaurantDetailSearch = () => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const doFilter = () => {
+    setFilterRegion(region);
+    setFilterOrder(order);
+    setFilterCategories(categories);
+    setPage(0);
   };
 
   return (
@@ -176,7 +186,9 @@ const RestaurantDetailSearch = () => {
 
           {/* 필터 적용 버튼 (margin-top: auto 로 사이드바 최하단 고정) */}
           <div className={styles.filter_btn}>
-            <button type="button">필터 적용</button>
+            <button type="button" onClick={doFilter}>
+              필터 적용
+            </button>
           </div>
         </section>
 

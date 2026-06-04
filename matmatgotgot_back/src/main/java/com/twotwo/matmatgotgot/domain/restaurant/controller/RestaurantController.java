@@ -173,10 +173,19 @@ public class RestaurantController {
         return ResponseEntity.ok(region);
     }//
 
+    // 맛집 메인 - 메인리스트
     @GetMapping("/main")
     public ResponseEntity<?> getMainList(@ModelAttribute MainListRequest req, Authentication auth) {
+        List<Recommand> mainList = restaurantService.getMainList(req, auth.getName());
 
-        return null;
+        int count = restaurantService.getMainListCount(req, auth.getName());
+        int totalPage = (int) Math.ceil(count / (double) req.getSize());
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("list", mainList);
+        res.put("totalPage", totalPage);
+
+        return ResponseEntity.ok(res);
     }//
 
 }

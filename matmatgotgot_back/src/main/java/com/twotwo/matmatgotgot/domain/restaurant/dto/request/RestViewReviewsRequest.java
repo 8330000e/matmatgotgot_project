@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class RestViewReviewsRequest {
 
-    private Long restNo;
     private int page;
     private int size;
 
