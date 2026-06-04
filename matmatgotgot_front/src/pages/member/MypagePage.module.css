@@ -3,7 +3,8 @@
 }
 .mypage_wrap {
     width: 1000px;
-    margin: 0 auto;
+    margin: 15px auto;
+    margin-bottom: 50px;
     display: flex;
     gap: 10px;
 }
