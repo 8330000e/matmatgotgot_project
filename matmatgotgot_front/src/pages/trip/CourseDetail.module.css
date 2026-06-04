@@ -121,13 +121,10 @@
 .ticketDashboard {
   background-color: var(--primary);
   border-radius: 16px;
-
   min-height: 250px;
-
   display: flex;
   position: relative;
   overflow: hidden;
-
   box-shadow: 0 6px 18px rgba(255, 217, 90, 0.25);
   margin-bottom: 40px;
 }
@@ -202,120 +199,11 @@
   font-weight: 500;
 }
 
-.timelineContainer {
-  padding: 10px 5px;
-}
-
-.routeItemNode {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 5px;
-}
-
-.routeNodeHeader {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.nodeTitleBox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.nodeBadge {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--text1);
-}
-
-.nodeResName {
-  font-size: 15px;
-  font-weight: bold;
-  margin: 0;
-  color: var(--text1);
-}
-
-.headerConnectLine {
-  flex: 1;
-  border-bottom: 1px solid var(--gray5);
-  margin: 0 15px;
-}
-
-.selectedMenuNames {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--gray1);
-  flex-shrink: 0;
-}
-
-.menuPhotoGrid {
-  display: flex;
-  gap: 14px;
-  padding-left: 10px;
-}
-
-.detailPhotoCard {
-  width: 110px;
-  text-align: center;
-}
-
-.photoBoxPlaceholder {
-  height: 95px;
-  background-color: var(--gray7);
-  border: 1px solid var(--gray6);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--gray4);
-  margin-bottom: 6px;
-}
-
-.photoMenuName {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.verticalTransitInfo {
-  display: flex;
-  align-items: center;
-  padding: 25px 0 25px 60px;
-  position: relative;
-}
-
-.verticalDotsLine {
-  position: absolute;
-  left: 65px;
-  top: 0;
-  bottom: 0;
-  border-left: 2px dashed var(--gray5);
-}
-
-.transitDurationText {
-  font-size: 13px;
-  font-weight: bold;
-  color: var(--gray2);
-  background-color: var(--gray8);
-  padding: 4px 10px;
-  border: 1px solid var(--gray6);
-  border-radius: 6px;
-  margin-left: 25px;
-  z-index: 5;
-}
-
 .contentBg {
   background-color: var(--gray8);
-  padding: 20px;
+  padding: 30px;
   border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
-  border-radius: 10px;
+  border-radius: 16px;
 }
 
 /* 다일차 탭 컨테이너 디자인 */
@@ -348,22 +236,6 @@
   border-color: var(--text1) !important;
 }
 
-/* 이미지 렌더링용 스타일 */
-.photoBoxImg {
-  width: 100%;
-  height: 95px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--gray6);
-  margin-bottom: 6px;
-}
-
-.photoMenuPrice {
-  font-size: 11px;
-  color: var(--gray3);
-  margin-top: 2px;
-}
-
 .courseDesc {
   font-size: 14px;
   color: var(--gray2);
@@ -383,4 +255,191 @@
   padding: 40px 0;
   color: var(--gray4);
   font-size: 14px;
+}
+
+/* ==========================================
+   ✨ [완전 세련] 카드 분리형 타임라인 레이아웃
+   ========================================== */
+
+.timelineContainer {
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 개별 맛집 카드형 노드 디자인 */
+.routeItemNode {
+  background-color: var(--gray8);
+  border: 1px solid var(--gray6);
+  border-radius: 16px;
+  padding: 20px 24px 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+  position: relative;
+}
+
+.routeItemNode:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* 상단 헤더 정렬 */
+.routeNodeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed var(--gray6);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.nodeTitleBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 심플하고 직관적인 숫자 인덱스 원형 배지 */
+.nodeBadge {
+  background-color: var(--text1);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nodeResName {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text1);
+}
+
+/* 사진 그리드 구조 */
+.menuPhotoGrid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.detailPhotoCard {
+  width: 110px;
+  text-align: left;
+}
+
+.photoBoxImg {
+  width: 110px;
+  height: 95px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--gray6);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.photoBoxPlaceholder {
+  width: 110px;
+  height: 95px;
+  box-sizing: border-box;
+  background-color: var(--gray7);
+  border: 1px dashed var(--gray5);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--gray4);
+  margin-bottom: 8px;
+}
+
+.photoMenuName {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.photoMenuPrice {
+  font-size: 11px;
+  color: var(--gray2);
+  font-weight: 500;
+}
+
+.verticalTransitInfo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 0 20px 36px; /* 왼쪽 배지라인 두께에 마추어 오프셋 설정 */
+  position: relative;
+  margin-left: 44.2%;
+}
+
+/* 두 카드 사이의 여백을 시각적으로 이어주는 정중앙 대시라인 트랙 */
+.verticalDotsLine {
+  position: absolute;
+  left: 47px;
+  top: 0;
+  bottom: 0;
+  border-left: 2px dashed var(--gray5);
+  z-index: 1;
+}
+
+/* 카드 밖에 둥둥 떠서 다음 목적지 안내를 도와주는 캡슐 칩 */
+.transitDurationText {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray2);
+  background-color: #ffffff;
+  padding: 6px 14px;
+  border: 1px solid var(--gray5);
+  border-radius: 30px;
+  margin-left: 28px;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 🍽️ 추천 메뉴가 없을 때 채워줄 와이드 플레이스홀더 */
+.emptyMenuPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* 카드 가로를 꽉 채워서 안정감을 줌 */
+  padding: 30px 20px;
+  background-color: var(--gray8, #f9f9f9);
+  border: 1px dashed var(--gray5, #e0e0e0);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.emptyText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray3, #666666);
+  margin: 0 0 4px 0;
+}
+
+.emptySubText {
+  font-size: 11px;
+  color: var(--gray4, #999999);
+  margin: 0;
 }

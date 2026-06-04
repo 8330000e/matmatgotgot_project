@@ -1,7 +1,9 @@
 package com.twotwo.matmatgotgot.domain.trip.service;
 
+import com.twotwo.matmatgotgot.domain.trip.dto.request.FavoriteRequest;
 import com.twotwo.matmatgotgot.domain.trip.dto.request.MenuInsertRequest;
 import com.twotwo.matmatgotgot.domain.trip.dto.request.TripCreateRequestDTO;
+import com.twotwo.matmatgotgot.domain.trip.dto.request.TripUpdateDTO;
 import com.twotwo.matmatgotgot.domain.trip.dto.response.*;
 import com.twotwo.matmatgotgot.domain.trip.mapper.TripMapper;
 import lombok.RequiredArgsConstructor;
@@ -247,5 +249,93 @@ public class TripService {
 
         response.setDayRoutes(dayRoutes);
         return response;
+    }
+
+    @Transactional
+    public boolean toggleFavorite(FavoriteRequest req) {
+        int count = tripMapper.checkFavorite(req);
+        if (count > 0) {
+            tripMapper.deleteFavorite(req);
+            // 추가로 TRAVEL_PLAN_TBL의 tplan_like 카운트를 -1 하는 로직을 넣으면 더 좋습니다.
+            return false; // 찜 해제됨
+        } else {
+            tripMapper.insertFavorite(req);
+            return true; // 찜 등록됨
+        }
+    }
+
+    public boolean isFavoritePlan(FavoriteRequest req) {
+        int count = tripMapper.checkFavorite(req);
+        return count > 0;
+    }
+
+    @Transactional
+    public int updateFavoriteCount(Long tplanNo, String action) {
+        if ("INCREMENT".equalsIgnoreCase(action)) {
+            tripMapper.incrementFavoriteCount(tplanNo);
+        } else if ("DECREMENT".equalsIgnoreCase(action)) {
+            tripMapper.decrementFavoriteCount(tplanNo);
+        }
+
+        return tripMapper.selectFavoriteCount(tplanNo);
+    }
+
+    @Transactional
+    public void updateCourse(TripUpdateDTO updateDto) {
+        Long tplanNo = updateDto.getTplanNo();
+
+        // 1. 메인 마스터 정보 테이블 UPDATE
+        tripMapper.updateTravelPlan(updateDto);
+
+        // 2. 종속 테이블 데이터 기존 내역 초기화 (외래키 ON DELETE CASCADE로 인해 tplan_no 기준 하위 자동삭제 연동 가능)
+        tripMapper.deletePlanTags(tplanNo);
+        tripMapper.deleteTravelSchedules(tplanNo);
+
+        // 3. 태그(PLAN_TAG_TBL) 재등록
+        if (updateDto.getTagNos() != null && !updateDto.getTagNos().isEmpty()) {
+            for (Integer tagNo : updateDto.getTagNos()) {
+                tripMapper.insertPlanTag(tplanNo, tagNo);
+            }
+        }
+
+        // 4. 스케줄 및 경로 재등록
+        if (updateDto.getDays() != null) {
+            for (TripUpdateDTO.DayDataDto dayDto : updateDto.getDays()) {
+                if (dayDto.getSchedules() == null) continue;
+
+                Long prevTscheNo = null; // 💡 이전 등록된 일정번호를 저장하여 경로 테이블에 바인딩
+                String pendingTransitType = null; // 출발지 스케줄 기준의 이동수단 임시 보관
+
+                for (TripUpdateDTO.ScheduleDto scheDto : dayDto.getSchedules()) {
+
+                    // 4-1. TRAVEL_SCHEDULE_TBL 등록
+                    Map<String, Object> scheParam = new HashMap<>();
+                    scheParam.put("tplanNo", tplanNo);
+                    scheParam.put("tscheDayNo", scheDto.getTscheDayNo());
+                    scheParam.put("tscheOrderNo", scheDto.getTscheOrderNo());
+                    scheParam.put("restNo", scheDto.getRestNo());
+
+                    tripMapper.insertTravelSchedule(scheParam);
+                    Long currentTscheNo = (Long) scheParam.get("tscheNo"); // 자동 생성된 PK
+
+                    // 4-2. RECOMMEND_MENU_TBL (추천 메뉴 매핑) 등록
+                    if (scheDto.getSelectedMenuNos() != null && !scheDto.getSelectedMenuNos().isEmpty()) {
+                        for (Long menuNo : scheDto.getSelectedMenuNos()) {
+                            tripMapper.insertRecommendMenu(currentTscheNo, menuNo);
+                        }
+                    }
+
+                    // 4-3. TRAVEL_ROUTE_TBL (이동 경로) 등록
+                    // 이전 스케줄이 존재한다면, '이전 목적지 -> 현재 목적지'로 가는 경로를 완성하여 삽입
+                    if (prevTscheNo != null && pendingTransitType != null) {
+                        tripMapper.createTripCourse(prevTscheNo, currentTscheNo, pendingTransitType);
+                    }
+
+                    // 다음 루프를 위해 현재 스케줄 번호와 이동 경로 수단을 백업
+                    prevTscheNo = currentTscheNo;
+                    pendingTransitType = (scheDto.getRoute() != null) ? scheDto.getRoute().getTransitType() : null;
+                }
+            }
+        }
     }
 }

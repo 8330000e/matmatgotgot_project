@@ -82,7 +82,7 @@
     <select id="restaurantViewReviewsCnt" resultType="int">
         SELECT COUNT(*)
         FROM review_tbl r
-                 INNER JOIN member_tbl m
+                 INNER JOIN MEMBER_TBL m
                             ON r.member_no = m.member_no
         WHERE rest_no = #{restNo}
         ORDER BY r.visit_date DESC

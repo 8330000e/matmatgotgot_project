@@ -22,7 +22,7 @@ const TripMain = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:9999/api/trips/main`,
+          `${import.meta.env.VITE_BACKSERVER}/trips/main`,
           {
             params: { memberNo: memberNo },
           },

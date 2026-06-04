@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styles from "./CreateCourse.module.css";
+import { useNavigate, useParams } from "react-router-dom";
+import styles from "./CreateCourse.module.css"; // 👈 디자인을 완전히 똑같이 공유하도록 설정
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import CourseMap from "../../components/trip/CourseMap";
@@ -10,7 +10,8 @@ import SelectedCourseList from "../../components/trip/SelectedCourseList";
 import CourseSummaryPanel from "../../components/trip/CourseSummaryPanel";
 import AddMenuModal from "../../components/trip/AddMenuModal";
 
-const CreateCourse = () => {
+const EditCourse = () => {
+  const { tplan_no } = useParams();
   const navigate = useNavigate();
 
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -35,6 +36,100 @@ const CreateCourse = () => {
   const ODSAY_API_KEY = import.meta.env.VITE_ODSAY_API_KEY;
 
   const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    const fetchOriginalCourseData = async () => {
+      try {
+        // 1. 태그 전체 목록 먼저 호출
+        const tagResponse = await axios.get(
+          `${import.meta.env.VITE_BACKSERVER}/trips/create/tags`,
+        );
+        let tagList = tagResponse.data;
+
+        // 2. 기존 코스 상세 정보 데이터 호출
+        const detailResponse = await axios.get(
+          `${import.meta.env.VITE_BACKSERVER}/trips/detail/${tplan_no}`,
+        );
+        const course = detailResponse.data;
+
+        // 기본 텍스트 및 기본 메타 데이터 매핑
+        setCourseTitle(course.title);
+        setTravelDays(course.tplanDays);
+
+        // 태그 활성화 유무 기존 정보 비교 매핑
+        if (course.tags && course.tags.length > 0) {
+          tagList = tagList.map((t) => ({
+            ...t,
+            active: course.tags.includes(t.tagName || t.name),
+          }));
+        }
+        setTags(tagList);
+
+        // 일차별 데이터 구조 재구조화 매핑 (selectedRestaurants 형태 반환)
+        // 일차별 데이터 구조 재구조화 매핑 (selectedRestaurants 형태 반환)
+        if (course.dayRoutes) {
+          const loadedRestaurants = {};
+          const loadedTransitModes = {};
+
+          // 비동기 처리를 위해 각 날짜별, 식당별 메뉴 요청 프로미스 배열을 준비합니다.
+          for (const dayKey of Object.keys(course.dayRoutes)) {
+            const routes = course.dayRoutes[dayKey] || [];
+
+            // 💡 Promise.all을 사용해 해당 일차(Day)에 포함된 모든 식당의 전체 메뉴를 동시에 조회합니다.
+            const routesWithMenus = await Promise.all(
+              routes.map(async (node, index) => {
+                // 이동 정보 복원 로직
+                if (index < routes.length - 1) {
+                  const nextNode = routes[index + 1];
+                  const transitKey = `Day${dayKey}_${node.restNo}_${nextNode.restNo}`;
+                  if (node.transitType) {
+                    loadedTransitModes[transitKey] = node.transitType;
+                  }
+                }
+
+                // 💡 핵심: 기존 식당들도 백엔드에서 전체 메뉴 목록 풀(Pool)을 강제로 조회해옵니다.
+                let menuPool = [];
+                try {
+                  const menuResponse = await axios.get(
+                    `${import.meta.env.VITE_BACKSERVER}/trips/create/menus`,
+                    { params: { restNo: node.restNo } },
+                  );
+                  menuPool = menuResponse.data;
+                } catch (menuError) {
+                  console.error(
+                    `식당 번호 ${node.restNo}의 메뉴 조회 실패:`,
+                    menuError,
+                  );
+                  menuPool = node.menus || []; // 실패 시 폰백업으로 기존 값 유지
+                }
+
+                return {
+                  restNo: node.restNo,
+                  restName: node.restName,
+                  lat: node.lat,
+                  lng: node.lng,
+                  selectedMenus: node.selectedMenus || [], // 사용자가 과거에 선택했던 메뉴
+                  menus: menuPool, // 💡 이제 정상적으로 전체 메뉴 리스트가 채워집니다!
+                };
+              }),
+            );
+
+            loadedRestaurants[dayKey] = routesWithMenus;
+          }
+
+          setSelectedRestaurants(loadedRestaurants);
+          setTransitModes(loadedTransitModes);
+        }
+      } catch (error) {
+        console.error("기존 코스 수정 정보를 불러오지 못했습니다.", error);
+        alert("데이터 로딩 실패");
+      }
+    };
+
+    if (tplan_no) {
+      fetchOriginalCourseData();
+    }
+  }, [tplan_no]);
 
   const handleTravelDaysChange = (days) => {
     const numDays = Number(days);
@@ -71,17 +166,13 @@ const CreateCourse = () => {
     }
 
     if (currentDayList.length >= 6) {
-      alert(
-        "현재 Day의 식당이 많습니다. 실제 여행 동선으로는 다소 비효율적일 수 있습니다.",
-      );
+      alert("현재 Day의 식당이 많습니다. 동선상 비효율적일 수 있습니다.");
     }
 
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKSERVER}/trips/create/menus`,
-        {
-          params: { restNo: res.restNo },
-        },
+        { params: { restNo: res.restNo } },
       );
 
       setSelectedRestaurants((prev) => ({
@@ -157,16 +248,12 @@ const CreateCourse = () => {
       await axios.post(
         `${import.meta.env.VITE_BACKSERVER}/trips/create/menu`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
+        { headers: { "Content-Type": "multipart/form-data" } },
       );
 
       const response = await axios.get(
         `${import.meta.env.VITE_BACKSERVER}/trips/create/menus`,
-        {
-          params: { restNo: targetRestaurantId },
-        },
+        { params: { restNo: targetRestaurantId } },
       );
 
       setSelectedRestaurants((prev) => ({
@@ -218,7 +305,6 @@ const CreateCourse = () => {
 
   const handleTransitChange = async (transitKey, mode) => {
     setTransitModes((prev) => ({ ...prev, [transitKey]: mode }));
-
     const [, originNo, destinationNo] = transitKey.split("_");
     const currentDayList = selectedRestaurants[currentDay] || [];
 
@@ -227,10 +313,7 @@ const CreateCourse = () => {
       (r) => String(r.restNo) === destinationNo,
     );
 
-    if (!origin?.lat || !destination?.lat) {
-      alert("식당의 위치 정보(좌표)가 데이터베이스에 존재하지 않습니다.");
-      return;
-    }
+    if (!origin?.lat || !destination?.lat) return;
 
     const startX = Number(origin.lng);
     const startY = Number(origin.lat);
@@ -243,31 +326,30 @@ const CreateCourse = () => {
           ? "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json"
           : "https://apis.openapi.sk.com/tmap/routes?version=1&format=json";
 
-      const bodyPayload =
-        mode === "WALK"
-          ? {
-              startX,
-              startY,
-              endX,
-              endY,
-              startName: origin.restName || "출발지",
-              endName: destination.restName || "목적지",
-            }
-          : {
-              startX,
-              startY,
-              endX,
-              endY,
-              reqCoordType: "WGS84GEO",
-              resCoordType: "WGS84GEO",
-              searchOption: "0",
-            };
-
       try {
         const response = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", appKey: TMAP_APP_KEY },
-          body: JSON.stringify(bodyPayload),
+          body: JSON.stringify(
+            mode === "WALK"
+              ? {
+                  startX,
+                  startY,
+                  endX,
+                  endY,
+                  startName: "출발지",
+                  endName: "목적지",
+                }
+              : {
+                  startX,
+                  startY,
+                  endX,
+                  endY,
+                  reqCoordType: "WGS84GEO",
+                  resCoordType: "WGS84GEO",
+                  searchOption: "0",
+                },
+          ),
         });
         const data = await response.json();
         if (data.features?.[0]) {
@@ -280,8 +362,7 @@ const CreateCourse = () => {
           }));
         }
       } catch (error) {
-        console.error(`${mode} 시간 조회 실패:`, error);
-        setTransitTimes((prev) => ({ ...prev, [transitKey]: "조회 실패" }));
+        console.error(error);
       }
     } else if (mode === "PUB") {
       try {
@@ -293,19 +374,16 @@ const CreateCourse = () => {
             ...prev,
             [transitKey]: `${data.result.path[0].info.totalTime}분`,
           }));
-        } else {
-          setTransitTimes((prev) => ({
-            ...prev,
-            [transitKey]: "도보 추천 (경로 없음)",
-          }));
         }
       } catch (error) {
-        console.error("ODsay 대중교통 조회 실패:", error);
-        setTransitTimes((prev) => ({ ...prev, [transitKey]: "조회 실패" }));
+        console.error(error);
       }
     }
   };
 
+  // ==========================================
+  // [3] 통계 수치 연산부 계산 로직
+  // ==========================================
   const allRestaurants = Object.values(selectedRestaurants).flat();
   const totalCount = allRestaurants.length;
   const restaurantStayTime = totalCount * 60;
@@ -321,24 +399,31 @@ const CreateCourse = () => {
     totalCount > 0 ? restaurantStayTime + totalTransitMinutes : 0;
   const hours = Math.floor(totalMinutes / 60);
   const mins = totalMinutes % 60;
-
   const totalDistance =
     totalCount > 1
       ? ((totalCount - Object.keys(selectedRestaurants).length) * 1.4).toFixed(
           1,
         )
       : 0;
-
   const totalCost = allRestaurants.reduce((sum, res) => {
-    return sum + res.selectedMenus.reduce((menuSum, m) => menuSum + m.price, 0);
+    return (
+      sum +
+      res.selectedMenus.reduce(
+        (menuSum, m) => menuSum + m.price || m.menuPrice,
+        0,
+      )
+    );
   }, 0);
 
   const getMenuSelectorText = (selectedMenus) => {
     if (selectedMenus.length === 0) return "📌 필수 메뉴 선택하기";
-    const menuSum = selectedMenus.reduce((sum, m) => sum + m.price, 0);
+    const menuSum = selectedMenus.reduce(
+      (sum, m) => sum + (m.price || m.menuPrice),
+      0,
+    );
     if (selectedMenus.length === 1)
-      return `📌 ${selectedMenus[0].name} (${menuSum.toLocaleString()}원)`;
-    return `📌 ${selectedMenus[0].name} 외 ${selectedMenus.length - 1}개 (총 ${menuSum.toLocaleString()}원)`;
+      return `📌 ${selectedMenus[0].name || selectedMenus[0].menuName} (${menuSum.toLocaleString()}원)`;
+    return `📌 ${selectedMenus[0].name || selectedMenus[0].menuName} 외 ${selectedMenus.length - 1}개 (총 ${menuSum.toLocaleString()}원)`;
   };
 
   const formatTransitTime = (timeStr) => {
@@ -349,30 +434,26 @@ const CreateCourse = () => {
     return hr > 0 ? (mn > 0 ? `${hr}시간 ${mn}분` : `${hr}시간`) : `${mn}분`;
   };
 
-  const handleSubmitCourse = async () => {
-    // 1. 유효성 검사
+  // ==========================================
+  // [4] 수정 완료 요청 제출 처리 (PUT 통신 분기)
+  // ==========================================
+  const handleUpdateCourse = async () => {
     if (!courseTitle.trim()) {
       alert("코스명을 입력해 주세요.");
       return;
     }
 
-    const activeTags = tags.filter((t) => t.active).map((t) => t.id); // tag_no 배열
-
-    // 최소 하나 이상의 식당이 선택되었는지 확인
-    const totalSelectedCount = Object.values(selectedRestaurants).flat().length;
-    if (totalSelectedCount === 0) {
+    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
+    if (Object.values(selectedRestaurants).flat().length === 0) {
       alert("최소 한 개 이상의 식당을 코스에 추가해야 합니다.");
       return;
     }
 
-    // 2. 백엔드 스키마 구조에 맞게 데이터 가공
-    // selectedRestaurants 구조 예시: { 1: [res1, res2], 2: [res3] }
     const daysData = Object.keys(selectedRestaurants).map((dayStr) => {
       const dayNum = Number(dayStr);
       const restaurantList = selectedRestaurants[dayNum] || [];
 
       const schedules = restaurantList.map((res, index) => {
-        // 현재 식당에서 다음 식당으로의 이동 키 생성
         const nextRes = restaurantList[index + 1];
         const transitKey = nextRes
           ? `Day${dayNum}_${res.restNo}_${nextRes.restNo}`
@@ -380,30 +461,23 @@ const CreateCourse = () => {
 
         return {
           tscheDayNo: dayNum,
-          tscheOrderNo: index + 1, // 1부터 시작하는 순서
+          tscheOrderNo: index + 1,
           restNo: res.restNo,
-          // 해당 식당에서 선택한 메뉴 번호 배열
           selectedMenuNos: res.selectedMenus.map((m) => m.menuNo),
-          // 다음 식당으로의 이동 정보 (마지막 식당이 아닐 경우 존재)
           route: nextRes
-            ? {
-                transitType: transitModes[transitKey] || "WALK", // 기본값 도보
-              }
+            ? { transitType: transitModes[transitKey] || "WALK" }
             : null,
         };
       });
 
-      return {
-        day: dayNum,
-        schedules: schedules,
-      };
+      return { day: dayNum, schedules };
     });
 
-    // 최종 Payload 구성
     const payload = {
+      tplanNo: tplan_no, // 👈 식별 번호 포함
       tplanTitle: courseTitle,
-      tplanDesc: "", // 필요시 추가 입력 폼 구현
-      tplanRegion: "", // 필요시 추가 구성
+      tplanDesc: "",
+      tplanRegion: "",
       tplanDays: travelDays,
       tplanTotalPrice: totalCost,
       tagNos: activeTags,
@@ -411,19 +485,28 @@ const CreateCourse = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKSERVER}/trips/create`,
+      // 생성(POST) 대신 수정(PUT) 엔드포인트 전송
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKSERVER}/trips/edit/${tplan_no}`,
         payload,
       );
+
       if (response.status === 200 || response.status === 201) {
-        alert("여행 코스가 성공적으로 등록되었습니다!");
-        navigate("/trip");
+        alert("여행 코스가 성공적으로 수정되었습니다! ✨");
+        // 💡 tplanNo 대신 상단 params에서 비구조화 할당한 tplan_no 변수를 정확히 사용합니다.
+        navigate(`/trip/detail/${tplan_no}`);
       }
     } catch (error) {
-      console.error("코스 등록 실패:", error);
-      alert(
-        error.response?.data?.message || "코스 등록 중 오류가 발생했습니다.",
-      );
+      console.error("코스 수정 실패 에러 로그:", error);
+
+      // 서버가 진짜 500 에러를 준 것인지, 스크립트 자체 에러인지 명확히 판별하기 위한 얼럿 창 고도화
+      if (error.response) {
+        alert(
+          `서버 응답 오류 (${error.response.status}): ${error.response.data}`,
+        );
+      } else {
+        alert(`프론트엔드 스크립트 내부 오류: ${error.message}`);
+      }
     }
   };
 
@@ -436,37 +519,20 @@ const CreateCourse = () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/create/search`,
-          {
-            params: { keyword: searchKeyword },
-          },
+          { params: { keyword: searchKeyword } },
         );
         setRestaurants(response.data);
       } catch (error) {
-        console.error("맛집 검색 중 오류 발생:", error);
+        console.error(error);
       }
     }, 300);
     return () => clearTimeout(delayDebounceTimer);
   }, [searchKeyword]);
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKSERVER}/trips/create/tags`,
-        );
-        console.log("태그 응답", response.data);
-        setTags(response.data);
-      } catch (error) {
-        console.error("DB 태그 데이터를 가져오는 중 실패했습니다:", error);
-      }
-    };
-    fetchTags();
-  }, []);
-
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.mainHeader}>
-        <EditIcon className={styles.editIcon} /> <h2>코스 생성하기</h2>
+        <EditIcon className={styles.editIcon} /> <h2>코스 수정하기</h2>
       </div>
 
       <div className={styles.gridDashboard}>
@@ -512,7 +578,7 @@ const CreateCourse = () => {
             mins={mins}
             totalDistance={totalDistance}
             totalCost={totalCost}
-            onSubmit={handleSubmitCourse}
+            onSubmit={handleUpdateCourse} // 👈 수정용 서브밋 핸들러 바인딩
           />
 
           <div className={styles.mapPlaceholderPanel}>
@@ -536,4 +602,4 @@ const CreateCourse = () => {
   );
 };
 
-export default CreateCourse;
+export default EditCourse;

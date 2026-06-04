@@ -133,7 +133,7 @@
     </insert>
 
     <insert id="insertTravelSchedule" parameterType="map">
-        <selectKey keyProperty="tsche_no" resultType="long" order="AFTER">
+        <selectKey keyProperty="tscheNo" resultType="long" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
         INSERT INTO TRAVEL_SCHEDULE_TBL (
@@ -241,4 +241,59 @@
         SELECT transit_type FROM TRAVEL_ROUTE_TBL
         WHERE from_tsche_no = #{fromNo} AND to_tsche_no = #{toNo}
     </select>
+
+    <select id="checkFavorite" resultType="int">
+        SELECT COUNT(*)
+        FROM FAVORITE_PLAN_TBL
+        WHERE member_no = #{memberNo} AND tplan_no = #{tplanNo}
+    </select>
+
+    <insert id="insertFavorite">
+        INSERT INTO FAVORITE_PLAN_TBL (member_no, tplan_no)
+        VALUES (#{memberNo}, #{tplanNo})
+    </insert>
+
+    <delete id="deleteFavorite">
+        DELETE FROM FAVORITE_PLAN_TBL
+        WHERE member_no = #{memberNo} AND tplan_no = #{tplanNo}
+    </delete>
+
+    <update id="incrementFavoriteCount">
+        UPDATE TRAVEL_PLAN_TBL
+        SET tplan_like = tplan_like + 1
+        WHERE tplan_no = #{tplanNo}
+    </update>
+
+    <update id="decrementFavoriteCount">
+        UPDATE TRAVEL_PLAN_TBL
+        SET tplan_like = IF(tplan_like &gt; 0, tplan_like - 1, 0)
+        WHERE tplan_no = #{tplanNo}
+    </update>
+
+    <select id="selectFavoriteCount" resultType="int">
+        SELECT tplan_like
+        FROM TRAVEL_PLAN_TBL
+        WHERE tplan_no = #{tplanNo}
+    </select>
+
+    <update id="updateTravelPlan" parameterType="tripUpdateDTO">
+        UPDATE TRAVEL_PLAN_TBL
+        SET
+            tplan_title = #{tplanTitle},
+            tplan_desc = #{tplanDesc},
+            tplan_region = #{tplanRegion},
+            tplan_days = #{tplanDays},
+            tplan_total_price = #{tplanTotalPrice}
+        WHERE tplan_no = #{tplanNo}
+    </update>
+
+    <delete id="deletePlanTags">
+        DELETE FROM PLAN_TAG_TBL
+        WHERE tplan_no = #{tplanNo}
+    </delete>
+
+    <delete id="deleteTravelSchedules">
+        DELETE FROM TRAVEL_SCHEDULE_TBL
+        WHERE tplan_no = #{tplanNo}
+    </delete>
 </mapper>

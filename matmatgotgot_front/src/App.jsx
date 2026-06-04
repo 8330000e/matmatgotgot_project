@@ -28,6 +28,7 @@ import Main from "./pages/main/Main.jsx";
 import Main_login from "./pages/main/Main_login.jsx";
 import CreateCourse from "./pages/trip/CreateCourse.jsx";
 import CourseDetail from "./pages/trip/CourseDetail.jsx";
+import EditCourse from "./pages/trip/EditCourse.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -73,7 +74,8 @@ function App() {
           <Route path="/trip" element={<TripMain />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/trip/create" element={<CreateCourse />} />
-          <Route path="/trip/detail/:tplanNo" element={<CourseDetail />} />
+          <Route path="/trip/edit/:tplan_no" element={<EditCourse />} />
+          <Route path="/trip/detail/:tplan_no" element={<CourseDetail />} />
         </Routes>
       </div>
       <Footer />

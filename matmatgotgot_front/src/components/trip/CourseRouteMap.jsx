@@ -75,7 +75,7 @@ const CourseRouteMap = ({ routes: propsRoutes }) => {
                 <span className={styles.markerNumber}>{index + 1}</span>
               </div>
 
-              <div className={styles.balloonName}>{route.name}</div>
+              <div className={styles.balloonName}>{route.restName}</div>
             </div>
           );
         })}

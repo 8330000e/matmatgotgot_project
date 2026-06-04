@@ -51,7 +51,7 @@ public class SpringSecurityConfig {
                     .requestMatchers("/api/naver/**").permitAll()
                     .requestMatchers("/admin/**").permitAll()
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
-                .requestMatchers("/api/trips/**").permitAll()
+                .requestMatchers("/trips/**").permitAll()
                 .requestMatchers("/menu/**").permitAll()
                 .anyRequest().authenticated()
             );

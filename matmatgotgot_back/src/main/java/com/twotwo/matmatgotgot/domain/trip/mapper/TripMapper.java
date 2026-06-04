@@ -1,6 +1,8 @@
 package com.twotwo.matmatgotgot.domain.trip.mapper;
 
+import com.twotwo.matmatgotgot.domain.trip.dto.request.FavoriteRequest;
 import com.twotwo.matmatgotgot.domain.trip.dto.request.MenuInsertRequest;
+import com.twotwo.matmatgotgot.domain.trip.dto.request.TripUpdateDTO;
 import com.twotwo.matmatgotgot.domain.trip.dto.response.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +38,18 @@ public interface TripMapper {
     List<RawSchedule> selectRawSchedulesWithDay(Long tplanNo);
     List<MenuDTO> selectRecommendMenus(Long tscheNo);
     String selectTransitType(@Param("fromNo") Long fromNo, @Param("toNo") Long toNo);
+
+    int checkFavorite(FavoriteRequest req);
+    void deleteFavorite(FavoriteRequest req);
+    void insertFavorite(FavoriteRequest req);
+
+    void incrementFavoriteCount(@Param("tplanNo") Long tplanNo);
+    void decrementFavoriteCount(@Param("tplanNo") Long tplanNo);
+    int selectFavoriteCount(@Param("tplanNo") Long tplanNo);
+
+    void updateTravelPlan(TripUpdateDTO updateDto);
+
+    void deletePlanTags(@Param("tplanNo") Long tplanNo);
+
+    void deleteTravelSchedules(@Param("tplanNo") Long tplanNo);
 }

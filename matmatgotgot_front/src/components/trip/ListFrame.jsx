@@ -106,10 +106,7 @@ const ListFrame = ({ order, iconText, items }) => {
             const isFullUrl = item.imgName?.startsWith("http");
             const imgSrc = isFullUrl
               ? item.imgName
-              : new URL(
-                  `../../assets/restaurant/${item.imgName}`,
-                  import.meta.url,
-                ).href;
+              : `${import.meta.env.VITE_BACKSERVER}/menu/${item.imgName}`;
 
             return (
               <div
@@ -123,6 +120,9 @@ const ListFrame = ({ order, iconText, items }) => {
                     src={imgSrc}
                     alt="식당 이미지"
                     className={styles.image}
+                    onError={(e) =>
+                      console.log("이미지 로드 실패", e.target.src)
+                    }
                   />
                 </div>
                 <div className={styles.descBox}>

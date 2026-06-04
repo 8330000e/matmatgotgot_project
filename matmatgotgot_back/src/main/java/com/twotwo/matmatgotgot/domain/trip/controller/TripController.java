@@ -1,7 +1,6 @@
 package com.twotwo.matmatgotgot.domain.trip.controller;
 
-import com.twotwo.matmatgotgot.domain.trip.dto.request.MenuInsertRequest;
-import com.twotwo.matmatgotgot.domain.trip.dto.request.TripCreateRequestDTO;
+import com.twotwo.matmatgotgot.domain.trip.dto.request.*;
 import com.twotwo.matmatgotgot.domain.trip.dto.response.*;
 import com.twotwo.matmatgotgot.domain.trip.service.TripService;
 import lombok.RequiredArgsConstructor;
@@ -10,18 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/trips")
+@RequestMapping("/trips")
 public class TripController {
     private final TripService tripService;
 
     @GetMapping("/main")
     public ResponseEntity<Map<String, List<TripCourseResponse>>> getTripMain(
-            // 세션이나 JWT 토큰 등에서 회원 정보를 받아온다고 가정 (비로그인 시 null 허용)
             @RequestParam(value = "memberNo", required = false) Long memberNo) {
 
         Map<String, List<TripCourseResponse>> data = tripService.getTripMainData(memberNo);
@@ -66,7 +65,6 @@ public class TripController {
     @PostMapping("/create")
     public ResponseEntity<String> createTripCourse(@RequestBody TripCreateRequestDTO requestDTO) {
         try {
-            // 임시 사용자 ID (실무에서는 세션 또는 시큐리티 Context에서 추출)
             int memberNo = 1;
 
             tripService.createTripCourse(requestDTO, memberNo);
@@ -80,11 +78,50 @@ public class TripController {
 
     @GetMapping("/detail/{tplanNo}")
     public ResponseEntity<CourseDetailResponse> getCourseDetail(@PathVariable Long tplanNo) {
-        System.out.println("hello");
         CourseDetailResponse detail = tripService.getCourseDetail(tplanNo);
         if (detail == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(detail);
+    }
+
+    @PostMapping("/favorite/toggle")
+    public ResponseEntity<Boolean> toggleFavorite(@RequestBody FavoriteRequest req) {
+        boolean result = tripService.toggleFavorite(req);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/favorite/check")
+    public ResponseEntity<Map<String, Boolean>> checkFavorite(@ModelAttribute FavoriteRequest req) {
+
+        boolean isFavorite = tripService.isFavoritePlan(req);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isFavorite", isFavorite);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/favorite/count")
+    public ResponseEntity<Integer> updateFavoriteCount(@RequestBody FavoriteCountRequest req) {
+        int updatedCount = tripService.updateFavoriteCount(req.getTplanNo(), req.getAction());
+        return ResponseEntity.ok(updatedCount);
+    }
+
+    @PutMapping("/edit/{tplanNo}")
+    public ResponseEntity<?> updateCourse(
+            @PathVariable("tplanNo") Long tplanNo,
+            @RequestBody TripUpdateDTO updateDto) {
+        System.out.println(updateDto);
+
+        // URL에 담긴 코스 식별자를 DTO 내부에 강제 바인딩 안전장치
+        updateDto.setTplanNo(tplanNo);
+
+        try {
+            tripService.updateCourse(updateDto);
+            return ResponseEntity.ok().build(); // 200 OK 응답 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("코스 수정 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 }
