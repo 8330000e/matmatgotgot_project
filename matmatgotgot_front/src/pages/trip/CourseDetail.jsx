@@ -1,51 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // URL 파라미터 파싱용
+import axios from "axios";
 import styles from "./CourseDetail.module.css";
 import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CloseIcon from "@mui/icons-material/Close";
 import CourseRouteMap from "../../components/trip/CourseRouteMap";
 
 const CourseDetail = () => {
-  const [isOwner, setIsOwner] = useState(true);
-  const [isLiked, setIsLiked] = useState(true);
-  const [likeCount, setLikeCount] = useState(124);
+  const { tplan_no } = useParams(); // URL에서 번호 추출 (/trip/detail/:tplan_no 구조 상정)
+
+  const [courseData, setCourseData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeDay, setActiveDay] = useState(1); // 💡 다일차 처리를 위한 현재 활성화된 일차 state
+
+  const [isOwner, setIsOwner] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [showSharePopup, setShowSharePopup] = useState(false);
 
-  const courseData = {
-    title: "코스 이름을 여기 넣을거에요~",
-    tags: ["#집", "#가고싶다", "#진짜로", "#졸려"],
-    totalDuration: "3시간 30분",
-    transport: "도보",
-    estimatedCost: "인당 32,000원",
-    routes: [
-      {
-        id: 1,
-        step: "01",
-        name: "강된장 쌈밥 명동점",
-        selectedMenus: ["강된장 쌈밥", "새우 감자전"],
-        transitText: "도보 5분",
-      },
-      {
-        id: 2,
-        step: "02",
-        name: "홍원돈까스 본점",
-        selectedMenus: ["안심까스", "치즈까스"],
-        transitText: "도보 10분",
-      },
-      {
-        id: 3,
-        step: "03",
-        name: "황소고집 처인구점",
-        selectedMenus: ["통갈매기살"],
-        transitText: "",
-      },
-    ],
-  };
+  const loginMemberNo = 1; // 임시 로그인 유저 (세션 혹은 스토어에서 관리 가정)
+
+  // API 호출 연동
+  useEffect(() => {
+    const fetchDetailData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `http://localhost:9999/api/trips/detail/${tplan_no}`,
+        );
+        const data = response.data;
+
+        setCourseData(data);
+        setLikeCount(data.tplanLike);
+        setIsOwner(data.memberNo === loginMemberNo); // 내 글인지 판별
+      } catch (error) {
+        console.error("상세 코스 정보를 불러오지 못했습니다.", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (tplan_no) fetchDetailData();
+  }, [tplan_no]);
 
   const handleLikeToggle = () => {
+    // 백엔드와 시너지용 찜 API 호출 토글 로직 대체 가능
     if (isLiked) {
       setIsLiked(false);
       setLikeCount((prev) => prev - 1);
@@ -61,18 +62,38 @@ const CourseDetail = () => {
     setShowSharePopup(false);
   };
 
+  if (loading)
+    return (
+      <div className={styles.loading}>코스 상세 정보를 로딩 중입니다...</div>
+    );
+  if (!courseData)
+    return <div className={styles.loading}>존재하지 않는 코스입니다.</div>;
+
+  // 💡 현재 탭(일차)에 맞는 루트 노드 배열 추출
+  const currentDayRoutes = courseData.dayRoutes[activeDay] || [];
+
+  // 이동 수단 한글 및 텍스트 매핑 포맷터
+  const getTransitText = (type) => {
+    if (type === "WALK") return "도보 약 5분";
+    if (type === "PUB") return "대중교통 약 15분";
+    if (type === "CAR") return "차량 이동 약 10분";
+    return "이동 약 5분";
+  };
+
   return (
     <div className={styles.detailPageContainer}>
       <div className={styles.detailHeader}>
         <div className={styles.headerLeft}>
           <h1 className={styles.courseTitle}>{courseData.title}</h1>
+          <p className={styles.courseDesc}>{courseData.desc}</p>
           <div className={styles.metaRow}>
             <span className={styles.likeBadge}>
-              [❤️ {likeCount.toLocaleString()}명이 찜했는지]
+              ❤️ {likeCount.toLocaleString()}명이 찜함 (조회수{" "}
+              {courseData.tplanView})
             </span>
-            {courseData.tags.map((tag, idx) => (
+            {courseData.tags?.map((tag, idx) => (
               <span key={idx} className={styles.tagItem}>
-                {tag}
+                #{tag}
               </span>
             ))}
           </div>
@@ -121,10 +142,28 @@ const CourseDetail = () => {
         </div>
       </div>
 
+      {/* 💡 다일차(Multi-Days) 일차 전환 탭 추가 */}
+      {courseData.tplanDays > 1 && (
+        <div className={styles.dayTabContainer}>
+          {Array.from({ length: courseData.tplanDays }, (_, i) => i + 1).map(
+            (day) => (
+              <button
+                key={day}
+                className={`${styles.dayTabBtn} ${activeDay === day ? styles.activeDayTab : ""}`}
+                onClick={() => setActiveDay(day)}
+              >
+                Day {day}
+              </button>
+            ),
+          )}
+        </div>
+      )}
+
       <div className={styles.contentBg}>
         <div className={styles.ticketDashboard}>
           <div className={styles.ticketLeft}>
-            <CourseRouteMap routes={courseData.routes} />
+            {/* 현재 선택된 일차의 맵 마커 연동 */}
+            <CourseRouteMap routes={currentDayRoutes} />
           </div>
 
           <div className={styles.ticketDivider}>
@@ -136,62 +175,84 @@ const CourseDetail = () => {
           <div className={styles.ticketRight}>
             <div className={styles.infoSummaryGroup}>
               <div className={styles.infoSummaryLine}>
-                <span className={styles.summaryLabel}>총 소요시간</span>
+                <span className={styles.summaryLabel}>전체 일정</span>
                 <span className={styles.summaryValue}>
-                  : {courseData.totalDuration}
+                  : {courseData.tplanDays} Days
                 </span>
               </div>
               <div className={styles.infoSummaryLine}>
-                <span className={styles.summaryLabel}>이동 수단</span>
+                <span className={styles.summaryLabel}>여행 지역</span>
                 <span className={styles.summaryValue}>
-                  : {courseData.transport}
+                  : {courseData.region || "미지정"}
                 </span>
               </div>
               <div className={styles.infoSummaryLine}>
-                <span className={styles.summaryLabel}>예상 식비</span>
+                <span className={styles.summaryLabel}>총 예상비용</span>
                 <span className={styles.summaryValue}>
-                  : {courseData.estimatedCost}
+                  : {courseData.tplanTotalPrice?.toLocaleString()}원
                 </span>
               </div>
             </div>
           </div>
         </div>
 
+        {/* 타임라인 노드 영역 */}
         <div className={styles.timelineContainer}>
-          {courseData.routes.map((route, index) => (
-            <div key={route.id} className={styles.routeItemNode}>
-              <div className={styles.routeNodeHeader}>
-                <div className={styles.nodeTitleBox}>
-                  <span className={styles.nodeBadge}>
-                    🚩 [{route.step} 맛집]
-                  </span>
-                  <h3 className={styles.nodeResName}>{route.name}</h3>
-                </div>
-                <div className={styles.headerConnectLine}></div>
-                <div className={styles.selectedMenuNames}>
-                  {route.selectedMenus.join(", ")}
-                </div>
-              </div>
-
-              <div className={styles.menuPhotoGrid}>
-                {route.selectedMenus.map((menu, mIdx) => (
-                  <div key={mIdx} className={styles.detailPhotoCard}>
-                    <div className={styles.photoBoxPlaceholder}>사진</div>
-                    <div className={styles.photoMenuName}>{menu}</div>
-                  </div>
-                ))}
-              </div>
-
-              {index < courseData.routes.length - 1 && (
-                <div className={styles.verticalTransitInfo}>
-                  <div className={styles.verticalDotsLine}></div>
-                  <div className={styles.transitDurationText}>
-                    {route.transitText || "이동 약 5분"}
-                  </div>
-                </div>
-              )}
+          {currentDayRoutes.length === 0 ? (
+            <div className={styles.noRoute}>
+              이 날은 등록된 일정이 없습니다.
             </div>
-          ))}
+          ) : (
+            currentDayRoutes.map((route, index) => (
+              <div key={route.tscheNo} className={styles.routeItemNode}>
+                <div className={styles.routeNodeHeader}>
+                  <div className={styles.nodeTitleBox}>
+                    <span className={styles.nodeBadge}>
+                      🚩 [0{route.tscheOrderNo} 맛집]
+                    </span>
+                    <h3 className={styles.nodeResName}>{route.restName}</h3>
+                  </div>
+                  <div className={styles.headerConnectLine}></div>
+                  <div className={styles.selectedMenuNames}>
+                    {route.selectedMenus?.map((m) => m.menuName).join(", ")}
+                  </div>
+                </div>
+
+                <div className={styles.menuPhotoGrid}>
+                  {route.selectedMenus?.map((menu, mIdx) => (
+                    <div key={mIdx} className={styles.detailPhotoCard}>
+                      {menu.menuImg ? (
+                        <img
+                          src={menu.menuImg}
+                          alt={menu.menuName}
+                          className={styles.photoBoxImg}
+                        />
+                      ) : (
+                        <div className={styles.photoBoxPlaceholder}>
+                          사진 없음
+                        </div>
+                      )}
+                      <div className={styles.photoMenuName}>
+                        {menu.menuName}
+                      </div>
+                      <div className={styles.photoMenuPrice}>
+                        {menu.menuPrice?.toLocaleString()}원
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {index < currentDayRoutes.length - 1 && (
+                  <div className={styles.verticalTransitInfo}>
+                    <div className={styles.verticalDotsLine}></div>
+                    <div className={styles.transitDurationText}>
+                      {getTransitText(route.transitType)}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -6,15 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Alias(value="menuDTO")
-public class MenuDTO {
-    private Long menuNo;
+@Alias(value="routeNodeDTO")
+public class RouteNodeDTO {
+    private Long tscheNo;
+    private int tscheOrderNo;
     private Long restNo;
-    private String name;
-    private Integer price;
-    private String imagePreview;
+    private String restName;
+    private double lat;
+    private double lng;
+    private String transitType;
+    private List<MenuDTO> selectedMenus;
 }

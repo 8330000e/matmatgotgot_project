@@ -1,9 +1,7 @@
 package com.twotwo.matmatgotgot.domain.trip.mapper;
 
 import com.twotwo.matmatgotgot.domain.trip.dto.request.MenuInsertRequest;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.MenuDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.RestaurantDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.TripCourseResponse;
+import com.twotwo.matmatgotgot.domain.trip.dto.response.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,4 +29,11 @@ public interface TripMapper {
 
     List<TripCourseResponse> selectAllPlans();
     List<TripCourseResponse> selectFavoritePlans(@Param("memberNo") Long memberNo);
+
+    void updateViewCount(Long tplanNo);
+    CourseDetailResponse selectTravelPlan(Long tplanNo);
+    List<String> selectPlanTags(Long tplanNo);
+    List<RawSchedule> selectRawSchedulesWithDay(Long tplanNo);
+    List<MenuDTO> selectRecommendMenus(Long tscheNo);
+    String selectTransitType(@Param("fromNo") Long fromNo, @Param("toNo") Long toNo);
 }

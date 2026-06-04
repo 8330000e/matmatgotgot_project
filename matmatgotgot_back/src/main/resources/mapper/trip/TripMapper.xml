@@ -204,4 +204,41 @@
         ORDER BY fp.created_at DESC
 
     </select>
+
+    <update id="updateViewCount">
+        UPDATE TRAVEL_PLAN_TBL SET tplan_view = tplan_view + 1 WHERE tplan_no = #{tplanNo}
+    </update>
+
+    <select id="selectTravelPlan" resultType="courseDetailResponse">
+        SELECT tplan_no as tplanNo, member_no as memberNo, tplan_title as title,
+               tplan_desc as `desc`, tplan_region as region, tplan_days as tplanDays,
+               tplan_total_price as tplanTotalPrice, tplan_view as tplanView, tplan_like as tplanLike
+        FROM TRAVEL_PLAN_TBL WHERE tplan_no = #{tplanNo}
+    </select>
+
+    <select id="selectPlanTags" resultType="string">
+        SELECT t.tag_name FROM PLAN_TAG_TBL pt
+                                   JOIN TAG_TBL t ON pt.tag_no = t.tag_no WHERE pt.tplan_no = #{tplanNo}
+    </select>
+
+    <select id="selectRawSchedulesWithDay" resultType="rawSchedule">
+        SELECT s.tsche_no as tscheNo, s.tsche_day_no as tscheDayNo, s.tsche_order_no as tscheOrderNo,
+               s.rest_no as restNo, r.rest_name as restName, r.lat, r.lng
+        FROM TRAVEL_SCHEDULE_TBL s
+                 JOIN RESTAURANT_TBL r ON s.rest_no = r.rest_no
+        WHERE s.tplan_no = #{tplanNo}
+        ORDER BY s.tsche_day_no ASC, s.tsche_order_no ASC
+    </select>
+
+    <select id="selectRecommendMenus" resultType="menuDTO">
+        SELECT m.MENU_NO as menuNo, m.MENU_NAME as name, m.MENU_PRICE as price, m.MENU_IMG as imagePreview
+        FROM RECOMMEND_MENU_TBL rm
+                 JOIN MENU_TBL m ON rm.menu_no = m.MENU_NO
+        WHERE rm.tsche_no = #{tscheNo}
+    </select>
+
+    <select id="selectTransitType" resultType="string">
+        SELECT transit_type FROM TRAVEL_ROUTE_TBL
+        WHERE from_tsche_no = #{fromNo} AND to_tsche_no = #{toNo}
+    </select>
 </mapper>

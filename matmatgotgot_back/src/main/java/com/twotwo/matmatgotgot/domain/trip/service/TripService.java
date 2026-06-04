@@ -2,10 +2,7 @@ package com.twotwo.matmatgotgot.domain.trip.service;
 
 import com.twotwo.matmatgotgot.domain.trip.dto.request.MenuInsertRequest;
 import com.twotwo.matmatgotgot.domain.trip.dto.request.TripCreateRequestDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.MenuDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.RestaurantDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.TagDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.TripCourseResponse;
+import com.twotwo.matmatgotgot.domain.trip.dto.response.*;
 import com.twotwo.matmatgotgot.domain.trip.mapper.TripMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -206,5 +204,48 @@ public class TripService {
         }
 
         return resultMap;
+    }
+
+    @Transactional
+    public CourseDetailResponse getCourseDetail(Long tplanNo) {
+        tripMapper.updateViewCount(tplanNo);
+
+        CourseDetailResponse response = tripMapper.selectTravelPlan(tplanNo);
+        if (response == null) return null;
+
+        response.setTags(tripMapper.selectPlanTags(tplanNo));
+
+        List<RawSchedule> rawSchedules = tripMapper.selectRawSchedulesWithDay(tplanNo);
+
+        Map<Integer, List<RouteNodeDTO>> dayRoutes = rawSchedules.stream()
+                .collect(Collectors.groupingBy(
+                        RawSchedule::getTscheDayNo,
+                        LinkedHashMap::new,
+                        Collectors.mapping(raw -> {
+                            RouteNodeDTO node = new RouteNodeDTO();
+                            node.setTscheNo(raw.getTscheNo());
+                            node.setTscheOrderNo(raw.getTscheOrderNo());
+                            node.setRestNo(raw.getRestNo());
+                            node.setRestName(raw.getRestName());
+                            node.setLat(raw.getLat());
+                            node.setLng(raw.getLng());
+
+                            node.setSelectedMenus(tripMapper.selectRecommendMenus(raw.getTscheNo()));
+                            return node;
+                        }, Collectors.toList())
+                ));
+
+        dayRoutes.forEach((day, nodes) -> {
+            for (int i = 0; i < nodes.size() - 1; i++) {
+                Long fromNo = nodes.get(i).getTscheNo();
+                Long toNo = nodes.get(i + 1).getTscheNo();
+                String transit = tripMapper.selectTransitType(fromNo, toNo);
+
+                nodes.get(i).setTransitType(transit != null ? transit : "WALK");
+            }
+        });
+
+        response.setDayRoutes(dayRoutes);
+        return response;
     }
 }

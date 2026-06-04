@@ -2,10 +2,7 @@ package com.twotwo.matmatgotgot.domain.trip.controller;
 
 import com.twotwo.matmatgotgot.domain.trip.dto.request.MenuInsertRequest;
 import com.twotwo.matmatgotgot.domain.trip.dto.request.TripCreateRequestDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.MenuDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.RestaurantDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.TagDTO;
-import com.twotwo.matmatgotgot.domain.trip.dto.response.TripCourseResponse;
+import com.twotwo.matmatgotgot.domain.trip.dto.response.*;
 import com.twotwo.matmatgotgot.domain.trip.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,5 +76,15 @@ public class TripController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("코스 등록 중 서버 에러가 발생했습니다: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/detail/{tplanNo}")
+    public ResponseEntity<CourseDetailResponse> getCourseDetail(@PathVariable Long tplanNo) {
+        System.out.println("hello");
+        CourseDetailResponse detail = tripService.getCourseDetail(tplanNo);
+        if (detail == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(detail);
     }
 }

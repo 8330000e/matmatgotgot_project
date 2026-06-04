@@ -10,11 +10,13 @@ import org.apache.ibatis.type.Alias;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Alias(value="menuDTO")
-public class MenuDTO {
-    private Long menuNo;
+@Alias(value="rawSchedule")
+public class RawSchedule {
+    private Long tscheNo;
+    private int tscheDayNo;
+    private int tscheOrderNo;
     private Long restNo;
-    private String name;
-    private Integer price;
-    private String imagePreview;
+    private String restName;
+    private double lat;
+    private double lng;
 }
