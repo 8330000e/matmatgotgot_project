@@ -78,7 +78,20 @@ export const MypagePage = () => {
 export const Myinfo = () => {
     return (<>
         <div className={styles.content_menu_wrap}>
-            <div>키에에</div>
+            <div></div>
+            <div>
+                <div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div>
+
+                </div>
+            </div>
+            <div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
     </>);
 };
@@ -86,7 +99,7 @@ export const Myinfo = () => {
 export const Myreview = () => {
     return (<>
         <div className={styles.content_menu_wrap}>
-            <div>키에에</div>
+
         </div>
     </>);};
 

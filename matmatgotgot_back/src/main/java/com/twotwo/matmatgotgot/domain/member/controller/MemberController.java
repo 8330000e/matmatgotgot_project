@@ -13,12 +13,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -432,7 +434,7 @@ public class MemberController {
 	
 
 	@PostMapping(value="/email-verification")
-	public ResponseEntity<?> sendMail(@RequestBody Member member) {
+	public ResponseEntity<?> sendMail(@RequestBody Member member, Model model) throws MessagingException {
 		String emailTitle = "[맛맛곳곳] 회원가입 인증 메일입니다.";
 		Random r = new Random();
 		StringBuffer sb = new StringBuffer();
@@ -452,8 +454,17 @@ public class MemberController {
 			sb.append(randomCode);
 		}
 		String authCode = sb.toString();
-		String emailContent = "<!doctypehtml><htmllang=\"ko\"><head><metacharset=\"UTF-8\"/><metaname=\"viewport\"content=\"width=device-width,initial-scale=1.0\"/></head><body style=\"width:500px;margin:0auto;padding:0;background-color:#fdfbf7\"><div style=\"display:flex;align-items:center;justify-content:center;margin-top:50px;margin-bottom:15px;text-align:center;padding:10px;gap:8px;\"><img src=\"matmatgotgot_front\\scr\\assets\\logo\\맛맛곳곳로고_300x398.png\"alt=\"\"style=\"width:40px;margin-top:50px\"/><div style=\"margin-top:50px;font-weight:900;font-size:40px;color:#2b1b17;\">맛맛곳곳</div></div><div style=\"background-color:#fff;padding:30px50px;text-align:center;box-shadow:02px8pxrgba(0,0,0,0.2);border-radius:15px;\"><div><div style=\"display:flex;flex-direction:column;align-items:center;gap:20px;\"><p style=\"font-size:16px;color:#2b1b17;font-weight:500\">안녕하세요! 맛맛곳곳입니다.<br/>아래 코드를 복사하여 이메일 인증을 완료하여 주십시오.</p><div style=\"width:180px;border:1px solid #2b1b17;border-radius:10px\"><div style=\"padding:10px;font-weight:bold;font-size:24px;color:#2b1b17;\">"+authCode+"</div></div><div style=\"display:flex;flex-direction:column;align-items:center;margin-top:20px;gap:10px;\"><p style=\"margin-top:20px;font-size:13px;color:#2b1b17;font-weight:500;\">본인이 요청한 이메일 인증이 아니라면, 이 이메일을 무시하셔도 됩니다.</p></div></div></div></div><div style=\"font-size:12px;color:#2b1b17;text-align:center;margin-top:20px;font-weight:500;opacity:0.7;\">'맛맛곳곳'은 KH정보교육원 종로 301반 파이널프로젝트로,<br/>팀 twotwo에서 제작 및 배포했습니다.</div></body></html>";
-						emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
+		model.addAttribute("authCode", authCode);
+		String emailContent = memberService.joinEmail(authCode);
+		try {
+			// 1. 시도할 코드를 적습니다.
+			emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
+
+		} catch (MessagingException e) {
+			// 2. try가 끝나면 '바로 이어서' catch 문이 와야 합니다.
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("에러 발생");
+		}
 		return ResponseEntity.ok(ApiResponse.success(authCode));
 	}
 
