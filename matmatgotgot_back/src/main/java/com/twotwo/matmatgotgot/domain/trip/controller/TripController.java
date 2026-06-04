@@ -124,4 +124,10 @@ public class TripController {
             return ResponseEntity.status(500).body("코스 수정 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
+
+    @GetMapping("/my-unfinished")
+    public ResponseEntity<List<MyUnfinishedCourseDTO>> getMyUnfinishedCourses(@RequestParam Long memberNo) {
+        List<MyUnfinishedCourseDTO> list = tripService.getMyUnfinishedCourses(memberNo);
+        return ResponseEntity.ok(list);
+    }
 }

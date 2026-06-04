@@ -9,6 +9,7 @@ import RestaurantSearch from "../../components/trip/RestaurantSearch";
 import SelectedCourseList from "../../components/trip/SelectedCourseList";
 import CourseSummaryPanel from "../../components/trip/CourseSummaryPanel";
 import AddMenuModal from "../../components/trip/AddMenuModal";
+import { useAuthStore } from "../../store/useAuthStore.js"; // 1. useAuthStore 임포트
 
 const CreateCourse = () => {
   const navigate = useNavigate();
@@ -35,6 +36,17 @@ const CreateCourse = () => {
   const ODSAY_API_KEY = import.meta.env.VITE_ODSAY_API_KEY;
 
   const [tags, setTags] = useState([]);
+
+  // 2. Zustand에서 회원 번호 및 권한 로딩 상태 가져오기
+  const { memberNo: loginMemberNo, isReady } = useAuthStore();
+
+  // 3. 비로그인 유저 접근 차단 가드 (Guard)
+  useEffect(() => {
+    if (isReady && !loginMemberNo) {
+      alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
+      navigate("/");
+    }
+  }, [isReady, loginMemberNo, navigate]);
 
   const handleTravelDaysChange = (days) => {
     const numDays = Number(days);
@@ -330,15 +342,24 @@ const CreateCourse = () => {
       : 0;
 
   const totalCost = allRestaurants.reduce((sum, res) => {
-    return sum + res.selectedMenus.reduce((menuSum, m) => menuSum + m.price, 0);
+    return (
+      sum +
+      res.selectedMenus.reduce(
+        (menuSum, m) => menuSum + (m.price || m.menuPrice),
+        0,
+      )
+    );
   }, 0);
 
   const getMenuSelectorText = (selectedMenus) => {
     if (selectedMenus.length === 0) return "📌 필수 메뉴 선택하기";
-    const menuSum = selectedMenus.reduce((sum, m) => sum + m.price, 0);
+    const menuSum = selectedMenus.reduce(
+      (sum, m) => sum + (m.price || m.menuPrice),
+      0,
+    );
     if (selectedMenus.length === 1)
-      return `📌 ${selectedMenus[0].name} (${menuSum.toLocaleString()}원)`;
-    return `📌 ${selectedMenus[0].name} 외 ${selectedMenus.length - 1}개 (총 ${menuSum.toLocaleString()}원)`;
+      return `📌 ${selectedMenus[0].name || selectedMenus[0].menuName} (${menuSum.toLocaleString()}원)`;
+    return `📌 ${selectedMenus[0].name || selectedMenus[0].menuName} 외 ${selectedMenus.length - 1}개 (총 ${menuSum.toLocaleString()}원)`;
   };
 
   const formatTransitTime = (timeStr) => {
@@ -350,29 +371,24 @@ const CreateCourse = () => {
   };
 
   const handleSubmitCourse = async () => {
-    // 1. 유효성 검사
     if (!courseTitle.trim()) {
       alert("코스명을 입력해 주세요.");
       return;
     }
 
-    const activeTags = tags.filter((t) => t.active).map((t) => t.id); // tag_no 배열
+    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
 
-    // 최소 하나 이상의 식당이 선택되었는지 확인
     const totalSelectedCount = Object.values(selectedRestaurants).flat().length;
     if (totalSelectedCount === 0) {
       alert("최소 한 개 이상의 식당을 코스에 추가해야 합니다.");
       return;
     }
 
-    // 2. 백엔드 스키마 구조에 맞게 데이터 가공
-    // selectedRestaurants 구조 예시: { 1: [res1, res2], 2: [res3] }
     const daysData = Object.keys(selectedRestaurants).map((dayStr) => {
       const dayNum = Number(dayStr);
       const restaurantList = selectedRestaurants[dayNum] || [];
 
       const schedules = restaurantList.map((res, index) => {
-        // 현재 식당에서 다음 식당으로의 이동 키 생성
         const nextRes = restaurantList[index + 1];
         const transitKey = nextRes
           ? `Day${dayNum}_${res.restNo}_${nextRes.restNo}`
@@ -380,14 +396,12 @@ const CreateCourse = () => {
 
         return {
           tscheDayNo: dayNum,
-          tscheOrderNo: index + 1, // 1부터 시작하는 순서
+          tscheOrderNo: index + 1,
           restNo: res.restNo,
-          // 해당 식당에서 선택한 메뉴 번호 배열
           selectedMenuNos: res.selectedMenus.map((m) => m.menuNo),
-          // 다음 식당으로의 이동 정보 (마지막 식당이 아닐 경우 존재)
           route: nextRes
             ? {
-                transitType: transitModes[transitKey] || "WALK", // 기본값 도보
+                transitType: transitModes[transitKey] || "WALK",
               }
             : null,
         };
@@ -399,11 +413,10 @@ const CreateCourse = () => {
       };
     });
 
-    // 최종 Payload 구성
     const payload = {
       tplanTitle: courseTitle,
-      tplanDesc: "", // 필요시 추가 입력 폼 구현
-      tplanRegion: "", // 필요시 추가 구성
+      tplanDesc: "",
+      tplanRegion: "",
       tplanDays: travelDays,
       tplanTotalPrice: totalCost,
       tagNos: activeTags,
@@ -448,20 +461,29 @@ const CreateCourse = () => {
     return () => clearTimeout(delayDebounceTimer);
   }, [searchKeyword]);
 
+  // 태그 목록 로드 부에 비로그인 조건부 예외 처리 추가
   useEffect(() => {
+    if (!isReady || !loginMemberNo) return;
+
     const fetchTags = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/create/tags`,
         );
-        console.log("태그 응답", response.data);
         setTags(response.data);
       } catch (error) {
         console.error("DB 태그 데이터를 가져오는 중 실패했습니다:", error);
       }
     };
     fetchTags();
-  }, []);
+  }, [isReady, loginMemberNo]);
+
+  // Auth 스토어 확인 작업이 안 끝났거나 비로그인이면 화면 렌더링 생략
+  if (!isReady || !loginMemberNo) {
+    return (
+      <div className={styles.loading}>페이지 접근 권한을 확인 중입니다...</div>
+    );
+  }
 
   return (
     <div className={styles.pageWrapper}>

@@ -32,6 +32,7 @@ import EditCourse from "./pages/trip/EditCourse.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
+
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -47,7 +48,7 @@ function App() {
       <Header />
       <div className="main">
         <Routes>
-          <Route path="/" element={<Main />} />
+          <Route path="/" element={token ? <Main_login /> : <Main />} />
           <Route path="/test" element={<Main_login />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />

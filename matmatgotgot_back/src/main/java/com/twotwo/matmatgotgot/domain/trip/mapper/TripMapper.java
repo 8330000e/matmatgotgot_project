@@ -52,4 +52,6 @@ public interface TripMapper {
     void deletePlanTags(@Param("tplanNo") Long tplanNo);
 
     void deleteTravelSchedules(@Param("tplanNo") Long tplanNo);
+
+    List<MyUnfinishedCourseDTO> selectUnfinishedCoursesByMemberNo(Long memberNo);
 }

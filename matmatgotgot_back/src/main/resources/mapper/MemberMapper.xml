@@ -23,10 +23,10 @@
 		insert into social_login_tbl (social_naver) value (CURRENT_TIMESTAMP)
 	</insert>
 	<insert id="logoutLog">
-		insert into login_log_tbl (member_no, login_status) value (#{memberNo}, 0)
+		insert into LOGIN_LOG_TBL (member_no, login_status) value (#{memberNo}, 0)
 	</insert>
 	<insert id="loginLog">
-		insert into login_log_tbl (member_no, login_status) value (#{memberNo}, 1)
+		insert into LOGIN_LOG_TBL (member_no, login_status) value (#{memberNo}, 1)
 	</insert>
 	<update id="updateLocation">
 		update member_tbl set lat = #{coords.lat} and lng = #{coords.lng} where member_id = #{memberId}

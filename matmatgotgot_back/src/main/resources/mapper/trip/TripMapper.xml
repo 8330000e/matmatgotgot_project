@@ -296,4 +296,24 @@
         DELETE FROM TRAVEL_SCHEDULE_TBL
         WHERE tplan_no = #{tplanNo}
     </delete>
+
+    <select id="selectUnfinishedCoursesByMemberNo" parameterType="long" resultType="myUnfinishedCourseDTO">
+        SELECT
+            P.tplan_no AS tplanNo,
+            P.tplan_title AS tplanTitle,
+            P.tplan_days AS tplanDays,
+            P.tplan_total_price AS tplanTotalPrice,
+            P.tplan_view AS tplanView,
+            P.created_at AS createdAt,
+            (SELECT COUNT(*)
+             FROM TRAVEL_SCHEDULE_TBL S
+             WHERE S.tplan_no = P.tplan_no) AS restaurantCount
+        FROM
+            TRAVEL_PLAN_TBL P
+        WHERE
+            P.member_no = #{memberNo}
+        ORDER BY
+            P.created_at DESC
+            LIMIT 5
+    </select>
 </mapper>

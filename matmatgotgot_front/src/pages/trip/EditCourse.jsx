@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "./CreateCourse.module.css"; // 👈 디자인을 완전히 똑같이 공유하도록 설정
+import styles from "./CreateCourse.module.css";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import CourseMap from "../../components/trip/CourseMap";
@@ -9,6 +9,7 @@ import RestaurantSearch from "../../components/trip/RestaurantSearch";
 import SelectedCourseList from "../../components/trip/SelectedCourseList";
 import CourseSummaryPanel from "../../components/trip/CourseSummaryPanel";
 import AddMenuModal from "../../components/trip/AddMenuModal";
+import { useAuthStore } from "../../store/useAuthStore.js"; // 1. useAuthStore 임포트
 
 const EditCourse = () => {
   const { tplan_no } = useParams();
@@ -37,7 +38,22 @@ const EditCourse = () => {
 
   const [tags, setTags] = useState([]);
 
+  // 2. Zustand에서 로그인 회원 정보 및 준비 상태 가져오기
+  const { memberNo: loginMemberNo, isReady } = useAuthStore();
+
+  // 3. 비로그인 유저 1차 차단 가드 (Guard)
   useEffect(() => {
+    if (isReady && !loginMemberNo) {
+      alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
+      navigate("/");
+    }
+  }, [isReady, loginMemberNo, navigate]);
+
+  // 기존 코스 상세 데이터 및 태그 가져오기
+  useEffect(() => {
+    // Auth 상태가 로드되기 전이거나, 비로그인 상태면 실행 안 함
+    if (!isReady || !loginMemberNo) return;
+
     const fetchOriginalCourseData = async () => {
       try {
         // 1. 태그 전체 목록 먼저 호출
@@ -52,6 +68,13 @@ const EditCourse = () => {
         );
         const course = detailResponse.data;
 
+        // 4. ⭐ 소유권 체크 (코스 작성자와 로그인한 유저가 다르면 수정 불가)
+        if (course.memberNo !== loginMemberNo) {
+          alert("본인이 작성한 코스만 수정할 수 있습니다.");
+          navigate(`/trip/detail/${tplan_no}`);
+          return;
+        }
+
         // 기본 텍스트 및 기본 메타 데이터 매핑
         setCourseTitle(course.title);
         setTravelDays(course.tplanDays);
@@ -65,17 +88,14 @@ const EditCourse = () => {
         }
         setTags(tagList);
 
-        // 일차별 데이터 구조 재구조화 매핑 (selectedRestaurants 형태 반환)
-        // 일차별 데이터 구조 재구조화 매핑 (selectedRestaurants 형태 반환)
+        // 일차별 데이터 구조 재구조화 매핑
         if (course.dayRoutes) {
           const loadedRestaurants = {};
           const loadedTransitModes = {};
 
-          // 비동기 처리를 위해 각 날짜별, 식당별 메뉴 요청 프로미스 배열을 준비합니다.
           for (const dayKey of Object.keys(course.dayRoutes)) {
             const routes = course.dayRoutes[dayKey] || [];
 
-            // 💡 Promise.all을 사용해 해당 일차(Day)에 포함된 모든 식당의 전체 메뉴를 동시에 조회합니다.
             const routesWithMenus = await Promise.all(
               routes.map(async (node, index) => {
                 // 이동 정보 복원 로직
@@ -87,7 +107,6 @@ const EditCourse = () => {
                   }
                 }
 
-                // 💡 핵심: 기존 식당들도 백엔드에서 전체 메뉴 목록 풀(Pool)을 강제로 조회해옵니다.
                 let menuPool = [];
                 try {
                   const menuResponse = await axios.get(
@@ -100,7 +119,7 @@ const EditCourse = () => {
                     `식당 번호 ${node.restNo}의 메뉴 조회 실패:`,
                     menuError,
                   );
-                  menuPool = node.menus || []; // 실패 시 폰백업으로 기존 값 유지
+                  menuPool = node.menus || [];
                 }
 
                 return {
@@ -108,8 +127,8 @@ const EditCourse = () => {
                   restName: node.restName,
                   lat: node.lat,
                   lng: node.lng,
-                  selectedMenus: node.selectedMenus || [], // 사용자가 과거에 선택했던 메뉴
-                  menus: menuPool, // 💡 이제 정상적으로 전체 메뉴 리스트가 채워집니다!
+                  selectedMenus: node.selectedMenus || [],
+                  menus: menuPool,
                 };
               }),
             );
@@ -129,7 +148,7 @@ const EditCourse = () => {
     if (tplan_no) {
       fetchOriginalCourseData();
     }
-  }, [tplan_no]);
+  }, [tplan_no, isReady, loginMemberNo, navigate]);
 
   const handleTravelDaysChange = (days) => {
     const numDays = Number(days);
@@ -381,9 +400,6 @@ const EditCourse = () => {
     }
   };
 
-  // ==========================================
-  // [3] 통계 수치 연산부 계산 로직
-  // ==========================================
   const allRestaurants = Object.values(selectedRestaurants).flat();
   const totalCount = allRestaurants.length;
   const restaurantStayTime = totalCount * 60;
@@ -409,7 +425,7 @@ const EditCourse = () => {
     return (
       sum +
       res.selectedMenus.reduce(
-        (menuSum, m) => menuSum + m.price || m.menuPrice,
+        (menuSum, m) => menuSum + (m.price || m.menuPrice),
         0,
       )
     );
@@ -434,9 +450,6 @@ const EditCourse = () => {
     return hr > 0 ? (mn > 0 ? `${hr}시간 ${mn}분` : `${hr}시간`) : `${mn}분`;
   };
 
-  // ==========================================
-  // [4] 수정 완료 요청 제출 처리 (PUT 통신 분기)
-  // ==========================================
   const handleUpdateCourse = async () => {
     if (!courseTitle.trim()) {
       alert("코스명을 입력해 주세요.");
@@ -474,7 +487,7 @@ const EditCourse = () => {
     });
 
     const payload = {
-      tplanNo: tplan_no, // 👈 식별 번호 포함
+      tplanNo: tplan_no,
       tplanTitle: courseTitle,
       tplanDesc: "",
       tplanRegion: "",
@@ -485,7 +498,6 @@ const EditCourse = () => {
     };
 
     try {
-      // 생성(POST) 대신 수정(PUT) 엔드포인트 전송
       const response = await axios.put(
         `${import.meta.env.VITE_BACKSERVER}/trips/edit/${tplan_no}`,
         payload,
@@ -493,13 +505,10 @@ const EditCourse = () => {
 
       if (response.status === 200 || response.status === 201) {
         alert("여행 코스가 성공적으로 수정되었습니다! ✨");
-        // 💡 tplanNo 대신 상단 params에서 비구조화 할당한 tplan_no 변수를 정확히 사용합니다.
         navigate(`/trip/detail/${tplan_no}`);
       }
     } catch (error) {
       console.error("코스 수정 실패 에러 로그:", error);
-
-      // 서버가 진짜 500 에러를 준 것인지, 스크립트 자체 에러인지 명확히 판별하기 위한 얼럿 창 고도화
       if (error.response) {
         alert(
           `서버 응답 오류 (${error.response.status}): ${error.response.data}`,
@@ -528,6 +537,13 @@ const EditCourse = () => {
     }, 300);
     return () => clearTimeout(delayDebounceTimer);
   }, [searchKeyword]);
+
+  // Auth 스토어가 완전히 준비되기 전이거나, 로그인이 안 된 상태면 화면 렌더링 차단 (로딩 스피너)
+  if (!isReady || !loginMemberNo) {
+    return (
+      <div className={styles.loading}>페이지 접근 권한을 확인 중입니다...</div>
+    );
+  }
 
   return (
     <div className={styles.pageWrapper}>
@@ -578,7 +594,7 @@ const EditCourse = () => {
             mins={mins}
             totalDistance={totalDistance}
             totalCost={totalCost}
-            onSubmit={handleUpdateCourse} // 👈 수정용 서브밋 핸들러 바인딩
+            onSubmit={handleUpdateCourse}
           />
 
           <div className={styles.mapPlaceholderPanel}>

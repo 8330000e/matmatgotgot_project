@@ -1,89 +1,132 @@
 .myCourseListWrap {
-  gap: 10px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 255px;
-  scrollbar-color: var(--gray6) transparent;
-  scrollbar-width: thin;
-  position: static;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 10px 4px;
+  overflow-y: auto;
+  max-height: 380px;
+  scroll-behavior: smooth;
 }
 
-.fadeOverlayTop,
-.fadeOverlayBottom {
-  position: absolute;
-  left: 0;
-  width: calc(100% - 35px);
-  height: 70px;
-  pointer-events: none;
-  z-index: 10;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.fadeOverlayTop {
-  top: 0;
-  background: linear-gradient(to top, transparent, var(--gray8));
-}
-
-.fadeOverlayBottom {
-  bottom: 0;
-  background: linear-gradient(to bottom, transparent, var(--gray8));
-}
-
-.fadeOverlayTop.hide,
-.fadeOverlayBottom.hide {
-  opacity: 0;
-}
-
-.myCourseList {
-  width: 98%;
-  border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
-  height: 80px;
-  margin-bottom: 5px;
-  border-radius: 7px;
-  padding: 10px;
+/* 개별 코스 카드 스타일 */
+.myCourseCard {
   position: relative;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid #eef2f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   cursor: pointer;
+  transition: all 0.25s ease;
+  overflow: hidden;
 }
 
-.myCourseList:last-child {
-  margin-bottom: none;
+.myCourseCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: #3b82f6;
 }
 
-.myCourseList .myCourseListCover {
+/* 카드 상단: 타이틀 및 일수 */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.courseTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.dayBadge {
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* 카드 중단: 상세 정보 메타 데이터 */
+.cardMeta {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 14px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 카드 하단: 예상 비용 및 수정일 */
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 12px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.totalPrice {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f43f5e;
+}
+
+/* 마우스 올렸을 때 나타나는 부드러운 오버레이 */
+.myCourseListCover {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: color-mix(in srgb, var(--primary) 70%, transparent);
-  z-index: 2;
+  background: rgba(59, 130, 246, 0.92);
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 15px;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  text-align: center;
-  align-content: center;
-  font-weight: 600;
-  font-size: 1.12em;
-  /* color: color-mix(in srgb, var(--text1) 85%, transparent); */
-  color: var(--gray8);
-  text-shadow: 0 0 10px color-mix(in srgb, var(--text1) 30%, transparent);
+  transition: opacity 0.2s ease;
+  border-radius: 12px;
 }
 
-.myCourseList .myCourseListContent {
-  position: relative;
-  z-index: 1;
-  transition:
-    filter 0.3s ease,
-    opacity 0.3s ease;
-}
-
-.myCourseList:hover .myCourseListCover {
+.myCourseCard:hover .myCourseListCover {
   opacity: 1;
 }
 
-.myCourseList:hover .myCourseListContent {
-  filter: blur(2px);
-  opacity: 0.8;
+/* 기타 유틸리티 */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+  font-size: 14px;
+  gap: 8px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+  font-size: 14px;
 }

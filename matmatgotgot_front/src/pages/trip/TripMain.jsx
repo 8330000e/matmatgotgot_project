@@ -6,6 +6,8 @@ import LocalFireDepartmentSharpIcon from "@mui/icons-material/LocalFireDepartmen
 import CourseCollect from "../../components/trip/CourseCollect";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuthStore } from "../../store/useAuthStore.js";
+import { useNavigate } from "react-router-dom";
 
 const TripMain = () => {
   const [myPlans, setMyPlans] = useState([]);
@@ -14,10 +16,22 @@ const TripMain = () => {
   const [allPlans, setAllPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 예시 로그인 회원 번호 (로그인 안 된 상태면 null 처리 가능)
-  const memberNo = 1;
+  const navigate = useNavigate(); // 2. navigate 함수 생성
+
+  const { memberNo, isReady } = useAuthStore();
 
   useEffect(() => {
+    if (isReady) {
+      if (!memberNo) {
+        alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
+        navigate("/");
+      }
+    }
+  }, [isReady, memberNo, navigate]);
+
+  useEffect(() => {
+    if (!memberNo) return;
+
     const fetchTripData = async () => {
       try {
         setLoading(true);
@@ -30,10 +44,7 @@ const TripMain = () => {
 
         const { myPlans, favoritePlans, top10Plans } = response.data;
 
-        console.log(response.data);
-        // 이미지 경로 데이터 예외 처리 및 state 저장
-        const defaultImg = "default_thumbnail.png"; // 이미지가 없을 때 보여줄 기본 이미지
-
+        const defaultImg = "default_thumbnail.png";
         const mapDefaultImage = (list) =>
           list.map((item) => ({
             ...item,
@@ -55,22 +66,16 @@ const TripMain = () => {
   }, [memberNo]);
 
   const iconTexts = [
-    {
-      icon: <MapSharpIcon />,
-      title: "내가 만든 코스",
-    },
-    {
-      icon: <FavoriteSharpIcon />,
-      title: "내가 찜한 코스",
-    },
+    { icon: <MapSharpIcon />, title: "내가 만든 코스" },
+    { icon: <FavoriteSharpIcon />, title: "내가 찜한 코스" },
     {
       icon: <LocalFireDepartmentSharpIcon />,
       title: "맛곳러들의 추천 코스 TOP10",
     },
   ];
 
-  if (loading) {
-    return <div className={styles.loading}>로딩 중...</div>; // 로딩 스피너 대체 가능
+  if (!isReady || !memberNo || loading) {
+    return <div className={styles.loading}>로딩 중...</div>;
   }
 
   return (

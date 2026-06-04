@@ -134,7 +134,7 @@ public class TripService {
 
                     tripMapper.insertTravelSchedule(scheMap);
                     // 생성된 일정 고유번호를 확보하여 DTO 내부 저장 객체에 기록해 둡니다.
-                    Long tscheNo = (Long) scheMap.get("tsche_no");
+                    Long tscheNo = (Long) scheMap.get("tscheNo");
                     scheData.setGeneratedTscheNo(tscheNo);
 
                     // RECOMMEND_MENU_TBL 인서트 (식당별 선택 메뉴가 있다면 저장)
@@ -157,6 +157,9 @@ public class TripService {
                         Long toTscheNo = nextSche.getGeneratedTscheNo();
                         String transitType = currentSche.getRoute().getTransitType();
 
+                        System.out.println(fromTscheNo);
+                        System.out.println(toTscheNo);
+                        System.out.println(transitType);
                         tripMapper.createTripCourse(fromTscheNo, toTscheNo, transitType);
                     }
                 }
@@ -337,5 +340,9 @@ public class TripService {
                 }
             }
         }
+    }
+
+    public List<MyUnfinishedCourseDTO> getMyUnfinishedCourses(Long memberNo) {
+        return tripMapper.selectUnfinishedCoursesByMemberNo(memberNo);
     }
 }

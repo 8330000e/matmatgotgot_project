@@ -9,26 +9,27 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CloseIcon from "@mui/icons-material/Close";
 import CourseRouteMap from "../../components/trip/CourseRouteMap";
 import { fetchOdsayDuration, fetchTmapDuration } from "../../api/routeApi";
+import { useAuthStore } from "../../store/useAuthStore.js"; // 1. useAuthStore 임포트
 
 const CourseDetail = () => {
   const navigate = useNavigate();
-
   const { tplan_no } = useParams();
 
   const [courseData, setCourseData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeDay, setActiveDay] = useState(1);
-
   const [transitDurations, setTransitDurations] = useState({});
-
   const [isOwner, setIsOwner] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [showSharePopup, setShowSharePopup] = useState(false);
 
-  const loginMemberNo = 1;
+  const { memberNo, isReady } = useAuthStore();
 
   useEffect(() => {
+    if (!isReady) return;
+
+    console.log(memberNo);
     const fetchDetailData = async () => {
       try {
         setLoading(true);
@@ -38,7 +39,9 @@ const CourseDetail = () => {
 
         setCourseData(response.data);
         setLikeCount(response.data.tplanLike || 0);
-        setIsOwner(response.data.memberNo === loginMemberNo);
+
+        // 로그인 상태이고, 작성자 번호와 로그인한 유저 번호가 같으면 수정 권한 부여
+        setIsOwner(!!memberNo && response.data.memberNo === memberNo);
 
         if (response.data.dayRoutes) {
           calculateAllDurations(response.data.dayRoutes);
@@ -50,7 +53,33 @@ const CourseDetail = () => {
       }
     };
     if (tplan_no) fetchDetailData();
-  }, [tplan_no]);
+  }, [tplan_no, isReady, memberNo]); // 의존성 배열에 관련 상태 추가
+
+  // 로그인된 경우에만 찜 상태 확인 API 호출
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKSERVER}/trips/favorite/check`,
+          {
+            params: {
+              memberNo: memberNo,
+              tplanNo: tplan_no,
+            },
+          },
+        );
+        setIsLiked(res.data.isFavorite);
+      } catch (err) {
+        console.error("찜 상태를 가져오지 못했습니다.");
+      }
+    };
+
+    if (tplan_no && memberNo) {
+      fetchFavoriteStatus();
+    } else {
+      setIsLiked(false); // 로그아웃 상태면 찜 상태도 빈 하트로 초기화
+    }
+  }, [tplan_no, memberNo]);
 
   const calculateAllDurations = async (dayRoutes) => {
     const durationsMap = {};
@@ -91,20 +120,25 @@ const CourseDetail = () => {
     setTransitDurations(durationsMap);
   };
 
+  // 3. 찜하기 클릭 시 비로그인 유저 차단 로직 적용
   const handleLikeToggle = async () => {
+    if (!memberNo) {
+      alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
+      navigate("/"); // 비로그인 유저 리다이렉트 처리
+      return;
+    }
+
     try {
-      // 1. 찜 테이블(FAVORITE_PLAN_TBL) 관계 토글 처리
       const response = await axios.post(
         `${import.meta.env.VITE_BACKSERVER}/trips/favorite/toggle`,
         {
-          memberNo: loginMemberNo,
+          memberNo: memberNo,
           tplanNo: tplan_no,
         },
       );
 
-      const isNowLiked = response.data; // 서버에서 분기된 결과 (true 또는 false)
+      const isNowLiked = response.data;
 
-      // 2. 찜 토글 결과를 바탕으로 카운트 동기화 API 연동 호출
       const countResponse = await axios.post(
         `${import.meta.env.VITE_BACKSERVER}/trips/favorite/count`,
         {
@@ -113,37 +147,13 @@ const CourseDetail = () => {
         },
       );
 
-      // 3. 최종 확정된 DB의 총 카운트 데이터 수치로 프론트 상태 일괄 업데이트
       setIsLiked(isNowLiked);
-      setLikeCount(countResponse.data); // 백엔드에서 리턴된 최신 정수 할당
+      setLikeCount(countResponse.data);
     } catch (error) {
       console.error("찜하기 및 카운트 연동 중 오류가 발생했습니다.", error);
       alert("처리에 실패했습니다. 다시 시도해 주세요.");
     }
   };
-
-  const fetchFavoriteStatus = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKSERVER}/trips/favorite/check`,
-        {
-          params: {
-            memberNo: loginMemberNo,
-            tplanNo: tplan_no,
-          },
-        },
-      );
-      setIsLiked(res.data.isFavorite);
-    } catch (err) {
-      console.error("찜 상태를 가져오지 못했습니다.");
-    }
-  };
-
-  useEffect(() => {
-    if (tplan_no && loginMemberNo) {
-      fetchFavoriteStatus();
-    }
-  }, [tplan_no]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -184,10 +194,12 @@ const CourseDetail = () => {
     return `${typeText} 약 ${formatDuration(info.duration)}`;
   };
 
-  if (loading)
+  // Auth 스토어 준비 전이거나 데이터 받아오는 중일 때 로딩 가드
+  if (!isReady || loading)
     return (
       <div className={styles.loading}>코스 상세 정보를 로딩 중입니다...</div>
     );
+
   if (!courseData)
     return (
       <div className={styles.loading}>
@@ -225,7 +237,7 @@ const CourseDetail = () => {
             <button
               className={styles.actionBtn}
               title="코스 수정"
-              onClick={() => navigate(`/trip/edit/${tplan_no}`)} // 👈 URL 파라미터로 코스 번호를 넘겨 이동
+              onClick={() => navigate(`/trip/edit/${tplan_no}`)}
             >
               <EditIcon />
             </button>
@@ -317,7 +329,6 @@ const CourseDetail = () => {
           </div>
         </div>
 
-        {/* 🛠️ 타임라인 노드 영역 리팩토링 (display: contents 구조화) */}
         <div className={styles.timelineContainer}>
           {currentDayRoutes.length === 0 ? (
             <div className={styles.noRoute}>
@@ -336,7 +347,6 @@ const CourseDetail = () => {
 
                   <div className={styles.menuPhotoGrid}>
                     {route.selectedMenus && route.selectedMenus.length > 0 ? (
-                      // 1. 메뉴가 있을 때는 기존대로 사진 카드들을 렌더링
                       route.selectedMenus.map((menu, mIdx) => {
                         const isFullUrl = menu.imagePreview?.startsWith("http");
                         const imgSrc = isFullUrl
@@ -366,7 +376,6 @@ const CourseDetail = () => {
                         );
                       })
                     ) : (
-                      // 2. ⭐ 메뉴가 없을 때 공간을 예쁘게 채워줄 공백 플레이스홀더
                       <div className={styles.emptyMenuPlaceholder}>
                         <span className={styles.emptyIcon}>🍽️</span>
                         <p className={styles.emptyText}>
@@ -380,7 +389,6 @@ const CourseDetail = () => {
                   </div>
                 </div>
 
-                {/* 💡 카드가 완전히 닫힌 외부(바깥) 영역에 이동 정보 표현 */}
                 {index < currentDayRoutes.length - 1 && (
                   <div className={styles.verticalTransitInfo}>
                     <div className={styles.verticalDotsLine}></div>

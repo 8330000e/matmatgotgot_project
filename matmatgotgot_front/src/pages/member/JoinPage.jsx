@@ -1,9 +1,9 @@
 import axios from "axios";
 import styles from "./JoinPage.module.css";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Input} from "../../components/ui/Form.jsx";
-import check from "../../assets/check.svg"
+import { Input } from "../../components/ui/Form.jsx";
+import check from "../../assets/check.svg";
 import Swal from "sweetalert2";
 
 const Join = () => {
@@ -30,26 +30,30 @@ const Join = () => {
   const idDupCheck = () => {
     console.log(member);
     axios
-        .post(`${import.meta.env.VITE_BACKSERVER}/members/exists?memberId=${member.memberId}`)
-        .then((res)=>{
-          console.log(res);
-          if(res.data.length === 0){
-            setCheckId(0);
+      .post(
+        `${import.meta.env.VITE_BACKSERVER}/members/exists?memberId=${member.memberId}`,
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.data.length === 0) {
+          setCheckId(0);
+        }
+        if (res.data) {
+          if (member.memberId === "" || member.memberId == "") {
+            return setCheckId(0);
           }
-          if (res.data) {
-            if(member.memberId ==="" || member.memberId == ""){
-              return setCheckId(0);
-            }
-            setCheckId(3);
-          }else{
-            setCheckId(2);
-          }
-          const idReg = /^[a-zA-Z0-9]{6,20}$/;
-          if(idReg.test(member.memberId)){
-            setCheckId(1);
-          }
-        })
-        .catch((err)=>{console.log(err);});
+          setCheckId(3);
+        } else {
+          setCheckId(2);
+        }
+        const idReg = /^[a-zA-Z0-9]{6,20}$/;
+        if (idReg.test(member.memberId)) {
+          setCheckId(1);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const pwDupCheck = () => {
     if (member.memberPw === memberPwRe) {
@@ -60,16 +64,16 @@ const Join = () => {
   };
   const pwReg = () => {
     const idReg = /^[a-zA-Z0-9]{8,50}$/;
-    if(idReg.test(member.memberPw)){
+    if (idReg.test(member.memberPw)) {
       setCheckPw(2);
-    }else{
+    } else {
       setCheckPw(1);
     }
   };
   const [time, setTime] = useState(180);
   const [timeout, setTimeout] = useState(null);
   const sendMail = () => {
-    if(!member.memberEmail) {
+    if (!member.memberEmail) {
       Swal.mixin({
         toast: true,
         color: "#2b1b17",
@@ -82,11 +86,11 @@ const Join = () => {
         didOpen: (toast) => {
           toast.onmouseenter = Swal.stopTimer;
           toast.onmouseleave = Swal.resumeTimer;
-        }
+        },
       }).fire({
-        title: '인증 메일전송 실패',
-        text: '이메일을 입력해주세요.',
-        icon: 'error'
+        title: "인증 메일전송 실패",
+        text: "이메일을 입력해주세요.",
+        icon: "error",
       });
     }
     setTime(180);
@@ -95,12 +99,9 @@ const Join = () => {
     }
     setMailAuth(1);
     axios
-      .post(
-        `${import.meta.env.VITE_BACKSERVER}/members/email-verification`,
-        {
-          memberEmail: member.memberEmail,
-        },
-      )
+      .post(`${import.meta.env.VITE_BACKSERVER}/members/email-verification`, {
+        memberEmail: member.memberEmail,
+      })
       .then((res) => {
         console.log(res);
         setMailAuthCode(res.data.data);
@@ -126,11 +127,11 @@ const Join = () => {
           didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
             toast.onmouseleave = Swal.resumeTimer;
-          }
+          },
         }).fire({
-          title: '인증 메일전송 실패',
-          text: '올바른 이메일을 입력해주세요.',
-          icon: 'error'
+          title: "인증 메일전송 실패",
+          text: "올바른 이메일을 입력해주세요.",
+          icon: "error",
         });
         setMailAuth(0);
         return;
@@ -143,10 +144,10 @@ const Join = () => {
       setMailAuthCode(null);
       setTimeout(null);
     }
-  }, [time])
+  }, [time]);
   const showTime = () => {
-    const min = Math.floor(time/60);
-    const sec = String(time%60).padStart(2, "0");
+    const min = Math.floor(time / 60);
+    const sec = String(time % 60).padStart(2, "0");
     return `${min}:${sec}`;
   };
   const joinMember = () => {
@@ -169,7 +170,7 @@ const Join = () => {
             didOpen: (toast) => {
               toast.onmouseenter = Swal.stopTimer;
               toast.onmouseleave = Swal.resumeTimer;
-            }
+            },
           }).fire({
             icon: "success",
             title: "회원가입 성공",
@@ -196,23 +197,28 @@ const Join = () => {
       ...prev,
       [key]: !prev[key], // 클릭된 key(예: 'privacy')의 상태만 반전
     }));
-    if(isCheckedAll["marketing"]===true) {
-      setMember((prev)=>({
-        ...prev, ["marketing"]: 3
-      }))
-    } else if(isCheckedAll["email"]===true) {
-      setMember(((prev)=>({
-        ...prev, ["email"]: 1
-      })))
-    } else if(isCheckedAll["sms"]===true) {
-      setMember((prev)=>({
-        ...prev, ["sms"]: 2
-      }))
+    if (isCheckedAll["marketing"] === true) {
+      setMember((prev) => ({
+        ...prev,
+        ["marketing"]: 3,
+      }));
+    } else if (isCheckedAll["email"] === true) {
+      setMember((prev) => ({
+        ...prev,
+        ["email"]: 1,
+      }));
+    } else if (isCheckedAll["sms"] === true) {
+      setMember((prev) => ({
+        ...prev,
+        ["sms"]: 2,
+      }));
     }
   };
   const handleToggleAll = () => {
     // 현재 모든 항목이 true인지 확인
-    const isAllChecked = Object.values(isCheckedAll).every((val) => val === true);
+    const isAllChecked = Object.values(isCheckedAll).every(
+      (val) => val === true,
+    );
 
     // 전부 다 켜져있었다면 전부 false로, 하나라도 꺼져있었다면 전부 true로 세팅
     const nextState = !isAllChecked;
@@ -228,9 +234,17 @@ const Join = () => {
       sms: nextState,
     });
   };
-  const handleJoin= (e) => {
+  const handleJoin = (e) => {
     e.preventDefault();
-    if(!member.memberId||!member.memberPw||!memberPwRe||!member.memberName||!member.memberNickname||!member.memberEmail){
+    console.log(member);
+    if (
+      !member.memberId ||
+      !member.memberPw ||
+      !memberPwRe ||
+      !member.memberName ||
+      !member.memberNickname ||
+      !member.memberEmail
+    ) {
       Swal.mixin({
         toast: true,
         color: "#2b1b17",
@@ -243,16 +257,16 @@ const Join = () => {
         didOpen: (toast) => {
           toast.onmouseenter = Swal.stopTimer;
           toast.onmouseleave = Swal.resumeTimer;
-        }
+        },
       }).fire({
-        title: '회원가입 실패',
-        text: `${member.memberId ? member.memberPw ? (memberPwRe ? (member.memberName ? (member.memberNickname ? (member.memberEmail? null : "이메일을 입력하세요.") : "닉네임을 입력하세요") : "이름을 입력하세요.") : "비밀번호를 다시 입력하세요") : "비밀번호를 입력하세요" : "아이디를 입력하세요."}`,
-        icon: 'error'
+        title: "회원가입 실패",
+        text: `${member.memberId ? (member.memberPw ? (memberPwRe ? (member.memberName ? (member.memberNickname ? (member.memberEmail ? null : "이메일을 입력하세요.") : "닉네임을 입력하세요") : "이름을 입력하세요.") : "비밀번호를 다시 입력하세요") : "비밀번호를 입력하세요") : "아이디를 입력하세요."}`,
+        icon: "error",
       });
       return;
     }
 
-    if (!isCheckedAll.age||!isCheckedAll.terms||!isCheckedAll.privacy) {
+    if (!isCheckedAll.age || !isCheckedAll.terms || !isCheckedAll.privacy) {
       Swal.mixin({
         toast: true,
         color: "#2b1b17",
@@ -265,18 +279,17 @@ const Join = () => {
         didOpen: (toast) => {
           toast.onmouseenter = Swal.stopTimer;
           toast.onmouseleave = Swal.resumeTimer;
-        }
+        },
       }).fire({
-        title: '회원가입 실패',
-        text: '필수약관에 동의해주세요.',
-        icon: 'error'
+        title: "회원가입 실패",
+        text: "필수약관에 동의해주세요.",
+        icon: "error",
       });
       return;
     }
 
     return joinMember();
   };
-
 
   const STIPULATION_TEXT = `1. [필수] 서비스 이용약관
 제 1 조 (목적)
@@ -342,222 +355,302 @@ const Join = () => {
 회원 탈퇴 시 또는 동의 철회 시까지
 
 4. 동의를 거부할 권리 및 거부 시 불이익
-귀하는 마케팅 목적의 개인정보 수집 및 이용 동의를 거부할 권리가 있습니다. 동의하지 않으셔도 회원가입 및 커뮤니티 이용은 가능하나, 이벤트 안내나 맞춤형 맛집 추천 알림 서비스 등의 이용이 제한될 수 있습니다.`
+귀하는 마케팅 목적의 개인정보 수집 및 이용 동의를 거부할 권리가 있습니다. 동의하지 않으셔도 회원가입 및 커뮤니티 이용은 가능하나, 이벤트 안내나 맞춤형 맛집 추천 알림 서비스 등의 이용이 제한될 수 있습니다.`;
 
   return (
     <div className={styles.wrap}>
       <h1>회원가입</h1>
       <div className={styles.join_wrap}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          joinMember();
-        }}
-      >
-        <div>
-        <div className={styles.inputLabel}>
-        <label htmlFor="memberId">아이디</label>
-        </div>
-        <Input
-          type="text"
-          id="memberId"
-          name="memberId"
-          value={member.memberId}
-          onChange={inputMember}
-          onBlur={idDupCheck}
-          required
-        />
-          {checkId > 0
-              ? checkId === 1
-                  ? checkId === 2
-                      ? checkId === 3 && <div className={styles.idcheckf}>이미 사용 중인 아이디입니다.</div>
-                      : <div className={styles.idcheckt}>사용 가능한 아이디입니다.</div>
-                  : <div className={styles.idcheckf}>아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.</div>
-             : null}
-        </div>
-        <div>
-          <div className={styles.inputLabel}>
-        <label htmlFor="memberPw">비밀번호</label>
-          </div>
-        <Input
-          type="password"
-          id="memberPw"
-          name="memberPw"
-          value={member.memberPw}
-          onChange={inputMember}
-          onBlur={pwReg}
-          required
-        />
-          {checkPw > 0
-              ? checkPw === 1
-                      ? <div className={styles.pwcheckf}>최소 8자 이상 영문과 숫자를 혼합하여주십시오.</div>
-                      : null
-              : null
-          }
-        </div>
-        <div>
-          <div className={styles.inputLabel}>
-        <label htmlFor="memberPwRe">비밀번호 확인</label>
-          </div>
-          <Input
-          type="password"
-          id="memberPwRe"
-          name="memberPwRe"
-          value={memberPwRe}
-          onChange={(e) => {
-            setMemberPwRe(e.target.value);
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            joinMember();
           }}
-          onBlur={pwDupCheck}
-          required
-        />
-          {checkPwRe > 0 && (
-              checkPwRe.length > 0 ?
-              checkPwRe === 1
-                  ? <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
-                  : <div className={styles.pwcheckf}>비밀번호가 일치하지 않습니다.</div>
-              : checkPwRe === 2
-                  ? <div className={styles.pwcheckf}>비밀번호가 일치하지 않습니다.</div>
-                  : <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
-          )}
-        </div>
+        >
           <div>
             <div className={styles.inputLabel}>
-
-        <label htmlFor="memberName">이름</label>
+              <label htmlFor="memberId">아이디</label>
             </div>
-        <Input
-          type="text"
-          id="memberName"
-          name="memberName"
-          value={member.memberName}
-          onChange={inputMember}
-          required
-        />
+            <Input
+              type="text"
+              id="memberId"
+              name="memberId"
+              value={member.memberId}
+              onChange={inputMember}
+              onBlur={idDupCheck}
+              required
+            />
+            {checkId > 0 ? (
+              checkId === 1 ? (
+                checkId === 2 ? (
+                  checkId === 3 && (
+                    <div className={styles.idcheckf}>
+                      이미 사용 중인 아이디입니다.
+                    </div>
+                  )
+                ) : (
+                  <div className={styles.idcheckt}>
+                    사용 가능한 아이디입니다.
+                  </div>
+                )
+              ) : (
+                <div className={styles.idcheckf}>
+                  아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.
+                </div>
+              )
+            ) : null}
+          </div>
+          <div>
+            <div className={styles.inputLabel}>
+              <label htmlFor="memberPw">비밀번호</label>
+            </div>
+            <Input
+              type="password"
+              id="memberPw"
+              name="memberPw"
+              value={member.memberPw}
+              onChange={inputMember}
+              onBlur={pwReg}
+              required
+            />
+            {checkPw > 0 ? (
+              checkPw === 1 ? (
+                <div className={styles.pwcheckf}>
+                  최소 8자 이상 영문과 숫자를 혼합하여주십시오.
+                </div>
+              ) : null
+            ) : null}
+          </div>
+          <div>
+            <div className={styles.inputLabel}>
+              <label htmlFor="memberPwRe">비밀번호 확인</label>
+            </div>
+            <Input
+              type="password"
+              id="memberPwRe"
+              name="memberPwRe"
+              value={memberPwRe}
+              onChange={(e) => {
+                setMemberPwRe(e.target.value);
+              }}
+              onBlur={pwDupCheck}
+              required
+            />
+            {checkPwRe > 0 &&
+              (checkPwRe.length > 0 ? (
+                checkPwRe === 1 ? (
+                  <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
+                ) : (
+                  <div className={styles.pwcheckf}>
+                    비밀번호가 일치하지 않습니다.
+                  </div>
+                )
+              ) : checkPwRe === 2 ? (
+                <div className={styles.pwcheckf}>
+                  비밀번호가 일치하지 않습니다.
+                </div>
+              ) : (
+                <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
+              ))}
+          </div>
+          <div>
+            <div className={styles.inputLabel}>
+              <label htmlFor="memberName">이름</label>
+            </div>
+            <Input
+              type="text"
+              id="memberName"
+              name="memberName"
+              value={member.memberName}
+              onChange={inputMember}
+              required
+            />
+          </div>
+          <div>
+            <div className={styles.inputLabel}>
+              <label htmlFor="memberName">닉네임</label>
+            </div>
+            <Input
+              type="text"
+              id="memberNickname"
+              name="memberNickname"
+              value={member.memberNickname}
+              onChange={inputMember}
+              required
+            />
+          </div>
+          <div>
+            <div className={styles.inputLabel}>
+              <label htmlFor="memberEmail">이메일</label>
             </div>
             <div>
-              <div className={styles.inputLabel}>
-        <label htmlFor="memberName">닉네임</label>
+              <Input
+                type="text"
+                name="memberEmail"
+                id="memberEmail"
+                value={member.memberEmail}
+                onChange={inputMember}
+                required
+                readOnly={mailAuth === 1 || mailAuth === 3}
+              />
             </div>
-        <Input
-          type="text"
-          id="memberNickname"
-          name="memberNickname"
-          value={member.memberNickname}
-          onChange={inputMember}
-          required
-        />
-          </div>
+            <button
+              type="button"
+              className="btn primary sm"
+              onClick={sendMail}
+              disabled={mailAuth === 1 || mailAuth === 3}
+              className={styles.submit}
+            >
+              메일전송
+            </button>
+            {mailAuth > 1 && (
               <div>
                 <div className={styles.inputLabel}>
-        <label htmlFor="memberEmail">이메일</label>
+                  <label htmlFor="mailAuthInput">이메일 확인</label>
                 </div>
-        <div>
-          <Input
-            type="text"
-            name="memberEmail"
-            id="memberEmail"
-            value={member.memberEmail}
-            onChange={inputMember}
-            required
-            readOnly={mailAuth === 1 || mailAuth === 3}
-          />
-        </div>
-          <button
-            type="button"
-            className="btn primary sm"
-            onClick={sendMail}
-            disabled={mailAuth === 1 || mailAuth === 3}
-            className={styles.submit}
-          >
-            메일전송
-          </button>
-                {mailAuth > 1 && (<div>
-                  <div className={styles.inputLabel}>
-                    <label htmlFor="mailAuthInput">이메일 확인</label>
-                  </div>
-                  <div>
-                    <Input
-                        type="text"
-                        name="mailAuthInput"
-                        id="mailAuthInput"
-                        value={mailAuthInput}
-                        onChange={(e)=>{
-                          setMailAuthInput(e.target.value);
-                        }}
-                        disabled={mailAuth === 3}
-                    />
-                    <button
-                        className={styles.submit}
-                        type="button"
-                        onClick={()=> {
-                          if (mailAuthCode === mailAuthInput) {
-                            setMailAuth(3);
-                            window.clearInterval(timeout);
-                            setTimeout(null);
-                          } else {
-                            alert("인증코드가 올바르지 않습니다.");
-                          }
-                        }}
-                        disabled = {mailAuth === 3}
-                    >
-                      인증하기
-                    </button>
-                  </div>
-                  <p className={styles.check_msg}>
-                    {mailAuth === 3 ? "인증되었습니다.": showTime()}
-                  </p>
-                </div>)}
-          </div>
-        <div className={styles.horizon}><hr/></div>
-        <div>
-          <div className={styles.stipulation}>
-            <div>회원가입 약관 및 동의 항목 안내</div>
-            <div className={styles.stipulationbox}>
-              <p>{STIPULATION_TEXT}</p>
+                <div>
+                  <Input
+                    type="text"
+                    name="mailAuthInput"
+                    id="mailAuthInput"
+                    value={mailAuthInput}
+                    onChange={(e) => {
+                      setMailAuthInput(e.target.value);
+                    }}
+                    disabled={mailAuth === 3}
+                  />
+                  <button
+                    className={styles.submit}
+                    type="button"
+                    onClick={() => {
+                      if (mailAuthCode === mailAuthInput) {
+                        setMailAuth(3);
+                        window.clearInterval(timeout);
+                        setTimeout(null);
+                      } else {
+                        alert("인증코드가 올바르지 않습니다.");
+                      }
+                    }}
+                    disabled={mailAuth === 3}
+                  >
+                    인증하기
+                  </button>
+                </div>
+                <p className={styles.check_msg}>
+                  {mailAuth === 3 ? "인증되었습니다." : showTime()}
+                </p>
               </div>
+            )}
           </div>
-          <div className={styles.stipulationcheck}>
-            <ul>
-              <li>
-                <button type="button" onClick={handleToggleAll} className={`${isCheckedAll.all? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                <div>전체동의</div>
-              </li>
-              <li>
-                <button id="age" type="button" onClick={() => toggleCheck("age")} className={`${isCheckedAll.age ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                <label htmlFor="age">[필수] 만 14세 이상</label>
-              </li>
-              <li>
-                <button id="terms" type="button" onClick={() => toggleCheck("terms")} className={`${isCheckedAll.terms ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                <label htmlFor="terms">[필수] 서비스 이용약관 동의</label>
-              </li>
-              <li>
-                <button id="privacy" type="button" onClick={() => toggleCheck("privacy")} className={`${isCheckedAll.privacy ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                <label htmlFor="privacy">[필수] 개인정보 처리 동의</label>
-              </li>
-              <li>
-                <button id="location" type="button" onClick={() => toggleCheck("location")} className={`${isCheckedAll.location ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                <label htmlFor="location">[선택] 위치기반 서비스 동의</label>
-              </li>
-              <li>
-                <button id="marketing" type="button" onClick={() => toggleCheck("marketing")} className={`${isCheckedAll.marketing ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                <label htmlFor="marketing">[선택] 마케팅 활용 동의</label>
-              </li>
+          <div className={styles.horizon}>
+            <hr />
+          </div>
+          <div>
+            <div className={styles.stipulation}>
+              <div>회원가입 약관 및 동의 항목 안내</div>
+              <div className={styles.stipulationbox}>
+                <p>{STIPULATION_TEXT}</p>
+              </div>
+            </div>
+            <div className={styles.stipulationcheck}>
               <ul>
                 <li>
-                  <button id="email" type="button" onClick={() => toggleCheck("email")} className={`${isCheckedAll.email ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                  <label htmlFor="email">[선택] 이메일 수신 동의</label>
+                  <button
+                    type="button"
+                    onClick={handleToggleAll}
+                    className={`${isCheckedAll.all ? `${styles.on}` : `${styles.off}`}`}
+                  >
+                    <img src={check} alt="체크여부" />
+                  </button>
+                  <div>전체동의</div>
                 </li>
                 <li>
-                  <button id="sms" type="button" onClick={() => toggleCheck("sms")} className={`${isCheckedAll.sms ? `${styles.on}` : `${styles.off}`}`}><img src={check} alt="체크여부"/></button>
-                  <label htmlFor="sms">[선택] SMS 수신 동의</label>
+                  <button
+                    id="age"
+                    type="button"
+                    onClick={() => toggleCheck("age")}
+                    className={`${isCheckedAll.age ? `${styles.on}` : `${styles.off}`}`}
+                  >
+                    <img src={check} alt="체크여부" />
+                  </button>
+                  <label htmlFor="age">[필수] 만 14세 이상</label>
                 </li>
+                <li>
+                  <button
+                    id="terms"
+                    type="button"
+                    onClick={() => toggleCheck("terms")}
+                    className={`${isCheckedAll.terms ? `${styles.on}` : `${styles.off}`}`}
+                  >
+                    <img src={check} alt="체크여부" />
+                  </button>
+                  <label htmlFor="terms">[필수] 서비스 이용약관 동의</label>
+                </li>
+                <li>
+                  <button
+                    id="privacy"
+                    type="button"
+                    onClick={() => toggleCheck("privacy")}
+                    className={`${isCheckedAll.privacy ? `${styles.on}` : `${styles.off}`}`}
+                  >
+                    <img src={check} alt="체크여부" />
+                  </button>
+                  <label htmlFor="privacy">[필수] 개인정보 처리 동의</label>
+                </li>
+                <li>
+                  <button
+                    id="location"
+                    type="button"
+                    onClick={() => toggleCheck("location")}
+                    className={`${isCheckedAll.location ? `${styles.on}` : `${styles.off}`}`}
+                  >
+                    <img src={check} alt="체크여부" />
+                  </button>
+                  <label htmlFor="location">[선택] 위치기반 서비스 동의</label>
+                </li>
+                <li>
+                  <button
+                    id="marketing"
+                    type="button"
+                    onClick={() => toggleCheck("marketing")}
+                    className={`${isCheckedAll.marketing ? `${styles.on}` : `${styles.off}`}`}
+                  >
+                    <img src={check} alt="체크여부" />
+                  </button>
+                  <label htmlFor="marketing">[선택] 마케팅 활용 동의</label>
+                </li>
+                <ul>
+                  <li>
+                    <button
+                      id="email"
+                      type="button"
+                      onClick={() => toggleCheck("email")}
+                      className={`${isCheckedAll.email ? `${styles.on}` : `${styles.off}`}`}
+                    >
+                      <img src={check} alt="체크여부" />
+                    </button>
+                    <label htmlFor="email">[선택] 이메일 수신 동의</label>
+                  </li>
+                  <li>
+                    <button
+                      id="sms"
+                      type="button"
+                      onClick={() => toggleCheck("sms")}
+                      className={`${isCheckedAll.sms ? `${styles.on}` : `${styles.off}`}`}
+                    >
+                      <img src={check} alt="체크여부" />
+                    </button>
+                    <label htmlFor="sms">[선택] SMS 수신 동의</label>
+                  </li>
+                </ul>
               </ul>
-            </ul>
+            </div>
           </div>
-        </div>
-        <button type="submit" className={styles.submit} onClick={handleJoin}>회원가입</button>
-      </form>
-    </div>
+          <button type="submit" className={styles.submit} onClick={handleJoin}>
+            회원가입
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
