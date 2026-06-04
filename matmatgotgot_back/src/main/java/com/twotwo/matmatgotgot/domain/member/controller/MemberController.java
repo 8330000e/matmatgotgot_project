@@ -1,5 +1,26 @@
 package com.twotwo.matmatgotgot.domain.member.controller;
 
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
+import com.twotwo.matmatgotgot.global.util.EmailSender;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
@@ -78,6 +99,8 @@ public class MemberController {
 		//response.setAdmin(loginMember.isAdmin());
 		response.setAdmin(member.getAdmin()); //지연 관리자 파트 수정해둠
 		response.setToken(loginMember.getToken());
+		response.setLat(member.getLat());
+		response.setLng(member.getLng());
 
 		long validityMilli = loginMember.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		response.setValidity(validityMilli);
@@ -433,4 +456,11 @@ public class MemberController {
 						emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
 		return ResponseEntity.ok(ApiResponse.success(authCode));
 	}
+
+	@PatchMapping("/location")
+	public ResponseEntity<?> updateLocation (@ModelAttribute Coords coords, Authentication auth) {
+		int result = memberService.updateLocation(auth.getName(), coords);
+		return ResponseEntity.ok(result);
+	}//
+
 }

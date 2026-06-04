@@ -2,9 +2,11 @@ package com.twotwo.matmatgotgot.domain.member.mapper;
 
 import java.util.List;
 
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface MemberMapper {
@@ -24,6 +26,9 @@ public interface MemberMapper {
     int logoutLog(Long memberNo);
 
     int kakaoInsertMember(Member newMember);
+
+    int updateLocation(@Param("memberId") String memberId,
+                       @Param("coords") Coords coords);
 
     int naverInsertMember(Member newMember);
 

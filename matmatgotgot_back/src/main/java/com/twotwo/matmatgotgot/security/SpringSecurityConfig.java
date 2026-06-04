@@ -1,20 +1,27 @@
 package com.twotwo.matmatgotgot.security;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SpringSecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -28,10 +35,15 @@ public class SpringSecurityConfig {
             // 3. 기본 세션/폼 로그인 비활성화 (JWT를 사용할 것이므로 불필요한 기본 창 해제)
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
-            
+
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
                 // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
+                .requestMatchers("/members/logout/**","/members/login/kakao","/members/login/google","/login").permitAll()
+                .requestMatchers("/members/login", "/members/email-verification").permitAll()
+                .requestMatchers("/**").permitAll() // 임시 -> 반드시 삭제!!!
                 .requestMatchers("/members/**","/members/join","/members/email-verification","/members/logout/**","/members/login/kakao","/members/login/google","/members/login", "/members/email-verification","/members/ranchar","/members/login/naver","/login").permitAll()
                 .requestMatchers("/boards/**").permitAll()
                     // 에디터 이미지 접근 허용

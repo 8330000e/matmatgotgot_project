@@ -17,7 +17,11 @@ const RestaurantItem = ({ rest }) => {
         <div className={styles.like}>
           <FavoriteIcon className={styles.favorite_icon} />
         </div>
-        <div className={styles.star}>★ 5.0</div>
+        {/* 리뷰 수: 데이터 없으면 생략 */}
+        {rest?.reviewCount != null && (
+          <div className={styles.review_count}>리뷰수 {rest.reviewCount}</div>
+        )}
+        <div className={styles.star}>★ {rest?.starAvg ?? 5.0}</div>
       </div>
     </div>
   );

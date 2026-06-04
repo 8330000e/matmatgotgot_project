@@ -1,11 +1,8 @@
-/* ==========================================================
-   RestaruntViewInfo.module.css
-   맛집 상세 정보 컴포넌트 스타일
-   구조:
-     info1 : 상호명 + 메타 정보 (주소/카테고리/태그/평점/시간/전화)
-     info2 : 본문 내용 박스
-     info3 : 리뷰된 메뉴 + ai 총평 (좌) / 지도 (우)
-========================================================== */
+.name_addr {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
 /* ========== info1: 상호명 + 메타 정보 ========== */
 .info1 {
@@ -86,7 +83,7 @@
 /* 별 아이콘 — 노란색 */
 .stars {
   color: var(--primary);
-  font-size: 14px;
+  font-size: 18px;
   letter-spacing: 1px;
 }
 
@@ -130,7 +127,7 @@
   border-radius: 4px;
 }
 
-/* ========== info3: 리뷰된 메뉴 + AI 총평 / 지도 ========== */
+/* ========== info3: AI 총평 + 리뷰된 메뉴 / 지도 ========== */
 .info3 {
   display: flex;
   gap: 20px;
@@ -153,6 +150,43 @@
   color: var(--text1);
 }
 
+/* AI 총평 섹션 */
+.ai_section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 우측: 지도 */
+.map_side {
+  width: 350px;
+  flex-shrink: 0;
+}
+
+/* AI 총평 내용 박스 — 서버 데이터 수신 전 빈 박스 */
+.ai_content {
+  /* min-height: 80px;
+  border: 1.5px solid var(--gray6);
+  border-radius: 8px;
+  background-color: var(--gray8); */
+
+  min-height: 80px;
+  border: 1.5px solid var(--gray6);
+  border-radius: 8px;
+  padding: 16px;
+  background-color: var(--gray8);
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text1);
+}
+
+/* 리뷰된 메뉴 섹션 wrapper */
+.reviewed_menu_section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* 리뷰된 메뉴 pill 목록 */
 .reviewd_menu {
   display: flex;
@@ -172,23 +206,10 @@
   font-weight: 500;
 }
 
-/* AI 총평 섹션 */
-.ai_section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* 우측: 지도 */
-.map_side {
-  width: 240px;
-  flex-shrink: 0;
-}
-
 /* 지도 div */
 .map_div {
   width: 100%;
-  height: 200px;
+  height: 280px;
   border-radius: 8px;
   overflow: hidden;
   background-color: var(--gray6); /* 지도 로딩 전 fallback */

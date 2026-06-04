@@ -13,4 +13,6 @@ public class LoginResponseDto {
     private Boolean admin;
     private String token;
     private long validity; // 💡 프론트엔드가 계산하기 편하게 숫자로 변경!
+    private Double lat;
+    private Double lng;
 }

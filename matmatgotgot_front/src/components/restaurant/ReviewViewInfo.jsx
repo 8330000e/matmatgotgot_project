@@ -1,43 +1,11 @@
 import { useState, useEffect } from "react";
 import styles from "./ReviewViewInfo.module.css";
-import {
-  Navigation,
-  Pagination,
-} from "swiper/modules"; /* ← 수정: 모듈 경로 추가 */
+import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/navigation"; /* ← 추가: 네비게이션 화살표 CSS */
-import "swiper/css/pagination"; /* ← 추가: 페이지네이션 도트 CSS */
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
-// ============================================================
-// ReviewViewInfo  —  리뷰 상세 정보 컴포넌트
-//
-// props:
-//   review: {
-//     memberThumb  : 프로필 이미지 파일명 (없으면 null)
-//     memberName   : 작성자 이름
-//     isLocal      : 현지인 여부 (boolean)
-//     images       : 리뷰 이미지 배열 [{ reviewImageNo, marketFilePath }, ...]
-//     reviewContent: 리뷰 내용
-//     tags         : 태그 배열 ["야외석", "국물", ...]
-//     reviewVisit  : 방문 날짜 (string)
-//     reviewMenu   : 방문 메뉴 (string)
-//     rating       : 별점 (1~5 number)
-//   }
-//
-// 수정 내역:
-//   - CSS import 경로 수정 (RestaruntViewInfo → ReviewViewInfo)
-//   - Navigation, Pagination swiper/modules에서 import (← 누락 수정)
-//   - swiper/css/navigation, pagination CSS import 추가
-//   - review를 local state 대신 props로 받도록 변경
-//   - null guard 추가 (review 없으면 null 반환)
-//   - renderStars() 헬퍼 함수 추가 (숫자 → ★ 기호)
-//   - images / imgUrl 미정의 → review.images / VITE_BACKSERVER로 수정
-//   - 하드코딩된 내용 → review 데이터로 교체
-//   - review_meta 내부 div에 meta_item / meta_label / meta_value className 추가
-//   - "****" → renderStars(review.rating) 으로 수정
-//   - 이미지 alt 속성 추가
-// ============================================================
 const ReviewViewInfo = ({ review }) => {
   // review 데이터가 아직 없을 때 렌더링 생략
   if (!review) return null;
@@ -47,8 +15,7 @@ const ReviewViewInfo = ({ review }) => {
   // 이미지 배열 (없으면 빈 배열)
   const images = review.images ?? [];
 
-  // ── 별점 렌더링 헬퍼 ─────────────────────────────────────
-  // rating (1~5 숫자) → ★(채움) / ★(빈) span 배열 반환
+  // 별점 렌더링 헬퍼
   const renderStars = (rating = 0) =>
     [1, 2, 3, 4, 5].map((n) => (
       <span
@@ -72,7 +39,7 @@ const ReviewViewInfo = ({ review }) => {
           >
             {review.memberThumb ? (
               <img
-                src={`${imgBaseUrl}/member/thumb/${review.memberThumb}`}
+                src={`${imgBaseUrl}/matgot/member/${review.memberThumb}`}
                 alt="프로필 이미지"
               />
             ) : (
@@ -92,20 +59,20 @@ const ReviewViewInfo = ({ review }) => {
       </div>
 
       {/* ── 사진 Swiper 캐러셀 ── */}
-      {images.length > 0 && (
+      {review.images.length > 0 && (
         <div className={styles.photo_swiper}>
           <Swiper
             modules={[Navigation, Pagination]}
-            navigation /* 좌우 화살표 버튼 */
+            navigation={review.images.length > 1} /* 좌우 화살표 버튼 */
             pagination={{ clickable: true }} /* 하단 도트 */
             spaceBetween={0}
             slidesPerView={1}
           >
-            {images.map((image) => (
-              <SwiperSlide key={image.reviewImageNo}>
+            {review.images.map((image, idx) => (
+              <SwiperSlide key={idx}>
                 <img
                   className={styles.swiper_img}
-                  src={`${imgBaseUrl}/review/image/${image.marketFilePath}`}
+                  src={`${imgBaseUrl}/restaurants/${image}`}
                   alt="리뷰 이미지"
                 />
               </SwiperSlide>
@@ -139,7 +106,7 @@ const ReviewViewInfo = ({ review }) => {
         {/* 메뉴 */}
         <div className={styles.meta_item}>
           <p className={styles.meta_label}>메뉴</p>
-          <p className={styles.meta_value}>{review.reviewMenu}</p>
+          <p className={styles.meta_value}>{review.reviewMenu?.join(", ")}</p>
         </div>
 
         {/* 별점 — grid에서 full-width 배치 (meta_full 클래스) */}

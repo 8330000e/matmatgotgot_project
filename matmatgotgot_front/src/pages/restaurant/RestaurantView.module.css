@@ -1,10 +1,9 @@
-/* ==========================================================
-   RestaurantView.module.css
-   맛집 상세 페이지 최상위 레이아웃
-   구조:
-     rest_info    : 맛집 정보 섹션 (수정/삭제 버튼 + Info + 신고/찜 버튼)
-     rest_reviews : 리뷰 섹션
-========================================================== */
+/* 수정: 전체 페이지를 브라우저 가운데 정렬하는 래퍼 */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
 
 /* ========== 맛집 정보 섹션 ========== */
 .rest_info {
@@ -38,9 +37,10 @@
   color: var(--text1);
 }
 
-/* 신고 / 찜 버튼 — 좌측 정렬 */
+/* 신고 / 찜 버튼 — 우측 정렬 */
 .btn_zone1 {
   display: flex;
+  justify-content: flex-end; /* 이미지 기준 우측 정렬 */
   gap: 8px;
   margin-top: 16px;
   padding-bottom: 20px;

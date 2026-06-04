@@ -25,9 +25,14 @@ const ReviewView = () => {
   // ── 리뷰 데이터 조회 ─────────────────────────────────────
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/review/${reviewNo}`)
-      .then((res) => setReview(res.data))
-      .catch((err) => console.log(err));
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}`)
+      .then((res) => {
+        console.log(res.data);
+        setReview(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [reviewNo]);
 
   // ── 리뷰 삭제 ───────────────────────────────────────────
@@ -42,7 +47,9 @@ const ReviewView = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${import.meta.env.VITE_BACKSERVER}/review/${reviewNo}`)
+          .delete(
+            `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}`,
+          )
           .then(() => navigate(-1)) // 이전 페이지로 이동
           .catch((err) => console.log(err));
       }
@@ -66,7 +73,7 @@ const ReviewView = () => {
             <button
               type="button"
               className={styles.info_btn}
-              onClick={() => navigate(`/review/edit/${reviewNo}`)}
+              onClick={() => navigate(`/review/modify/${reviewNo}`)}
             >
               수정
             </button>
@@ -115,7 +122,6 @@ const ReviewView = () => {
       {/* ======= 댓글 섹션 ======= */}
       <section className={styles.review_comment}>
         <div className={styles.comment_title}>댓글</div>
-        {/* ReviewViewComment에 reviewNo 전달 (댓글 조회/등록 API에 사용) */}
         <ReviewViewComment reviewNo={reviewNo} />
       </section>
     </div>

@@ -1,7 +1,8 @@
 /* ========== 페이지 래퍼 ========== */
 .page_wrap {
   padding: 24px;
-  max-width: 860px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* ========== 페이지 제목 ========== */
@@ -72,38 +73,12 @@
 }
 
 /* ========== 별점 ========== */
+/* 수정: 커스텀 .stars / .star / .star_filled → MUI Rating으로 교체되어 제거
+         색상 커스터마이징은 JSX의 Rating sx prop에서 처리 */
 .star_rating {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-/* 별 아이콘 컨테이너 */
-.stars {
-  display: flex;
-  gap: 2px;
-}
-
-/* 별 기본 스타일 (비활성: 회색) */
-.star {
-  font-size: 30px;
-  color: var(--gray5);
-  cursor: pointer;
-  line-height: 1;
-  transition:
-    color 0.1s ease,
-    transform 0.1s ease;
-  user-select: none;
-}
-
-/* 별 hover / 클릭 시 확대 효과 */
-.star:hover {
-  transform: scale(1.15);
-}
-
-/* 별 활성 (hover or 선택 시: 노란색) */
-.star_filled {
-  color: var(--primary);
 }
 
 /* ========== 태그 선택 ========== */

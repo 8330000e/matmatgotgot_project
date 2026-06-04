@@ -1,14 +1,4 @@
-/* ==========================================================
-   ReviewViewComment.module.css
-   댓글 섹션 전체 레이아웃 스타일
-   구조:
-     comment_section  : 전체 댓글 영역 — 둥근 컨테이너 박스
-     comment_count    : "댓글 N개" 헤더 (ReviewView.jsx의 comment_title이
-                        이미 "댓글" 타이틀을 제공하므로 hidden 처리)
-     input_item       : 새 댓글 입력 영역 (textarea + 댓글 등록 버튼)
-========================================================== */
-
-/* ========== 전체 댓글 섹션 래퍼 — 둥근 컨테이너 ========== */
+/* 전체 댓글 섹션 래퍼 — 둥근 컨테이너 */
 .comment_section {
   display: flex;
   flex-direction: column;
@@ -20,20 +10,20 @@
   overflow: hidden; /* 둥근 모서리 안으로 내용 클리핑 */
 }
 
-/* ========== 댓글 수 헤더 (숨김 처리) ========== */
+/* 댓글 수 헤더 (숨김 처리) */
 /* ReviewView.jsx의 comment_title("댓글")이 이미 섹션 타이틀을 담당하므로
    comment_count("댓글 N개")는 중복 방지를 위해 숨김 */
 .comment_count {
   display: none;
 }
 
-/* ========== 새 댓글 입력 영역 ========== */
+/* 새 댓글 입력 영역 */
 .input_item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   padding: 14px 0 0;
-  border-top: 1.5px solid var(--gray6); /* 댓글 목록과 입력창 구분선 */
+  border-top: 1.5px solid var(--gray6);
   margin-top: 8px;
 }
 

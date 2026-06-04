@@ -1,5 +1,12 @@
 package com.twotwo.matmatgotgot.domain.member.service;
 
+import java.util.List;
+
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
@@ -104,6 +111,11 @@ public class MemberService {
         return -1;
     }
 
+    @Transactional
+    public int updateLocation(String memberId, Coords coords) {
+        return memberMapper.updateLocation(memberId, coords);
+    }//
+    
     public int insertMemberN(Member newMember) {
         String memberPw = newMember.getMemberPw();
         String encPw = bcrypt.encode(memberPw);
