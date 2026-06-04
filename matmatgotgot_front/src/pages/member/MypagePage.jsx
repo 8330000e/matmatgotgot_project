@@ -13,9 +13,9 @@ export const MypagePage = () => {
         <div className={styles.mypage_wrap}>
             <div className={styles.sidebar_wrap}>
                 <div>
-                    <p>마이페이지</p>
-                </div>
-                <div>
+                    <div className={styles.mypagetxt}>
+                        마이페이지
+                    </div>
                     <ul className={styles.menubar_wrap}>
                         <Link to="/mypage/myinfo">
                             <li className={path === "myinfo" ? styles.sidebar_active : styles.sidebar_default}>
