@@ -63,7 +63,6 @@ function App() {
           <Route path="/rest/review/view/:reviewNo" element={<ReviewView />} />
           <Route path="/receipt" element={<ReceiptCheck />} />
 
-          <Route path="/mypage" element={<MypagePage />} />
           <Route path="/mypage/myinfo" element={<MypagePage />} />
           <Route path="/mypage/myreview" element={<MypagePage />} />
           <Route path="/mypage/zzim" element={<MypagePage />} />

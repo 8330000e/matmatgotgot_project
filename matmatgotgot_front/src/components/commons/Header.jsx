@@ -61,7 +61,7 @@ export default function Header() {
                 <FiMail />
               </button>
 
-              <Link to="/mypage">
+              <Link to="/mypage/myinfo">
                 <button aria-label="마이페이지" className={styles.iconBtn}>
                   <FiUser />
                 </button>
