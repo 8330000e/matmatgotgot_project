@@ -2,11 +2,11 @@
     position: relative;
 }
 .mypage_wrap {
-    width: 1000px;
+    width: 800px;
     margin: 15px auto;
     margin-bottom: 50px;
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 .sidebar_wrap {
     width: 200px;
@@ -30,8 +30,8 @@
     text-align: right;
 
     /* 💡 화면 맨 왼쪽에서부터 시작하되, 오른쪽 끝 라인은 아래 메뉴(li)의 오른쪽 끝 라인과 똑같이 맞춤 */
-    margin-left: calc(-1 * (100vw - 1000px) / 2);
-    padding-left: calc((100vw - 1000px) / 2);
+    margin-left: calc(-1 * (100vw - 800px) / 2);
+    padding-left: calc((100vw - 800px) / 2);
     /* 만약 위의 calc가 복잡하다면 마진을 크게 주어 화면 밖으로 밀어버리는 방법도 있습니다. */
 }
 .menubar_wrap {
@@ -71,7 +71,7 @@
     border-radius: 10px;
 }
 .content_wrap {
-    width: 800px;
+    width: 600px;
     background-color: #fff;
     border: 1px solid var(--text1);
     border-radius: 10px;
