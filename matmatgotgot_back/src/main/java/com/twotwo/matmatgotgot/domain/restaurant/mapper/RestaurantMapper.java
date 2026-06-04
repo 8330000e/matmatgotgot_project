@@ -1,9 +1,6 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.MainListRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
@@ -78,4 +75,6 @@ public interface RestaurantMapper {
 
     int getMainListCount(@Param("req") MainListRequest req,
                              @Param("String") String memberId);
+
+    boolean getSame(CheckDuplicationRequest chk);
 }

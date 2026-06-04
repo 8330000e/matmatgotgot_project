@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,6 +187,14 @@ public class RestaurantController {
         res.put("totalPage", totalPage);
 
         return ResponseEntity.ok(res);
+    }//
+
+    // 맛집 등록 중복 확인
+    @GetMapping("/isdup")
+    public ResponseEntity<?> isDup(@ModelAttribute CheckDuplicationRequest chk) {
+        boolean isDup = restaurantService.isDup(chk);
+
+        return ResponseEntity.ok(isDup);
     }//
 
 }

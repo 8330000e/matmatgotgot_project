@@ -14,4 +14,5 @@ public class Recommand {
     private String category;
     private Integer ratingAvg;
     private Boolean isLike;
+    private Integer reviewTotalCount;
 }

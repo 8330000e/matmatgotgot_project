@@ -4,6 +4,11 @@
   background-color: var(--gray8);
   border-radius: 8px;
   overflow: hidden;
+  border: 1px solid var(--gray6);
+}
+
+.card:hover {
+  cursor: pointer;
 }
 
 .restaurant_item {
@@ -50,7 +55,7 @@
   color: var(--gray3);
 }
 
-.like_star {
+.like_reviews {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -75,6 +80,11 @@
 
 .star {
   font-size: 12px;
-  color: var(--primary);
+  color: rgb(231, 132, 19);
   font-weight: 600;
+}
+
+.name_like {
+  display: flex;
+  justify-content: space-between;
 }

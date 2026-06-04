@@ -1,16 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import styles from "./ReceiptCheck.module.css";
 import axios from "axios";
-
-// 가격 포맷 헬퍼 (컴포넌트 외부 — ResultCard/ReceiptCheck 공용)
-// 숫자 또는 문자열 → "N,NNN원" 형식 반환 / 값 없으면 null
-const formatPrice = (value) => {
-  if (value === null || value === undefined || value === "") return null;
-  const num =
-    typeof value === "string" ? value.replace(/[^0-9]/g, "") : String(value);
-  if (!num) return null;
-  return Number(num).toLocaleString("ko-KR") + "원";
-};
+import { useNavigate, useParams } from "react-router-dom";
+import { useKakaoPostcode } from "@clroot/react-kakao-postcode";
+import Swal from "sweetalert2";
 
 const ReceiptCheck = () => {
   const [file, setFile] = useState(null); // 선택된 파일
@@ -20,6 +13,12 @@ const ReceiptCheck = () => {
   const [error, setError] = useState(null); // 에러 메시지
   const [dragOver, setDragOver] = useState(false); // 드래그 오버 여부
   const inputRef = useRef(null); // 숨겨진 file input 참조
+  const { mode } = useParams();
+  const [regist, setRegist] = useState();
+
+  useEffect(() => {
+    setRegist(mode);
+  }, []);
 
   // 파일 선택 공통 처리 (input change / 드래그 드롭)
   const handleFile = useCallback((selectedFile) => {
@@ -201,13 +200,15 @@ const ReceiptCheck = () => {
         </div>
 
         {/* OCR 결과 카드 */}
-        {result && <ResultCard data={result} />}
+        {result && (
+          <ResultCard data={result} regist={regist} setRegist={setRegist} />
+        )}
       </div>
     </div>
   );
 };
 
-const ResultCard = ({ data }) => {
+const ResultCard = ({ data, regist, setRegist }) => {
   return (
     <div className={styles.result_card}>
       {/* 결과 헤더 */}
@@ -264,9 +265,6 @@ const ResultCard = ({ data }) => {
                 {data.menuItems.map((item, idx) => (
                   <li key={idx} className={styles.menu_item}>
                     <span className={styles.menu_item_name}>{item.name}</span>
-                    <span className={styles.menu_item_price}>
-                      {formatPrice(item.price) || "-"}
-                    </span>
                   </li>
                 ))}
               </ul>
@@ -279,9 +277,22 @@ const ResultCard = ({ data }) => {
         {/* 네이버 맵 */}
         <div className={`${styles.result_row} ${styles.result_row_map}`}>
           <div className={styles.result_row_content}>
-            <div className={styles.result_label}>위치</div>
+            <div className={styles.result_label}>
+              <div>위치</div>
+
+              <div>
+                [영수증에서 추출된 주소 정보가 정확하지 않을 수 있습니다. 정확한
+                주소인지 다시한번 확인해 주시고 올바르지 않다면 올바른 주소를
+                선택해 주세요]
+              </div>
+            </div>
             {/* OCR 주소를 초기값으로 전달 → 지도 자동 이동 */}
-            <NaverMapSection initialAddress={data.address} />
+            <NaverMapSection
+              initialAddress={data.address}
+              data={data}
+              regist={regist}
+              setRegist={setRegist}
+            />
           </div>
         </div>
       </div>
@@ -289,7 +300,7 @@ const ResultCard = ({ data }) => {
   );
 };
 
-const NaverMapSection = ({ initialAddress }) => {
+const NaverMapSection = ({ initialAddress, data, regist, setRegist }) => {
   const mapDivRef = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
@@ -299,6 +310,8 @@ const NaverMapSection = ({ initialAddress }) => {
   const [address, setAddress] = useState(initialAddress || "");
   const [coords, setCoords] = useState(null);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   // 지도 초기화 + initialAddress 자동 이동
   useEffect(() => {
@@ -317,7 +330,7 @@ const NaverMapSection = ({ initialAddress }) => {
     });
 
     const infoWindow = new naver.maps.InfoWindow({
-      content: "<h3>KH정보교육원</h3>",
+      content: "",
     });
 
     // ref에 저장 (이후 이벤트/함수에서 참조)
@@ -351,6 +364,8 @@ const NaverMapSection = ({ initialAddress }) => {
           infoWindow.setContent(
             `<div style="padding:8px 12px"><p>${addr}</p></div>`,
           );
+          infoWindow.open(map, marker); // 클릭 시 infoWindow도 바로 열기
+          setAddress(addr); // ← 이 줄 추가
           setCoords({ lat: e.coord.lat(), lng: e.coord.lng() });
         },
       );
@@ -385,16 +400,26 @@ const NaverMapSection = ({ initialAddress }) => {
     }
   }, []);
 
+  const { open } = useKakaoPostcode({
+    onComplete: (data) => {
+      const selectedAddr = data.roadAddress;
+      setAddress(selectedAddr);
+      handleSearch(selectedAddr);
+    },
+  });
+
   // 주소 검색 (검색 버튼 / Enter 키)
-  const handleSearch = () => {
-    const query = address.trim();
-    if (!query) {
+  const handleSearch = (query = address) => {
+    const trimmed = query.trim(); // trimmed 사용
+    if (!trimmed) {
+      // query → trimmed
       setError("주소를 입력해주세요.");
       return;
     }
     setError("");
 
-    naver.maps.Service.geocode({ query }, (status, response) => {
+    naver.maps.Service.geocode({ query: trimmed }, (status, response) => {
+      // query → trimmed
       if (status !== naver.maps.Service.Status.OK) {
         setError("주소를 찾을 수 없습니다.");
         return;
@@ -423,6 +448,7 @@ const NaverMapSection = ({ initialAddress }) => {
       );
       infoWindowRef.current.open(mapRef.current, markerRef.current);
       setCoords({ lat, lng });
+      setAddress(roadAddr);
     });
   };
 
@@ -430,10 +456,51 @@ const NaverMapSection = ({ initialAddress }) => {
     if (e.key === "Enter") handleSearch();
   };
 
+  const confirm = () => {
+    const obj = { ...data, address: address, lat: coords.lat, lng: coords.lng };
+    console.log(obj);
+
+    if (regist === "rest") {
+      axios
+        .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/isdup`, {
+          ...obj,
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.data) {
+            console.log("중복");
+            Swal.fire({
+              title: "이미 등록된 맛집입니다.",
+              text: "이미 존재하는 맛집에 리뷰를 등록하시겠습니까?",
+              icon: "info",
+              showCancelButton: true,
+              confirmButtonText: "확인",
+              cancelButtonText: "취소",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                console.log("확인 클릭");
+                setRegist("review");
+              } else if (result.isDismissed) {
+                console.log("취소 클릭");
+                navigate(`/rest/main`);
+              }
+            });
+          }
+
+          if (regist === "rest") {
+            navigate(`/rest/regist`);
+          } else {
+            navigate(`rest/review/regiset`);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
     <div className={styles.api_content_wrap}>
-      <h3 className={styles.map_title}>네이버 지도</h3>
-
       {/* 주소 검색 입력창 */}
       <div className={styles.address_input}>
         <input
@@ -444,7 +511,7 @@ const NaverMapSection = ({ initialAddress }) => {
           placeholder="주소를 입력하세요"
           className={styles.address_input_field}
         />
-        <button onClick={handleSearch} className={styles.search_button}>
+        <button className={styles.search_button} onClick={open}>
           검색
         </button>
       </div>
@@ -462,6 +529,12 @@ const NaverMapSection = ({ initialAddress }) => {
 
       {/* 지도 컨테이너 */}
       <div className={styles.map_div} ref={mapDivRef} />
+
+      <div className={styles.confirmBtn_zone}>
+        <button type="button" onClick={confirm}>
+          확인
+        </button>
+      </div>
     </div>
   );
 };

@@ -210,6 +210,7 @@
             r.rest_thumb,
             r.rest_addr,
             r.category,
+            r.review_total_count,
             ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
 
             EXISTS (
@@ -235,6 +236,7 @@
             r.rest_thumb,
             r.rest_addr,
             r.category,
+            r.review_total_count,
             ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
             TRUE AS is_like
 
@@ -251,6 +253,7 @@
         r.rest_thumb,
         r.rest_addr,
         r.category,
+        r.review_total_count,
         ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
 
         EXISTS (
@@ -291,7 +294,7 @@
         r.rest_thumb,
         r.rest_addr,
         r.category,
-
+        r.review_total_count,
         ROUND( r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
 
         EXISTS (
@@ -365,4 +368,25 @@
             </if>
         </where>
     </select>
+
+    <select id="getSame" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM restaurant_tbl r
+            WHERE r.rest_name = #{storeName}
+
+            AND (
+            6371 * ACOS(
+            COS(RADIANS(#{lat}))
+            * COS(RADIANS(r.lat))
+            * COS(RADIANS(r.lng) - RADIANS(#{lng}))
+            + SIN(RADIANS(#{lat}))
+            * SIN(RADIANS(r.lat))
+            )
+            <![CDATA[
+            ) <= 0.1
+            ]]>
+        )
+    </select>
+
 </mapper>

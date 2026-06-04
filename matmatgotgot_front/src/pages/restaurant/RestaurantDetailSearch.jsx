@@ -4,10 +4,11 @@ import axios from "axios";
 import RestaurantItem from "../../components/restaurant/RestaurantItem";
 import Pagination from "../../components/ui/Pagination";
 import RestaurantMain from "./RestaurantMain";
+import { useNavigate } from "react-router-dom";
 
 const RestaurantDetailSearch = () => {
   const [region, setRegion] = useState("");
-  const [filterRegion, setFilterReigon] = useState("");
+  const [filterRegion, setFilterRegion] = useState("");
   const [categories, setCategories] = useState([]);
   const [filterCategories, setFilterCategories] = useState([]);
   const [order, setOrder] = useState("latest");
@@ -17,6 +18,7 @@ const RestaurantDetailSearch = () => {
   const [size] = useState(12);
   const [totalPage, setTotalPage] = useState(null);
   const [restName, setRestName] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -102,8 +104,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="kr"
-                  checked={categories.includes("kr")}
+                  value="한식"
+                  checked={categories.includes("한식")}
                   onChange={handleCategoryChange}
                 />
                 한식
@@ -111,8 +113,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="western"
-                  checked={categories.includes("western")}
+                  value="양식"
+                  checked={categories.includes("양식")}
                   onChange={handleCategoryChange}
                 />
                 양식
@@ -120,8 +122,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="ch"
-                  checked={categories.includes("ch")}
+                  value="중식"
+                  checked={categories.includes("중식")}
                   onChange={handleCategoryChange}
                 />
                 중식
@@ -129,8 +131,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="jp"
-                  checked={categories.includes("jp")}
+                  value="일식"
+                  checked={categories.includes("일식")}
                   onChange={handleCategoryChange}
                 />
                 일식
@@ -238,7 +240,14 @@ const RestaurantDetailSearch = () => {
 
           {/* 맛집 등록 버튼 (화면 우하단 고정) */}
           <div className={styles.regist_btn}>
-            <button type="button">맛집 등록</button>
+            <button
+              type="button"
+              onClick={() => {
+                navigate(`/receipt/rest`);
+              }}
+            >
+              맛집 등록
+            </button>
           </div>
         </section>
       </div>
