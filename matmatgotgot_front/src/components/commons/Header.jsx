@@ -1,8 +1,8 @@
-import styles from "./Header.module.css";
-import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
-import { Link, useLocation } from "react-router-dom";
-import { useAuthStore } from "../../store/useAuthStore";
-import logo from "../../assets/logo/맛맛곳곳로고_300x398.png";
+import styles from './Header.module.css';
+import { FiBell, FiMail, FiUser, FiSettings } from 'react-icons/fi';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
+import logo from '../../assets/logo/맛맛곳곳로고_300x398.png';
 
 export default function Header() {
   const location = useLocation();
@@ -24,9 +24,9 @@ export default function Header() {
           <nav className={styles.centerMenu}>
             <button
               className={
-                location.pathname.startsWith("/restaurant")
+                location.pathname.startsWith('/restaurant')
                   ? styles.activeMenu
-                  : ""
+                  : ''
               }
             >
               <Link to="/restaurant">맛집</Link>
@@ -34,7 +34,7 @@ export default function Header() {
 
             <button
               className={
-                location.pathname.startsWith("/trip") ? styles.activeMenu : ""
+                location.pathname.startsWith('/trip') ? styles.activeMenu : ''
               }
             >
               <Link to="/trip">여행</Link>
@@ -42,7 +42,7 @@ export default function Header() {
 
             <button
               className={
-                location.pathname.startsWith("/board") ? styles.activeMenu : ""
+                location.pathname.startsWith('/board') ? styles.activeMenu : ''
               }
             >
               <Link to="/board/list">게시판</Link>

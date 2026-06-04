@@ -4,17 +4,21 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 let alertTimer = null;
 let logoutTimer = null;
 
+////////게시판 기능에서 필요한 memberNo, memberStatus(3군데) 밑에 주석처리해뒀습니다/////////
+
 const useAuthStore = create(
   persist(
     (set, get) => ({
+      memberNo: null,  // 작성자 본인 비교, 댓글 작성자 비교
       memberId: null,
       memberThumb: null,
       memberNickname: null,
+      memberStatus: null, // 차단 회원 글쓰기/댓글 제한
       admin: null,
       token: null,
       endTime: null,
@@ -28,9 +32,11 @@ const useAuthStore = create(
 
       login: (data) => {
         set({
+          memberNo: data.memberNo,
           memberId: data.memberId,
           memberThumb: data.memberThumb,
           memberNickname: data.memberNickname,
+          memberStatus: data.memberStatus,
           admin: data.admin,
           token: data.token,
           endTime: data.endTime,
@@ -40,7 +46,7 @@ const useAuthStore = create(
         get().startLoginTimer(data.endTime);
       },
 
-      updateToken: () => {},
+      updateToken: () => { },
 
       logout: async () => {
         // eslint-disable-next-line no-undef
@@ -62,9 +68,11 @@ const useAuthStore = create(
         }
 
         set({
+          memberNo: null, //
           memberId: null,
           memberThumb: null,
           memberNickname: null,
+          memberStatus: null, //
           admin: null,
           token: null,
           endTime: null,
@@ -112,9 +120,11 @@ const useAuthStore = create(
       storage: createJSONStorage(() => localStorage),
 
       partialize: (state) => ({
+        memberNo: state.memberNo, //
         memberId: state.memberId,
         memberThumb: state.memberThumb,
         memberNickname: state.memberNickname,
+        memberStatus: state.memberStatus,  //
         admin: state.admin,
         token: state.token,
         endTime: state.endTime,

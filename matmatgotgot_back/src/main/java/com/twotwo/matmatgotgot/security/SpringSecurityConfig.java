@@ -34,6 +34,11 @@ public class SpringSecurityConfig {
                 // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
                 .requestMatchers("/members/**","/members/join","/members/email-verification","/members/logout/**","/members/login/kakao","/members/login/google","/members/login", "/members/email-verification","/members/ranchar","/members/login/naver","/login").permitAll()
                 .requestMatchers("/boards/**").permitAll()
+                    // 에디터 이미지 접근 허용
+                    .requestMatchers("/editor/**").permitAll()
+                    // 네이버 검색 API 허용
+                    .requestMatchers("/api/naver/**").permitAll()
+                    .requestMatchers("/admin/**").permitAll()
                 // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
                 .anyRequest().authenticated() 
             );
@@ -53,7 +58,7 @@ public class SpringSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         
         config.setAllowedOrigins(List.of("http://localhost:5173")); // 프론트엔드 주소 허용
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // OPTIONS 포함 필수
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")); // OPTIONS 포함 필수
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // 👈 핵심: axios의 withCredentials와 맞물리는 설정!
 

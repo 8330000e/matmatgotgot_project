@@ -1,6 +1,6 @@
 import { Input } from '../ui/Form.jsx';
 import styles from './BoardFrm.module.css';
-import TextEditor from '../ui/TextEditor';
+import BoardTextEditor from '../ui/BoardTextEditor';
 
 const BoardFrm = ({ board, inputBoard, inputBoardContent }) => {
   return (
@@ -17,7 +17,10 @@ const BoardFrm = ({ board, inputBoard, inputBoardContent }) => {
       </div>
 
       <div className={styles.input_wrap}>
-        <TextEditor data={board.boardContent} setData={inputBoardContent} />
+        <BoardTextEditor
+          data={board.boardContent}
+          setData={inputBoardContent}
+        />
       </div>
     </div>
   );
