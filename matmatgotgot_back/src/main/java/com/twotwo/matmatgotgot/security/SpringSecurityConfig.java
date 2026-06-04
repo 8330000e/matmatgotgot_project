@@ -47,6 +47,8 @@ public class SpringSecurityConfig {
                 .requestMatchers("/boards/**").permitAll()
                     // 에디터 이미지 접근 허용
                     .requestMatchers("/editor/**").permitAll()
+                    // 맛집 이미지 접근 허용
+                    .requestMatchers("/restaurants/**").permitAll()
                     // 네이버 검색 API 허용
                     .requestMatchers("/api/naver/**").permitAll()
                     .requestMatchers("/admin/**").permitAll()

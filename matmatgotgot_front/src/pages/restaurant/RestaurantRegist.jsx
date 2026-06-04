@@ -10,17 +10,30 @@ const RestaurantRegist = () => {
   const [restPhone, setRestPhone] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
 
   const mapDivRef = useRef(null);
-  const [lat, setLat] = useState(37.5696734);
-  const [lng, setLng] = useState(126.9843022);
+
+  useEffect(() => {
+    const savedData = sessionStorage.getItem("receiptData");
+
+    if (!savedData) return;
+
+    const receiptData = JSON.parse(savedData);
+
+    setLat(receiptData.lat);
+    setLng(receiptData.lng);
+    setRestAddr(receiptData.address);
+    setRestName(receiptData.storeName);
+  }, []);
 
   useEffect(() => {
     if (!mapDivRef.current || !window.naver) {
       return null;
     }
 
-    const center = new naver.maps.LatLng(37.5696734, 126.9843022);
+    const center = new naver.maps.LatLng(lat, lng);
 
     const map = new naver.maps.Map(mapDivRef.current, {
       center: center,
@@ -33,7 +46,7 @@ const RestaurantRegist = () => {
     });
 
     const infoWindow = new naver.maps.InfoWindow({
-      content: "<h3>KH정보교육원</h3>",
+      content: `<h3>${restName}</h3>`,
     });
 
     naver.maps.Event.addListener(marker, "click", () => {
@@ -51,7 +64,7 @@ const RestaurantRegist = () => {
         infoWindow.close();
       }
     });
-  }, []);
+  }, [lat, lng, restName]);
 
   const handleTagChange = (e) => {
     const { value, checked } = e.target;

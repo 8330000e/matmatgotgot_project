@@ -457,13 +457,17 @@ const NaverMapSection = ({ initialAddress, data, regist, setRegist }) => {
   };
 
   const confirm = () => {
-    const obj = { ...data, address: address, lat: coords.lat, lng: coords.lng };
-    console.log(obj);
+    const receiptData = {
+      ...data,
+      address: address,
+      lat: coords.lat,
+      lng: coords.lng,
+    };
 
     if (regist === "rest") {
       axios
         .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/isdup`, {
-          ...obj,
+          ...receiptData,
         })
         .then((res) => {
           console.log(res);
@@ -486,6 +490,8 @@ const NaverMapSection = ({ initialAddress, data, regist, setRegist }) => {
               }
             });
           }
+
+          sessionStorage.setItem("receiptData", JSON.stringify(receiptData));
 
           if (regist === "rest") {
             navigate(`/rest/regist`);
