@@ -11,8 +11,18 @@ import kakao from "../../assets/logo/kakao.svg";
 import naver from "../../assets/logo/naver_green.svg";
 import check from "../../assets/img/check.svg";
 import checked from "../../assets/img/checked.svg";
+import heart from "../../assets/img/heart.svg";
+import view from "../../assets/img/view.svg";
+import star from "../../assets/img/start.svg";
+import starFill from "../../assets/img/starFILL.svg";
+import search from "../../assets/img/search.svg";
+import menu from "../../assets/img/menu.svg";
+import blackStar from "../../assets/img/blackStar.svg";
+import Rectangle from "../../assets/img/Rectangle.svg";
 import axios from "axios";
 import {useEffect, useState} from "react";
+import Pagination from "../../components/ui/Pagination.jsx";
+import {Input} from "../../components/ui/Form.jsx";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -176,7 +186,7 @@ export const Myinfo = ({ memberInfo }) => {
                             <li>마케팅 정보 수신 동의</li>
                         </ul>
                         <div>
-                            <label htmlFor="appPush"><img src={check} /></label>
+                            <label htmlFor="appPush"><img src={checked} /></label>
                             <label htmlFor="emailAlarm"><img src={check} /></label>
                             <label htmlFor="emailAlarm"><img src={check} /></label>
                             <input type="checkbox" name="appPush" id="appPush" className={styles.inputHidden}/>
@@ -215,15 +225,241 @@ export const Myinfo = ({ memberInfo }) => {
 
 export const Myreview = () => {
     return (<>
-        <div className={styles.content_menu_wrap}>
-
+        <div className={`${styles.content_menu_wrap} ${styles.content_myreview_wrap}`}>
+            <div className={styles.posts_bar}>
+                <div>
+                    <p>전체 선택</p>
+                    <p>삭제</p>
+                </div>
+                <div>
+                    <ul>
+                        <li>작성순</li>
+                        <li>좋아요순</li>
+                        <li>별점순</li>
+                    </ul>
+                </div>
+            </div>
+            <div className={styles.posts}>
+                {/*더미데이터*/}
+                <div className={styles.post}>
+                <div>
+                    <div>
+                        <p>맛집상호명</p>
+                        <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
+                <div>
+                    <div>
+                        <p><img src={heart} /> 12</p>
+                        <p><img src={view} /> 321</p>
+                    </div>
+                </div>
+                </div>
+                <div className={styles.post}>
+                    <div>
+                        <div>
+                            <p>맛집상호명</p>
+                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                        </div>
+                        <div>2026.05.08</div>
+                    </div>
+                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
+                    <div>
+                        <div>
+                            <p><img src={heart} /> 12</p>
+                            <p><img src={view} /> 321</p>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.post}>
+                    <div>
+                        <div>
+                            <p>맛집상호명</p>
+                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                        </div>
+                        <div>2026.05.08</div>
+                    </div>
+                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
+                    <div>
+                        <div>
+                            <p><img src={heart} /> 12</p>
+                            <p><img src={view} /> 321</p>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.post}>
+                    <div>
+                        <div>
+                            <p>맛집상호명</p>
+                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                        </div>
+                        <div>2026.05.08</div>
+                    </div>
+                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
+                    <div>
+                        <div>
+                            <p><img src={heart} /> 12</p>
+                            <p><img src={view} /> 321</p>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.post}>
+                    <div>
+                        <div>
+                            <p>맛집상호명</p>
+                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                        </div>
+                        <div>2026.05.08</div>
+                    </div>
+                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
+                    <div>
+                        <div>
+                            <p><img src={heart} /> 12</p>
+                            <p><img src={view} /> 321</p>
+                        </div>
+                    </div>
+                </div>
+                {/*더미데이터*/}
+            </div>
+            <div>
+                <Pagination />
+            </div>
         </div>
     </>);};
 
 export const Zzim = () => {
     return (<>
-        <div className={styles.content_menu_wrap}>
-            <div>우우우</div>
+        <div className={`${styles.content_menu_wrap} ${styles.content_zzim_wrap}`}>
+            <div className={styles.posts_bar}>
+                <div>
+                    <p>전체 선택</p>
+                    <p>삭제</p>
+                </div>
+                <div>
+                    <p>별점순</p>
+                    <div className={styles.posts_bar_search}>
+                        <Input type="search"/>
+                        <p><img src={search} alt=""/></p>
+                    </div>
+                </div>
+            </div>
+            <div className={styles.matzips}>
+                {/*더미데이터*/}
+                <div className={styles.matzip}>
+                    <div>
+                        <p>맛집상호명</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>맛곳광역시 맛곳구 맛곳동</p>
+                        <p>중식당</p>
+                        <p>운영 전 9:00 오픈</p>
+                    </div>
+                    <div>
+                        <p><img src={heart} alt=""/> 123</p>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.matzip}>
+                    <div>
+                        <p>맛집상호명</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>맛곳광역시 맛곳구 맛곳동</p>
+                        <p>중식당</p>
+                        <p>운영 전 9:00 오픈</p>
+                    </div>
+                    <div>
+                        <p><img src={heart} alt=""/> 123</p>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.matzip}>
+                    <div>
+                        <p>맛집상호명</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>맛곳광역시 맛곳구 맛곳동</p>
+                        <p>중식당</p>
+                        <p>운영 전 9:00 오픈</p>
+                    </div>
+                    <div>
+                        <p><img src={heart} alt=""/> 123</p>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.matzip}>
+                    <div>
+                        <p>맛집상호명</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>맛곳광역시 맛곳구 맛곳동</p>
+                        <p>중식당</p>
+                        <p>운영 전 9:00 오픈</p>
+                    </div>
+                    <div>
+                        <p><img src={heart} alt=""/> 123</p>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.matzip}>
+                    <div>
+                        <p>맛집상호명</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>맛곳광역시 맛곳구 맛곳동</p>
+                        <p>중식당</p>
+                        <p>운영 전 9:00 오픈</p>
+                    </div>
+                    <div>
+                        <p><img src={heart} alt=""/> 123</p>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.matzip}>
+                    <div>
+                        <p>맛집상호명</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>맛곳광역시 맛곳구 맛곳동</p>
+                        <p>중식당</p>
+                        <p>운영 전 9:00 오픈</p>
+                    </div>
+                    <div>
+                        <p><img src={heart} alt=""/> 123</p>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                {/*더미데이터*/}
+            </div>
+            <div>
+                <Pagination/>
+            </div>
         </div>
     </>);};
 
