@@ -1,6 +1,6 @@
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import defaultImg from "../../assets/img/defaultImg.svg"
 import changeImg from "../../assets/img/changeImg.svg"
 import native from "../../assets/img/native.svg"
@@ -16,7 +16,7 @@ export const MypagePage = () => {
    const location = useLocation();
    const logout = useAuthStore((state) => state.logout);
    const path = location.pathname.substring(8);
-    const { memberId, memberNickname, token } = useAuthStore();
+    const { memberId, token } = useAuthStore();
     const [memberInfo, setMemberInfo] = useState(null);
     useEffect(() => {
         // 💡 가드 조건 강화: memberId와 token이 '둘 다 확실히 존재할 때만' 요청을 보냅니다.
@@ -42,30 +42,9 @@ export const MypagePage = () => {
             console.log("⏳ 아직 memberId나 token이 준비되지 않아 요청을 대기합니다.");
         }
     }, [memberId, token]);
-    useEffect(() => {
-        // 💡 중요: memberId가 존재하고, 'null'이라는 문자열도 아닐 때만 실행하도록 가드를 칩니다.
-        if (memberId && memberId !== "null") {
-
-            // ⭕ {memberId} 앞에 '$'를 붙여서 실제 변수 값이 주소에 들어가도록 수정했습니다!
-            axios.get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
-                .then((res) => {
-                    console.log("✅ 회원정보 로드 성공:", res.data);
-                    setMemberInfo(res.data);
-                })
-                .catch((err) => {
-                    console.error("🚨 회원정보 로드 실패:", err);
-                });
-
-        } else {
-            console.log("⏳ 아직 Zustand 스토어에 memberId가 준비되지 않았습니다. (현재 값: " + memberId + ")");
-        }
-    }, [memberId]);
    const imgChange = () => {
     return null;
   };
-   const member = axios.get(`${import.meta.env.VITE_BACKSERVER}/members/{memberId}`)
-       .then((res) => {console.log(res);})
-       .catch((err) => {console.log(err);});
 
   return (
     <div className="mypage">
@@ -137,6 +116,9 @@ export const MypagePage = () => {
 };
 
 export const Myinfo = ({ memberInfo }) => {
+    if (!memberInfo) {
+        return <div style={{ padding: "50px", textAlign: "center" }}>회원 정보를 불러오는 중입니다...</div>;
+    }
     return (<>
         <div className={styles.content_menu_wrap}>
             <div className={styles.info_profile}>
@@ -146,13 +128,13 @@ export const Myinfo = ({ memberInfo }) => {
                 </div>
                 <div>
                     <div>
-                        <div className={styles.info_nick}>닉네임</div>
-                        <div><img src={native} alt="" /></div>
+                        <div className={styles.info_nick}>{memberInfo.memberNickname}</div>
+                        <div><img src={native} /></div>
                     </div>
                     <ul className={styles.info_member}>
                         <li>
                             <img src={navigate} alt=""/>
-                            맛곳광역시 맛곳구 맛곳동
+                            {memberInfo.memberAddress}
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
@@ -169,7 +151,7 @@ export const Myinfo = ({ memberInfo }) => {
                 <div>
                     <div className={styles.info_email}>
                         <p className={styles.info_title}>이메일</p>
-                        <p>honggildong@gmail.com</p>
+                        <p>{memberInfo.memberEmail}</p>
                         <button type="submit" className={styles.submit}>이메일 변경</button>
                     </div>
                     <div className={styles.info_pwchange}>

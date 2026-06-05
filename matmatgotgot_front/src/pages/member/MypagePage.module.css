@@ -101,22 +101,22 @@
 .info_profile > div:first-child {
     padding: 0 5px;
 }
-.info_profile > div:last-child {
-    flex: 1;
+.info_profile > div:nth-child(2) {
+    padding: 0 15px;
 }
 .info_profile > div:nth-child(2)> div:first-child {
-    padding: 0 20px;
     text-align: left;
     display: flex;
     align-items: self-start;
 }
-.info_profile > div:nth-child(2) {
-    padding: 0 20px;
-    text-align: left;
-}
 .info_nick {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 800;
+}
+.info_nick + div > img {
+    width: 25px;
+    margin: 0 3px;
+    margin-top: 2px;
 }
 .changeImg {
     width: 25px;
@@ -131,7 +131,21 @@
 .info_member {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    justify-content: center;
+}
+.info_member > li {
+    display: flex;
+    gap: 3px;
+}
+.info_member > li > img {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.info_profile > button {
+    text-align: right;
+
 }
 .info_2line {
     display: flex;

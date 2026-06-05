@@ -77,9 +77,9 @@ public class SpringSecurityConfig {
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // 👈 핵심: axios의 withCredentials와 맞물리는 설정!
 
-        Configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
 
-        Configuration.setAllowCredentials(true);
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config); // 모든 URL 경로에 위의 CORS 설정 적용
