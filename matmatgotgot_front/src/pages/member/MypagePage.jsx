@@ -19,6 +19,10 @@ import search from "../../assets/img/search.svg";
 import menu from "../../assets/img/menu.svg";
 import blackStar from "../../assets/img/blackStar.svg";
 import Rectangle from "../../assets/img/Rectangle.svg";
+import calendar from "../../assets/img/calendar.svg";
+import spot from "../../assets/img/spot.svg";
+import people from "../../assets/img/people.svg";
+import calendar2 from "../../assets/img/calendar2.svg";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import Pagination from "../../components/ui/Pagination.jsx";
@@ -465,8 +469,147 @@ export const Zzim = () => {
 
 export const Matzip = () => {
     return (<>
-        <div className={styles.content_menu_wrap}>
-
+        <div className={`${styles.content_menu_wrap} ${styles.content_tuar_wrap}`}>
+            <div className={styles.posts_bar}>
+                <div>
+                    <p>전체 선택</p>
+                    <p>삭제</p>
+                </div>
+                <div>
+                    <img src={calendar2} alt=""/>
+                    <div className={styles.posts_bar_search}>
+                        <Input type="search"/>
+                        <p><img src={search} alt=""/></p>
+                    </div>
+                </div>
+            </div>
+            <div className={styles.tuars}>
+                {/*더미데이터*/}
+                <div className={styles.tuar}>
+                    <div>
+                        <p>플랜1</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>여행지이름</p>
+                        <ul>
+                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
+                            <li><img src={spot} alt=""/><span>여행지역</span></li>
+                            <li><img src={people} alt=""/><span>부모님</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.tuar}>
+                    <div>
+                        <p>플랜1</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>여행지이름</p>
+                        <ul>
+                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
+                            <li><img src={spot} alt=""/><span>여행지역</span></li>
+                            <li><img src={people} alt=""/><span>부모님</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.tuar}>
+                    <div>
+                        <p>플랜1</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>여행지이름</p>
+                        <ul>
+                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
+                            <li><img src={spot} alt=""/><span>여행지역</span></li>
+                            <li><img src={people} alt=""/><span>부모님</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.tuar}>
+                    <div>
+                        <p>플랜1</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>여행지이름</p>
+                        <ul>
+                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
+                            <li><img src={spot} alt=""/><span>여행지역</span></li>
+                            <li><img src={people} alt=""/><span>부모님</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.tuar}>
+                    <div>
+                        <p>플랜1</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>여행지이름</p>
+                        <ul>
+                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
+                            <li><img src={spot} alt=""/><span>여행지역</span></li>
+                            <li><img src={people} alt=""/><span>부모님</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                <div className={styles.tuar}>
+                    <div>
+                        <p>플랜1</p>
+                        <div><img src={menu} alt="" /></div>
+                    </div>
+                    <div>
+                        <img src={Rectangle} alt=""/>
+                    </div>
+                    <div>
+                        <p>여행지이름</p>
+                        <ul>
+                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
+                            <li><img src={spot} alt=""/><span>여행지역</span></li>
+                            <li><img src={people} alt=""/><span>부모님</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p><img src={blackStar} alt=""/></p>
+                    </div>
+                </div>
+                {/*더미데이터*/}
+            </div>
+            <div>
+                <Pagination/>
+            </div>
         </div>
     </>);};
 
