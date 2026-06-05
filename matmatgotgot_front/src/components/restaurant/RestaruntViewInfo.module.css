@@ -159,7 +159,7 @@
 
 /* 우측: 지도 */
 .map_side {
-  width: 350px;
+  width: 500px;
   flex-shrink: 0;
 }
 

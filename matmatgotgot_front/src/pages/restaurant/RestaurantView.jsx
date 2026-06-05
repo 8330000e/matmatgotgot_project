@@ -43,7 +43,7 @@ const RestaurantView = () => {
 
       {/* ===== 리뷰 영역 ===== */}
       <section className={styles.rest_reviews}>
-        <RestaruntViewReviews />
+        <RestaruntViewReviews restNo={restNo} />
       </section>
     </div>
   );

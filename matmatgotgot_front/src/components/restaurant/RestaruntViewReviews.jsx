@@ -3,7 +3,7 @@ import Pagination from "../../components/ui/Pagination";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const RestaruntViewReviews = () => {
+const RestaruntViewReviews = ({ restNo }) => {
   const [reviewList, setRivewList] = useState([]);
   const [reviewsCnt, setReviewsCnt] = useState(0);
   const [page, setPage] = useState(0);
@@ -14,7 +14,7 @@ const RestaruntViewReviews = () => {
     // 리뷰 목록 조회
     axios
       .get(
-        `${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?page=${page}&size=${size}&restNo=1`,
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?page=${page}&size=${size}&restNo=${restNo}`,
       )
       .then((res) => {
         console.log(res.data.list);

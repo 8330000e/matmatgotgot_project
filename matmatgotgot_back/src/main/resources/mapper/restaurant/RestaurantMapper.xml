@@ -40,10 +40,11 @@
     </select>
 
     <select id="getTags" resultType="String">
-        SELECT t.name
-        FROM restaurant_tags_tbl rt
-            INNER JOIN tags_tbl t ON rt.tag_no = t.tag_no
-        WHERE rt.rest_no = #{restNo}
+        SELECT DISTINCT tag_name
+        FROM review_tbl r
+                 INNER JOIN review_tags_tbl rt
+                            ON r.review_no = rt.review_no
+        WHERE rest_no = #{restNo}
     </select>
 
     <select id="getMenus" resultType="String">
@@ -66,7 +67,7 @@
 
     FROM review_tbl r
              INNER JOIN member_tbl m
-                        ON r.member_no = m.member_no
+                        ON r.member_id = m.member_id
     WHERE rest_no = #{restNo}
     ORDER BY r.visit_date DESC
 
@@ -83,9 +84,8 @@
         SELECT COUNT(*)
         FROM review_tbl r
                  INNER JOIN member_tbl m
-                            ON r.member_no = m.member_no
+                            ON r.member_id = m.member_id
         WHERE rest_no = #{restNo}
-        ORDER BY r.visit_date DESC
     </select>
 
     <insert id="reviewInsert" useGeneratedKeys="true" keyProperty="reviewNo">
