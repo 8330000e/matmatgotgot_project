@@ -1,14 +1,16 @@
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import defaultImg from "../../assets/img/defaultImg.svg"
-import changeImg from "../../assets/img/changeImg.svg"
-import native from "../../assets/img/native.svg"
-import nativeIcon from "../../assets/img/nativeIcon.svg"
-import navigate from "../../assets/img/navigate.svg"
+import defaultImg from "../../assets/img/defaultImg.svg";
+import changeImg from "../../assets/img/changeImg.svg";
+import native from "../../assets/img/native.svg";
+import nativeIcon from "../../assets/img/nativeIcon.svg";
+import navigate from "../../assets/img/navigate.svg";
 import google from "../../assets/logo/google.svg";
-import kakao from "../../assets/logo/kakao.svg"
-import naver from "../../assets/logo/naver_green.svg"
+import kakao from "../../assets/logo/kakao.svg";
+import naver from "../../assets/logo/naver_green.svg";
+import check from "../../assets/img/check.svg";
+import checked from "../../assets/img/checked.svg";
 import axios from "axios";
 import {useEffect, useState} from "react";
 
@@ -134,25 +136,31 @@ export const Myinfo = ({ memberInfo }) => {
                     <ul className={styles.info_member}>
                         <li>
                             <img src={navigate} alt=""/>
-                            {memberInfo.memberAddress}
+                            <div>{memberInfo.memberAddress}</div>
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
-                            현지인 인증됨
+                            <div>현지인 인증됨</div>
                         </li>
                         <li>
                             2026.06.04 ~ 2026.12.04
                         </li>
                     </ul>
                 </div>
-                <button type="submit" className={styles.submit}>프로필 수정</button>
+                <div className={styles.profile_submit}>
+                    <button type="submit" className={styles.submit}>프로필 수정</button>
+                </div>
             </div>
             <div className={styles.info_2line}>
                 <div>
                     <div className={styles.info_email}>
-                        <p className={styles.info_title}>이메일</p>
-                        <p>{memberInfo.memberEmail}</p>
-                        <button type="submit" className={styles.submit}>이메일 변경</button>
+                        <div>
+                            <p className={styles.info_title}>이메일</p>
+                            <p>{memberInfo.memberEmail}</p>
+                        </div>
+                        <div>
+                            <button type="submit" className={styles.submit}>이메일 변경</button>
+                        </div>
                     </div>
                     <div className={styles.info_pwchange}>
                         <p className={styles.info_title}>비밀번호 변경</p>
@@ -161,12 +169,24 @@ export const Myinfo = ({ memberInfo }) => {
                 </div>
                 <div className={styles.info_alarm}>
                     <p className={styles.info_title}>알림설정</p>
-                    <ul>
-                        <li>앱 푸시 알람 수신 동의</li>
-                        <li>이메일 알림 수신 동의</li>
-                        <li>마케팅 정보 수신 동의</li>
-                    </ul>
-                    <button type="submit" className={styles.submit}>알림설정 수정</button>
+                    <div>
+                        <ul>
+                            <li>앱 푸시 알람 수신 동의</li>
+                            <li>이메일 알림 수신 동의</li>
+                            <li>마케팅 정보 수신 동의</li>
+                        </ul>
+                        <div>
+                            <label htmlFor="appPush"><img src={check} /></label>
+                            <label htmlFor="emailAlarm"><img src={check} /></label>
+                            <label htmlFor="emailAlarm"><img src={check} /></label>
+                            <input type="checkbox" name="appPush" id="appPush" className={styles.inputHidden}/>
+                            <input type="checkbox" name="emailAlarm" id="emailAlarm" className={styles.inputHidden}/>
+                            <input type="checkbox" name="marketing" id="marketing" className={styles.inputHidden}/>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" className={styles.submit}>알림설정 수정</button>
+                    </div>
                 </div>
             </div>
             <div className={styles.info_3line}>
@@ -180,9 +200,13 @@ export const Myinfo = ({ memberInfo }) => {
                 </div>
                 <div className={styles.info_delete}>
                     <p className={styles.info_title}>회원탈퇴</p>
-                    <p>맛맛곳곳에 저장된 기록들이 전부 삭제되며 해당 계정으로 다시 로그인 할 수 없습니다.</p>
-                    <p>동의하십니까?</p>
-                    <button type="submit" className={styles.submit_d}>회원 탈퇴</button>
+                    <div>
+                        <p>맛맛곳곳에 저장된 기록들이 전부 삭제되며 해당 계정으로 다시 로그인 할 수 없습니다.</p>
+                        <p>동의하십니까?</p>
+                    </div>
+                    <div>
+                        <button type="submit" className={styles.submit_d}>회원 탈퇴</button>
+                    </div>
                 </div>
             </div>
         </div>
