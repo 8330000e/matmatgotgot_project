@@ -62,6 +62,7 @@ export const MypagePage = () => {
    const imgChange = () => {
     return null;
   };
+   console.log(path);
 
   return (
     <div className="mypage">
@@ -126,6 +127,7 @@ export const MypagePage = () => {
                 {path === "myposts" && <Myposts />}
                 {path === "reportposts" && <Reportposts />}
                 {path === "myask" && <Myask />}
+                {path === "/myinfo/changePw" && <ChangePw />}
             </div>
         </div>
     </div>
@@ -179,7 +181,7 @@ export const Myinfo = ({ memberInfo }) => {
                     </div>
                     <div className={styles.info_pwchange}>
                         <p className={styles.info_title}>비밀번호 변경</p>
-                        <button type="submit" className={styles.submit}>비밀번호 변경</button>
+                        <button type="submit" className={styles.submit} onClick={()=>window.location.href="/maypage/myinfo/changePw"}>비밀번호 변경</button>
                     </div>
                 </div>
                 <div className={styles.info_alarm}>
@@ -1177,6 +1179,28 @@ export const Myask = () => {
             </div>
         </div>
     </>);};
+export const ChangePw = () => {
 
+    return (<>
+        <div className={styles.content_changePw_wrap}>
+            <div>비밀번호 변경</div>
+            <div>
+                <label htmlFor="memberPw">현재 비밀번호</label>
+                <Input type="password" name="memberPw" id="memberPw" />
+            </div>
+            <div>
+                <div>
+                    <label htmlFor="newMemberPw">새 비밀번호</label>
+                    <Input type="password" name="newMemberPw" id="newMemberPw" />
+                </div>
+                <div>
+                    <label htmlFor="newMemberPwRe">새 비밀번호 확인</label>
+                    <Input type="password" name="newMemberPwRe" id="newMemberPwRe" />
+                </div>
+            </div>
+            <button type="submit" className={styles.submit}>비밀번호 변경</button>
+        </div>
+    </>);
+};
 
-export default { MypagePage, Myinfo, Myreview, Zzim, Matzip, Likeposts, Myposts, Reportposts, Myask };
+export default { MypagePage, Myinfo, Myreview, Zzim, Matzip, Likeposts, Myposts, Reportposts, Myask, ChangePw };

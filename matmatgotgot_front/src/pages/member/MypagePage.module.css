@@ -655,3 +655,15 @@
 .ask_finished {
     color: #228be6;
 }
+.content_changePw_wrap {
+    padding: 10px 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+.content_changePw_wrap > div:first-child {
+    font-size: 20px;
+    font-weight: 800;
+}
