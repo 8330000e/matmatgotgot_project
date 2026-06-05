@@ -3,14 +3,16 @@ import axios from "axios"; // axios 추가
 import RestaruntViewInfo from "../../components/restaurant/RestaruntViewInfo";
 import RestaruntViewReviews from "../../components/restaurant/RestaruntViewReviews";
 import styles from "./RestaurantView.module.css";
+import { useParams } from "react-router-dom";
 
 const RestaurantView = () => {
   const [restView, setRestView] = useState(null);
+  const { restNo } = useParams();
 
   useEffect(() => {
     // 맛집 상세 정보 조회
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants?restNo=1&memberNo=1`)
+      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants?restNo=${restNo}`)
       .then((res) => {
         console.log(res.data);
         setRestView(res.data);

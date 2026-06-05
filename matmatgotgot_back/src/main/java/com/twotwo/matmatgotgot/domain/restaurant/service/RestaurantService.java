@@ -1,10 +1,7 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
@@ -74,13 +71,9 @@ public class RestaurantService {
             throw new RuntimeException("리뷰 저장 실패");
         }
 
-        if (request.getReviewMenu() != null && !request.getReviewMenu().isBlank()) {
-            List<String> menuList = Arrays.stream(request.getReviewMenu().trim().split("\\s+"))
-                    .distinct()
-                    .collect(Collectors.toList());
-
-            int res2 = restaurantMapper.insertReviewMenus(request.getReviewNo(), menuList);
-            if (res2 != menuList.size()) {
+        if (request.getReviewMenus() != null && !request.getReviewMenus().isEmpty()) {
+            int res2 = restaurantMapper.insertReviewMenus(request.getReviewNo(), request.getReviewMenus());
+            if (res2 != request.getReviewMenus().size()) {
                 throw new RuntimeException("메뉴 저장 실패");
             }
         }
@@ -114,6 +107,12 @@ public class RestaurantService {
                     throw new RuntimeException("이미지 저장 실패");
                 }
             }
+        }
+
+        // 레이팅, 리뷰수 증가
+        int res5 = restaurantMapper.increaseRatingAvg(request.getRestNo(), request.getRating());
+        if (res5 != 1) {
+            throw new RuntimeException("레이팅, 리뷰수 증가 실패");
         }
 
         return true;
@@ -191,7 +190,12 @@ public class RestaurantService {
        return restaurantMapper.getMainListCount(req, memberId);
     }//
 
-    public boolean isDup(CheckDuplicationRequest chk) {
-        return restaurantMapper.getSame(chk);
+    public CheckDuplicationResponse isDup(CheckDuplicationRequest chk) {
+        Long restNo = restaurantMapper.getSame(chk);
+
+        return CheckDuplicationResponse.builder()
+                .duplicate(restNo != null)
+                .restNo(restNo)
+                .build();
     }//
 }

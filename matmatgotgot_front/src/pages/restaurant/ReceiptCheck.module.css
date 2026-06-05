@@ -426,3 +426,7 @@
   border-radius: 8px;
   overflow: hidden;
 }
+
+.addr_caution {
+  color: #d3a72f;
+}

@@ -3,8 +3,8 @@
 <mapper namespace="com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper">
 
     <insert id="restaurantCreate" useGeneratedKeys="true" keyProperty="restNo">
-        INSERT INTO restaurant_tbl (member_no, rest_name, rest_addr, lat, lng, category, phone, hours, rest_content, rest_thumb, created_at)
-        VALUES (#{memberNo}, #{restName}, #{restAddr}, #{lat}, #{lng}, #{category}, #{phone}, #{hours}, #{restContent}, #{restThumb}, current_timestamp())
+        INSERT INTO restaurant_tbl (member_id, rest_name, rest_addr, lat, lng, category, phone, hours, rest_content, rest_thumb, created_at)
+        VALUES (#{memberId}, #{restName}, #{restAddr}, #{lat}, #{lng}, #{category}, #{phone}, #{hours}, #{restContent}, #{restThumb}, current_timestamp())
     </insert>
 
     <select id="restaurantViewInfo" resultType="restViewResponse">
@@ -369,24 +369,26 @@
         </where>
     </select>
 
-    <select id="getSame" resultType="boolean">
-        SELECT EXISTS (
-            SELECT 1
-            FROM restaurant_tbl r
-            WHERE r.rest_name = #{storeName}
-
-            AND (
-            6371 * ACOS(
-            COS(RADIANS(#{lat}))
-            * COS(RADIANS(r.lat))
-            * COS(RADIANS(r.lng) - RADIANS(#{lng}))
-            + SIN(RADIANS(#{lat}))
-            * SIN(RADIANS(r.lat))
-            )
-            <![CDATA[
-            ) <= 0.1
-            ]]>
-        )
+    <select id="getSame" resultType="Long">
+        SELECT r.rest_no
+        FROM restaurant_tbl r
+        WHERE r.rest_name = #{storeName}
+          AND (
+                6371 * ACOS(
+                COS(RADIANS(#{lat}))
+                * COS(RADIANS(r.lat))
+                * COS(RADIANS(r.lng) - RADIANS(#{lng}))
+                + SIN(RADIANS(#{lat}))
+                * SIN(RADIANS(r.lat))
+                )
+          ) <![CDATA[ <= 0.1 ]]>
     </select>
+
+    <update id="increaseRatingAvg">
+        UPDATE restaurant_tbl
+        SET rating_sum = rating_sum + #{rating},
+            review_total_count = review_total_count + 1
+        WHERE rest_no = #{restNo}
+    </update>
 
 </mapper>

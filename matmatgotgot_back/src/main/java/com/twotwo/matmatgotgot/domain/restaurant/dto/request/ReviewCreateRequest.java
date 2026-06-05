@@ -17,7 +17,7 @@ public class ReviewCreateRequest {
     private String reviewContent;
     private int rating;
 
-    private String reviewMenu;
+    private List<String> reviewMenus;
     private List<String> tags;
     private List<MultipartFile> files;
 }

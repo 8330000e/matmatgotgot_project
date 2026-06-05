@@ -76,5 +76,8 @@ public interface RestaurantMapper {
     int getMainListCount(@Param("req") MainListRequest req,
                              @Param("String") String memberId);
 
-    boolean getSame(CheckDuplicationRequest chk);
+    Long getSame(CheckDuplicationRequest chk);
+
+    int increaseRatingAvg(@Param("restNo") Long restNo,
+                          @Param("rating") int rating);
 }

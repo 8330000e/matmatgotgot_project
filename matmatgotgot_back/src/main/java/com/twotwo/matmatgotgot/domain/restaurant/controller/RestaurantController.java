@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +59,11 @@ public class RestaurantController {
         restaurant.setRestThumb(restThumb);
 
         int result = restaurantService.restaurantCreate(restaurant);
+        if(result == 1){
+            return ResponseEntity.ok(restaurant.getRestNo());
+        }
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(-1);
     }//
 
     // tip tap 이미지 등록
@@ -104,12 +106,14 @@ public class RestaurantController {
     @PostMapping("/review")
     public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request, Authentication auth) {
         request.setMemberId(auth.getName());
+
         try {
             boolean result = restaurantService.reviewCreate(request);
+
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+                    .body(false);
         }
     }//
 
@@ -192,9 +196,9 @@ public class RestaurantController {
     // 맛집 등록 중복 확인
     @GetMapping("/isdup")
     public ResponseEntity<?> isDup(@ModelAttribute CheckDuplicationRequest chk) {
-        boolean isDup = restaurantService.isDup(chk);
+        CheckDuplicationResponse res = restaurantService.isDup(chk);
 
-        return ResponseEntity.ok(isDup);
+        return ResponseEntity.ok(res);
     }//
 
 }

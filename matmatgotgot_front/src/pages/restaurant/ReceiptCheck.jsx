@@ -13,12 +13,7 @@ const ReceiptCheck = () => {
   const [error, setError] = useState(null); // 에러 메시지
   const [dragOver, setDragOver] = useState(false); // 드래그 오버 여부
   const inputRef = useRef(null); // 숨겨진 file input 참조
-  const { mode } = useParams();
-  const [regist, setRegist] = useState();
-
-  useEffect(() => {
-    setRegist(mode);
-  }, []);
+  const { mode, restNo } = useParams();
 
   // 파일 선택 공통 처리 (input change / 드래그 드롭)
   const handleFile = useCallback((selectedFile) => {
@@ -200,15 +195,13 @@ const ReceiptCheck = () => {
         </div>
 
         {/* OCR 결과 카드 */}
-        {result && (
-          <ResultCard data={result} regist={regist} setRegist={setRegist} />
-        )}
+        {result && <ResultCard data={result} mode={mode} restNo={restNo} />}
       </div>
     </div>
   );
 };
 
-const ResultCard = ({ data, regist, setRegist }) => {
+const ResultCard = ({ data, mode, restNo }) => {
   return (
     <div className={styles.result_card}>
       {/* 결과 헤더 */}
@@ -278,9 +271,7 @@ const ResultCard = ({ data, regist, setRegist }) => {
         <div className={`${styles.result_row} ${styles.result_row_map}`}>
           <div className={styles.result_row_content}>
             <div className={styles.result_label}>
-              <div>위치</div>
-
-              <div>
+              <div className={styles.addr_caution}>
                 [영수증에서 추출된 주소 정보가 정확하지 않을 수 있습니다. 정확한
                 주소인지 다시한번 확인해 주시고 올바르지 않다면 올바른 주소를
                 선택해 주세요]
@@ -290,8 +281,8 @@ const ResultCard = ({ data, regist, setRegist }) => {
             <NaverMapSection
               initialAddress={data.address}
               data={data}
-              regist={regist}
-              setRegist={setRegist}
+              mode={mode}
+              restNo={restNo}
             />
           </div>
         </div>
@@ -300,7 +291,7 @@ const ResultCard = ({ data, regist, setRegist }) => {
   );
 };
 
-const NaverMapSection = ({ initialAddress, data, regist, setRegist }) => {
+const NaverMapSection = ({ initialAddress, data, mode, restNo }) => {
   const mapDivRef = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
@@ -464,14 +455,19 @@ const NaverMapSection = ({ initialAddress, data, regist, setRegist }) => {
       lng: coords.lng,
     };
 
-    if (regist === "rest") {
+    sessionStorage.setItem("receiptData", JSON.stringify(receiptData));
+
+    if (mode === "rest") {
       axios
         .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/isdup`, {
-          ...receiptData,
+          params: {
+            storeName: receiptData.storeName,
+            lat: receiptData.lat,
+            lng: receiptData.lng,
+          },
         })
         .then((res) => {
-          console.log(res);
-          if (res.data) {
+          if (res.data.duplicate) {
             console.log("중복");
             Swal.fire({
               title: "이미 등록된 맛집입니다.",
@@ -483,25 +479,23 @@ const NaverMapSection = ({ initialAddress, data, regist, setRegist }) => {
             }).then((result) => {
               if (result.isConfirmed) {
                 console.log("확인 클릭");
-                setRegist("review");
+                navigate(`/rest/review/regist/${res.data.restNo}`);
               } else if (result.isDismissed) {
                 console.log("취소 클릭");
-                navigate(`/rest/main`);
+                navigate(`/rest`);
               }
             });
+
+            return;
           }
 
-          sessionStorage.setItem("receiptData", JSON.stringify(receiptData));
-
-          if (regist === "rest") {
-            navigate(`/rest/regist`);
-          } else {
-            navigate(`rest/review/regiset`);
-          }
+          navigate(`/rest/regist`);
         })
         .catch((err) => {
           console.log(err);
         });
+    } else {
+      navigate(`/rest/review/regist/${restNo}`);
     }
   };
 
@@ -526,12 +520,12 @@ const NaverMapSection = ({ initialAddress, data, regist, setRegist }) => {
       {error && <p className={styles.map_error}>{error}</p>}
 
       {/* 선택된 좌표 표시 */}
-      {coords && (
+      {/* {coords && (
         <p className={styles.lat_lng}>
           위도: <strong>{coords.lat.toFixed(7)}</strong>
           &nbsp; 경도: <strong>{coords.lng.toFixed(7)}</strong>
         </p>
-      )}
+      )} */}
 
       {/* 지도 컨테이너 */}
       <div className={styles.map_div} ref={mapDivRef} />

@@ -1,20 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ReviewRegist.module.css";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const ReviewRegist = () => {
+  const { restNo } = useParams();
+
   // 폼 필드 상태
   const [review, setReview] = useState({
     restName: "",
     restAddr: "",
-    reviewMenu: "",
     reviewVisit: "",
-    reviewContent: "",
   });
+  const [menus, setMenus] = useState([]);
+  const [reviewContent, setReviewContent] = useState("");
+
+  useEffect(() => {
+    const savedData = sessionStorage.getItem("receiptData");
+
+    if (!savedData) return;
+
+    const receiptData = JSON.parse(savedData);
+    console.log(receiptData);
+
+    setReview({
+      ...review,
+      restName: receiptData.storeName,
+      restAddr: receiptData.address,
+      reviewVisit: receiptData.date,
+    });
+
+    setMenus(receiptData.menuItems);
+  }, []);
 
   // 별점 상태 (1~5, 0 = 미선택)
   const [rating, setRating] = useState(0);
@@ -35,11 +55,6 @@ const ReviewRegist = () => {
     setFiles(files.filter((f) => f !== targetFile));
   };
 
-  // 입력 공통 핸들러
-  const inputReview = (e) => {
-    setReview({ ...review, [e.target.name]: e.target.value });
-  };
-
   // 태그 체크박스 핸들러
   const handleTagChange = (e) => {
     const { value, checked } = e.target;
@@ -56,25 +71,25 @@ const ReviewRegist = () => {
     if (
       !review.restName.trim() ||
       !review.restAddr.trim() ||
-      !review.reviewMenu.trim() ||
       !review.reviewVisit.trim() ||
-      !review.reviewContent.trim() ||
+      !reviewContent.trim() ||
+      !(menus.length > 0) ||
       rating === 0
     ) {
-      Swal.fire({ title: "모든 항목을 입력해주세요", icon: "warning" });
+      Swal.fire({ title: "필수 항목을 입력해주세요", icon: "warning" });
       return;
     }
 
     // 파일 포함 요청 → FormData 사용
     const form = new FormData();
-    form.append("memberNo", 1);
-    form.append("restNo", 1);
+
+    form.append("restNo", restNo);
     form.append("restName", review.restName);
     form.append("restAddr", review.restAddr);
-    form.append("reviewMenu", review.reviewMenu);
     form.append("reviewVisit", review.reviewVisit);
-    form.append("reviewContent", review.reviewContent);
+    form.append("reviewContent", reviewContent);
     form.append("rating", rating);
+    menus.forEach((menu) => form.append("reviewMenus", menu.name));
     tags.forEach((tag) => form.append("tags", tag));
     files.forEach((file) => form.append("files", file));
 
@@ -83,10 +98,22 @@ const ReviewRegist = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        if (res.data > 0) {
-          Swal.fire({ title: "리뷰 작성 완료", icon: "success" }).then(
-            () => {},
-          );
+        console.log(res.data);
+        if (res.data) {
+          Swal.fire({
+            icon: "success",
+            title: "등록 완료",
+            text: "리뷰 상세 페이지로 이동합니다.",
+          }).then(() => {
+            sessionStorage.removeItem("receiptData");
+            navigate(`/rest/review/view/${restNo}`);
+          });
+        } else {
+          Swal.fire({
+            icon: "warning",
+            title: "등록 실패",
+            text: "맛집 등록에 실패하였습니다.",
+          });
         }
       })
       .catch((err) => {
@@ -112,58 +139,54 @@ const ReviewRegist = () => {
         <div className={styles.main_left}>
           {/* 상호명 */}
           <div className={styles.field_group}>
-            <label className={styles.field_label} htmlFor="restName">
-              상호명*
-            </label>
+            <label className={styles.field_label}>상호명*</label>
             <input
               type="text"
               name="restName"
               id="restName"
               value={review.restName}
-              onChange={inputReview}
+              disabled={true}
             />
           </div>
 
           {/* 주소 */}
           <div className={styles.field_group}>
-            <label className={styles.field_label} htmlFor="restAddr">
-              주소*
-            </label>
+            <label className={styles.field_label}>주소*</label>
             <input
               type="text"
               name="restAddr"
               id="restAddr"
               value={review.restAddr}
-              onChange={inputReview}
-            />
-          </div>
-
-          {/* 메뉴 */}
-          <div className={styles.field_group}>
-            <label className={styles.field_label} htmlFor="reviewMenu">
-              메뉴*
-            </label>
-            <input
-              type="text"
-              name="reviewMenu"
-              id="reviewMenu"
-              value={review.reviewMenu}
-              onChange={inputReview}
+              disabled={true}
             />
           </div>
 
           {/* 방문 날짜 */}
           <div className={styles.field_group}>
-            <label className={styles.field_label} htmlFor="reviewVisit">
-              방문 날짜*
-            </label>
+            <label className={styles.field_label}>방문 날짜*</label>
             <input
               type="date"
               name="reviewVisit"
               id="reviewVisit"
               value={review.reviewVisit}
-              onChange={inputReview}
+              disabled={true}
             />
+          </div>
+
+          {/* 메뉴 */}
+          <div className={styles.field_group}>
+            <label className={styles.field_label}>메뉴*</label>
+            {menus && menus.length > 0 ? (
+              <ul className={styles.menu_list}>
+                {menus.map((item, idx) => (
+                  <li key={idx} className={styles.menu_item}>
+                    <span className={styles.menu_item_name}>{item.name}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span className={styles.no_value}>인식된 메뉴가 없습니다</span>
+            )}
           </div>
 
           {/* ── 별점 ── */}
@@ -254,15 +277,15 @@ const ReviewRegist = () => {
 
           {/* ── 리뷰 내용 ── */}
           <div className={styles.field_group}>
-            <label className={styles.field_label} htmlFor="reviewContent">
-              리뷰 내용*
-            </label>
+            <label className={styles.field_label}>리뷰 내용*</label>
             <textarea
               className={styles.review_textarea}
               name="reviewContent"
               id="reviewContent"
-              value={review.reviewContent}
-              onChange={inputReview}
+              value={reviewContent}
+              onChange={(e) => {
+                setReviewContent(e.target.value);
+              }}
               placeholder="리뷰 내용을 입력하세요"
             />
           </div>

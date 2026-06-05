@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./RestaurantRegist.module.css";
 import TextEditor from "../../components/ui/TextEditor";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const RestaurantRegist = () => {
   const [restName, setRestName] = useState("");
@@ -14,6 +16,8 @@ const RestaurantRegist = () => {
   const [lng, setLng] = useState(null);
 
   const mapDivRef = useRef(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedData = sessionStorage.getItem("receiptData");
@@ -89,6 +93,18 @@ const RestaurantRegist = () => {
       lat === "" ||
       lng === ""
     ) {
+      if (category === "") {
+        Swal.fire({
+          icon: "warning",
+          title: "카테고리를 선택해 주세요.",
+        });
+      } else if (content === "") {
+        Swal.fire({
+          icon: "warning",
+          title: "본문을 작성해 주세요.",
+        });
+      }
+
       return;
     }
 
@@ -99,14 +115,30 @@ const RestaurantRegist = () => {
       restPhone: restPhone === "" ? null : restPhone,
       category,
       content,
-      lng: Number(lng),
       lat: Number(lat),
+      lng: Number(lng),
     };
 
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/restaurants`, requestData)
       .then((res) => {
         console.log(res.data);
+        if (res.data > 0) {
+          Swal.fire({
+            icon: "success",
+            title: "등록 완료",
+            text: "맛집 상세 페이지로 이동합니다.",
+          }).then(() => {
+            sessionStorage.removeItem("receiptData");
+            navigate(`/rest/view/${res.data}`);
+          });
+        } else {
+          Swal.fire({
+            icon: "warning",
+            title: "등록 실패",
+            text: "맛집 등록에 실패하였습니다.",
+          });
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -182,8 +214,8 @@ const RestaurantRegist = () => {
                 <input
                   type="radio"
                   name="category"
-                  value="kr"
-                  checked={category === "kr"}
+                  value="한식"
+                  checked={category === "한식"}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 한식
@@ -192,8 +224,8 @@ const RestaurantRegist = () => {
                 <input
                   type="radio"
                   name="category"
-                  value="western"
-                  checked={category === "western"}
+                  value="양식"
+                  checked={category === "양식"}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 양식
@@ -202,8 +234,8 @@ const RestaurantRegist = () => {
                 <input
                   type="radio"
                   name="category"
-                  value="jp"
-                  checked={category === "jp"}
+                  value="일식"
+                  checked={category === "일식"}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 일식
@@ -212,8 +244,8 @@ const RestaurantRegist = () => {
                 <input
                   type="radio"
                   name="category"
-                  value="ch"
-                  checked={category === "ch"}
+                  value="중식"
+                  checked={category === "중식"}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 중식

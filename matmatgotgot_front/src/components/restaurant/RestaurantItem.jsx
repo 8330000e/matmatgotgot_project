@@ -14,7 +14,7 @@ const RestaurantItem = ({ rest }) => {
         </div>
         <div className={styles.rest_img}>
           {rest.restThumb ? (
-            <imag src={rest.restThumb} />
+            <img src={rest.restThumb} />
           ) : (
             <ImageNotSupportedIcon className={styles.ImageNotSupportedIcon} />
           )}
