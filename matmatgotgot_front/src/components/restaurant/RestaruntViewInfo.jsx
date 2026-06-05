@@ -66,11 +66,11 @@ const RestaruntViewInfo = ({ restView }) => {
             </div>
             <div className={styles.hours}>
               <AccessTimeIcon className={styles.meta_icon} />
-              <span>{restView.hours}</span>
+              <span>{restView.hours ? restView.hours : "-"}</span>
             </div>
             <div className={styles.phone}>
               <LocalPhoneIcon className={styles.meta_icon} />
-              <span>{restView.phone}</span>
+              <span>{restView.phone ? restView.phone : "-"}</span>
             </div>
           </div>
         </div>

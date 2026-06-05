@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 const ReviewCommentItem = ({
   comment,
   replies = [], // 기본값: 빈 배열 (대댓글 없을 때 오류 방지)
-  loginMemberNo,
+  loginMemberId,
   onUpdate,
   onDelete,
   onReplyAdd,
@@ -81,7 +81,7 @@ const ReviewCommentItem = ({
   };
 
   // 로그인 회원이 이 댓글의 작성자인지 확인
-  const isOwner = loginMemberNo === comment.memberNo;
+  const isOwner = loginMemberId === comment.memberId;
 
   return (
     <div className={styles.comment_wrap}>
@@ -149,9 +149,9 @@ const ReviewCommentItem = ({
         <button
           type="button"
           className={styles.action_btn}
-          onClick={() => setShowReplyInput(!showReplyInput)}
+          onClick={() => setShowReplyInput(true)}
         >
-          {showReplyInput ? "답글 취소" : "답글"}
+          답글
         </button>
         <button
           type="button"
@@ -171,7 +171,7 @@ const ReviewCommentItem = ({
               ref={replyTextareaRef}
               className={styles.textarea}
               value={replyContent}
-              placeholder="대댓글을 입력하세요 (Enter: 등록, Shift+Enter: 줄바꿈)"
+              placeholder="대댓글을 입력하세요"
               onChange={(e) => setReplyContent(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
@@ -210,7 +210,7 @@ const ReviewCommentItem = ({
             <ReplyItem
               key={reply.commentNo}
               reply={reply}
-              loginMemberNo={loginMemberNo}
+              loginMemberId={loginMemberId}
               onUpdate={onUpdate}
               onDelete={onDelete}
             />
@@ -221,7 +221,7 @@ const ReviewCommentItem = ({
   );
 };
 
-const ReplyItem = ({ reply, loginMemberNo, onUpdate, onDelete }) => {
+const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
   // 수정 모드 여부
   const [isEditing, setIsEditing] = useState(false);
   // 수정 중인 내용
@@ -264,7 +264,7 @@ const ReplyItem = ({ reply, loginMemberNo, onUpdate, onDelete }) => {
     });
   };
 
-  const isOwner = loginMemberNo === reply.memberNo;
+  const isOwner = loginMemberId === reply.memberId;
 
   return (
     <div className={styles.reply_wrap}>

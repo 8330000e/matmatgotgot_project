@@ -117,8 +117,8 @@ public class RestaurantController {
         }
     }//
 
-    @GetMapping("/review/{reviewNo}")
-    public ResponseEntity<?> getReviewView(@PathVariable Long reviewNo) {
+    @GetMapping("/review")
+    public ResponseEntity<?> getReviewView(@RequestParam Long reviewNo) {
         ReviewViewResponse res = restaurantService.getReviewView(reviewNo);
 
         return ResponseEntity.ok(res);
@@ -134,7 +134,9 @@ public class RestaurantController {
     // 댓글/대댓글 등록
     @PostMapping("/review/{reviewNo}/comments")
     public ResponseEntity<?> commentRegist(@PathVariable Long reviewNo,
-                                           @RequestBody ReviewCommentRequest request) {
+                                           @RequestBody ReviewCommentRequest request,
+                                           Authentication auth) {
+        request.setMemberId(auth.getName());
         ReviewCommentResponse saved = restaurantService.commentRegist(reviewNo, request);
         return ResponseEntity.ok(saved);
     }//

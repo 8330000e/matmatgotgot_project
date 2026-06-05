@@ -137,13 +137,13 @@
 .action_btn {
   display: inline-flex;
   align-items: center;
-  background-color: var(--primary); /* 노란 배경 */
+  background-color: var(--text1);
   border: none;
   border-radius: 20px;
   font-family: inherit;
   font-size: 11px;
   font-weight: 600;
-  color: var(--text1);
+  color: var(--gray8);
   cursor: pointer;
   padding: 3px 10px;
   transition: background-color 0.12s ease;
@@ -151,7 +151,7 @@
 }
 
 .action_btn:hover {
-  background-color: #f5ca00; /* primary 보다 약간 어둡게 */
+  background-color: var(--footer);
 }
 
 /* ── 신고 버튼 오버라이드 (action_btn + report_btn 조합 사용) ──

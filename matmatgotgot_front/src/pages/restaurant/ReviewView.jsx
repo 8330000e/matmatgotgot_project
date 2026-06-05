@@ -10,7 +10,7 @@ import ReviewViewComment from "../../components/restaurant/ReviewViewComment";
 // import { useAuthStore } from "../../store/authStore";
 
 const ReviewView = () => {
-  const { reviewNo } = useParams(); // URL 파라미터에서 reviewNo 추출
+  const { reviewNo } = useParams();
   const navigate = useNavigate();
 
   // 로그인한 회원 번호 (본인 여부 확인용)
@@ -25,7 +25,9 @@ const ReviewView = () => {
   // ── 리뷰 데이터 조회 ─────────────────────────────────────
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}`)
+      .get(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review?reviewNo=${reviewNo}`,
+      )
       .then((res) => {
         console.log(res.data);
         setReview(res.data);

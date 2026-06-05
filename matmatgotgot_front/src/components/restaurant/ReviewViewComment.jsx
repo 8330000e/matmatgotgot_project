@@ -6,9 +6,8 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 const ReviewViewComment = ({ reviewNo }) => {
   // 로그인한 회원 번호 (본인 댓글 수정/삭제 여부 판단에 사용)
-  const authStore = useAuthStore();
+  const loginMemberId = useAuthStore((state) => state.memberId);
   // const loginMemberNo = authStore.memberId;
-  const loginMemberNo = 1;
 
   // 서버에서 받은 전체 댓글 flat list
   const [commentList, setCommentList] = useState([]);
@@ -43,7 +42,6 @@ const ReviewViewComment = ({ reviewNo }) => {
       .post(
         `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}/comments`,
         {
-          memberNo: loginMemberNo,
           content: newCommentContent,
           depth: 0, // 일반 댓글
           parentComment: null, // 부모 없음
@@ -115,7 +113,6 @@ const ReviewViewComment = ({ reviewNo }) => {
       .post(
         `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}/comments`,
         {
-          memberNo: loginMemberNo,
           content: replyContent,
           depth: 1, // 대댓글
           parentComment: parentCommentNo, // 부모 댓글 번호
@@ -149,7 +146,7 @@ const ReviewViewComment = ({ reviewNo }) => {
           key={comment.commentNo}
           comment={comment}
           replies={getReplies(comment.commentNo)} // 해당 댓글의 대댓글 전달
-          loginMemberNo={loginMemberNo}
+          loginMemberId={loginMemberId}
           onUpdate={updateComment} // 수정 콜백
           onDelete={deleteComment} // 삭제 콜백
           onReplyAdd={registReply} // 대댓글 등록 콜백

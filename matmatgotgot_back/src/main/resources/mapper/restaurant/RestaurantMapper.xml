@@ -119,16 +119,22 @@
 
     <select id="getReviewView" resultType="reviewViewResponse">
         SELECT
+            rt.rest_name,
+            rt.rest_addr,
             m.member_thumb,
             m.member_name,
             r.review_content,
             r.visit_date AS review_visit,
             r.rating
-
         FROM review_tbl r
+
                  INNER JOIN member_tbl m
-                            ON r.member_no = m.member_no
-        WHERE review_no = #{reviewNo};
+                            ON r.member_id = m.member_id
+
+                 INNER JOIN restaurant_tbl rt
+                            ON r.rest_no = rt.rest_no
+
+        WHERE r.review_no = #{reviewNo}
     </select>
 
     <select id="getReviewImages" resultType="String">
@@ -152,7 +158,7 @@
     <select id="selectCommentList" resultType="reviewCommentResponse">
         SELECT
             c.comment_no,
-            c.member_no,
+            c.member_id,
             m.member_name     AS writerName,
             m.member_thumb,
             c.content,
@@ -161,7 +167,7 @@
             c.parent_comment
 
         FROM review_comment_tbl c
-                 INNER JOIN member_tbl m ON c.member_no = m.member_no
+                 INNER JOIN member_tbl m ON c.member_id = m.member_id
         WHERE c.review_no = #{reviewNo} AND c.com_status = 0
         ORDER BY
             COALESCE(c.parent_comment, c.comment_no),
@@ -172,7 +178,7 @@
     <select id="selectComment" resultType="reviewCommentResponse">
         SELECT
             c.comment_no,
-            c.member_no,
+            c.member_id,
             m.member_name     AS writerName,
             m.member_thumb,
             c.content,
@@ -181,15 +187,15 @@
             c.parent_comment
 
         FROM review_comment_tbl c
-                 INNER JOIN member_tbl m ON c.member_no = m.member_no
+                 INNER JOIN member_tbl m ON c.member_id = m.member_id
         WHERE c.comment_no = #{commentNo}
     </select>
 
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="req.commentNo">
         INSERT INTO review_comment_tbl
-            (review_no, member_no, parent_comment, depth, content)
+            (review_no, member_id, parent_comment, depth, content)
         VALUES
-            (#{reviewNo}, #{req.memberNo}, #{req.parentComment}, #{req.depth}, #{req.content})
+            (#{reviewNo}, #{req.memberId}, #{req.parentComment}, #{req.depth}, #{req.content})
     </insert>
 
     <update id="updateComment">

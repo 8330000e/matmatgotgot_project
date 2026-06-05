@@ -9,6 +9,8 @@ import java.util.List;
 @Alias("reviewViewResponse")
 public class ReviewViewResponse {
 
+    private String restName;
+    private String restAddr;
     private String memberThumb;
     private String memberName;
     private String reviewContent;
