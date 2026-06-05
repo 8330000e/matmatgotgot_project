@@ -570,7 +570,7 @@
     width: 40%;
 }
 .report > div:nth-child(3) {
-    width: 20%;
+    width: 30%;
 }
 .report > div:nth-child(3) > ul {
     display: flex;
@@ -590,12 +590,12 @@
     width: 18px;
 }
 .report > div:nth-child(4) {
-    width: 50%;
+    width: 60%;
     display: flex;
     justify-content: flex-end;
 }
 .report > div:last-child {
-    width: 20%;
+    width: 30%;
     display: flex;
     justify-content: flex-end;
     font-size: 13px;
