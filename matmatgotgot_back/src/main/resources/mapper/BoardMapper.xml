@@ -467,4 +467,5 @@
         WHERE MEMBER_NO = #{memberNo}
           AND BOARD_COMMENT_NO = #{boardCommentNo}
     </delete>
+
 </mapper>

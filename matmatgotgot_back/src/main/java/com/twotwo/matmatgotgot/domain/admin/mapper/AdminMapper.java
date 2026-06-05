@@ -53,4 +53,9 @@ public interface AdminMapper {
     int updateReviewReportStatus(@Param("reportNo") Long reportNo, @Param("reportStatus") Integer reportStatus);
 
     int updateReviewCommentReportStatus(@Param("reportNo") Long reportNo, @Param("reportStatus") Integer reportStatus);
+
+    int updateMemberStatus(@Param("memberNo") Long memberNo, @Param("memberStatus") Integer memberStatus);
+
+    int updateMemberAdmin(@Param("memberNo") Long memberNo, @Param("admin") Integer admin);
+
 }

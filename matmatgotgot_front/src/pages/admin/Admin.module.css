@@ -236,6 +236,7 @@
 .report_right {
   padding: 10px 14px;
   display: flex;
+  align-items: flex-end;
   flex-direction: column;
   justify-content: center;
   gap: 8px;
@@ -261,15 +262,22 @@
 
 .report_meta_group {
   display: grid;
-  grid-template-columns: 1fr 1fr 45px;
+  grid-template-columns: 100px 100px 75px 35px;
   align-items: center;
-  column-gap: 18px;
+  column-gap: 8px;
 }
 
+.report_reporter,
 .report_writer {
-  text-align: left;
-  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.report_date {
+  text-align: center;
+  font-size: 12px;
+  color: #222;
 }
 
 .report_date {
@@ -364,4 +372,15 @@
   border-radius: 6px !important;
 
   font-size: 14px !important;
+}
+
+.member_manage_select {
+  height: 26px;
+  min-width: 82px;
+  border: 1px solid #cfc8c2;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 12px;
+  padding: 0 6px;
+  cursor: pointer;
 }

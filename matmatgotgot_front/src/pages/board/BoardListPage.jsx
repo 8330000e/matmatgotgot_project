@@ -13,52 +13,55 @@ import Swal from 'sweetalert2';
 const BoardListPage = () => {
   const navigate = useNavigate();
 
-  // zustand에서 로그인 정보 가져오기
   const { memberStatus, memberNo } = useAuthStore();
 
-  const isBlocked = Number(memberStatus) >= 1;
-  const isLogin = memberNo != null; //로그인한 사용자인지 확인
+  const isBlocked = Number(memberStatus) === 1 || Number(memberStatus) === 3;
+  const isLogin = memberNo != null;
 
-  const [boardList, setBoardList] = useState([]); //게시글 목록 저장
-  const [page, setPage] = useState(0); //현재 페이지 번호
-  const size = 8; //한 페이지에 몇 개 보여줄지(8개)
+  const [boardList, setBoardList] = useState([]);
+  const [page, setPage] = useState(0);
 
-  const [totalPage, setTotalPage] = useState(5); //지울거
+  const size = 8;
 
-  const [order, setOrder] = useState(1); //정렬 방식(1: 최신순, 2: 작성순)
+  const [totalPage, setTotalPage] = useState(5);
+  const [order, setOrder] = useState(1);
+  const [category, setCategory] = useState(0);
 
-  // 카테고리
-  const [category, setCategory] = useState(0); //(0:전체, 1:여행후기, 2:자유게시글)
-
-  // 검색 입력값
-  const [type, setType] = useState(1); //검색(1:제목, 2:작성자)
+  const [type, setType] = useState(1);
   const [keyword, setKeyword] = useState('');
 
-  // 실제 검색값
   const [searchType, setSearchType] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const handleWriteClick = () => {
-    // isBlocked = memberStatus >= 1 (회원상태 1:비정상, 3:정지)
     if (isBlocked) {
       Swal.fire({
         title: '게시글 작성 불가',
-        text: '차단된 회원은 게시글을 작성할 수 없습니다.',
+        text: '현재 회원 상태에서는 게시글을 작성할 수 없습니다.',
         icon: 'warning',
         confirmButtonColor: 'var(--color1)',
         width: '600px',
       });
-    } else {
-      navigate('/board/write');
+
+      return;
     }
+
+    navigate('/board/write');
   };
 
-  // 게시글 목록 조회
   useEffect(() => {
     axios
-      .get(
-        `${import.meta.env.VITE_BACKSERVER}/boards?page=${page}&size=${size}&status=1&order=${order}&searchType=${searchType}&searchKeyword=${searchKeyword}&category=${category}`,
-      )
+      .get(`${import.meta.env.VITE_BACKSERVER}/boards`, {
+        params: {
+          page,
+          size,
+          status: 1,
+          order,
+          searchType,
+          searchKeyword,
+          category,
+        },
+      })
       .then((res) => {
         setBoardList(res.data.items);
         setTotalPage(res.data.totalPage);
@@ -87,7 +90,6 @@ const BoardListPage = () => {
             <option value={2}>자유게시글</option>
           </select>
 
-          {/* 검색 */}
           <form
             className={styles.search_wrap}
             onSubmit={(e) => {

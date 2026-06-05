@@ -102,7 +102,8 @@
         BR.DETAIL AS detail,
         BR.REPORT_STATUS AS reportStatus,
         DATE_FORMAT(BR.REPORT_DATE, '%Y.%m.%d') AS reportDate,
-        M.MEMBER_ID AS writer,
+        R.MEMBER_ID AS reporter,
+        W.MEMBER_ID AS writer,
         (
         SELECT COUNT(*)
         FROM BOARD_REPORT_TBL BR2
@@ -110,7 +111,8 @@
         ) AS reportCount
         FROM BOARD_REPORT_TBL BR
         JOIN BOARD_TBL B ON BR.BOARD_NO = B.BOARD_NO
-        JOIN MEMBER_TBL M ON BR.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL R ON BR.MEMBER_NO = R.MEMBER_NO
+        JOIN MEMBER_TBL W ON B.MEMBER_NO = W.MEMBER_NO
         <include refid="boardReportWhere"/>
 
         <choose>
@@ -145,7 +147,7 @@
             <if test="searchKeyword != null and searchKeyword != ''">
                 <choose>
                     <when test="searchType == 2">
-                        AND M.MEMBER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+                        AND W.MEMBER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
                     <otherwise>
                         AND B.BOARD_TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -160,7 +162,8 @@
         FROM BOARD_COMMENT_REPORT_TBL BCR
         JOIN BOARD_COMMENT_TBL BC ON BCR.BOARD_COMMENT_NO = BC.BOARD_COMMENT_NO
         JOIN BOARD_TBL B ON BC.BOARD_NO = B.BOARD_NO
-        JOIN MEMBER_TBL M ON BCR.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL R ON BCR.MEMBER_NO = R.MEMBER_NO
+        JOIN MEMBER_TBL W ON BC.MEMBER_NO = W.MEMBER_NO
         <include refid="boardCommentReportWhere"/>
     </select>
 
@@ -175,7 +178,8 @@
         BCR.DETAIL AS detail,
         BCR.REPORT_STATUS AS reportStatus,
         DATE_FORMAT(BCR.REPORT_DATE, '%Y.%m.%d') AS reportDate,
-        M.MEMBER_ID AS writer,
+        R.MEMBER_ID AS reporter,
+        W.MEMBER_ID AS writer,
         (
         SELECT COUNT(*)
         FROM BOARD_COMMENT_REPORT_TBL BCR2
@@ -184,7 +188,8 @@
         FROM BOARD_COMMENT_REPORT_TBL BCR
         JOIN BOARD_COMMENT_TBL BC ON BCR.BOARD_COMMENT_NO = BC.BOARD_COMMENT_NO
         JOIN BOARD_TBL B ON BC.BOARD_NO = B.BOARD_NO
-        JOIN MEMBER_TBL M ON BCR.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL R ON BCR.MEMBER_NO = R.MEMBER_NO
+        JOIN MEMBER_TBL W ON BC.MEMBER_NO = W.MEMBER_NO
         <include refid="boardCommentReportWhere"/>
 
         <choose>
@@ -460,4 +465,15 @@
         WHERE REVIEW_COM_RP_NO = #{reportNo}
     </update>
 
+    <update id="updateMemberStatus">
+        UPDATE MEMBER_TBL
+        SET MEMBER_STATUS = #{memberStatus}
+        WHERE MEMBER_NO = #{memberNo}
+    </update>
+
+    <update id="updateMemberAdmin">
+        UPDATE MEMBER_TBL
+        SET ADMIN = #{admin}
+        WHERE MEMBER_NO = #{memberNo}
+    </update>
 </mapper>

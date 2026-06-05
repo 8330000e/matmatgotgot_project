@@ -54,7 +54,6 @@ const BoardViewPage = () => {
   console.log('현재 로그인 memberId:', memberId);
   console.log('현재 로그인 admin:', admin);
   console.log('isAdmin:', isAdmin);
-  const isBlocked = Number(memberStatus) >= 1;
 
   useEffect(() => {
     if (!isReady) return;
@@ -196,6 +195,7 @@ const BoardViewPage = () => {
                 memberNo={memberNo}
                 loginMsg={loginMsg}
               />
+
               <Report
                 boardNo={boardNo}
                 memberId={memberId}
@@ -205,7 +205,7 @@ const BoardViewPage = () => {
             </div>
 
             <div className={styles.right_actions}>
-              {!isBlocked && (
+              {!admin && (
                 <>
                   {isAdmin && (
                     <Button
@@ -251,7 +251,6 @@ const BoardViewPage = () => {
             memberId={memberId}
             memberNo={memberNo}
             isAdmin={isAdmin}
-            isBlocked={isBlocked}
             loginMsg={loginMsg}
           />
         </>
@@ -417,6 +416,7 @@ const Report = ({ boardNo, memberId, loginMsg }) => {
           ) : (
             <ReportOutlinedIcon onClick={memberId ? reportOn : loginMsg} />
           )}
+
           <span>{reportInfo.reportCount}</span>
         </div>
       )}
@@ -429,7 +429,6 @@ const BoardCommentComponent = ({
   memberId,
   memberNo,
   isAdmin,
-  isBlocked,
   loginMsg,
 }) => {
   const [boardComment, setBoardComment] = useState({
@@ -507,15 +506,6 @@ const BoardCommentComponent = ({
       return;
     }
 
-    if (isBlocked) {
-      Swal.fire({
-        title: '차단된 회원은 댓글을 작성할 수 없습니다.',
-        icon: 'warning',
-        confirmButtonColor: 'var(--primary)',
-      });
-      return;
-    }
-
     if (boardComment.boardCommentContent.trim() === '') {
       return;
     }
@@ -570,7 +560,6 @@ const BoardCommentComponent = ({
             memberId={memberId}
             memberNo={memberNo}
             isAdmin={isAdmin}
-            isBlocked={isBlocked}
             loginMsg={loginMsg}
             updateComment={updateComment}
             deleteComment={deleteComment}
@@ -588,7 +577,6 @@ const BoardComment = ({
   memberId,
   memberNo,
   isAdmin,
-  isBlocked,
   loginMsg,
   updateComment,
   deleteComment,
@@ -679,7 +667,16 @@ const BoardComment = ({
           });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+
+        Swal.fire({
+          title: '이용 제한',
+          text: '현재 회원 상태에서는 댓글 신고를 할 수 없습니다.',
+          icon: 'warning',
+          confirmButtonColor: 'var(--primary)',
+        });
+      });
   };
 
   const deleteCommentReport = () => {
@@ -736,7 +733,7 @@ const BoardComment = ({
           )}
         </div>
 
-        {memberId && !isBlocked && (
+        {memberId && (
           <div className={styles.comment_btn_box}>
             {isModifyMode ? (
               <>

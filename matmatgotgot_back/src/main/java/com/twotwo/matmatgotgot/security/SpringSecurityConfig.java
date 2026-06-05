@@ -47,6 +47,8 @@ public class SpringSecurityConfig {
                 .requestMatchers("/boards/**").permitAll()
                     // 에디터 이미지 접근 허용
                     .requestMatchers("/editor/**").permitAll()
+                    // 회원 프로필 이미지 접근 허용 - 지연 (임시 프로필 이미지 확인용)
+                    .requestMatchers("/member/thumb/**").permitAll()
                     // 네이버 검색 API 허용
                     .requestMatchers("/api/naver/**").permitAll()
                     .requestMatchers("/admin/**").permitAll()
