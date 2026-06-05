@@ -513,7 +513,14 @@
     border-radius: 10px;
     cursor: pointer;
 }
+.likepost > div:first-child {
+    width: 10%;
+}
+.likepost > div:nth-child(2) {
+    width: 30%;
+}
 .likepost > div:nth-child(3) > ul {
+    width: 30%;
     display: flex;
     gap: 8px;
     align-items: center;
@@ -531,6 +538,9 @@
     width: 18px;
 }
 .likepost > div:last-child {
+    width: 80%;
+    display: flex;
+    justify-content: flex-end;
     font-size: 13px;
     font-weight: 800;
 }
@@ -538,6 +548,58 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.reports {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.report {
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    padding: 10px 18px;
+    border: 1px solid var(--text1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.report > div:first-child {
+    width: 10%;
+}
+.report > div:nth-child(2) {
+    width: 40%;
+}
+.report > div:nth-child(3) {
+    width: 20%;
+}
+.report > div:nth-child(3) > ul {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.report > div:nth-child(3) > ul > li {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+}
+.report > div:nth-child(3) > ul > li > img {
+    width: 18px;
+}
+.report > div:nth-child(3) > ul > li:first-child {
+    width: 18px;
+}
+.report > div:nth-child(4) {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+}
+.report > div:last-child {
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 13px;
+    font-weight: 800;
 }
 .report_send {
     color: #228be6;
@@ -550,6 +612,47 @@
 }
 .report_finished {
     color: #000;
+}
+.asks {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.ask {
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    padding: 10px 18px;
+    border: 1px solid var(--text1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.ask > div:first-child {
+    width: 10%;
+}
+.ask > div:nth-child(2) {
+    width: 40%;
+}
+.ask > div:nth-child(3) {
+    width: 30%;
+}
+.ask > div:nth-child(3){
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+}
+.ask > div:nth-child(4) {
+    width: 60%;
+    display: flex;
+    justify-content: flex-end;
+}
+.ask > div:last-child {
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 13px;
+    font-weight: 800;
 }
 .ask_finished {
     color: #228be6;

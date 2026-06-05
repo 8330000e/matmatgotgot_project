@@ -911,16 +911,11 @@ export const Reportposts = () => {
                     <p>삭제</p>
                 </div>
                 <div>
-                    <ul>
-                        <li>작성순</li>
-                        <li>좋아요순</li>
-                        <li>별점순</li>
-                    </ul>
                 </div>
             </div>
-            <div className={styles.likeposts}>
+            <div className={styles.reports}>
                 {/*더미데이터*/}
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -933,7 +928,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_send}>신고접수</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -946,7 +941,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_send}>신고접수</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -959,7 +954,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_send}>신고접수</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -972,7 +967,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_ing}>처리중</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -985,7 +980,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_finished}>처리완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -998,7 +993,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_err}>반려</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1011,7 +1006,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_finished}>처리완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1024,7 +1019,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_finished}>처리완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1037,7 +1032,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_finished}>처리완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1050,7 +1045,7 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_finished}>처리완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.report}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1082,14 +1077,13 @@ export const Myask = () => {
                 <div>
                     <ul>
                         <li>작성순</li>
-                        <li>좋아요순</li>
-                        <li>별점순</li>
+                        <li>처리순</li>
                     </ul>
                 </div>
             </div>
-            <div className={styles.likeposts}>
+            <div className={styles.asks}>
                 {/*더미데이터*/}
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1099,7 +1093,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div>문의접수</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1109,7 +1103,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div>문의접수</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1119,7 +1113,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div>문의접수</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1129,7 +1123,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div className={styles.ask_finished}>답변완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1139,7 +1133,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div className={styles.ask_finished}>답변완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1149,7 +1143,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div className={styles.ask_finished}>답변완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1159,7 +1153,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div className={styles.ask_finished}>답변완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1169,7 +1163,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div className={styles.ask_finished}>답변완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1179,7 +1173,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div className={styles.ask_finished}>답변완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
@@ -1189,7 +1183,7 @@ export const Myask = () => {
                     <div>2026.05.08</div>
                     <div className={styles.ask_finished}>답변완료</div>
                 </div>
-                <div className={styles.likepost}>
+                <div className={styles.ask}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
