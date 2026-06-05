@@ -1045,19 +1045,6 @@ export const Reportposts = () => {
                     <div>2026.05.08</div>
                     <div className={styles.report_finished}>처리완료</div>
                 </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_finished}>처리완료</div>
-                </div>
                 {/*더미데이터*/}
             </div>
             <div>
@@ -1112,16 +1099,6 @@ export const Myask = () => {
                     </div>
                     <div>2026.05.08</div>
                     <div>문의접수</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
                 </div>
                 <div className={styles.ask}>
                     <div>1</div>
