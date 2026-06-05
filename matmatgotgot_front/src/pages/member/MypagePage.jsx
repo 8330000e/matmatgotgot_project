@@ -141,7 +141,7 @@ export const Myinfo = ({ memberInfo }) => {
             <div className={styles.info_profile}>
                 <div>
                     <img src={changeImg} alt="" className={styles.changeImg} onClick={()=>imgChange()}/>
-                    <img src={defaultImg} alt="" className={styles.defaultImg}/>
+                    <img src={memberInfo.memberThumb ? memberInfo.memberThumb : defaultImg} alt="" className={styles.defaultImg}/>
                 </div>
                 <div>
                     <div>
