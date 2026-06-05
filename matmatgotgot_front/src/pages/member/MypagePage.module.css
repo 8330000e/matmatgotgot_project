@@ -530,8 +530,27 @@
 .likepost > div:nth-child(3) > ul > li:first-child {
     width: 18px;
 }
+.likepost > div:last-child {
+    font-size: 13px;
+    font-weight: 800;
+}
 .content_likepost_wrap > div:last-child {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.report_send {
+    color: #228be6;
+}
+.report_ing {
+    color: #f5ca00;
+}
+.report_err {
+    color: #c62828;
+}
+.report_finished {
+    color: #000;
+}
+.ask_finished {
+    color: #228be6;
 }
