@@ -23,6 +23,7 @@ import calendar from "../../assets/img/calendar.svg";
 import spot from "../../assets/img/spot.svg";
 import people from "../../assets/img/people.svg";
 import calendar2 from "../../assets/img/calendar2.svg";
+import comment from "../../assets/img/comment.svg";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import Pagination from "../../components/ui/Pagination.jsx";
@@ -615,29 +616,577 @@ export const Matzip = () => {
 
 export const Likeposts = () => {
     return (<>
-        <div className={styles.content_menu_wrap}>
-
+        <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
+            <div className={styles.posts_bar}>
+                <div>
+                    <p>전체 선택</p>
+                    <p>삭제</p>
+                </div>
+                <div>
+                    <ul>
+                        <li>작성순</li>
+                        <li>좋아요순</li>
+                        <li>별점순</li>
+                    </ul>
+                </div>
+            </div>
+            <div className={styles.likeposts}>
+                {/*더미데이터*/}
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                {/*더미데이터*/}
+            </div>
+            <div>
+                <Pagination/>
+            </div>
         </div>
     </>);};
 
 export const Myposts = () => {
     return (<>
-        <div className={styles.content_menu_wrap}>
-
+        <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
+            <div className={styles.posts_bar}>
+                <div>
+                    <p>전체 선택</p>
+                    <p>삭제</p>
+                </div>
+                <div>
+                    <ul>
+                        <li>작성순</li>
+                        <li>좋아요순</li>
+                        <li>별점순</li>
+                    </ul>
+                </div>
+            </div>
+            <div className={styles.likeposts}>
+                {/*더미데이터*/}
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                {/*더미데이터*/}
+            </div>
+            <div>
+                <Pagination/>
+            </div>
         </div>
     </>);};
 
 export const Reportposts = () => {
     return (<>
-        <div className={styles.content_menu_wrap}>
-
+        <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
+            <div className={styles.posts_bar}>
+                <div>
+                    <p>전체 선택</p>
+                    <p>삭제</p>
+                </div>
+                <div>
+                    <ul>
+                        <li>작성순</li>
+                        <li>좋아요순</li>
+                        <li>별점순</li>
+                    </ul>
+                </div>
+            </div>
+            <div className={styles.likeposts}>
+                {/*더미데이터*/}
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                {/*더미데이터*/}
+            </div>
+            <div>
+                <Pagination/>
+            </div>
         </div>
     </>);};
 
 export const Myask = () => {
     return (<>
-        <div className={styles.content_menu_wrap}>
-
+        <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
+            <div className={styles.posts_bar}>
+                <div>
+                    <p>전체 선택</p>
+                    <p>삭제</p>
+                </div>
+                <div>
+                    <ul>
+                        <li>작성순</li>
+                        <li>좋아요순</li>
+                        <li>별점순</li>
+                    </ul>
+                </div>
+            </div>
+            <div className={styles.likeposts}>
+                {/*더미데이터*/}
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div><div className={styles.likepost}>
+                <div>1</div>
+                <div>게시글 제목</div>
+                <div>
+                    <ul>
+                        <li><img src={comment} alt=""/>2</li>
+                        <li><img src={heart} alt=""/>12</li>
+                        <li><img src={view} alt=""/>231</li>
+                    </ul>
+                </div>
+                <div>2026.05.08</div>
+            </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                <div className={styles.likepost}>
+                    <div>1</div>
+                    <div>게시글 제목</div>
+                    <div>
+                        <ul>
+                            <li><img src={comment} alt=""/>2</li>
+                            <li><img src={heart} alt=""/>12</li>
+                            <li><img src={view} alt=""/>231</li>
+                        </ul>
+                    </div>
+                    <div>2026.05.08</div>
+                </div>
+                {/*더미데이터*/}
+            </div>
+            <div>
+                <Pagination/>
+            </div>
         </div>
     </>);};
 

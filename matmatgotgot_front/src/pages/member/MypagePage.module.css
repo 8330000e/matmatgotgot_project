@@ -498,3 +498,40 @@
     justify-content: center;
     align-items: center;
 }
+.likeposts {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.likepost {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 10px 18px;
+    border: 1px solid var(--text1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.likepost > div:nth-child(3) > ul {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.likepost > div:nth-child(3) > ul > li {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+}
+.likepost > div:nth-child(3) > ul > li > img {
+    width: 18px;
+}
+.likepost > div:nth-child(3) > ul > li:first-child {
+    width: 18px;
+}
+.content_likepost_wrap > div:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
