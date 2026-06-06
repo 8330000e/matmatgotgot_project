@@ -13,6 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -205,12 +206,19 @@ public class RestaurantController {
 
     // 신고
     @PostMapping("/report")
-    public ResponseEntity<?> report(@ModelAttribute ReportRequest report, Authentication auth) {
+    public ResponseEntity<?> report(@RequestBody ReportRequest report, Authentication auth) {
         report.setMemberId(auth.getName());
-        int result = restaurantService.report(report);
+        try {
+            int result = restaurantService.report(report);
+            return ResponseEntity.ok(result);
 
-        log.info("report111: {}", report);
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.badRequest()
+                    .body("이미 신고한 맛집입니다.");
 
-        return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("신고 처리 중 오류가 발생했습니다.");
+        }
     }//
 }

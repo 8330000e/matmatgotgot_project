@@ -16,7 +16,7 @@ const ReportModal = ({ type, no, setReportModal }) => {
     };
 
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/restaurants/report`)
+      .post(`${import.meta.env.VITE_BACKSERVER}/restaurants/report`, data)
       .then((res) => {
         if (res.data === 1) {
           Swal.fire({
@@ -29,7 +29,19 @@ const ReportModal = ({ type, no, setReportModal }) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response?.data === "이미 신고한 맛집입니다.") {
+          Swal.fire({
+            title: "이미 신고한 맛집입니다.",
+            icon: "info",
+            confirmButtonText: "확인",
+          });
+        } else {
+          Swal.fire({
+            title: "오류",
+            text: "신고 처리 중 문제가 발생했습니다.",
+            icon: "error",
+          });
+        }
       });
   };
 

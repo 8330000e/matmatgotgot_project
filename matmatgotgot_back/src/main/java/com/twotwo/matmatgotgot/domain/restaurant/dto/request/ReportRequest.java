@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class ReportRequest {
 
-    private String memberId;
     private String type;
+    private String memberId;
     private Long no;
     private String reason;
     private String detail;
