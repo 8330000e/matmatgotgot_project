@@ -15,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -197,5 +194,14 @@ public class RestaurantService {
                 .duplicate(restNo != null)
                 .restNo(restNo)
                 .build();
+    }//
+
+    @Transactional
+    public int report(ReportRequest report) {
+        if (Objects.equals(report.getType(), "rest")) {
+            return restaurantMapper.restReport(report);
+        } else {
+            return restaurantMapper.reviewReport(report);
+        }
     }//
 }

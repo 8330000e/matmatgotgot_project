@@ -4,10 +4,12 @@ import RestaruntViewInfo from "../../components/restaurant/RestaruntViewInfo";
 import RestaruntViewReviews from "../../components/restaurant/RestaruntViewReviews";
 import styles from "./RestaurantView.module.css";
 import { useParams } from "react-router-dom";
+import ReportModal from "../../components/ui/ReportModal";
 
 const RestaurantView = () => {
   const [restView, setRestView] = useState(null);
   const { restNo } = useParams();
+  const [reportModal, setReportModal] = useState(false);
 
   useEffect(() => {
     // 맛집 상세 정보 조회
@@ -36,7 +38,9 @@ const RestaurantView = () => {
 
         {/* 신고 / 찜 버튼 (좌하단) */}
         <div className={styles.btn_zone1}>
-          <button type="button">신고</button>
+          <button type="button" onClick={() => setReportModal(true)}>
+            신고
+          </button>
           <button type="button">찜</button>
         </div>
       </section>
@@ -45,6 +49,27 @@ const RestaurantView = () => {
       <section className={styles.rest_reviews}>
         <RestaruntViewReviews restNo={restNo} />
       </section>
+
+      {reportModal && (
+        <div
+          className={styles.modal_overlay}
+          onClick={(e) => {
+            e.stopPropagation();
+            setReportModal(false);
+          }}
+        >
+          <div
+            className={styles.modal_content}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ReportModal
+              type={"rest"}
+              no={restNo}
+              setReportModal={setReportModal}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

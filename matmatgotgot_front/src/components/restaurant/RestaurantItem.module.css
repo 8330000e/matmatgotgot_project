@@ -5,6 +5,7 @@
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--gray6);
+  max-height: 290px;
 }
 
 .card:hover {

@@ -11,6 +11,7 @@ import java.util.List;
 @Alias("restViewResponse")
 public class RestViewResponse {
 
+    private Long restNo;
     private String restName;
     private String restAddr;
     private String category;

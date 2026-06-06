@@ -9,6 +9,7 @@
 
     <select id="restaurantViewInfo" resultType="restViewResponse">
         SELECT
+            r.rest_no,
             r.rest_name,
             r.rest_addr,
             r.category,
@@ -119,6 +120,7 @@
 
     <select id="getReviewView" resultType="reviewViewResponse">
         SELECT
+            rt.rest_no,
             rt.rest_name,
             rt.rest_addr,
             m.member_thumb,
@@ -396,5 +398,44 @@
             review_total_count = review_total_count + 1
         WHERE rest_no = #{restNo}
     </update>
+
+    <insert id="restReport">
+        INSERT INTO rest_report_tbl (
+        member_id,
+        rest_no,
+        reason
+        <if test="reason == '기타'">
+            , detail
+        </if>
+        )
+        VALUES (
+        #{memberId},
+        #{no},
+        #{reason}
+        <if test="reason == '기타'">
+            , #{detail}
+        </if>
+        )
+    </insert>
+
+    <insert id="reviewReport">
+        INSERT INTO review_report_tbl (
+        member_id,
+        review_no,
+        reason
+        <if test="reason == '기타'">
+            , detail
+        </if>
+        )
+        VALUES (
+        #{memberId},
+        #{no},
+        #{reason}
+        <if test="reason == '기타'">
+            , #{detail}
+        </if>
+        )
+    </insert>
+
 
 </mapper>

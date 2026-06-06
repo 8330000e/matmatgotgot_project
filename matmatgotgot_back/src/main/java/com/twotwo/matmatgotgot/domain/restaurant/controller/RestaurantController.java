@@ -59,7 +59,7 @@ public class RestaurantController {
         restaurant.setRestThumb(restThumb);
 
         int result = restaurantService.restaurantCreate(restaurant);
-        if(result == 1){
+        if (result == 1) {
             return ResponseEntity.ok(restaurant.getRestNo());
         }
 
@@ -175,7 +175,7 @@ public class RestaurantController {
     // 맛집 메인화면 근처
     @GetMapping("/region")
     public ResponseEntity<?> getRegionList(@ModelAttribute Coords coords, Authentication auth) {
-       List<Recommand> region = restaurantService.getRegion(auth.getName(), coords);
+        List<Recommand> region = restaurantService.getRegion(auth.getName(), coords);
 
         return ResponseEntity.ok(region);
     }//
@@ -203,4 +203,14 @@ public class RestaurantController {
         return ResponseEntity.ok(res);
     }//
 
+    // 신고
+    @PostMapping("/report")
+    public ResponseEntity<?> report(@ModelAttribute ReportRequest report, Authentication auth) {
+        report.setMemberId(auth.getName());
+        int result = restaurantService.report(report);
+
+        log.info("report111: {}", report);
+
+        return ResponseEntity.ok(result);
+    }//
 }

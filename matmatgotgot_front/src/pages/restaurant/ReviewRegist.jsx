@@ -8,6 +8,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 const ReviewRegist = () => {
   const { restNo } = useParams();
+  const navigate = useNavigate();
 
   // 폼 필드 상태
   const [review, setReview] = useState({

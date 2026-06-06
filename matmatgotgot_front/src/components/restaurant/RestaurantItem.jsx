@@ -1,10 +1,18 @@
 import styles from "./RestaurantItem.module.css";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useNavigate } from "react-router-dom";
 
 const RestaurantItem = ({ rest }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      onClick={() => {
+        navigate(`/rest/view/${rest.restNo}`);
+      }}
+    >
       <div className={styles.restaurant_item}>
         <div className={styles.name_like}>
           <div className={styles.rest_name}>{rest.restName}</div>

@@ -2,6 +2,7 @@ import styles from "./RestaruntViewReviews.module.css";
 import Pagination from "../../components/ui/Pagination";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const RestaruntViewReviews = ({ restNo }) => {
   const [reviewList, setRivewList] = useState([]);
@@ -58,8 +59,15 @@ const RestaruntViewReviews = ({ restNo }) => {
 };
 
 const ReviewItem = ({ review }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className={styles.review_item}>
+    <div
+      className={styles.review_item}
+      onClick={() => {
+        navigate(`/rest/review/view/${review.reviewNo}`);
+      }}
+    >
       {/* 작성자 정보: 아바타 + 이름 + 현지인 뱃지 + 별점 */}
       <div className={styles.review_writer}>
         {/* 프로필 이미지: 없으면 기본 회색 원 표시 */}
@@ -85,7 +93,6 @@ const ReviewItem = ({ review }) => {
           </div>
           <div className={styles.review_rating}>
             {"★".repeat(Math.round(review.rating) || 5)}
-            <span className={styles.rating_num}>{review.rating}</span>
           </div>
         </div>
       </div>

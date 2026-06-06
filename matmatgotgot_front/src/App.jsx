@@ -28,6 +28,7 @@ import Main from "./pages/main/Main.jsx";
 import Main_login from "./pages/main/Main_login.jsx";
 import CreateCourse from "./pages/trip/CreateCourse.jsx";
 import CourseDetail from "./pages/trip/CourseDetail.jsx";
+import ReportModal from "./components/ui/ReportModal.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);

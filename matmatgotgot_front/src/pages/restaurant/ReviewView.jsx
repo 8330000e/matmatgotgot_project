@@ -113,7 +113,9 @@ const ReviewView = () => {
             <button
               type="button"
               className={styles.detail_btn}
-              onClick={() => navigate(`/restaurant/${review.restNo}`)}
+              onClick={() => {
+                navigate(`/rest/view/${review.restNo}`);
+              }}
             >
               맛집 상세 보기
             </button>

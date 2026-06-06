@@ -80,4 +80,9 @@ public interface RestaurantMapper {
 
     int increaseRatingAvg(@Param("restNo") Long restNo,
                           @Param("rating") int rating);
+
+
+    int restReport(ReportRequest report);
+
+    int reviewReport(ReportRequest report);
 }

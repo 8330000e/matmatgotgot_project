@@ -48,6 +48,10 @@
   border: 1.5px solid var(--gray6);
 }
 
+.review_item:hover {
+  cursor: pointer;
+}
+
 /* 작성자 정보 행 */
 .review_writer {
   display: flex;
