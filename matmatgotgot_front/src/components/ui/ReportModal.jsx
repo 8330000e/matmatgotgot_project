@@ -31,7 +31,7 @@ const ReportModal = ({ type, no, setReportModal }) => {
       .catch((err) => {
         if (err.response?.data === "이미 신고한 맛집입니다.") {
           Swal.fire({
-            title: "이미 신고한 맛집입니다.",
+            title: "이미 신고하였습니다.",
             icon: "info",
             confirmButtonText: "확인",
           });

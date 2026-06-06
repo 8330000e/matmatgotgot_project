@@ -10,6 +10,7 @@ const RestaurantView = () => {
   const [restView, setRestView] = useState(null);
   const { restNo } = useParams();
   const [reportModal, setReportModal] = useState(false);
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
     // 맛집 상세 정보 조회
@@ -36,12 +37,21 @@ const RestaurantView = () => {
 
         {restView && <RestaruntViewInfo restView={restView} />}
 
-        {/* 신고 / 찜 버튼 (좌하단) */}
         <div className={styles.btn_zone1}>
-          <button type="button" onClick={() => setReportModal(true)}>
+          <button
+            type="button"
+            className={styles.report_btn}
+            onClick={() => setReportModal(true)}
+          >
             신고
           </button>
-          <button type="button">찜</button>
+          <button
+            type="button"
+            className={`${styles.like_btn} ${liked ? styles.liked : ""}`}
+            onClick={() => setLiked((prev) => !prev)}
+          >
+            찜
+          </button>
         </div>
       </section>
 

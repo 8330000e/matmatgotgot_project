@@ -20,4 +20,5 @@ public class ReviewViewResponse {
     private List<String> images;
     private List<String> reviewMenu;
     private List<String> tags;
+    private boolean isLiked;
 }

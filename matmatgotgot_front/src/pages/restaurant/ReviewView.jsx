@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import ReviewViewInfo from "../../components/restaurant/ReviewViewInfo";
 import ReviewViewComment from "../../components/restaurant/ReviewViewComment";
+import ReportModal from "../../components/ui/ReportModal";
 
 // useAuthStore import 필요 — 실제 프로젝트 경로에 맞게 조정
 // import { useAuthStore } from "../../store/authStore";
@@ -12,6 +13,7 @@ import ReviewViewComment from "../../components/restaurant/ReviewViewComment";
 const ReviewView = () => {
   const { reviewNo } = useParams();
   const navigate = useNavigate();
+  const [reportModal, setReportModal] = useState(false);
 
   // 로그인한 회원 번호 (본인 여부 확인용)
   // const { memberId: loginMemberNo } = useAuthStore();
@@ -22,7 +24,7 @@ const ReviewView = () => {
   // 좋아요 토글 상태
   const [liked, setLiked] = useState(false);
 
-  // ── 리뷰 데이터 조회 ─────────────────────────────────────
+  // 리뷰 데이터 조회
   useEffect(() => {
     axios
       .get(
@@ -31,13 +33,14 @@ const ReviewView = () => {
       .then((res) => {
         console.log(res.data);
         setReview(res.data);
+        setLiked(res.data.isLiked);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [reviewNo]);
 
-  // ── 리뷰 삭제 ───────────────────────────────────────────
+  // 리뷰 삭제
   const deleteReview = () => {
     Swal.fire({
       title: "삭제하시겠습니까?",
@@ -56,6 +59,32 @@ const ReviewView = () => {
           .catch((err) => console.log(err));
       }
     });
+  };
+
+  const likeToggle = () => {
+    if (liked) {
+      axios
+        .patch(
+          `${import.meta.env.VITE_BACKSERVER}/restaurants/review/like?reviewNo=${reviewNo}`,
+        )
+        .then((res) => {
+          setLiked((prev) => !prev);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .patch(
+          `${import.meta.env.VITE_BACKSERVER}/restaurants/review/unlike?reviewNo=${reviewNo}`,
+        )
+        .then((res) => {
+          setLiked((prev) => !prev);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   // 본인 리뷰 여부 (수정/삭제 버튼 표시 조건)
@@ -96,13 +125,17 @@ const ReviewView = () => {
         <div className={styles.btn_zone}>
           {/* 왼쪽: 신고 + 좋아요 */}
           <div className={styles.btn_zone_left}>
-            <button type="button" className={styles.report_btn}>
+            <button
+              type="button"
+              className={styles.report_btn}
+              onClick={() => setReportModal(true)}
+            >
               신고
             </button>
             <button
               type="button"
               className={`${styles.like_btn} ${liked ? styles.liked : ""}`}
-              onClick={() => setLiked((prev) => !prev)}
+              onClick={likeToggle}
             >
               좋아요
             </button>
@@ -128,6 +161,27 @@ const ReviewView = () => {
         <div className={styles.comment_title}>댓글</div>
         <ReviewViewComment reviewNo={reviewNo} />
       </section>
+
+      {reportModal && (
+        <div
+          className={styles.modal_overlay}
+          onClick={(e) => {
+            e.stopPropagation();
+            setReportModal(false);
+          }}
+        >
+          <div
+            className={styles.modal_content}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ReportModal
+              type={"review"}
+              no={reviewNo}
+              setReportModal={setReportModal}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

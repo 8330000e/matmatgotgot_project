@@ -9,6 +9,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -119,8 +120,8 @@ public class RestaurantController {
     }//
 
     @GetMapping("/review")
-    public ResponseEntity<?> getReviewView(@RequestParam Long reviewNo) {
-        ReviewViewResponse res = restaurantService.getReviewView(reviewNo);
+    public ResponseEntity<?> getReviewView(@RequestParam Long reviewNo, Authentication auth) {
+        ReviewViewResponse res = restaurantService.getReviewView(reviewNo, auth.getName());
 
         return ResponseEntity.ok(res);
     }//
@@ -221,4 +222,37 @@ public class RestaurantController {
                     .body("신고 처리 중 오류가 발생했습니다.");
         }
     }//
+
+    // 리뷰 like
+    @PatchMapping("review/like")
+    public ResponseEntity<?> reviewLike(@RequestParam Long reviewNo, Authentication auth) {
+        int result = restaurantService.reviewLike(reviewNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 맛집 like
+    @PatchMapping("rest/like")
+    public ResponseEntity<?> restLike(@RequestParam Long restNo, Authentication auth) {
+        int result = restaurantService.restLike(restNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 리뷰 unlike
+    @DeleteMapping("review/like")
+    public ResponseEntity<?> reviewUnlike(@RequestParam Long reviewNo, Authentication auth) {
+       int result = restaurantService.reviewUnlike(reviewNo, auth.getName());
+
+       return ResponseEntity.ok(result);
+    }//
+
+    // 맛집 unlike
+    @DeleteMapping("rest/like")
+    public ResponseEntity<?> restUnlike(@RequestParam Long restNo, Authentication auth) {
+        int result = restaurantService.restUnlike(restNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
 }

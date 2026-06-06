@@ -43,7 +43,8 @@ public interface RestaurantMapper {
     int insertReviewImages(@Param("reviewNo") Long reviewNo,
                            @Param("imageUrls") List<String> imageUrls);
 
-    ReviewViewResponse getReviewView(Long reviewNo);
+    ReviewViewResponse getReviewView(@Param("reviewNo") Long reviewNo,
+                                     @Param("memberId") String memberId);
 
     List<String> getReviewImages(Long reviewNo);
 
@@ -85,4 +86,16 @@ public interface RestaurantMapper {
     int restReport(ReportRequest report);
 
     int reviewReport(ReportRequest report);
+
+    int reviewLike(@Param("reviewNo") Long reviewNo,
+                   @Param("memberId") String memberId);
+
+    int restLike(@Param("restNo") Long restNo,
+                 @Param("memberId") String memberId);
+
+    int reviewUnlike(@Param("reviewNo") Long reviewNo,
+                     @Param("memberId") String memberId);
+
+    int restUnlike(@Param("restNo") Long restNo,
+                   @Param("memberId") String memberId);
 }

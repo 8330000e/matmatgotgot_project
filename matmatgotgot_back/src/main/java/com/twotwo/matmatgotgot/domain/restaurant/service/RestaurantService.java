@@ -115,8 +115,8 @@ public class RestaurantService {
         return true;
     }//
 
-    public ReviewViewResponse getReviewView(Long reviewNo) {
-        ReviewViewResponse res = restaurantMapper.getReviewView(reviewNo);
+    public ReviewViewResponse getReviewView(Long reviewNo, String memberId) {
+        ReviewViewResponse res = restaurantMapper.getReviewView(reviewNo, memberId);
         List<String> images = restaurantMapper.getReviewImages(reviewNo);
         List<String> menu = restaurantMapper.getReviewMenu(reviewNo);
         List<String> tags = restaurantMapper.getReviewTags(reviewNo);
@@ -203,5 +203,25 @@ public class RestaurantService {
         } else {
             return restaurantMapper.reviewReport(report);
         }
+    }//
+
+    @Transactional
+    public int reviewLike(Long reviewNo, String memberId) {
+        return restaurantMapper.reviewLike(reviewNo, memberId);
+    }//
+
+    @Transactional
+    public int restLike(Long restNo, String memberId) {
+        return restaurantMapper.restLike(restNo, memberId);
+    }//
+
+    @Transactional
+    public int reviewUnlike(Long reviewNo, String memberId) {
+       return restaurantMapper.reviewUnlike(reviewNo, memberId);
+    }//
+
+    @Transactional
+    public int restUnlike(Long restNo, String memberId) {
+        return restaurantMapper.restUnlike(restNo, memberId);
     }//
 }
