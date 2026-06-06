@@ -1,28 +1,5 @@
 package com.twotwo.matmatgotgot.domain.member.controller;
 
-import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
-import com.twotwo.matmatgotgot.global.util.EmailSender;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
-import jakarta.mail.MessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
@@ -31,15 +8,19 @@ import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.member.service.MemberService;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.EmailSender;
 import com.twotwo.matmatgotgot.security.GoogleOAuthService;
 import com.twotwo.matmatgotgot.security.GoogleUserProfile;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
@@ -437,7 +418,15 @@ public class MemberController {
 		}
 	}	
 	
-	
+	@PostMapping(value = "/pwMember")
+	public ResponseEntity<?> updateMemberPw(@RequestBody Member member) {
+		Boolean memberOk = memberService.selectPw(member);
+		if (memberOk) {
+			Integer memberNewPw = memberService.updateMemberPw(member);
+			return ResponseEntity.ok(memberNewPw);
+		}
+		return ResponseEntity.ok(null);
+	}
 
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member, Model model) throws MessagingException {

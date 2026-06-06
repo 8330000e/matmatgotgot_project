@@ -30,5 +30,6 @@ public class Member {
     private Double lng;
     private Integer adContent;
 
-    
+    private String newMemberPw;
+    private String newMemberPwRe;
 }

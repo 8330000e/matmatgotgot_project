@@ -1,27 +1,17 @@
 package com.twotwo.matmatgotgot.domain.member.service;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
+import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
+import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
+import com.twotwo.matmatgotgot.domain.member.entity.Member;
+import com.twotwo.matmatgotgot.domain.member.mapper.MemberMapper;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
-import org.springframework.core.io.Resource;
+import com.twotwo.matmatgotgot.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
-
-import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
-import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
-import com.twotwo.matmatgotgot.domain.member.entity.Member;
-import com.twotwo.matmatgotgot.domain.member.mapper.MemberMapper;
-import com.twotwo.matmatgotgot.security.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StreamUtils;
 import org.thymeleaf.context.Context;
 
 import java.util.List;
@@ -124,7 +114,8 @@ public class MemberService {
     public int updateLocation(String memberId, Coords coords) {
         return memberMapper.updateLocation(memberId, coords);
     }//
-    
+
+    @Transactional
     public int insertMemberN(Member newMember) {
         String memberPw = newMember.getMemberPw();
         String encPw = bcrypt.encode(memberPw);
@@ -153,5 +144,20 @@ public class MemberService {
     public Member selectOne(String memberId) {
         Member member = memberMapper.selectOneMember(memberId);
         return member;
+    }
+
+    public Boolean selectPw(Member member) {
+        Member loginmember = memberMapper.selectOneMember(member.getMemberId());
+        boolean result = bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw());
+        return result;
+    }
+
+    @Transactional
+    public Integer updateMemberPw(Member member) {
+        String memberPw = member.getNewMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        member.setMemberPw(encPw);
+        Integer result = memberMapper.updateMemberPw(member);
+        return result;
     }
 }

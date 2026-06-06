@@ -1,6 +1,6 @@
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import defaultImg from "../../assets/img/defaultImg.svg";
 import changeImg from "../../assets/img/changeImg.svg";
 import native from "../../assets/img/native.svg";
@@ -1180,25 +1180,73 @@ export const Myask = () => {
         </div>
     </>);};
 export const ChangePw = () => {
+    const { memberId } = useParams();
+    const [checkPw, setCheckPw] = useState(0);
+    const [checkPwRe, setCheckPwRe] = useState(0);
+    const [pwMember, setPwMember] = useState({
+        memberPw:"",
+        newMemberPw:"",
+        memberId: memberId,
+    });
+    const inputPw = (e) => {
+        setPwMember((prev)=>({
+            ...prev, [e.target.name]: e.target.value
+        }))
+    };
+    const pwChange = () => {
+        axios.post(`${import.meta.env.VITE_BACKSERVER}/members/pwMember`)
+            .then((res)=>{console.log(res);})
+            .catch((err)=>console.log(err));
+    };
+    const pwReg = () => {
+        const idReg = /^[a-zA-Z0-9]{8,50}$/;
+        if(idReg.test(pwMember.memberPw)){
+            setCheckPw(2);
+        }else{
+            setCheckPw(1);
+        }
+    };
+    const pwDupCheck = () => {
+        if (pwMember.memberPw === pwMember.newMemberPw) {
+            return setCheckPwRe(1);
+        } else {
+            return setCheckPwRe(2);
+        }
+    };
 
     return (<>
         <div className={styles.content_changePw_wrap}>
             <div>비밀번호 변경</div>
             <div>
                 <label htmlFor="memberPw">현재 비밀번호</label>
-                <Input type="password" name="memberPw" id="memberPw" />
+                <Input type="password" name="memberPw" id="memberPw" value={pwMember.memberPw} onChange={inputPw} />
             </div>
             <div>
                 <div>
                     <label htmlFor="newMemberPw">새 비밀번호</label>
-                    <Input type="password" name="newMemberPw" id="newMemberPw" />
+                    <Input type="password" name="newMemberPw" id="newMemberPw" value={pwMember.newMemberPw} onChange={inputPw} onBlur={pwReg} />
                 </div>
+                {checkPw > 0
+                    ? checkPw === 1
+                        ? <div className={styles.pwcheckf}>최소 8자 이상 영문과 숫자를 혼합하여주십시오.</div>
+                        : null
+                    : null
+                }
                 <div>
                     <label htmlFor="newMemberPwRe">새 비밀번호 확인</label>
-                    <Input type="password" name="newMemberPwRe" id="newMemberPwRe" />
+                    <Input type="password" name="newMemberPwRe" id="newMemberPwRe" value={pwMember.newMemberPwRe} onChange={inputPw} onBlur={pwDupCheck} />
                 </div>
+                {checkPwRe > 0 && (
+                    checkPwRe.length > 0 ?
+                        checkPwRe === 1
+                            ? <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
+                            : <div className={styles.pwcheckf}>비밀번호가 일치하지 않습니다.</div>
+                        : checkPwRe === 2
+                            ? <div className={styles.pwcheckf}>비밀번호가 일치하지 않습니다.</div>
+                            : <div className={styles.pwcheckt}>비밀번호가 일치합니다.</div>
+                )}
             </div>
-            <button type="submit" className={styles.submit}>비밀번호 변경</button>
+            <button type="submit" className={`${styles.submit} ${styles.submit_chg}`} onClick={pwChange}>비밀번호 변경</button>
         </div>
     </>);
 };
