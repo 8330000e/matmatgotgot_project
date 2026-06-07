@@ -49,9 +49,9 @@
     </select>
 
     <select id="getMenus" resultType="String">
-        SELECT menu_name
+        SELECT DISTINCT menu_name
         FROM review_menu_tbl
-        WHERE review_no = (SELECT review_no
+        WHERE review_no IN (SELECT review_no
                            FROM review_tbl
                            WHERE rest_no = #{restNo}
         );

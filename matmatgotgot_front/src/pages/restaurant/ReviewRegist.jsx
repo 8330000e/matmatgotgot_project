@@ -100,14 +100,14 @@ const ReviewRegist = () => {
       })
       .then((res) => {
         console.log(res.data);
-        if (res.data) {
+        if (res.data.success) {
           Swal.fire({
             icon: "success",
             title: "등록 완료",
             text: "리뷰 상세 페이지로 이동합니다.",
           }).then(() => {
             sessionStorage.removeItem("receiptData");
-            navigate(`/rest/review/view/${restNo}`);
+            navigate(`/rest/review/view/${res.data.reviewNo}`);
           });
         } else {
           Swal.fire({

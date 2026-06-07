@@ -20,11 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -108,11 +110,14 @@ public class RestaurantController {
     @PostMapping("/review")
     public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request, Authentication auth) {
         request.setMemberId(auth.getName());
-
         try {
             boolean result = restaurantService.reviewCreate(request);
 
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(ReviewCreateResponse.builder()
+                    .success(result)
+                    .reviewNo(request.getReviewNo())
+                    .build());
+
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(false);
@@ -205,6 +210,22 @@ public class RestaurantController {
         return ResponseEntity.ok(res);
     }//
 
+    // 리뷰할 맛집 존재 확인
+    @GetMapping("/isexist")
+    public ResponseEntity<?> isExist(@ModelAttribute CheckDuplicationRequest chk) {
+        CheckDuplicationResponse res = restaurantService.isDup(chk);
+
+        if (res.isDuplicate()) {
+            if (Objects.equals(chk.getRestNo(), res.getRestNo())) {
+                // 영수증 storeName, lat, lng 로 찾은 restNo 와 리뷰등록버튼을 눌렀을 때 넘긴 restNo이 같으면 리뷰 등록 가능
+                return ResponseEntity.ok(true);
+            }
+        }
+
+        // 영수증 정보랑 리뷰등록버튼 눌렀을 때 넘긴 restNo이 다르면 리뷰 등록 불가
+        return ResponseEntity.ok(false);
+    }//
+
     // 신고
     @PostMapping("/report")
     public ResponseEntity<?> report(@RequestBody ReportRequest report, Authentication auth) {
@@ -224,7 +245,7 @@ public class RestaurantController {
     }//
 
     // 리뷰 like
-    @PatchMapping("review/like")
+    @PatchMapping("/review/like")
     public ResponseEntity<?> reviewLike(@RequestParam Long reviewNo, Authentication auth) {
         int result = restaurantService.reviewLike(reviewNo, auth.getName());
 
@@ -232,7 +253,7 @@ public class RestaurantController {
     }//
 
     // 리뷰 unlike
-    @DeleteMapping("review/unlike")
+    @DeleteMapping("/review/unlike")
     public ResponseEntity<?> reviewUnlike(@RequestParam Long reviewNo, Authentication auth) {
         int result = restaurantService.reviewUnlike(reviewNo, auth.getName());
 
@@ -240,7 +261,7 @@ public class RestaurantController {
     }//
 
     // 맛집 like
-    @PatchMapping("rest/like")
+    @PatchMapping("/rest/like")
     public ResponseEntity<?> restLike(@RequestParam Long restNo, Authentication auth) {
         int result = restaurantService.restLike(restNo, auth.getName());
 
@@ -248,7 +269,7 @@ public class RestaurantController {
     }//
 
     // 맛집 unlike
-    @DeleteMapping("rest/unlike")
+    @DeleteMapping("/rest/unlike")
     public ResponseEntity<?> restUnlike(@RequestParam Long restNo, Authentication auth) {
         int result = restaurantService.restUnlike(restNo, auth.getName());
 

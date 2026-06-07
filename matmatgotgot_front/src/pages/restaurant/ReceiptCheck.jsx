@@ -495,7 +495,32 @@ const NaverMapSection = ({ initialAddress, data, mode, restNo }) => {
           console.log(err);
         });
     } else {
-      navigate(`/rest/review/regist/${restNo}`);
+      axios
+        .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/isexist`, {
+          params: {
+            storeName: receiptData.storeName,
+            lat: receiptData.lat,
+            lng: receiptData.lng,
+            restNo: restNo,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.data) {
+            navigate(`/rest/review/regist/${restNo}`);
+          } else {
+            Swal.fire({
+              title: "리뷰 할 맛집 정보와 영수증 정보가 다릅니다.",
+              icon: "warning",
+              confirmButtonText: "확인",
+            }).then(() => {
+              navigate(-1);
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 

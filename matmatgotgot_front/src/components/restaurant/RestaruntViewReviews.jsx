@@ -10,6 +10,7 @@ const RestaruntViewReviews = ({ restNo }) => {
   const [page, setPage] = useState(0);
   const [size] = useState(4); // 한 페이지에 보여줄 리뷰 수
   const [totalPage, setTotalPage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 리뷰 목록 조회
@@ -34,7 +35,14 @@ const RestaruntViewReviews = ({ restNo }) => {
       <div className={styles.review_top}>
         <div className={styles.review_count}>리뷰 수 {reviewsCnt}개</div>
         <div className={styles.btn_zone_reviews}>
-          <button type="button">리뷰 작성하기</button>
+          <button
+            type="button"
+            onClick={() => {
+              navigate(`/receipt/review/${restNo}`);
+            }}
+          >
+            리뷰 작성하기
+          </button>
         </div>
       </div>
 

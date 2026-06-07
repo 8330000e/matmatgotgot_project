@@ -8,4 +8,5 @@ public class CheckDuplicationRequest {
     private String storeName;
     private Double lat;
     private Double lng;
+    private Long restNo;
 }
