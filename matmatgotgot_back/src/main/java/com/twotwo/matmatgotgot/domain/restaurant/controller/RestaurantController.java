@@ -231,6 +231,14 @@ public class RestaurantController {
         return ResponseEntity.ok(result);
     }//
 
+    // 리뷰 unlike
+    @DeleteMapping("review/unlike")
+    public ResponseEntity<?> reviewUnlike(@RequestParam Long reviewNo, Authentication auth) {
+        int result = restaurantService.reviewUnlike(reviewNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
     // 맛집 like
     @PatchMapping("rest/like")
     public ResponseEntity<?> restLike(@RequestParam Long restNo, Authentication auth) {
@@ -239,16 +247,8 @@ public class RestaurantController {
         return ResponseEntity.ok(result);
     }//
 
-    // 리뷰 unlike
-    @DeleteMapping("review/like")
-    public ResponseEntity<?> reviewUnlike(@RequestParam Long reviewNo, Authentication auth) {
-       int result = restaurantService.reviewUnlike(reviewNo, auth.getName());
-
-       return ResponseEntity.ok(result);
-    }//
-
     // 맛집 unlike
-    @DeleteMapping("rest/like")
+    @DeleteMapping("rest/unlike")
     public ResponseEntity<?> restUnlike(@RequestParam Long restNo, Authentication auth) {
         int result = restaurantService.restUnlike(restNo, auth.getName());
 

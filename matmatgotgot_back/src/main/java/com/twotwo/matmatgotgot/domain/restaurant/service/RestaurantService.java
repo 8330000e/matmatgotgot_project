@@ -211,13 +211,13 @@ public class RestaurantService {
     }//
 
     @Transactional
-    public int restLike(Long restNo, String memberId) {
-        return restaurantMapper.restLike(restNo, memberId);
+    public int reviewUnlike(Long reviewNo, String memberId) {
+        return restaurantMapper.reviewUnlike(reviewNo, memberId);
     }//
 
     @Transactional
-    public int reviewUnlike(Long reviewNo, String memberId) {
-       return restaurantMapper.reviewUnlike(reviewNo, memberId);
+    public int restLike(Long restNo, String memberId) {
+        return restaurantMapper.restLike(restNo, memberId);
     }//
 
     @Transactional

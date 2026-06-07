@@ -131,9 +131,9 @@
 
             EXISTS (
                 SELECT 1
-                FROM rest_like_tbl rl
+                FROM review_like_tbl rl
                 WHERE rl.member_id = #{memberId}
-                  AND rl.rest_no = rt.rest_no
+                  AND rl.review_no = r.review_no
             ) AS is_liked
 
         FROM review_tbl r
@@ -444,21 +444,22 @@
         )
     </insert>
 
-    <insert id="reviewLike">
-        INSERT INTO review_like_tbl
-        VALUES (#{reviewNo}, #{memberId})
-    </insert>
 
-    <insert id="restLike">
-        INSERT INTO review_like_tbl
-        VALUES (#{memberId}, #{restNo})
+    <insert id="reviewLike">
+        INSERT INTO review_like_tbl (review_no, member_id)
+        VALUES (#{reviewNo}, #{memberId})
     </insert>
 
     <delete id="reviewUnlike">
         DELETE FROM review_like_tbl
         WHERE member_id = #{memberId}
-            AND review_no = #{reviewNo}
+          AND review_no = #{reviewNo}
     </delete>
+
+    <insert id="restLike">
+        INSERT INTO rest_like_tbl (member_id, rest_no)
+        VALUES (#{memberId}, #{restNo})
+    </insert>
 
     <delete id="restUnlike">
         DELETE FROM rest_like_tbl

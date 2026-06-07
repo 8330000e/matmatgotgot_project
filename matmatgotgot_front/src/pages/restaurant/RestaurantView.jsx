@@ -19,11 +19,41 @@ const RestaurantView = () => {
       .then((res) => {
         console.log(res.data);
         setRestView(res.data);
+        setLiked(res.data.isLike);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+
+  const likeToggle = () => {
+    console.log("liked: ", liked);
+    if (!liked) {
+      axios
+        .patch(
+          `${import.meta.env.VITE_BACKSERVER}/restaurants/rest/like?restNo=${restNo}`,
+        )
+        .then((res) => {
+          console.log(res.data);
+          setLiked((prev) => !prev);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .delete(
+          `${import.meta.env.VITE_BACKSERVER}/restaurants/rest/unlike?restNo=${restNo}`,
+        )
+        .then((res) => {
+          console.log(res.data);
+          setLiked((prev) => !prev);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
   return (
     <div className={styles.wrap}>
@@ -48,7 +78,7 @@ const RestaurantView = () => {
           <button
             type="button"
             className={`${styles.like_btn} ${liked ? styles.liked : ""}`}
-            onClick={() => setLiked((prev) => !prev)}
+            onClick={likeToggle}
           >
             찜
           </button>

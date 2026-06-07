@@ -33,7 +33,7 @@ const ReviewView = () => {
       .then((res) => {
         console.log(res.data);
         setReview(res.data);
-        setLiked(res.data.isLiked);
+        setLiked(res.data.liked);
       })
       .catch((err) => {
         console.log(err);
@@ -62,12 +62,13 @@ const ReviewView = () => {
   };
 
   const likeToggle = () => {
-    if (liked) {
+    if (!liked) {
       axios
         .patch(
           `${import.meta.env.VITE_BACKSERVER}/restaurants/review/like?reviewNo=${reviewNo}`,
         )
         .then((res) => {
+          console.log(res.data);
           setLiked((prev) => !prev);
         })
         .catch((err) => {
@@ -75,10 +76,11 @@ const ReviewView = () => {
         });
     } else {
       axios
-        .patch(
+        .delete(
           `${import.meta.env.VITE_BACKSERVER}/restaurants/review/unlike?reviewNo=${reviewNo}`,
         )
         .then((res) => {
+          console.log(res.data);
           setLiked((prev) => !prev);
         })
         .catch((err) => {
