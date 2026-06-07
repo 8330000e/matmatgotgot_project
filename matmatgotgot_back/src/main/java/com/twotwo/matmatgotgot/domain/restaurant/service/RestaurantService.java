@@ -230,4 +230,63 @@ public class RestaurantService {
     }//
 
 
+    @Transactional
+    public int reviewModify(ReviewCreateRequest req) {
+
+        // 1. content, rating 수정
+        int res1 = restaurantMapper.reviewModifyContent(req);
+        if (res1 < 1) throw new RuntimeException("리뷰 내용 수정 실패");
+
+        // 2. rating_sum 수정
+        int res2 = restaurantMapper.restModifyRating(req);
+        if (res2 < 1) throw new RuntimeException("평점 합산 수정 실패");
+
+        // 3. 태그 삭제
+        restaurantMapper.reviewDeleteTags(req.getReviewNo());
+
+        // 4. 태그 삽입
+        if (req.getTags() != null && !req.getTags().isEmpty()) {
+            int res4 = restaurantMapper.insertReviewTags(req.getReviewNo(), req.getTags());
+            if (res4 < 1) throw new RuntimeException("태그 삽입 실패");
+        }
+
+        // 5. 이미지 삭제
+        restaurantMapper.reviewDeleteImages(req);
+
+        // 6. 이미지 삽입
+        if (req.getFiles() != null && !req.getFiles().isEmpty()) {
+            String savepath = root + "restaurant/";
+            File dir = new File(savepath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            List<String> imageUrls = new ArrayList<>();
+            for (MultipartFile file : req.getFiles()) {
+                if (file.isEmpty()) continue;
+                String savedFileName = fileUtil.upload(savepath, file);
+                if (savedFileName == null || savedFileName.isEmpty()) {
+                    throw new RuntimeException("파일 업로드 실패: " + file.getOriginalFilename());
+                }
+                imageUrls.add(savedFileName);
+            }
+
+            if (!imageUrls.isEmpty()) {
+                int res6 = restaurantMapper.insertReviewImages(req.getReviewNo(), imageUrls);
+                if (res6 < 1) throw new RuntimeException("이미지 삽입 실패");
+            }
+        }
+
+        return 1; // 모든 단계 성공 시 반환
+    }//
+
+    public List<Recommand> getRestSearch(SearchRequest req, String memberId) {
+        return restaurantMapper.getRestSearch(req, memberId);
+    }//
+
+    public int getRestSearchCount(SearchRequest req, String memberId) {
+        return restaurantMapper.getRestSearchCount(req, memberId);
+    }//
+
+
 }

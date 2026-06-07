@@ -69,7 +69,10 @@ function App() {
           <Route path="/rest/review/view/:reviewNo" element={<ReviewView />} />
           <Route path="/receipt/:mode/:restNo?" element={<ReceiptCheck />} />
           <Route path="/rest/modify/:restNo" element={<RestaurantModify />} />
-          <Route path="/review/modify/:reviewNo" element={<ReviewModify />} />
+          <Route
+            path="/review/modify/:reviewNo/:restNo"
+            element={<ReviewModify />}
+          />
 
           <Route path="/mypage" element={<MypagePage />} />
           <Route path="/board/list" element={<BoardListPage />} />

@@ -54,7 +54,7 @@ const RestaurantDetailSearch = () => {
         params: { restName, page: 0, size },
       })
       .then((res) => {
-        setRestList(res.data);
+        setRestList(res.data.list);
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {

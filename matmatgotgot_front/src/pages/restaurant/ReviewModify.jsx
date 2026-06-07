@@ -9,7 +9,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 const ReviewModify = () => {
   const navigate = useNavigate();
   // URL 파라미터에서 수정할 리뷰 번호 추출
-  const { reviewNo } = useParams();
+  const { reviewNo, restNo } = useParams();
 
   // 폼 필드 상태 — 기존 데이터를 불러와 초기값으로 세팅
   const [review, setReview] = useState({
@@ -23,6 +23,7 @@ const ReviewModify = () => {
 
   // 별점 상태 (1~5)
   const [rating, setRating] = useState(0);
+  const [oldRating, setOldRating] = useState(0);
 
   // 체크된 태그 배열
   const [tags, setTags] = useState([]);
@@ -51,6 +52,7 @@ const ReviewModify = () => {
           fileList: data.images ?? [],
         });
         setRating(data.rating ?? 0);
+        setOldRating(data.rating ?? 0);
         setTags(data.tags ?? []);
       })
       .catch((err) => {
@@ -116,6 +118,8 @@ const ReviewModify = () => {
     form.append("reviewNo", reviewNo);
     form.append("reviewContent", review.reviewContent);
     form.append("rating", rating);
+    form.append("oldRating", oldRating);
+    form.append("restNo", restNo);
     tags.forEach((tag) => form.append("tags", tag));
     // 새로 추가한 파일
     files.forEach((file) => form.append("files", file));
@@ -138,7 +142,9 @@ const ReviewModify = () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+        console.log(err);
+        console.log(err.response);
+        console.log(err.response?.data);
         Swal.fire({ title: "수정 중 오류가 발생했습니다.", icon: "error" });
       });
   };

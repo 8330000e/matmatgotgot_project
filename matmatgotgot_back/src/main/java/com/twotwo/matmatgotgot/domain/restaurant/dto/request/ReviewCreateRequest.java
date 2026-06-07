@@ -15,11 +15,12 @@ public class ReviewCreateRequest {
     private String restAddr;
     private String reviewVisit;
     private String reviewContent;
-    private int rating;
+    private Integer rating;
 
     private List<String> reviewMenus;
     private List<String> tags;
     private List<MultipartFile> files;
 
     private List<String> deleteFileList;
+    private Integer oldRating;
 }

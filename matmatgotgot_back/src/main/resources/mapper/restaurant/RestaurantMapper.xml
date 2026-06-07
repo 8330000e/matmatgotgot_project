@@ -22,6 +22,8 @@
             r.rating_sum,
             r.review_total_count,
             ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
+            m.member_id,
+
             EXISTS (
                 SELECT 1
                 FROM rest_like_tbl rl
@@ -37,6 +39,8 @@
             ) AS is_report
 
         FROM restaurant_tbl r
+        INNER JOIN member_tbl m
+            ON r.member_id = m.member_id
         WHERE r.rest_no = #{restNo} AND r.rest_status = 'NORMAL'
     </select>
 
@@ -125,6 +129,7 @@
             rt.rest_addr,
             m.member_thumb,
             m.member_name,
+            m.member_id,
             r.review_content,
             r.visit_date AS review_visit,
             r.rating,
@@ -384,6 +389,49 @@
         </where>
     </select>
 
+    <select id="getRestSearch" resultType="recommand">
+        SELECT
+        r.rest_no,
+        r.rest_name,
+        r.rest_thumb,
+        r.rest_addr,
+        r.category,
+        r.review_total_count,
+
+        ROUND(
+        r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1
+        ) AS rating_avg,
+
+        EXISTS (
+        SELECT 1
+        FROM rest_like_tbl rl
+        WHERE rl.rest_no = r.rest_no
+        AND rl.member_id = #{memberId}
+        ) AS is_like
+
+        FROM restaurant_tbl r
+
+        <where>
+            <if test="req.restName != null and req.restName != ''">
+                r.rest_name LIKE CONCAT('%', #{req.restName}, '%')
+            </if>
+        </where>
+
+        ORDER BY r.created_at DESC
+
+        LIMIT #{req.size} OFFSET #{req.offset}
+    </select>
+
+    <select id="getRestSearchCount" resultType="int">
+        SELECT COUNT(*)
+        FROM restaurant_tbl r
+        <where>
+            <if test="req.restName != null and req.restName != ''">
+                r.rest_name LIKE CONCAT('%', #{req.restName}, '%')
+            </if>
+        </where>
+    </select>
+
     <select id="getSame" resultType="Long">
         SELECT r.rest_no
         FROM restaurant_tbl r
@@ -476,6 +524,34 @@
         WHERE rest_no = #{restNo}
     </update>
 
+    <update id="reviewModifyContent">
+        UPDATE review_tbl
+        SET review_content = #{reviewContent}, rating = #{rating}
+        WHERE review_no = #{reviewNo}
+    </update>
+
+    <delete id="reviewDeleteTags">
+        DELETE FROM review_tags_tbl
+        WHERE review_no = #{reviewNo}
+    </delete>
+
+    <delete id="reviewDeleteImages">
+        DELETE FROM review_images_tbl
+        WHERE image_url IN
+        <foreach collection="deleteFileList"
+                 item="fileName"
+                 open="("
+                 separator=","
+                 close=")">
+            #{fileName}
+        </foreach>
+    </delete>
+
+    <update id="restModifyRating">
+        UPDATE restaurant_tbl
+        SET rating_sum = rating_sum - #{oldRating} + #{rating}
+        WHERE rest_no = #{restNo}
+    </update>
 
 
 </mapper>

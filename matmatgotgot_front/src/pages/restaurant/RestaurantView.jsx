@@ -5,6 +5,8 @@ import RestaruntViewReviews from "../../components/restaurant/RestaruntViewRevie
 import styles from "./RestaurantView.module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import ReportModal from "../../components/ui/ReportModal";
+import Swal from "sweetalert2";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const RestaurantView = () => {
   const [restView, setRestView] = useState(null);
@@ -12,6 +14,10 @@ const RestaurantView = () => {
   const [reportModal, setReportModal] = useState(false);
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
+
+  // 로그인 정보
+  const { memberNo, memberId } = useAuthStore();
+  const isLoggedIn = !!memberNo;
 
   useEffect(() => {
     // 맛집 상세 정보 조회
@@ -27,7 +33,14 @@ const RestaurantView = () => {
       });
   }, []);
 
+  // 작성자 본인 여부 (맛집 데이터 로드 후 판단)
+  const isOwner = isLoggedIn && restView && memberId === restView.memberId;
+
   const likeToggle = () => {
+    if (!isLoggedIn) {
+      Swal.fire({ title: "로그인이 필요합니다.", icon: "warning" });
+      return;
+    }
     console.log("liked: ", liked);
     if (!liked) {
       axios
@@ -60,18 +73,20 @@ const RestaurantView = () => {
     <div className={styles.wrap}>
       {/* ===== 맛집 정보 영역 ===== */}
       <section className={styles.rest_info}>
-        {/* 수정 / 삭제 버튼 (우상단) */}
-        <div className={styles.btn_zone_info}>
-          <button
-            type="button"
-            onClick={() => {
-              navigate(`/rest/modify/${restNo}`);
-            }}
-          >
-            수정
-          </button>
-          <button type="button">삭제</button>
-        </div>
+        {/* 수정 / 삭제 버튼 — 로그인 + 본인 작성 글일 때만 표시 */}
+        {isOwner && (
+          <div className={styles.btn_zone_info}>
+            <button
+              type="button"
+              onClick={() => {
+                navigate(`/rest/modify/${restNo}`);
+              }}
+            >
+              수정
+            </button>
+            <button type="button">삭제</button>
+          </div>
+        )}
 
         {restView && <RestaruntViewInfo restView={restView} />}
 
@@ -79,7 +94,13 @@ const RestaurantView = () => {
           <button
             type="button"
             className={styles.report_btn}
-            onClick={() => setReportModal(true)}
+            onClick={() => {
+              if (!isLoggedIn) {
+                Swal.fire({ title: "로그인이 필요합니다.", icon: "warning" });
+                return;
+              }
+              setReportModal(true);
+            }}
           >
             신고
           </button>

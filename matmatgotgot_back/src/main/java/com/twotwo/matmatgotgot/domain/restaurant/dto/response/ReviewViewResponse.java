@@ -10,6 +10,7 @@ import java.util.List;
 public class ReviewViewResponse {
 
     private Long restNo;
+    private String memberId;
     private String restName;
     private String restAddr;
     private String memberThumb;

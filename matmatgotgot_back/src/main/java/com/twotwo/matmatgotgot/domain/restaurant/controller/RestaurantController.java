@@ -101,9 +101,15 @@ public class RestaurantController {
     // 리뷰 수정
     @PutMapping("/review/modify")
     public ResponseEntity<?> reviewModify(@ModelAttribute ReviewCreateRequest req, Authentication auth) {
-        log.info("req: {}", req);
+        try {
+            int result = restaurantService.reviewModify(req);
+            return ResponseEntity.ok(result);
 
-        return null;
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
     }//
 
 
@@ -144,6 +150,7 @@ public class RestaurantController {
         return ResponseEntity.ok(res);
     }//
 
+    // 리뷰 등록
     @PostMapping("/review")
     public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request, Authentication auth) {
         request.setMemberId(auth.getName());
@@ -239,6 +246,21 @@ public class RestaurantController {
         return ResponseEntity.ok(res);
     }//
 
+    // 맛집 - 이름 검색
+    @GetMapping("/search")
+    public ResponseEntity<?> restSearch(@ModelAttribute SearchRequest req, Authentication auth){
+        List<Recommand> searchList = restaurantService.getRestSearch(req, auth.getName());
+
+        int count = restaurantService.getRestSearchCount(req, auth.getName());
+        int totalPage = (int) Math.ceil(count / (double) req.getSize());
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("list", searchList);
+        res.put("totalPage", totalPage);
+
+        return ResponseEntity.ok(res);
+    }//
+
     // 맛집 등록 중복 확인
     @GetMapping("/isdup")
     public ResponseEntity<?> isDup(@ModelAttribute CheckDuplicationRequest chk) {
@@ -312,5 +334,7 @@ public class RestaurantController {
 
         return ResponseEntity.ok(result);
     }//
+
+
 
 }

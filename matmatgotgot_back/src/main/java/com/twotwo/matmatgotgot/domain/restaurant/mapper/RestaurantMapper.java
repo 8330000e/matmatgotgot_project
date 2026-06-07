@@ -101,4 +101,18 @@ public interface RestaurantMapper {
 
     int restaurantModify(Restaurant restaurant);
 
+    int reviewModifyContent(ReviewCreateRequest req);
+
+
+    int reviewDeleteTags(Long reviewNo);
+
+    int reviewDeleteImages(ReviewCreateRequest req);
+
+    int restModifyRating(ReviewCreateRequest req);
+
+    List<Recommand> getRestSearch(@Param("req") SearchRequest req,
+                                  @Param("memberId") String memberId);
+
+    int getRestSearchCount(SearchRequest req, String memberId);
+
 }
