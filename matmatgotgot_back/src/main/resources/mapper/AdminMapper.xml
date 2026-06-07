@@ -230,7 +230,7 @@
         SELECT COUNT(*)
         FROM REST_REPORT_TBL RR
         JOIN RESTAURANT_TBL R ON RR.REST_NO = R.REST_NO
-        JOIN MEMBER_TBL M ON RR.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL M ON RR.MEMBER_ID = M.MEMBER_ID
         <include refid="restReportWhere"/>
     </select>
 
@@ -252,7 +252,7 @@
         ) AS reportCount
         FROM REST_REPORT_TBL RR
         JOIN RESTAURANT_TBL R ON RR.REST_NO = R.REST_NO
-        JOIN MEMBER_TBL M ON RR.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL M ON RR.MEMBER_ID = M.MEMBER_ID
         <include refid="restReportWhere"/>
 
         <choose>
@@ -294,7 +294,7 @@
         FROM REVIEW_REPORT_TBL RRP
         JOIN REVIEW_TBL RV ON RRP.REVIEW_NO = RV.REVIEW_NO
         JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL M ON RRP.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL M ON RRP.MEMBER_ID = M.MEMBER_ID
         <include refid="reviewReportWhere"/>
     </select>
 
@@ -319,7 +319,7 @@
         FROM REVIEW_REPORT_TBL RRP
         JOIN REVIEW_TBL RV ON RRP.REVIEW_NO = RV.REVIEW_NO
         JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL M ON RRP.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL M ON RRP.MEMBER_ID = M.MEMBER_ID
         <include refid="reviewReportWhere"/>
 
         <choose>
@@ -362,7 +362,7 @@
         JOIN REVIEW_COMMENT_TBL RC ON RCR.COMMENT_NO = RC.COMMENT_NO
         JOIN REVIEW_TBL RV ON RC.REVIEW_NO = RV.REVIEW_NO
         JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL M ON RCR.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL M ON RCR.MEMBER_ID = M.MEMBER_ID
         <include refid="reviewCommentReportWhere"/>
     </select>
 
@@ -387,7 +387,7 @@
         JOIN REVIEW_COMMENT_TBL RC ON RCR.COMMENT_NO = RC.COMMENT_NO
         JOIN REVIEW_TBL RV ON RC.REVIEW_NO = RV.REVIEW_NO
         JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL M ON RCR.MEMBER_NO = M.MEMBER_NO
+        JOIN MEMBER_TBL M ON RCR.MEMBER_ID = M.MEMBER_ID
         <include refid="reviewCommentReportWhere"/>
 
         <choose>
