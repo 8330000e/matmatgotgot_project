@@ -156,8 +156,7 @@ public class MemberService {
     public Integer updateMemberPw(Member member) {
         String memberPw = member.getNewMemberPw();
         String encPw = bcrypt.encode(memberPw);
-        member.setMemberPw(encPw);
-        Integer result = memberMapper.updateMemberPw(member);
+        Integer result = memberMapper.updateMemberPw(member.getMemberId(), encPw);
         return result;
     }
 }

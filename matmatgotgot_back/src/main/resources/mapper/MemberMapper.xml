@@ -11,7 +11,7 @@
 		select * from member_tbl where member_id = #{memberId}
 	</select>
 	<update id="updateMemberPw">
-		update member_tbl set member_pw = #{newMemberPw} where member_id = #{memberId}
+		update member_tbl set member_pw = #{encPw} where member_id = #{memberId}
 	</update>
 	<select id="selectOneMemberByEmail" resultType="member">
 		select * from member_tbl where member_email = #{email}

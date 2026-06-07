@@ -41,10 +41,10 @@ public class SpringSecurityConfig {
 
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
-                // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
-                .requestMatchers("/members/logout/**","/members/login/kakao","/members/login/google","/login").permitAll()
-                .requestMatchers("/members/login", "/members/email-verification").permitAll()
-                .requestMatchers("/members/**","/members/join","/members/email-verification","/members/logout/**","/members/login/kakao","/members/login/google","/members/login", "/members/email-verification","/members/ranchar","/members/login/naver","/login").permitAll()
+                    // static 리소스나 에러 페이지 허용
+                    .requestMatchers("/error", "/favicon.ico").permitAll()
+                    // members 관련 주소는 복잡하게 나열할 필요 없이 아래 한 줄로 통일 가능합니다.
+                    .requestMatchers("/members/**", "/login", "/members/pwMember").permitAll()
                 .requestMatchers("/boards/**").permitAll()
                     // 에디터 이미지 접근 허용
                     .requestMatchers("/editor/**").permitAll()

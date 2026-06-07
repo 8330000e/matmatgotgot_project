@@ -28,6 +28,7 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import Pagination from "../../components/ui/Pagination.jsx";
 import {Input} from "../../components/ui/Form.jsx";
+import Swal from "sweetalert2";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -1180,12 +1181,13 @@ export const Myask = () => {
         </div>
     </>);};
 export const ChangePw = () => {
-    const { memberId } = useParams();
+    const { memberId } = useAuthStore();
     const [checkPw, setCheckPw] = useState(0);
     const [checkPwRe, setCheckPwRe] = useState(0);
     const [pwMember, setPwMember] = useState({
         memberPw:"",
         newMemberPw:"",
+        newMemberPwRe:"",
         memberId: memberId,
     });
     const inputPw = (e) => {
@@ -1194,20 +1196,68 @@ export const ChangePw = () => {
         }))
     };
     const pwChange = () => {
-        axios.post(`${import.meta.env.VITE_BACKSERVER}/members/pwMember`)
-            .then((res)=>{console.log(res);})
-            .catch((err)=>console.log(err));
+        console.log("서버로 전송할 데이터:", pwMember);
+        axios.post(`${import.meta.env.VITE_BACKSERVER}/members/pwMember`, pwMember)
+            .then((res)=>{console.log(res);
+                Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    topLayer: true,
+                    background: "#ffd95a",
+                    color: "#2b1b17",
+                    fontWeight: "600",
+                    iconColor: "#fff",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                }).fire({
+                    icon: "success",
+                    title: "비밀번호 변경 성공",
+                });
+            })
+            .catch((err)=> {
+                console.log(err);
+                Swal.mixin({
+                    toast: true,
+                    color: "#2b1b17",
+
+                    borderRadius: "15px",
+                    fontWeight: "800",
+                    padding: "20px 10px",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                }).fire({
+                    title: '비밀번호 변경 실패',
+                    text: '현재 비밀번호가 맞는지 확인하세요.',
+                    icon: 'error'
+                });
+                setPwMember({
+                    memberPw:"",
+                    newMemberPw:"",
+                    newMemberPwRe:"",
+                    memberId: memberId,
+                })
+            });
     };
     const pwReg = () => {
         const idReg = /^[a-zA-Z0-9]{8,50}$/;
-        if(idReg.test(pwMember.memberPw)){
+        if(idReg.test(pwMember.newMemberPw)){
             setCheckPw(2);
         }else{
             setCheckPw(1);
         }
     };
     const pwDupCheck = () => {
-        if (pwMember.memberPw === pwMember.newMemberPw) {
+        if (pwMember.newMemberPw === pwMember.newMemberPwRe) {
             return setCheckPwRe(1);
         } else {
             return setCheckPwRe(2);

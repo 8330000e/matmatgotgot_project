@@ -33,5 +33,5 @@ public interface MemberMapper {
 
     Member searchId(String memberId);
 
-    Integer updateMemberPw(Member member);
+    Integer updateMemberPw(@Param("memberId") String memberId, @Param("encPw") String encPw);
 }

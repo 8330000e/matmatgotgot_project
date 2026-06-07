@@ -675,3 +675,12 @@
     font-size: 15px;
     padding: 10px 20px;
 }
+.idcheckt, .pwcheckt, .check_msg{
+    font-size: 13px;
+    padding: 3px;
+}
+.idcheckf, .pwcheckf {
+    font-size: 13px;
+    padding: 3px;
+    color: #e82222;
+}
