@@ -18,12 +18,12 @@ import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import ImageIcon from "@mui/icons-material/Image";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
+import { useEffect } from "react";
 
 const TextEditor = ({ data, setData }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image,
       ResizeImage,
       // TextAlign: heading과 paragraph에 좌/가운데/우 정렬 기능 적용
       TextAlign.configure({ types: ["heading", "paragraph"] }),
@@ -34,6 +34,12 @@ const TextEditor = ({ data, setData }) => {
       setData(editor.getHTML());
     },
   });
+
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setContent(data || "");
+    }
+  }, [editor, data]);
 
   return (
     <div className={styles.editor_wrap}>

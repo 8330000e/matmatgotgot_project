@@ -3,7 +3,7 @@ import axios from "axios"; // axios 추가
 import RestaruntViewInfo from "../../components/restaurant/RestaruntViewInfo";
 import RestaruntViewReviews from "../../components/restaurant/RestaruntViewReviews";
 import styles from "./RestaurantView.module.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReportModal from "../../components/ui/ReportModal";
 
 const RestaurantView = () => {
@@ -11,6 +11,7 @@ const RestaurantView = () => {
   const { restNo } = useParams();
   const [reportModal, setReportModal] = useState(false);
   const [liked, setLiked] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 맛집 상세 정보 조회
@@ -61,7 +62,14 @@ const RestaurantView = () => {
       <section className={styles.rest_info}>
         {/* 수정 / 삭제 버튼 (우상단) */}
         <div className={styles.btn_zone_info}>
-          <button type="button">수정</button>
+          <button
+            type="button"
+            onClick={() => {
+              navigate(`/rest/modify/${restNo}`);
+            }}
+          >
+            수정
+          </button>
           <button type="button">삭제</button>
         </div>
 

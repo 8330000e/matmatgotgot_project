@@ -70,6 +70,43 @@ public class RestaurantController {
         return ResponseEntity.ok(-1);
     }//
 
+    // 맛집 수정
+    @PutMapping("/modify")
+    public ResponseEntity<?> restaurantModify(@RequestBody RestCreateRequest request, Authentication auth) {
+        Restaurant restaurant = Restaurant.builder()
+                .restNo(request.getRestNo())
+                .restName(request.getRestName())
+                .restAddr(request.getRestAddr())
+                .hours(request.getRestHours())
+                .phone(request.getRestPhone())
+                .category(request.getCategory())
+                .restContent(request.getContent())
+                .lat(request.getLat())
+                .lng(request.getLng())
+                .memberId(auth.getName())
+                .build();
+
+        Document doc = Jsoup.parse(request.getContent());
+        // 이미지 태그 선택자로 첫 번째 요소를 가져옴
+        // 단, 이미지 태그가 한 개도 없으면 null 리턴
+        Element firstImg = doc.selectFirst("img");
+        String restThumb = firstImg == null ? null : firstImg.attr("src");
+        restaurant.setRestThumb(restThumb);
+
+        int result = restaurantService.restaurantModify(restaurant);
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 리뷰 수정
+    @PutMapping("/review/modify")
+    public ResponseEntity<?> reviewModify(@ModelAttribute ReviewCreateRequest req, Authentication auth) {
+        log.info("req: {}", req);
+
+        return null;
+    }//
+
+
     // tip tap 이미지 등록
     @PostMapping(value = "/image-upload")
     public ResponseEntity<?> imageUpload(@RequestParam MultipartFile image) {

@@ -29,6 +29,8 @@ import Main_login from "./pages/main/Main_login.jsx";
 import CreateCourse from "./pages/trip/CreateCourse.jsx";
 import CourseDetail from "./pages/trip/CourseDetail.jsx";
 import ReportModal from "./components/ui/ReportModal.jsx";
+import RestaurantModify from "./pages/restaurant/RestaurantModify.jsx";
+import ReviewModify from "./pages/restaurant/ReviewModify.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -66,6 +68,8 @@ function App() {
           />
           <Route path="/rest/review/view/:reviewNo" element={<ReviewView />} />
           <Route path="/receipt/:mode/:restNo?" element={<ReceiptCheck />} />
+          <Route path="/rest/modify/:restNo" element={<RestaurantModify />} />
+          <Route path="/review/modify/:reviewNo" element={<ReviewModify />} />
 
           <Route path="/mypage" element={<MypagePage />} />
           <Route path="/board/list" element={<BoardListPage />} />

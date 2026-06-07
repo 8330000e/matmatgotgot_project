@@ -15,7 +15,7 @@ const ReviewModify = () => {
   const [review, setReview] = useState({
     restName: "",
     restAddr: "",
-    reviewMenu: "",
+    reviewMenu: [],
     reviewVisit: "",
     reviewContent: "",
     fileList: [], // 서버에 저장된 기존 파일 목록
@@ -41,13 +41,14 @@ const ReviewModify = () => {
       )
       .then((res) => {
         const data = res.data;
+        console.log(data);
         setReview({
           restName: data.restName ?? "",
           restAddr: data.restAddr ?? "",
-          reviewMenu: data.reviewMenu ?? "",
+          reviewMenu: data.reviewMenu ?? [],
           reviewVisit: data.reviewVisit ?? "",
           reviewContent: data.reviewContent ?? "",
-          fileList: data.fileList ?? [],
+          fileList: data.images ?? [],
         });
         setRating(data.rating ?? 0);
         setTags(data.tags ?? []);
@@ -71,11 +72,12 @@ const ReviewModify = () => {
   // ── 기존 서버 파일 삭제 표시 ────────────────────────────
   // 실제 삭제는 수정 요청 시 deleteFileList를 서버에 전달
   const deleteServerFile = (fileName) => {
+    console.log(fileName);
     setDeleteFileList([...deleteFileList, fileName]);
     // 화면에서도 즉시 제거
     setReview((prev) => ({
       ...prev,
-      fileList: prev.fileList.filter((f) => f.reviewFileName !== fileName),
+      fileList: prev.fileList.filter((f) => f !== fileName),
     }));
   };
 
@@ -100,7 +102,7 @@ const ReviewModify = () => {
     if (
       !review.restName.trim() ||
       !review.restAddr.trim() ||
-      !review.reviewMenu.trim() ||
+      !review.reviewMenu.length > 0 ||
       !review.reviewVisit.trim() ||
       !review.reviewContent.trim() ||
       rating === 0
@@ -112,10 +114,6 @@ const ReviewModify = () => {
     // 파일 포함 요청 → FormData 사용
     const form = new FormData();
     form.append("reviewNo", reviewNo);
-    form.append("restName", review.restName);
-    form.append("restAddr", review.restAddr);
-    form.append("reviewMenu", review.reviewMenu);
-    form.append("reviewVisit", review.reviewVisit);
     form.append("reviewContent", review.reviewContent);
     form.append("rating", rating);
     tags.forEach((tag) => form.append("tags", tag));
@@ -125,9 +123,13 @@ const ReviewModify = () => {
     deleteFileList.forEach((name) => form.append("deleteFileList", name));
 
     axios
-      .put(`${import.meta.env.VITE_BACKSERVER}/restaurants/review`, form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .put(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review/modify`,
+        form,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      )
       .then((res) => {
         if (res.data > 0) {
           Swal.fire({ title: "리뷰 수정 완료", icon: "success" }).then(() => {
@@ -171,6 +173,7 @@ const ReviewModify = () => {
               id="restName"
               value={review.restName}
               onChange={inputReview}
+              disabled={true}
             />
           </div>
 
@@ -185,21 +188,23 @@ const ReviewModify = () => {
               id="restAddr"
               value={review.restAddr}
               onChange={inputReview}
+              disabled={true}
             />
           </div>
 
-          {/* 메뉴 */}
           <div className={styles.field_group}>
-            <label className={styles.field_label} htmlFor="reviewMenu">
-              메뉴*
-            </label>
-            <input
-              type="text"
-              name="reviewMenu"
-              id="reviewMenu"
-              value={review.reviewMenu}
-              onChange={inputReview}
-            />
+            <label className={styles.field_label}>메뉴*</label>
+            {review.reviewMenu && review.reviewMenu.length > 0 ? (
+              <ul className={styles.menu_list}>
+                {review.reviewMenu.map((item, idx) => (
+                  <li key={idx} className={styles.menu_item}>
+                    <span className={styles.menu_item_name}>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span className={styles.no_value}>인식된 메뉴가 없습니다</span>
+            )}
           </div>
 
           {/* 방문 날짜 */}
@@ -213,6 +218,7 @@ const ReviewModify = () => {
               id="reviewVisit"
               value={review.reviewVisit}
               onChange={inputReview}
+              disabled={true}
             />
           </div>
 
@@ -276,13 +282,13 @@ const ReviewModify = () => {
                 {review.fileList.map((file, index) => (
                   <div key={`server-${index}`} className={styles.preview_item}>
                     <img
-                      src={`${import.meta.env.VITE_BACKSERVER}/review/thumb/${file.reviewFileName}`}
+                      src={`${import.meta.env.VITE_BACKSERVER}/restaurants/${file}`}
                       alt={`기존 이미지 ${index + 1}`}
                     />
                     <button
                       type="button"
                       className={styles.preview_delete}
-                      onClick={() => deleteServerFile(file.reviewFileName)}
+                      onClick={() => deleteServerFile(file)}
                     >
                       <ClearIcon sx={{ fontSize: 14 }} />
                     </button>

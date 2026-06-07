@@ -34,6 +34,10 @@ public class RestaurantService {
         return restaurantMapper.restaurantCreate(restaurant);
     }//
 
+    @Transactional
+    public int restaurantModify(Restaurant restaurant) {
+        return restaurantMapper.restaurantModify(restaurant);
+    }//
 
     public RestViewResponse restaurantViewInfo(String memberId, Long restNo) {
         RestViewResponse restRes = restaurantMapper.restaurantViewInfo(memberId, restNo);
@@ -224,4 +228,6 @@ public class RestaurantService {
     public int restUnlike(Long restNo, String memberId) {
         return restaurantMapper.restUnlike(restNo, memberId);
     }//
+
+
 }

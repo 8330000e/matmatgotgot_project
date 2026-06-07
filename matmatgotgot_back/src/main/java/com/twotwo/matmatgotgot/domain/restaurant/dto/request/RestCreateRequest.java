@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class RestCreateRequest {
 
+    private Long restNo;
     private String restName;
     private String restAddr;
     private String restHours;

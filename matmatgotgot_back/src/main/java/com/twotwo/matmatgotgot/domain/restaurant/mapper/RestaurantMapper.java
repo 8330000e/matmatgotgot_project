@@ -98,4 +98,7 @@ public interface RestaurantMapper {
 
     int restUnlike(@Param("restNo") Long restNo,
                    @Param("memberId") String memberId);
+
+    int restaurantModify(Restaurant restaurant);
+
 }

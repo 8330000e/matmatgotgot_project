@@ -467,5 +467,15 @@
           AND rest_no = #{restNo}
     </delete>
 
+    <update id="restaurantModify">
+        UPDATE restaurant_tbl
+        SET phone = #{phone},
+            hours = #{hours},
+            rest_content = #{restContent},
+            rest_thumb = #{restThumb}
+        WHERE rest_no = #{restNo}
+    </update>
+
+
 
 </mapper>

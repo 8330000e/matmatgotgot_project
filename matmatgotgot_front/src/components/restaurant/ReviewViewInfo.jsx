@@ -75,7 +75,7 @@ const ReviewViewInfo = ({ review }) => {
               <SwiperSlide key={idx}>
                 <img
                   className={styles.swiper_img}
-                  src={`${imgBaseUrl}/restaurants/${image}`}
+                  src={`${import.meta.env.VITE_BACKSERVER}/restaurants/${image}`}
                   alt="리뷰 이미지"
                 />
               </SwiperSlide>

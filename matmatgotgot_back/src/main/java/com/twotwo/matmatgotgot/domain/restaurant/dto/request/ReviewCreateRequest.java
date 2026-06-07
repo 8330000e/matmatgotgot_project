@@ -20,4 +20,6 @@ public class ReviewCreateRequest {
     private List<String> reviewMenus;
     private List<String> tags;
     private List<MultipartFile> files;
+
+    private List<String> deleteFileList;
 }
