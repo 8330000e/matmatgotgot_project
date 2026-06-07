@@ -15,14 +15,14 @@ const BoardWritePage = () => {
   // zustand 로그인 정보
   const { memberNo, memberStatus, isReady } = useAuthStore();
 
-  // 차단 유저 접근 제한
+  // 비정상/정지 회원 상태 접근 제한
   useEffect(() => {
     if (!isReady) return;
 
-    if (Number(memberStatus) === 1) {
+    if (Number(memberStatus) === 1 || Number(memberStatus) === 3) {
       Swal.fire({
         title: '접근 제한',
-        text: '차단된 회원은 게시글 작성 페이지에 접근할 수 없습니다.',
+        text: '해당 회원은 게시글 작성 페이지에 접근할 수 없습니다.',
         icon: 'error',
         confirmButtonColor: 'var(--color1)',
       }).then(() => {

@@ -39,7 +39,7 @@ const BoardListPage = () => {
         title: '게시글 작성 불가',
         text: '현재 회원 상태에서는 게시글을 작성할 수 없습니다.',
         icon: 'warning',
-        confirmButtonColor: 'var(--color1)',
+        confirmButtonColor: 'var(--primary)',
         width: '600px',
       });
 

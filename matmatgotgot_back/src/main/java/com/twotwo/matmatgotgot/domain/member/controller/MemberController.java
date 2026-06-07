@@ -98,6 +98,7 @@ public class MemberController {
 		response.setMemberThumb(member.getMemberThumb());
 		//response.setAdmin(loginMember.isAdmin());
 		response.setAdmin(member.getAdmin()); //지연 관리자 파트 수정해둠
+		response.setMemberStatus(member.getMemberStatus()); // 지연 - 게시글 회원 차단
 		response.setToken(loginMember.getToken());
 		response.setLat(member.getLat());
 		response.setLng(member.getLng());
