@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class TripCreateRequestDTO {
+    private int memberNo;
     private String tplanTitle;
     private String tplanDesc;
     private String tplanRegion;

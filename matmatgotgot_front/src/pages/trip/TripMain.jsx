@@ -42,7 +42,7 @@ const TripMain = () => {
           },
         );
 
-        const { myPlans, favoritePlans, top10Plans } = response.data;
+        const { myPlans, favoritePlans, top10Plans, allPlans } = response.data;
 
         const defaultImg = "default_thumbnail.png";
         const mapDefaultImage = (list) =>
@@ -55,6 +55,7 @@ const TripMain = () => {
         setMyPlans(mapDefaultImage(myPlans));
         setFavoritePlans(mapDefaultImage(favoritePlans));
         setTop10Plans(mapDefaultImage(top10Plans));
+        setAllPlans(mapDefaultImage(allPlans));
       } catch (error) {
         console.error("여행 코스 데이터를 가져오는 중 오류 발생:", error);
       } finally {

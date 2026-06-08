@@ -171,18 +171,21 @@
         tp.tplan_days AS tplanDays,
         tp.tplan_like AS tplanLike,
         tp.tplan_view AS tplanView,
+        tp.tplan_region AS tplanRegion,
+        tp.tplan_total_price AS tplanTotalPrice,
+        tp.tplan_status AS tplanStatus,
+        tp.created_at AS createdAt,
+        GROUP_CONCAT(t.tag_name ORDER BY t.tag_no SEPARATOR ', ') AS tplanTags,
         <include refid="selectThumImg"/>
-
         FROM TRAVEL_PLAN_TBL tp
-
+        LEFT JOIN PLAN_TAG_TBL pt ON tp.tplan_no = pt.tplan_no
+        LEFT JOIN TAG_TBL t ON pt.tag_no = t.tag_no
         WHERE tp.tplan_status = 1
-
+        GROUP BY tp.tplan_no
         ORDER BY tp.created_at DESC
     </select>
 
-    <select id="selectFavoritePlans"
-            resultType="tripCourseResponse">
-
+    <select id="selectFavoritePlans" resultType="tripCourseResponse">
         SELECT
         tp.member_no AS memberNo,
         tp.tplan_no AS tplanNo,
@@ -191,18 +194,12 @@
         tp.tplan_days AS tplanDays,
         tp.tplan_like AS tplanLike,
         tp.tplan_view AS tplanView,
-        <include refid="selectThumImg"/>
-
+        tp.tplan_region AS tplanRegion,          tp.tplan_total_price AS tplanTotalPrice,  tp.tplan_status AS tplanStatus,          tp.created_at AS createdAt,              <include refid="selectThumImg"/>
         FROM FAVORITE_PLAN_TBL fp
-
-        JOIN TRAVEL_PLAN_TBL tp
-        ON fp.tplan_no = tp.tplan_no
-
+        JOIN TRAVEL_PLAN_TBL tp ON fp.tplan_no = tp.tplan_no
         WHERE fp.member_no = #{memberNo}
         AND tp.tplan_status = 1
-
         ORDER BY fp.created_at DESC
-
     </select>
 
     <update id="updateViewCount">

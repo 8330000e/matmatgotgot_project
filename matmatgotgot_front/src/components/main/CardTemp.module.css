@@ -1,42 +1,93 @@
 .card {
-  border: 1px solid color-mix(in srgb, var(--text1) 25%, transparent);
-  border-radius: 10px;
-  width: 210px;
-  height: 280px;
-  padding: 13px;
+  border: 1px solid color-mix(in srgb, var(--text1) 8%, transparent);
+  border-radius: 20px; /* 라운딩을 조금 더 주어 트렌디하게 변경 */
+  width: 245px;
+  height: 320px; /* 높이를 살짝 늘려 여백 확보 */
+  padding: 14px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   user-select: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   cursor: pointer;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--text1) 3%, transparent);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 마우스 올렸을 때 화사하고 부드럽게 떠오르는 효과 */
+.card:hover {
+  border-color: var(--primary);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
 .imageBox {
   width: 100%;
-  height: 150px;
+  height: 140px;
   overflow: hidden;
-  border-radius: 5px;
-  margin-bottom: 5px;
+  border-radius: 14px;
 }
 
-.imageBox img {
+.image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
-  -webkit-touch-callout: none;
+  transition: transform 0.4s ease;
 }
 
+.card:hover .image {
+  transform: scale(1.06);
+}
+
+.infoBox {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* 💡 상단 주소 텍스트 (지역 뱃지 같은 느낌) */
+.addressText {
+  font-size: 11px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--text1) 40%, transparent);
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+
+/* 💡 굵고 선명해진 식당 제목 */
 .title {
-  font-weight: 600;
-  font-size: 1.1em;
+  margin: 0;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text1);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* 💡 과하지 않고 미니멀한 구분선 */
+.divider {
+  width: 20px;
+  height: 2px;
+  background-color: color-mix(in srgb, var(--text1) 15%, transparent);
+  margin: 10px 0;
+  border-radius: 1px;
+}
+
+/* 💡 가독성을 높인 본문 설명 */
 .description {
-  font-size: 0.9em;
+  margin: 0;
+  font-size: 13px;
+  color: color-mix(in srgb, var(--text1) 65%, transparent);
+  line-height: 1.5;
+
+  /* 딱 깔끔하게 2줄만 보여주고 말줄임 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

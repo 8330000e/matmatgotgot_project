@@ -43,18 +43,35 @@ export const fetchTmapDuration = async (start, end, type) => {
   }
 };
 
-// 2. ODsay API (대중교통 소요 시간 계산)
 export const fetchOdsayDuration = async (start, end) => {
   const odsayApiKey = import.meta.env.VITE_ODSAY_API_KEY;
-  const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${start.lng}&SY=${start.lat}&EX=${end.lng}&EY=${end.lat}&apiKey=${encodeURIComponent(odsayApiKey)}`;
+  const url = "https://api.odsay.com/v1/api/searchPubTransPathT";
 
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      params: {
+        SX: start.lng,
+        SY: start.lat,
+        EX: end.lng,
+        EY: end.lat,
+        apiKey: odsayApiKey,
+      },
+      headers: {
+        Authorization: null,
+      },
+    });
+
     if (response.data && response.data.result && response.data.result.path) {
       // 최적 경로(첫 번째 패스)의 총 소요 시간(분 단위) 추출
       const totalTimeMinutes = response.data.result.path[0].info.totalTime;
       return totalTimeMinutes;
     }
+
+    // 에러 응답 구조 디버깅용 로그
+    if (response.data?.error) {
+      console.error("ODsay 서버 에러 메시지:", response.data.error);
+    }
+
     return null;
   } catch (error) {
     console.error("ODsay API 호출 실패:", error);

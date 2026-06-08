@@ -12,7 +12,7 @@ import org.apache.ibatis.type.Alias;
 @Builder
 @Alias(value="restaurantDTO")
 public class RestaurantDTO {
-    private Long restNo;             // 맛집 번호
+    private Long restNo;
     private String restName;         // 맛집 이름
     private String restAddr;         // 주소
     private String category;         // 음식 카테고리

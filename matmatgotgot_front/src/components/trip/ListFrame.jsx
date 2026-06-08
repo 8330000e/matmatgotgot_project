@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom"; // 1. useNavigate 임포트
+import { useNavigate } from "react-router-dom";
 import styles from "./ListFrame.module.css";
 import ControlPointSharpIcon from "@mui/icons-material/ControlPointSharp";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
-const ListFrame = ({ order, iconText, items }) => {
+const ListFrame = ({ order, iconText, items = [] }) => {
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
-  const navigate = useNavigate(); // 2. navigate 함수 생성
+  const navigate = useNavigate();
 
   const scrollRef = useRef(null);
 
@@ -61,7 +63,7 @@ const ListFrame = ({ order, iconText, items }) => {
     navigate(`/trip/detail/${tplanNo}`);
   };
 
-  // 3. 새 코스 만들기 버튼 클릭 시 이동 함수
+  // 새 코스 만들기 버튼 클릭 시 이동 함수
   const handleCreateCourseClick = () => {
     navigate("/trip/create");
   };
@@ -88,8 +90,8 @@ const ListFrame = ({ order, iconText, items }) => {
           onMouseMove={onMouseMove}
           style={{ cursor: "grab" }}
         >
+          {/* order === 0 (내가 만든 코스)일 때는 데이터 유무와 상관없이 항상 생성 버튼 노출 */}
           {order === 0 && (
-            /* 4. 새 코스 만들기 버튼에 onClick 이벤트 및 커서 스타일 추가 */
             <div
               className={styles.createCourseBtn}
               onClick={handleCreateCourseClick}
@@ -102,36 +104,79 @@ const ListFrame = ({ order, iconText, items }) => {
             </div>
           )}
 
-          {items.map((item, index) => {
-            const isFullUrl = item.imgName?.startsWith("http");
-            const imgSrc = isFullUrl
-              ? item.imgName
-              : `${import.meta.env.VITE_BACKSERVER}/menu/${item.imgName}`;
+          {/* 데이터가 없을 때 처리 */}
+          {items.length === 0
+            ? order !== 0 && (
+                <div className={styles.emptyContainer}>
+                  <p className={styles.emptyText}>
+                    아직 {iconText.title}가 없습니다.
+                  </p>
+                  <button
+                    className={styles.emptyLinkBtn}
+                    onClick={() => {
+                      window.scrollTo({
+                        top: document.body.scrollHeight,
+                        behavior: "smooth",
+                      });
+                    }}
+                  >
+                    추천 코스 구경하러 가기
+                  </button>
+                </div>
+              )
+            : items.map((item, index) => {
+                const isFullUrl = item.imgName?.startsWith("http");
+                const imgSrc = isFullUrl
+                  ? item.imgName
+                  : `${import.meta.env.VITE_BACKSERVER}/menu/${item.imgName}`;
 
-            return (
-              <div
-                key={`listFrame-${index}`}
-                className={styles.cardItem}
-                onClick={() => handleCardClick(item.tplanNo)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className={styles.thumbnailBox}>
-                  <img
-                    src={imgSrc}
-                    alt="식당 이미지"
-                    className={styles.image}
-                    onError={(e) =>
-                      console.log("이미지 로드 실패", e.target.src)
-                    }
-                  />
-                </div>
-                <div className={styles.descBox}>
-                  <div className={styles.title}>{item.title}</div>
-                  <div className={styles.description}>{item.desc}</div>
-                </div>
-              </div>
-            );
-          })}
+                return (
+                  <div
+                    key={`listFrame-${index}`}
+                    className={styles.cardItem}
+                    onClick={() => handleCardClick(item.tplanNo)}
+                  >
+                    {/* 썸네일 박스 & 일수 배지 */}
+                    <div className={styles.thumbnailBox}>
+                      <img
+                        src={imgSrc}
+                        alt={item.title}
+                        className={styles.image}
+                        onError={(e) =>
+                          console.log("이미지 로드 실패", e.target.src)
+                        }
+                      />
+                      {item.tplanDays && (
+                        <span className={styles.dayBadge}>
+                          {item.tplanDays}Day
+                        </span>
+                      )}
+                    </div>
+
+                    {/* 텍스트 컨텐츠 박스 */}
+                    <div className={styles.descBox}>
+                      <div className={styles.title}>{item.title}</div>
+                      <div className={styles.description}>
+                        {item.desc && item.desc.trim() !== ""
+                          ? item.desc
+                          : "등록된 설명이 없습니다."}
+                      </div>
+                    </div>
+
+                    {/* 하단 메타 통계 정보 */}
+                    <div className={styles.cardMeta}>
+                      <div className={styles.metaItem}>
+                        <FavoriteIcon className={styles.likeIcon} />
+                        <span>{item.tplanLike || 0}</span>
+                      </div>
+                      <div className={styles.metaItem}>
+                        <VisibilityIcon className={styles.viewIcon} />
+                        <span>{item.tplanView || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
         </div>
 
         <div

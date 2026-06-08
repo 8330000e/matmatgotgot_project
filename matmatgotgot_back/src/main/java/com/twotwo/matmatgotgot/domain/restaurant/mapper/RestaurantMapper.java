@@ -3,10 +3,7 @@ package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
@@ -71,4 +68,11 @@ public interface RestaurantMapper {
 
     List<Recommand> getRegion(@Param("memberId") String memberId,
                               @Param("coords") Coords coords);
+
+    // Main
+    List<Restaurant> selectMyWishList(@Param("memberId") String memberId);
+    List<Restaurant> selectPopularList();
+    List<Restaurant> selectAllList();
+    List<RestaurantMapMarkerDTO> selectWishMapMarkers(@Param("memberId") String memberId);
+    List<RestaurantMapMarkerDTO> selectVisitedMapMarkers(@Param("memberId") String memberId);
 }

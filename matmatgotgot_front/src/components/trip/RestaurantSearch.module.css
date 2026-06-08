@@ -53,6 +53,15 @@
   overflow-y: auto;
 }
 
+.searchResultList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.searchResultList::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--text1) 15%, transparent);
+  border-radius: 4px;
+}
+
 .searchResultItem {
   padding: 12px 15px;
   border-bottom: 1px solid var(--gray7);

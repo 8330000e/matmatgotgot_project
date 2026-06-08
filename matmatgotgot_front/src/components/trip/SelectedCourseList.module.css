@@ -44,7 +44,6 @@
   border-color: var(--text1, #000);
 }
 
-/* 💡 [수정] 중간 래퍼가 패널의 남은 높이를 다 채우도록 Flex 컨테이너로 지정 */
 .panelScrollAreaPadding {
   flex: 1; /* 상단 탭바를 제외한 남은 공간 전체 차지 */
   display: flex;
@@ -53,7 +52,6 @@
   padding: 20px; /* 원하셨던 안쪽 패딩 20px 적용 */
 }
 
-/* 💡 [수정] 스크롤바가 생기는 실질적 영역 */
 .panelScrollArea {
   width: 100%;
   flex: 1; /* 부모(panelScrollAreaPadding)의 100% 높이를 채움 */
@@ -66,7 +64,15 @@
   scrollbar-width: thin !important;
 }
 
-/* --- 이하 스타일은 기존과 동일합니다 --- */
+.panelScrollArea::-webkit-scrollbar {
+  width: 4px;
+}
+
+.panelScrollArea::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--text1) 15%, transparent);
+  border-radius: 4px;
+}
+
 .courseListPanel * {
   box-sizing: border-box;
 }

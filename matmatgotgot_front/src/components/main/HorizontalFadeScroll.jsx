@@ -5,7 +5,6 @@ import CardTemp from "./CardTemp";
 const HorizontalFadeScroll = ({ items }) => {
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
-
   const scrollRef = useRef(null);
 
   const dragStatus = useRef({
@@ -23,7 +22,6 @@ const HorizontalFadeScroll = ({ items }) => {
   const onMouseLeave = () => {
     dragStatus.current.isDown = false;
   };
-
   const onMouseUp = () => {
     dragStatus.current.isDown = false;
   };
@@ -41,12 +39,8 @@ const HorizontalFadeScroll = ({ items }) => {
     if (!container) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = container;
-
-    const isAtLeft = scrollLeft <= 0;
-    setShowLeftFade(!isAtLeft);
-
-    const isAtRight = scrollLeft + clientWidth >= scrollWidth - 2;
-    setShowRightFade(!isAtRight);
+    setShowLeftFade(scrollLeft > 0);
+    setShowRightFade(scrollLeft + clientWidth < scrollWidth - 4);
   };
 
   useEffect(() => {
@@ -58,7 +52,6 @@ const HorizontalFadeScroll = ({ items }) => {
       <div
         className={`${styles.fadeOverlayLeft} ${showLeftFade ? "" : styles.hide}`}
       />
-
       <div
         className={styles.myListItems}
         ref={scrollRef}
@@ -73,7 +66,6 @@ const HorizontalFadeScroll = ({ items }) => {
           <CardTemp item={item} key={`myList-${index}`} />
         ))}
       </div>
-
       <div
         className={`${styles.fadeOverlayRight} ${showRightFade ? "" : styles.hide}`}
       />

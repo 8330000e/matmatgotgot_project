@@ -65,9 +65,7 @@ public class TripController {
     @PostMapping("/create")
     public ResponseEntity<String> createTripCourse(@RequestBody TripCreateRequestDTO requestDTO) {
         try {
-            int memberNo = 1;
-
-            tripService.createTripCourse(requestDTO, memberNo);
+            tripService.createTripCourse(requestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("코스가 성공적으로 등록되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();

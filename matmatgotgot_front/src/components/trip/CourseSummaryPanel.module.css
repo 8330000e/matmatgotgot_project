@@ -5,10 +5,10 @@
   padding: 25px;
 }
 
+/* 1. 입력 그룹 공통 컨테이너 */
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   margin-bottom: 20px;
 }
 
@@ -17,8 +17,10 @@
   font-weight: bold;
   font-size: 14px;
   color: var(--text1);
+  margin-bottom: 8px; /* 라벨과 인풋 사이 간격 살짝 추가 */
 }
 
+/* 2. 코스명 입력 (Input) */
 .inputGroup input {
   height: 40px;
   border: none;
@@ -34,6 +36,62 @@
   border-bottom-color: var(--primary);
 }
 
+/* 3. 코스 설명 입력 (Textarea - 중복 제거 및 스타일 최적화) */
+.courseTextArea {
+  width: 100%;
+  height: 100px; /* 적절한 기본 높이 지정 */
+  border: 1px solid var(--gray6);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+  padding: 10px;
+  color: var(--gray1);
+  background-color: var(--gray8);
+  resize: none; /* 레이아웃이 깨지지 않도록 크기 조절 고정 */
+  transition: border-color 0.2s;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.courseTextArea:focus {
+  border-color: var(--primary);
+}
+
+.courseTextArea::placeholder {
+  color: var(--gray4, #aaa);
+  font-size: 13.5px;
+}
+
+/* 4. 💡 글자 수 카운터 (Textarea 하단 배치용) */
+.charCounter {
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  color: color-mix(in srgb, var(--text1) 40%, transparent);
+  font-weight: 500;
+  margin-top: 6px; /* textarea와의 간격 */
+  padding-right: 4px;
+}
+
+/* 5. 여행 기간 선택 (Select) */
+.durationSelect {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--gray6);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--gray1);
+  background-color: var(--gray8);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.durationSelect:focus {
+  border-color: var(--primary);
+}
+
+/* 6. 카테고리 태그 */
 .tagGroupWrap {
   margin-bottom: 25px;
 }
@@ -63,6 +121,7 @@
   font-weight: 600;
 }
 
+/* 7. 하단 대시보드 리포트 */
 .summaryDashboard {
   border-top: 1px solid var(--gray6);
   padding-top: 20px;
@@ -88,6 +147,7 @@
   font-weight: bold;
 }
 
+/* 8. 등록 버튼 Row */
 .submitRow {
   display: flex;
   justify-content: flex-end;
@@ -105,13 +165,4 @@
 
 .registerBtn:hover {
   color: var(--primary);
-}
-
-.durationSelect {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: #fff;
 }

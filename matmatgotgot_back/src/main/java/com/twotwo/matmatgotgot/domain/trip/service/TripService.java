@@ -98,11 +98,11 @@ public class TripService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void createTripCourse(TripCreateRequestDTO dto, int memberNo) {
+    public void createTripCourse(TripCreateRequestDTO dto) {
 
         // 1. TRAVEL_PLAN_TBL 데이터 바인딩 및 인서트
         Map<String, Object> planMap = new HashMap<>();
-        planMap.put("memberNo", memberNo);
+        planMap.put("memberNo", dto.getMemberNo());
         planMap.put("tplanTitle", dto.getTplanTitle());
         planMap.put("tplanDesc", dto.getTplanDesc());
         planMap.put("tplanRegion", dto.getTplanRegion());
@@ -193,6 +193,7 @@ public class TripService {
                         .limit(10)
                         .toList();
 
+        resultMap.put("allPlans", allPlans);
         resultMap.put("myPlans", myPlans);
         resultMap.put("top10Plans", top10Plans);
 

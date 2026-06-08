@@ -277,4 +277,54 @@
         ) <= 10
         ]]>
     </select>
+
+    <!-- Main -->
+    <select id="selectMyWishList" resultType="restaurant">
+        SELECT r.*
+        FROM RESTAURANT_TBL r
+                 INNER JOIN REST_LIKE_TBL l ON r.rest_no = l.rest_no
+        WHERE l.member_id = #{memberId}
+          AND r.rest_status = 'NORMAL'
+        ORDER BY r.created_at DESC
+    </select>
+
+    <select id="selectPopularList" resultType="restaurant">
+        SELECT r.*, COUNT(l.member_id) AS like_count
+        FROM RESTAURANT_TBL r
+                 LEFT JOIN REST_LIKE_TBL l ON r.rest_no = l.rest_no
+        WHERE r.rest_status = 'NORMAL'
+        GROUP BY r.rest_no
+        ORDER BY like_count DESC, r.rating_sum DESC, r.rest_no DESC
+            LIMIT 12
+    </select>
+
+    <select id="selectAllList" resultType="restaurant">
+        SELECT *
+        FROM RESTAURANT_TBL
+        WHERE rest_status = 'NORMAL'
+        ORDER BY rest_no DESC
+    </select>
+
+    <select id="selectWishMapMarkers" resultType="restaurantMapMarkerDTO">
+        SELECT
+            r.rest_no AS restNo,
+            r.rest_name AS restName,
+            r.lat AS restLat,
+            r.lng AS restLng
+        FROM REST_LIKE_TBL l
+                 INNER JOIN RESTAURANT_TBL r ON l.rest_no = r.rest_no
+        WHERE l.member_id = #{memberId}
+    </select>
+
+    <select id="selectVisitedMapMarkers" resultType="restaurantMapMarkerDTO">
+        SELECT DISTINCT
+            r.rest_no AS restNo,
+            r.rest_name AS restName,
+            r.lat AS restLat,
+            r.lng AS restLng
+        FROM REVIEW_TBL rv
+                 INNER JOIN RESTAURANT_TBL r ON rv.rest_no = r.rest_no
+        WHERE rv.member_id = #{memberId}
+          AND rv.review_status = 0
+    </select>
 </mapper>

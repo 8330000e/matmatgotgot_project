@@ -9,7 +9,7 @@ import RestaurantSearch from "../../components/trip/RestaurantSearch";
 import SelectedCourseList from "../../components/trip/SelectedCourseList";
 import CourseSummaryPanel from "../../components/trip/CourseSummaryPanel";
 import AddMenuModal from "../../components/trip/AddMenuModal";
-import { useAuthStore } from "../../store/useAuthStore.js"; // 1. useAuthStore 임포트
+import { useAuthStore } from "../../store/useAuthStore.js";
 
 const CreateCourse = () => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const CreateCourse = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [transitTimes, setTransitTimes] = useState({});
   const [transitModes, setTransitModes] = useState({});
+  const [courseDesc, setCourseDesc] = useState("");
 
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [targetRestaurantId, setTargetRestaurantId] = useState(null);
@@ -37,16 +38,23 @@ const CreateCourse = () => {
 
   const [tags, setTags] = useState([]);
 
-  // 2. Zustand에서 회원 번호 및 권한 로딩 상태 가져오기
-  const { memberNo: loginMemberNo, isReady } = useAuthStore();
+  // Zustand에서 회원 번호 및 권한 로딩 상태 가져오기
+  const { memberNo, isReady } = useAuthStore();
 
-  // 3. 비로그인 유저 접근 차단 가드 (Guard)
+  // 비로그인 유저 접근 차단 가드 (Guard)
   useEffect(() => {
-    if (isReady && !loginMemberNo) {
+    if (isReady && !memberNo) {
       alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
       navigate("/");
     }
-  }, [isReady, loginMemberNo, navigate]);
+  }, [isReady, memberNo, navigate]);
+
+  // 코스 설명 글자 수 입력 제어 핸들러 (최대 300자)
+  const handleCourseDescChange = (value) => {
+    if (value.length <= 300) {
+      setCourseDesc(value);
+    }
+  };
 
   const handleTravelDaysChange = (days) => {
     const numDays = Number(days);
@@ -297,9 +305,23 @@ const CreateCourse = () => {
       }
     } else if (mode === "PUB") {
       try {
-        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${startX}&SY=${startY}&EX=${endX}&EY=${endY}&apiKey=${encodeURIComponent(ODSAY_API_KEY)}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        const url = "https://api.odsay.com/v1/api/searchPubTransPathT";
+
+        const response = await axios.get(url, {
+          params: {
+            SX: startX,
+            SY: startY,
+            EX: endX,
+            EY: endY,
+            apiKey: ODSAY_API_KEY,
+          },
+          headers: {
+            Authorization: null,
+          },
+        });
+
+        const data = response.data;
+
         if (data.result?.path?.[0]) {
           setTransitTimes((prev) => ({
             ...prev,
@@ -370,19 +392,69 @@ const CreateCourse = () => {
     return hr > 0 ? (mn > 0 ? `${hr}시간 ${mn}분` : `${hr}시간`) : `${mn}분`;
   };
 
+  const extractCityName = (addr) => {
+    if (!addr) return "";
+    const trimAddr = addr.trim();
+    const firstWord = trimAddr.split(" ")[0];
+
+    if (firstWord.endsWith("도") && trimAddr.split(" ").length > 1) {
+      return trimAddr.split(" ")[1];
+    }
+
+    return firstWord;
+  };
+
   const handleSubmitCourse = async () => {
     if (!courseTitle.trim()) {
       alert("코스명을 입력해 주세요.");
       return;
     }
 
-    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
-
-    const totalSelectedCount = Object.values(selectedRestaurants).flat().length;
-    if (totalSelectedCount === 0) {
+    const allSelectedList = Object.values(selectedRestaurants).flat();
+    if (allSelectedList.length === 0) {
       alert("최소 한 개 이상의 식당을 코스에 추가해야 합니다.");
       return;
     }
+
+    // 💡 [필수값 검증 로직 추가] 추천 메뉴 및 이동수단 검사 실행
+    for (const dayStr of Object.keys(selectedRestaurants)) {
+      const dayNum = Number(dayStr);
+      const restaurantList = selectedRestaurants[dayNum] || [];
+
+      for (let index = 0; index < restaurantList.length; index++) {
+        const res = restaurantList[index];
+
+        // 1. 추천 메뉴 필수 검증
+        if (!res.selectedMenus || res.selectedMenus.length === 0) {
+          alert(
+            `[Day ${dayNum}] '${res.restName || "선택한 식당"}'의 추천 메뉴를 최소 1개 이상 선택해 주세요.`,
+          );
+          setCurrentDay(dayNum); // 사용자가 인지하기 편하게 해당 Day 탭으로 자동 이동
+          return;
+        }
+
+        // 2. 이동수단 필수 검증 (다음 목적지가 존재할 때만 검사)
+        const nextRes = restaurantList[index + 1];
+        if (nextRes) {
+          const transitKey = `Day${dayNum}_${res.restNo}_${nextRes.restNo}`;
+          if (!transitModes[transitKey]) {
+            alert(
+              `[Day ${dayNum}] '${res.restName || "출발지"}'에서 '${nextRes.restName || "목적지"}'로 이동하는 교통수단을 선택해 주세요.`,
+            );
+            setCurrentDay(dayNum); // 해당 Day 탭으로 이동
+            return;
+          }
+        }
+      }
+    }
+
+    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
+    const cities = allSelectedList
+      .map((res) => extractCityName(res.restAddr || res.rest_addr))
+      .filter((city) => city !== "");
+
+    const uniqueCities = [...new Set(cities)];
+    const tplanRegionValue = uniqueCities.join(", ");
 
     const daysData = Object.keys(selectedRestaurants).map((dayStr) => {
       const dayNum = Number(dayStr);
@@ -401,7 +473,7 @@ const CreateCourse = () => {
           selectedMenuNos: res.selectedMenus.map((m) => m.menuNo),
           route: nextRes
             ? {
-                transitType: transitModes[transitKey] || "WALK",
+                transitType: transitModes[transitKey],
               }
             : null,
         };
@@ -414,9 +486,10 @@ const CreateCourse = () => {
     });
 
     const payload = {
+      memberNo: memberNo,
       tplanTitle: courseTitle,
-      tplanDesc: "",
-      tplanRegion: "",
+      tplanDesc: courseDesc,
+      tplanRegion: tplanRegionValue,
       tplanDays: travelDays,
       tplanTotalPrice: totalCost,
       tagNos: activeTags,
@@ -461,9 +534,8 @@ const CreateCourse = () => {
     return () => clearTimeout(delayDebounceTimer);
   }, [searchKeyword]);
 
-  // 태그 목록 로드 부에 비로그인 조건부 예외 처리 추가
   useEffect(() => {
-    if (!isReady || !loginMemberNo) return;
+    if (!isReady || !memberNo) return;
 
     const fetchTags = async () => {
       try {
@@ -476,10 +548,9 @@ const CreateCourse = () => {
       }
     };
     fetchTags();
-  }, [isReady, loginMemberNo]);
+  }, [isReady, memberNo]);
 
-  // Auth 스토어 확인 작업이 안 끝났거나 비로그인이면 화면 렌더링 생략
-  if (!isReady || !loginMemberNo) {
+  if (!isReady || !memberNo) {
     return (
       <div className={styles.loading}>페이지 접근 권한을 확인 중입니다...</div>
     );
@@ -526,6 +597,8 @@ const CreateCourse = () => {
           <CourseSummaryPanel
             courseTitle={courseTitle}
             setCourseTitle={setCourseTitle}
+            courseDesc={courseDesc}
+            onCourseDescChange={handleCourseDescChange}
             travelDays={travelDays}
             onTravelDaysChange={handleTravelDaysChange}
             tags={tags}

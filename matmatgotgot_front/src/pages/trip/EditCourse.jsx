@@ -332,7 +332,9 @@ const EditCourse = () => {
       (r) => String(r.restNo) === destinationNo,
     );
 
-    if (!origin?.lat || !destination?.lat) return;
+    // 좌표 정보가 하나라도 없으면 실행하지 않고 안전하게 리턴
+    if (!origin?.lat || !origin?.lng || !destination?.lat || !destination?.lng)
+      return;
 
     const startX = Number(origin.lng);
     const startY = Number(origin.lat);
@@ -346,30 +348,33 @@ const EditCourse = () => {
           : "https://apis.openapi.sk.com/tmap/routes?version=1&format=json";
 
       try {
+        // Tmap에 보낼 바디 객체를 혼선이 없도록 먼저 명확하게 선언합니다.
+        const requestBody =
+          mode === "WALK"
+            ? {
+                startX,
+                startY,
+                endX,
+                endY,
+                startName: "출발지",
+                endName: "목적지",
+              }
+            : {
+                startX,
+                startY,
+                endX,
+                endY,
+                reqCoordType: "WGS84GEO",
+                resCoordType: "WGS84GEO",
+                searchOption: "0",
+              };
+
         const response = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", appKey: TMAP_APP_KEY },
-          body: JSON.stringify(
-            mode === "WALK"
-              ? {
-                  startX,
-                  startY,
-                  endX,
-                  endY,
-                  startName: "출발지",
-                  endName: "목적지",
-                }
-              : {
-                  startX,
-                  startY,
-                  endX,
-                  endY,
-                  reqCoordType: "WGS84GEO",
-                  resCoordType: "WGS84GEO",
-                  searchOption: "0",
-                },
-          ),
+          body: JSON.stringify(requestBody),
         });
+
         const data = await response.json();
         if (data.features?.[0]) {
           const totalMinutes = Math.ceil(
@@ -381,21 +386,44 @@ const EditCourse = () => {
           }));
         }
       } catch (error) {
-        console.error(error);
+        console.error("Tmap 경로 조회 실패:", error);
       }
     } else if (mode === "PUB") {
       try {
-        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${startX}&SY=${startY}&EX=${endX}&EY=${endY}&apiKey=${encodeURIComponent(ODSAY_API_KEY)}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        const url = "https://api.odsay.com/v1/api/searchPubTransPathT";
+
+        const response = await axios.get(url, {
+          params: {
+            SX: startX,
+            SY: startY,
+            EX: endX,
+            EY: endY,
+            apiKey: ODSAY_API_KEY,
+          },
+          headers: {
+            Authorization: null, // 전역 토큰 CORS 차단 해결
+          },
+        });
+
+        const data = response.data;
+
         if (data.result?.path?.[0]) {
           setTransitTimes((prev) => ({
             ...prev,
             [transitKey]: `${data.result.path[0].info.totalTime}분`,
           }));
+        } else {
+          setTransitTimes((prev) => ({
+            ...prev,
+            [transitKey]: "도보 추천 (경로 없음)",
+          }));
         }
       } catch (error) {
-        console.error(error);
+        console.error("ODsay 대중교통 조회 실패:", error);
+        setTransitTimes((prev) => ({
+          ...prev,
+          [transitKey]: "조회 실패",
+        }));
       }
     }
   };

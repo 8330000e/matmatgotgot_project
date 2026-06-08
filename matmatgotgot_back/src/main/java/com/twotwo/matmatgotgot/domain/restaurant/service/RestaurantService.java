@@ -3,10 +3,7 @@ package com.twotwo.matmatgotgot.domain.restaurant.service;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
@@ -184,4 +181,33 @@ public class RestaurantService {
         return region;
     }//
 
+    // Main
+    public List<RestaurantResponseDTO> getMyWishList(String memberId) {
+        List<Restaurant> list = restaurantMapper.selectMyWishList(memberId);
+        return list.stream()
+                .map(RestaurantResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<RestaurantResponseDTO> getPopularList() {
+        List<Restaurant> list = restaurantMapper.selectPopularList();
+        return list.stream()
+                .map(RestaurantResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<RestaurantResponseDTO> getAllList() {
+        List<Restaurant> list = restaurantMapper.selectAllList();
+        return list.stream()
+                .map(RestaurantResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<RestaurantMapMarkerDTO> getWishMapMarkers(String memberId) {
+        return restaurantMapper.selectWishMapMarkers(memberId);
+    }
+
+    public List<RestaurantMapMarkerDTO> getVisitedMapMarkers(String memberId) {
+        return restaurantMapper.selectVisitedMapMarkers(memberId);
+    }
 }

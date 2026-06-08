@@ -3,11 +3,11 @@
   position: absolute;
   top: 0;
   height: 100%;
-  width: 40px;
+  width: 45px;
   pointer-events: none;
   z-index: 10;
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
 .fadeOverlayLeft {
@@ -31,12 +31,14 @@
 
 .myListItems {
   display: flex;
-  gap: 10px;
+  gap: 16px;
   overflow-x: auto;
   scroll-behavior: smooth;
   -ms-overflow-style: none;
   scrollbar-width: none;
   width: 100%;
+  /* 💡 호버 시 카드 쉐도우나 카드가 상단으로 들릴 때 잘리는 현상을 막기 위해 위아래 패딩 부여 */
+  padding: 8px 4px;
 }
 
 .myListItems::-webkit-scrollbar {

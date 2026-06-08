@@ -331,8 +331,11 @@
 }
 
 .detailPhotoCard {
-  width: 110px;
+  width: 130px;
   text-align: left;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--gray6);
 }
 
 .photoBoxImg {
