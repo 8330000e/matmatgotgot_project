@@ -10,6 +10,9 @@
 	<select id="selectOneMember" resultType="member">
 		select * from member_tbl where member_id = #{memberId}
 	</select>
+	<update id="updateThumbnail">
+		update member_tbl set member_thumb = #{memberThumb} where member_id = #{memberId}
+	</update>
 	<update id="updateMemberPw">
 		update member_tbl set member_pw = #{encPw} where member_id = #{memberId}
 	</update>

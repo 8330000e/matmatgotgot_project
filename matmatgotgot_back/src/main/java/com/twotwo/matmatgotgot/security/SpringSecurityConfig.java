@@ -43,8 +43,7 @@ public class SpringSecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     // static 리소스나 에러 페이지 허용
                     .requestMatchers("/error", "/favicon.ico").permitAll()
-                    // members 관련 주소는 복잡하게 나열할 필요 없이 아래 한 줄로 통일 가능합니다.
-                    .requestMatchers("/members/**", "/login", "/members/pwMember").permitAll()
+                    .requestMatchers("/upload/**").permitAll()                    .requestMatchers("/members/**", "/login", "/members/pwMember").permitAll()
                 .requestMatchers("/boards/**").permitAll()
                     // 에디터 이미지 접근 허용
                     .requestMatchers("/editor/**").permitAll()

@@ -159,4 +159,10 @@ public class MemberService {
         Integer result = memberMapper.updateMemberPw(member.getMemberId(), encPw);
         return result;
     }
+
+    @Transactional
+    public int updateThumbnail(Member m) {
+        int result = memberMapper.updateThumbnail(m);
+        return result;
+    }
 }

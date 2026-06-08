@@ -11,6 +11,7 @@ import com.twotwo.matmatgotgot.domain.member.service.MemberService;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.EmailSender;
+import com.twotwo.matmatgotgot.global.util.FileUtil;
 import com.twotwo.matmatgotgot.security.GoogleOAuthService;
 import com.twotwo.matmatgotgot.security.GoogleUserProfile;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -40,6 +42,10 @@ public class MemberController {
     private final MemberService memberService;
 	private final GoogleOAuthService googleOAuthService;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final FileUtil fileUtil;
+
+	@Value("${file.root}")
+	private String root;
 	
 	@GetMapping
 	public ResponseEntity<?> selectAll() {
@@ -63,6 +69,19 @@ public class MemberController {
 		Member m = memberService.selectOneMember(memberId);
 		return ResponseEntity.ok(m==null);
 	}
+
+	@PatchMapping(value="/{memberId}/thumbnail")
+	public ResponseEntity<?> updateThumbnail(@PathVariable String memberId, @ModelAttribute MultipartFile file) {
+		String savepath = root + "member/";
+		String memberThumb = FileUtil.upload(savepath, file);
+		Member m = new Member();
+		m.setMemberThumb(memberThumb);
+		m.setMemberId(memberId);
+		int result = memberService.updateThumbnail(m);
+		return ResponseEntity.ok(memberThumb);
+	}
+
+	
 
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {

@@ -1,3 +1,5 @@
+"use no cache";
+
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
@@ -25,14 +27,13 @@ import people from "../../assets/img/people.svg";
 import calendar2 from "../../assets/img/calendar2.svg";
 import comment from "../../assets/img/comment.svg";
 import axios from "axios";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Pagination from "../../components/ui/Pagination.jsx";
 import {Input} from "../../components/ui/Form.jsx";
 import Swal from "sweetalert2";
 
 export const MypagePage = () => {
    const location = useLocation();
-   const logout = useAuthStore((state) => state.logout);
    const path = location.pathname.substring(8);
     const { memberId, token } = useAuthStore();
     const [memberInfo, setMemberInfo] = useState(null);
@@ -60,9 +61,6 @@ export const MypagePage = () => {
             console.log("⏳ 아직 memberId나 token이 준비되지 않아 요청을 대기합니다.");
         }
     }, [memberId, token]);
-   const imgChange = () => {
-    return null;
-  };
    console.log(path);
 
   return (
@@ -134,20 +132,54 @@ export const MypagePage = () => {
 };
 
 export const Myinfo = ({ memberInfo }) => {
+    const inputRef = useRef(null);
+    const { memberId, memberThumb } = useAuthStore();
+    const profileImgSrc = (memberThumb && memberThumb !== "null")
+        ? `${import.meta.env.VITE_BACKSERVER}/upload/${memberThumb}`
+        : defaultImg;
+    const changeThumb = (e) => {
+        const file = inputRef.current.files && inputRef.current.files[0];
+        if (!file) return;
+
+        const form = new FormData();
+        form.append("file", file);
+        axios
+            .patch(
+                `${import.meta.env.VITE_BACKSERVER}/members/${memberId}/thumbnail`,
+                form,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            )
+            .then((res) => {
+                console.log(res);
+                useAuthStore.getState().setThumb(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
     if (!memberInfo) {
         return <div style={{ padding: "50px", textAlign: "center" }}>회원 정보를 불러오는 중입니다...</div>;
     }
+
     return (<>
         <div className={styles.content_menu_wrap}>
             <div className={styles.info_profile}>
                 <div>
-                    <img src={changeImg} alt="" className={styles.changeImg} onClick={()=>imgChange()}/>
-                    <img src={memberInfo.memberThumb ? memberInfo.memberThumb : defaultImg} alt="" className={styles.defaultImg}/>
+                    <img src={profileImgSrc} className={styles.defaultImg} alt="프로필" />
+                    <img src={changeImg} alt="변경" className={styles.changeImg} onClick={() => inputRef.current.click()} />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={inputRef}
+                        style={{ display: "none" }}
+                        onChange={changeThumb}
+                    />
                 </div>
                 <div>
                     <div>
                         <div className={styles.info_nick}>{memberInfo.memberNickname}</div>
-                        <div><img src={native} /></div>
+                        <div><img src={native} alt="인증" /></div>
                     </div>
                     <ul className={styles.info_member}>
                         <li>
