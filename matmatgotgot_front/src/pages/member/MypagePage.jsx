@@ -1333,17 +1333,23 @@ export const ChangePw = () => {
 
 export const ChangeEmail = ({ memberInfo }) => {
     const [mailMember, setMailMember] = useState({
-        memberId: "",
+        memberId: memberInfo.memberId,
         memberEmail: "",
-        newMemberEmail: ""
+        newMemberEmail: "",
+        newMemberEmailRe: ""
     });
     const [mailAuth, setMailAuth] = useState(0);
+    const [newMailAuth, setNewMailAuth] = useState(0);
     const [mailAuthCode, setMailAuthCode] = useState(null);
     const [mailAuthInput, setMailAuthInput] = useState("");
     const [time, setTime] = useState(180);
     const [timeout, setTimeout] = useState(null);
+    const inputMember = (e) => {
+        const { name, value } = e.target;
+        setMailMember((prev) => ({ ...prev, [name]: value }));
+    };
     const sendMail = () => {
-        if(!mailMember.memberEmail) {
+        if(mailMember.memberEmail != memberInfo.memberEmail) {
             Swal.mixin({
                 toast: true,
                 color: "#2b1b17",
@@ -1362,6 +1368,7 @@ export const ChangeEmail = ({ memberInfo }) => {
                 text: '이메일을 입력해주세요.',
                 icon: 'error'
             });
+            return;
         }
         setTime(180);
         if (timeout) {
@@ -1370,11 +1377,14 @@ export const ChangeEmail = ({ memberInfo }) => {
         setMailAuth(1);
         axios
             .post(
-                `${import.meta.env.VITE_BACKSERVER}/members/email-emailchange`, mailMember)
+                `${import.meta.env.VITE_BACKSERVER}/members/email-emailchange`,{
+                    memberEmail: mailMember.memberEmail,
+                })
                 .then((res) => {
                     console.log(res);
                     setMailAuthCode(res.data.data);
                     setMailAuth(2);
+                    setNewMailAuth(2);
                     const intervalId = window.setInterval(() => {
                         setTime((prev) => {
                             return prev - 1;
@@ -1403,7 +1413,7 @@ export const ChangeEmail = ({ memberInfo }) => {
                     icon: 'error'
                 });
                 setMailAuth(0);
-                return;
+                setNewMailAuth(0);
             });
     };
     useEffect(() => {
@@ -1419,6 +1429,49 @@ export const ChangeEmail = ({ memberInfo }) => {
         const sec = String(time%60).padStart(2, "0");
         return `${min}:${sec}`;
     };
+    const handleAuthCheck = () => {
+        if (mailAuthCode === mailMember.newMemberEmail) {
+            setMailAuth(3);
+            setNewMailAuth(1); // 🌟 안전하게 이벤트 안에서 상태를 변경합니다!
+            window.clearInterval(timeout);
+            setTimeout(null);
+        } else {
+            alert("인증코드가 올바르지 않습니다.");
+        }
+    };
+
+    // 💡 두 번째 새로운 이메일 변경 및 성공 알림 처리
+    const handleEmailChangeSubmit = () => {
+        if (mailAuthCode === mailMember.newMemberEmailRe) {
+            setNewMailAuth(3);
+            window.clearInterval(timeout);
+            setTimeout(null);
+
+            // 🌟 안전하게 이벤트가 일어났을 때만 Swal 토스트를 띄웁니다.
+            Swal.mixin({
+                toast: true,
+                position: "top-end",
+                topLayer: true,
+                background: "#ffd95a",
+                color: "#2b1b17",
+                fontWeight: "600",
+                iconColor: "#fff",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire({
+                icon: "success",
+                title: "이메일 변경 성공",
+            });
+        } else {
+            alert("인증코드가 올바르지 않습니다.");
+        }
+    };
+
 
     return (
         <>
@@ -1430,9 +1483,7 @@ export const ChangeEmail = ({ memberInfo }) => {
                            name="memberEmail"
                            id="memberEmail"
                            value={mailMember.memberEmail}
-                           onChange={(e) => {
-                               setMailMember(e.target.value);
-                           }}
+                           onChange={inputMember}
                            required
                            readOnly={mailAuth === 1 || mailAuth === 3}  />
                     <button
@@ -1453,32 +1504,71 @@ export const ChangeEmail = ({ memberInfo }) => {
                                     name="newMemberEmail"
                                     id="newMemberEmail"
                                     value={mailMember.newMemberEmail}
-                                    onChange={(e)=>{
-                                        setMailMember(e.target.value);
-                                    }}
+                                    onChange={inputMember}
                                     disabled={mailAuth === 3}
                                 />
+                                <p className={styles.check_msg}>
+                                    {mailAuth === 3 ? "인증되었습니다.": showTime()}
+                                </p>
                                 <button
-                                    className={styles.submit}
+                                    className={styles.submit_chgM}
                                     type="button"
-                                    onClick={()=> {
-                                        if (mailAuthCode === mailAuthInput) {
-                                            setMailAuth(3);
-                                            window.clearInterval(timeout);
-                                            setTimeout(null);
-                                        } else {
-                                            alert("인증코드가 올바르지 않습니다.");
-                                        }
-                                    }}
+                                    onClick={handleAuthCheck}
                                     disabled = {mailAuth === 3}
                                 >
                                     인증하기
                                 </button>
                             </div>
+                        </div>
+                    )}
+
+                    {newMailAuth === 1 && (
+                        <div>
+                            <div className={styles.inputLabel}>
+                                <label htmlFor="newMemberEmail">새로운 이메일 주소</label>
+                            </div>
+                            <div>
+                                <Input
+                                    type="text"
+                                    name="newMemberEmail"
+                                    id="newMemberEmail"
+                                    value={mailMember.newMemberEmailRe}
+                                    onChange={inputMember}
+                                    disabled={newMailAuth === 3}
+                                />
+                                <button
+                                    className={styles.submit}
+                                    type="button"
+                                    onClick={handleEmailChangeSubmit}
+                                    disabled = {newMailAuth === 3}
+                                >
+                                    이메일 변경하기
+                                </button>
+                            </div>
                             <p className={styles.check_msg}>
-                                {mailAuth === 3 ? "인증되었습니다.": showTime()}
+                                {newMailAuth === 3 ?
+                                    (Swal.mixin({
+                                        toast: true,
+                                        position: "top-end",
+                                        topLayer: true,
+                                        background: "#ffd95a",
+                                        color: "#2b1b17",
+                                        fontWeight: "600",
+                                        iconColor: "#fff",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.onmouseenter = Swal.stopTimer;
+                                            toast.onmouseleave = Swal.resumeTimer;
+                                        }
+                                    }).fire({
+                                        icon: "success",
+                                        title: "이메일 변경 성공",
+                                    })): showTime()}
                             </p>
-                        </div>)}
+                        </div>
+                    )}
                 </div>
             </div>
         </>

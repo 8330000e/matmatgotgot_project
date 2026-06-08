@@ -723,5 +723,12 @@
     margin: 10px 0;
     padding: 10px;
     font-size: 15px;
+    color: #fff;
     border-radius: 10px;
+    outline: none;
+    background-color: var(--text1);
+    font-weight: 600;
+}
+.inputLabel > label {
+    font-weight: 600;
 }

@@ -59,7 +59,11 @@ public class JwtAuthFilter extends GenericFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
             log.error("JWT 검증 실패", e);
-            httpServletResponse.setStatus(401);
+//            httpServletResponse.setStatus(401);
+            log.info("만료된 JWT 토큰입니다.");
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"message\":\"토큰이 만료되었습니다. 다시 로그인하거나 토큰을 재발급하세요.\"}");
             return;
         }
 
