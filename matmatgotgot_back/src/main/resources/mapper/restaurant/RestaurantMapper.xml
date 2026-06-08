@@ -3,7 +3,7 @@
 <mapper namespace="com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper">
 
     <insert id="restaurantCreate" useGeneratedKeys="true" keyProperty="restNo">
-        INSERT INTO restaurant_tbl (member_id, rest_name, rest_addr, lat, lng, category, phone, hours, rest_content, rest_thumb, created_at)
+        INSERT INTO RESTAURANT_TBL (member_id, rest_name, rest_addr, lat, lng, category, phone, hours, rest_content, rest_thumb, created_at)
         VALUES (#{memberId}, #{restName}, #{restAddr}, #{lat}, #{lng}, #{category}, #{phone}, #{hours}, #{restContent}, #{restThumb}, current_timestamp())
     </insert>
 
@@ -26,37 +26,37 @@
 
             EXISTS (
                 SELECT 1
-                FROM rest_like_tbl rl
+                FROM REST_LIKE_TBL rl
                 WHERE rl.rest_no = r.rest_no
                   AND rl.member_id = #{memberId}
             ) AS is_like,
 
             EXISTS (
                 SELECT 1
-                FROM rest_report_tbl rr
+                FROM REST_REPORT_TBL rr
                 WHERE rr.rest_no = r.rest_no
                   AND rr.member_id = #{memberId}
             ) AS is_report
 
-        FROM restaurant_tbl r
-        INNER JOIN member_tbl m
+        FROM RESTAURANT_TBL r
+        INNER JOIN MEMBER_TBL m
             ON r.member_id = m.member_id
         WHERE r.rest_no = #{restNo} AND r.rest_status = 'NORMAL'
     </select>
 
     <select id="getTags" resultType="String">
         SELECT DISTINCT tag_name
-        FROM review_tbl r
-                 INNER JOIN review_tags_tbl rt
+        FROM REVIEW_TBL r
+                 INNER JOIN REVIEW_TAGS_TBL rt
                             ON r.review_no = rt.review_no
         WHERE rest_no = #{restNo}
     </select>
 
     <select id="getMenus" resultType="String">
         SELECT DISTINCT menu_name
-        FROM review_menu_tbl
+        FROM REVIEW_MENU_TBL
         WHERE review_no IN (SELECT review_no
-                           FROM review_tbl
+                           FROM REVIEW_TBL
                            WHERE rest_no = #{restNo}
         );
     </select>
@@ -70,8 +70,8 @@
         r.review_content,
         r.visit_date
 
-    FROM review_tbl r
-             INNER JOIN member_tbl m
+    FROM REVIEW_TBL r
+             INNER JOIN MEMBER_TBL m
                         ON r.member_id = m.member_id
     WHERE rest_no = #{restNo}
     ORDER BY r.visit_date DESC
@@ -81,25 +81,25 @@
 
     <select id="getMenusByReviewNo" resultType="String">
         SELECT menu_name
-        FROM review_menu_tbl
+        FROM REVIEW_MENU_TBL
         WHERE review_no = #{reviewNo}
     </select>
 
     <select id="restaurantViewReviewsCnt" resultType="int">
         SELECT COUNT(*)
-        FROM review_tbl r
+        FROM REVIEW_TBL r
                  INNER JOIN MEMBER_TBL m
-                            ON r.member_no = m.member_no
+                            ON r.member_id = m.member_id
         WHERE rest_no = #{restNo}
     </select>
 
     <insert id="reviewInsert" useGeneratedKeys="true" keyProperty="reviewNo">
-        INSERT INTO review_tbl (member_id, rest_no, review_content, rating, visit_date)
+        INSERT INTO REVIEW_TBL (member_id, rest_no, review_content, rating, visit_date)
         VALUES(#{memberId}, #{restNo}, #{reviewContent}, #{rating}, #{reviewVisit})
     </insert>
 
     <insert id="insertReviewMenus">
-        INSERT INTO review_menu_tbl (review_no, menu_name)
+        INSERT INTO REVIEW_MENU_TBL (review_no, menu_name)
         VALUES
         <foreach collection="menuList" item="menu" separator=",">
             (#{reviewNo}, #{menu})
@@ -107,7 +107,7 @@
     </insert>
 
     <insert id="insertReviewTags">
-        INSERT INTO review_tags_tbl (review_no, tag_name)
+        INSERT INTO REVIEW_TAGS_TBL (review_no, tag_name)
         VALUES
         <foreach collection="tagList" item="tag" separator=",">
             (#{reviewNo}, #{tag})
@@ -115,7 +115,7 @@
     </insert>
 
     <insert id="insertReviewImages">
-        INSERT INTO review_images_tbl (review_no, image_url)
+        INSERT INTO REVIEW_IMAGES_TBL (review_no, image_url)
         VALUES
         <foreach collection="imageUrls" item="url" separator=",">
             (#{reviewNo}, #{url})
@@ -136,16 +136,16 @@
 
             EXISTS (
                 SELECT 1
-                FROM review_like_tbl rl
+                FROM REVIEW_LIKE_TBL rl
                 WHERE rl.member_id = #{memberId}
                   AND rl.review_no = r.review_no
             ) AS is_liked
 
-        FROM review_tbl r
-                 INNER JOIN member_tbl m
+        FROM REVIEW_TBL r
+                 INNER JOIN MEMBER_TBL m
                             ON r.member_id = m.member_id
 
-                 INNER JOIN restaurant_tbl rt
+                 INNER JOIN RESTAURANT_TBL rt
                             ON r.rest_no = rt.rest_no
 
         WHERE r.review_no = #{reviewNo}
@@ -153,19 +153,19 @@
 
     <select id="getReviewImages" resultType="String">
         SELECT image_url
-        FROM review_images_tbl
+        FROM REVIEW_IMAGES_TBL
         WHERE review_no = #{reviewNo};
     </select>
 
     <select id="getReviewMenu" resultType="String">
         SELECT menu_name
-        FROM review_menu_tbl
+        FROM REVIEW_MENU_TBL
         WHERE review_no = #{reviewNo};
     </select>
 
     <select id="getReviewTags" resultType="String">
         SELECT tag_name
-        FROM review_tags_tbl
+        FROM REVIEW_TAGS_TBL
         WHERE review_no = #{reviewNo};
     </select>
 
@@ -180,8 +180,8 @@
             c.depth,
             c.parent_comment
 
-        FROM review_comment_tbl c
-                 INNER JOIN member_tbl m ON c.member_id = m.member_id
+        FROM REVIEW_COMMENT_TBL c
+                 INNER JOIN MEMBER_TBL m ON c.member_id = m.member_id
         WHERE c.review_no = #{reviewNo} AND c.com_status = 0
         ORDER BY
             COALESCE(c.parent_comment, c.comment_no),
@@ -200,26 +200,26 @@
             c.depth,
             c.parent_comment
 
-        FROM review_comment_tbl c
-                 INNER JOIN member_tbl m ON c.member_id = m.member_id
+        FROM REVIEW_COMMENT_TBL c
+                 INNER JOIN MEMBER_TBL m ON c.member_id = m.member_id
         WHERE c.comment_no = #{commentNo}
     </select>
 
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="req.commentNo">
-        INSERT INTO review_comment_tbl
+        INSERT INTO REVIEW_COMMENT_TBL
             (review_no, member_id, parent_comment, depth, content)
         VALUES
             (#{reviewNo}, #{req.memberId}, #{req.parentComment}, #{req.depth}, #{req.content})
     </insert>
 
     <update id="updateComment">
-        UPDATE review_comment_tbl
+        UPDATE REVIEW_COMMENT_TBL
         SET content = #{content}
         WHERE comment_no = #{commentNo}
     </update>
 
     <delete id="deleteComment">
-        DELETE FROM review_comment_tbl
+        DELETE FROM REVIEW_COMMENT_TBL
         WHERE comment_no = #{commentNo}
     </delete>
 
@@ -235,12 +235,12 @@
 
             EXISTS (
                 SELECT 1
-                FROM rest_like_tbl rl
+                FROM REST_LIKE_TBL rl
                 WHERE rl.rest_no = r.rest_no
                   AND rl.member_id = #{memberId}
             ) AS is_like
 
-        FROM restaurant_tbl r
+        FROM RESTAURANT_TBL r
 
         ORDER BY
             rating_avg DESC,
@@ -260,8 +260,8 @@
             ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
             TRUE AS is_like
 
-        FROM restaurant_tbl r
-                 INNER JOIN rest_like_tbl rl
+        FROM RESTAURANT_TBL r
+                 INNER JOIN REST_LIKE_TBL rl
                             ON r.rest_no = rl.rest_no
         WHERE rl.member_id = #{memberId}
     </select>
@@ -278,7 +278,7 @@
 
         EXISTS (
         SELECT 1
-        FROM rest_like_tbl rl
+        FROM REST_LIKE_TBL rl
         WHERE rl.rest_no = r.rest_no
         AND rl.member_id = #{memberId}
         ) AS is_like,
@@ -293,7 +293,7 @@
         )
         ) AS distance_km
 
-        FROM restaurant_tbl r
+        FROM RESTAURANT_TBL r
         <![CDATA[
         WHERE (
         6371 * ACOS(
@@ -370,12 +370,12 @@
 
         EXISTS (
         SELECT 1
-        FROM rest_like_tbl rl
+        FROM REST_LIKE_TBL rl
         WHERE rl.rest_no = r.rest_no
         AND rl.member_id = #{memberId}
         ) AS is_like
 
-        FROM restaurant_tbl r
+        FROM RESTAURANT_TBL r
 
         <where>
             <if test="req.region != null and req.region != ''">
@@ -421,7 +421,7 @@
 
     <select id="getMainListCount" resultType="int">
         SELECT COUNT(*)
-        FROM restaurant_tbl r
+        FROM RESTAURANT_TBL r
         <where>
             <if test="req.region != null and req.region != ''">
                 r.rest_addr LIKE CONCAT('%', #{req.region}, '%')
@@ -455,12 +455,12 @@
 
         EXISTS (
         SELECT 1
-        FROM rest_like_tbl rl
+        FROM REST_LIKE_TBL rl
         WHERE rl.rest_no = r.rest_no
         AND rl.member_id = #{memberId}
         ) AS is_like
 
-        FROM restaurant_tbl r
+        FROM RESTAURANT_TBL r
 
         <where>
             <if test="req.restName != null and req.restName != ''">
@@ -475,7 +475,7 @@
 
     <select id="getRestSearchCount" resultType="int">
         SELECT COUNT(*)
-        FROM restaurant_tbl r
+        FROM RESTAURANT_TBL r
         <where>
             <if test="req.restName != null and req.restName != ''">
                 r.rest_name LIKE CONCAT('%', #{req.restName}, '%')
@@ -485,7 +485,7 @@
 
     <select id="getSame" resultType="Long">
         SELECT r.rest_no
-        FROM restaurant_tbl r
+        FROM RESTAURANT_TBL r
         WHERE r.rest_name = #{storeName}
           AND (
                 6371 * ACOS(
@@ -499,14 +499,14 @@
     </select>
 
     <update id="increaseRatingAvg">
-        UPDATE restaurant_tbl
+        UPDATE RESTAURANT_TBL
         SET rating_sum = rating_sum + #{rating},
             review_total_count = review_total_count + 1
         WHERE rest_no = #{restNo}
     </update>
 
     <insert id="restReport">
-        INSERT INTO rest_report_tbl (
+        INSERT INTO REST_REPORT_TBL (
         member_id,
         rest_no,
         reason
@@ -563,29 +563,29 @@
     </insert>
 
     <insert id="reviewLike">
-        INSERT INTO review_like_tbl (review_no, member_id)
+        INSERT INTO REVIEW_LIKE_TBL (review_no, member_id)
         VALUES (#{reviewNo}, #{memberId})
     </insert>
 
     <delete id="reviewUnlike">
-        DELETE FROM review_like_tbl
+        DELETE FROM REVIEW_LIKE_TBL
         WHERE member_id = #{memberId}
           AND review_no = #{reviewNo}
     </delete>
 
     <insert id="restLike">
-        INSERT INTO rest_like_tbl (member_id, rest_no)
+        INSERT INTO REST_LIKE_TBL (member_id, rest_no)
         VALUES (#{memberId}, #{restNo})
     </insert>
 
     <delete id="restUnlike">
-        DELETE FROM rest_like_tbl
+        DELETE FROM REST_LIKE_TBL
         WHERE member_id = #{memberId}
           AND rest_no = #{restNo}
     </delete>
 
     <update id="restaurantModify">
-        UPDATE restaurant_tbl
+        UPDATE RESTAURANT_TBL
         SET phone = #{phone},
             hours = #{hours},
             rest_content = #{restContent},
@@ -594,18 +594,18 @@
     </update>
 
     <update id="reviewModifyContent">
-        UPDATE review_tbl
+        UPDATE REVIEW_TBL
         SET review_content = #{reviewContent}, rating = #{rating}
         WHERE review_no = #{reviewNo}
     </update>
 
     <delete id="reviewDeleteTags">
-        DELETE FROM review_tags_tbl
+        DELETE FROM REVIEW_TAGS_TBL
         WHERE review_no = #{reviewNo}
     </delete>
 
     <delete id="reviewDeleteImages">
-        DELETE FROM review_images_tbl
+        DELETE FROM REVIEW_IMAGES_TBL
         WHERE image_url IN
         <foreach collection="deleteFileList"
                  item="fileName"
@@ -617,18 +617,18 @@
     </delete>
 
     <update id="restModifyRating">
-        UPDATE restaurant_tbl
+        UPDATE RESTAURANT_TBL
         SET rating_sum = rating_sum - #{oldRating} + #{rating}
         WHERE rest_no = #{restNo}
     </update>
 
     <delete id="deleteReview">
-        DELETE FROM review_tbl
+        DELETE FROM REVIEW_TBL
         WHERE review_no = #{reviewNo}
     </delete>
 
     <delete id="deleteRest">
-        DELETE FROM restaurant_tbl
+        DELETE FROM RESTAURANT_TBL
         WHERE rest_no = #{restNo}
     </delete>
 

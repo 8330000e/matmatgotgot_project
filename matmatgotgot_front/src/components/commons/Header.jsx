@@ -1,8 +1,8 @@
-import styles from './Header.module.css';
-import { FiBell, FiMail, FiUser, FiSettings } from 'react-icons/fi';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../../store/useAuthStore';
-import logo from '../../assets/logo/맛맛곳곳로고_300x398.png';
+import styles from "./Header.module.css";
+import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
+import { Link, useLocation } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
+import logo from "../../assets/logo/맛맛곳곳로고_300x398.png";
 
 export default function Header() {
   const location = useLocation();
@@ -25,9 +25,7 @@ export default function Header() {
           <nav className={styles.centerMenu}>
             <button
               className={
-                location.pathname.startsWith('/restaurant')
-                  ? styles.activeMenu
-                  : ''
+                location.pathname.startsWith("/rest") ? styles.activeMenu : ""
               }
             >
               <Link to="/rest">맛집</Link>
@@ -35,7 +33,7 @@ export default function Header() {
 
             <button
               className={
-                location.pathname.startsWith('/trip') ? styles.activeMenu : ''
+                location.pathname.startsWith("/trip") ? styles.activeMenu : ""
               }
             >
               <Link to="/trip">여행</Link>
@@ -43,7 +41,7 @@ export default function Header() {
 
             <button
               className={
-                location.pathname.startsWith('/board') ? styles.activeMenu : ''
+                location.pathname.startsWith("/board") ? styles.activeMenu : ""
               }
             >
               <Link to="/board/list">게시판</Link>
@@ -62,20 +60,28 @@ export default function Header() {
                 <FiMail />
               </button>
 
-              {admin ? <Link to="/admin">
-                <button aria-label="관리자페이지" className={styles.iconBtn}>
-                  <FiUser />
-                </button>
-              </Link> : <Link to="/mypage/myinfo">
-                <button aria-label="마이페이지" className={styles.iconBtn}>
-                  <FiUser />
-                </button>
-              </Link>}
+              {admin ? (
+                <Link to="/admin">
+                  <button aria-label="관리자페이지" className={styles.iconBtn}>
+                    <FiUser />
+                  </button>
+                </Link>
+              ) : (
+                <Link to="/mypage/myinfo">
+                  <button aria-label="마이페이지" className={styles.iconBtn}>
+                    <FiUser />
+                  </button>
+                </Link>
+              )}
 
               <Link to={"/logout"}>
-              <button aria-label="설정" className={styles.iconBtn} onClick={logout}>
-                <FiSettings />
-              </button>
+                <button
+                  aria-label="설정"
+                  className={styles.iconBtn}
+                  onClick={logout}
+                >
+                  <FiSettings />
+                </button>
               </Link>
             </div>
           ) : (
