@@ -1,12 +1,7 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
@@ -20,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,6 +34,10 @@ public class RestaurantService {
         return restaurantMapper.restaurantCreate(restaurant);
     }//
 
+    @Transactional
+    public int restaurantModify(Restaurant restaurant) {
+        return restaurantMapper.restaurantModify(restaurant);
+    }//
 
     public RestViewResponse restaurantViewInfo(String memberId, Long restNo) {
         RestViewResponse restRes = restaurantMapper.restaurantViewInfo(memberId, restNo);
@@ -76,13 +72,9 @@ public class RestaurantService {
             throw new RuntimeException("리뷰 저장 실패");
         }
 
-        if (request.getReviewMenu() != null && !request.getReviewMenu().isBlank()) {
-            List<String> menuList = Arrays.stream(request.getReviewMenu().trim().split("\\s+"))
-                    .distinct()
-                    .collect(Collectors.toList());
-
-            int res2 = restaurantMapper.insertReviewMenus(request.getReviewNo(), menuList);
-            if (res2 != menuList.size()) {
+        if (request.getReviewMenus() != null && !request.getReviewMenus().isEmpty()) {
+            int res2 = restaurantMapper.insertReviewMenus(request.getReviewNo(), request.getReviewMenus());
+            if (res2 != request.getReviewMenus().size()) {
                 throw new RuntimeException("메뉴 저장 실패");
             }
         }
@@ -118,11 +110,17 @@ public class RestaurantService {
             }
         }
 
+        // 레이팅, 리뷰수 증가
+        int res5 = restaurantMapper.increaseRatingAvg(request.getRestNo(), request.getRating());
+        if (res5 != 1) {
+            throw new RuntimeException("레이팅, 리뷰수 증가 실패");
+        }
+
         return true;
     }//
 
-    public ReviewViewResponse getReviewView(Long reviewNo) {
-        ReviewViewResponse res = restaurantMapper.getReviewView(reviewNo);
+    public ReviewViewResponse getReviewView(Long reviewNo, String memberId) {
+        ReviewViewResponse res = restaurantMapper.getReviewView(reviewNo, memberId);
         List<String> images = restaurantMapper.getReviewImages(reviewNo);
         List<String> menu = restaurantMapper.getReviewMenu(reviewNo);
         List<String> tags = restaurantMapper.getReviewTags(reviewNo);
@@ -145,9 +143,11 @@ public class RestaurantService {
     @Transactional
     public ReviewCommentResponse commentRegist(Long reviewNo, ReviewCommentRequest request) {
         int result = restaurantMapper.insertComment(reviewNo, request);
+
         if (result != 1) {
             throw new RuntimeException("댓글 저장 실패");
         }
+
         return restaurantMapper.selectComment(request.getCommentNo());
     }//
 
@@ -155,6 +155,7 @@ public class RestaurantService {
     @Transactional
     public void commentUpdate(Long commentNo, String content) {
         int result = restaurantMapper.updateComment(commentNo, content);
+
         if (result != 1) {
             throw new RuntimeException("댓글 수정 실패");
         }
@@ -164,13 +165,13 @@ public class RestaurantService {
     @Transactional
     public void commentDelete(Long commentNo) {
         int result = restaurantMapper.deleteComment(commentNo);
+
         if (result < 1) {
             throw new RuntimeException("댓글 삭제 실패");
         }
     }//
 
     public List<Recommand> getPopular(String memberId) {
-
         return restaurantMapper.getPopular(memberId);
     }//
 
@@ -179,9 +180,124 @@ public class RestaurantService {
     }//
 
     public List<Recommand> getRegion(String memberId, Coords coords) {
-        List<Recommand> region = restaurantMapper.getRegion(memberId, coords);
-
-        return region;
+        return restaurantMapper.getRegion(memberId, coords);
     }//
 
+    public List<Recommand> getMainList(MainListRequest req, String memberId) {
+        return restaurantMapper.getMainList(req, memberId);
+    }//
+
+    public int getMainListCount(MainListRequest req, String memberId) {
+       return restaurantMapper.getMainListCount(req, memberId);
+    }//
+
+    public CheckDuplicationResponse isDup(CheckDuplicationRequest chk) {
+        Long restNo = restaurantMapper.getSame(chk);
+
+        return CheckDuplicationResponse.builder()
+                .duplicate(restNo != null)
+                .restNo(restNo)
+                .build();
+    }//
+
+    @Transactional
+    public int report(ReportRequest report) {
+        if (Objects.equals(report.getType(), "rest")) {
+            return restaurantMapper.restReport(report);
+        } else if (Objects.equals(report.getType(), "review")){
+            return restaurantMapper.reviewReport(report);
+        } else {
+            return restaurantMapper.commentReport(report);
+        }
+    }//
+
+    @Transactional
+    public int reviewLike(Long reviewNo, String memberId) {
+        return restaurantMapper.reviewLike(reviewNo, memberId);
+    }//
+
+    @Transactional
+    public int reviewUnlike(Long reviewNo, String memberId) {
+        return restaurantMapper.reviewUnlike(reviewNo, memberId);
+    }//
+
+    @Transactional
+    public int restLike(Long restNo, String memberId) {
+        return restaurantMapper.restLike(restNo, memberId);
+    }//
+
+    @Transactional
+    public int restUnlike(Long restNo, String memberId) {
+        return restaurantMapper.restUnlike(restNo, memberId);
+    }//
+
+
+    @Transactional
+    public int reviewModify(ReviewCreateRequest req) {
+
+        // 1. content, rating 수정
+        int res1 = restaurantMapper.reviewModifyContent(req);
+        if (res1 < 1) throw new RuntimeException("리뷰 내용 수정 실패");
+
+        // 2. rating_sum 수정
+        int res2 = restaurantMapper.restModifyRating(req);
+        if (res2 < 1) throw new RuntimeException("평점 합산 수정 실패");
+
+        // 3. 태그 삭제
+        restaurantMapper.reviewDeleteTags(req.getReviewNo());
+
+        // 4. 태그 삽입
+        if (req.getTags() != null && !req.getTags().isEmpty()) {
+            int res4 = restaurantMapper.insertReviewTags(req.getReviewNo(), req.getTags());
+            if (res4 < 1) throw new RuntimeException("태그 삽입 실패");
+        }
+
+        // 5. 이미지 삭제
+        restaurantMapper.reviewDeleteImages(req);
+
+        // 6. 이미지 삽입
+        if (req.getFiles() != null && !req.getFiles().isEmpty()) {
+            String savepath = root + "restaurant/";
+            File dir = new File(savepath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            List<String> imageUrls = new ArrayList<>();
+            for (MultipartFile file : req.getFiles()) {
+                if (file.isEmpty()) continue;
+                String savedFileName = fileUtil.upload(savepath, file);
+                if (savedFileName == null || savedFileName.isEmpty()) {
+                    throw new RuntimeException("파일 업로드 실패: " + file.getOriginalFilename());
+                }
+                imageUrls.add(savedFileName);
+            }
+
+            if (!imageUrls.isEmpty()) {
+                int res6 = restaurantMapper.insertReviewImages(req.getReviewNo(), imageUrls);
+                if (res6 < 1) throw new RuntimeException("이미지 삽입 실패");
+            }
+        }
+
+        return 1; // 모든 단계 성공 시 반환
+    }//
+
+    public List<Recommand> getRestSearch(SearchRequest req, String memberId) {
+        return restaurantMapper.getRestSearch(req, memberId);
+    }//
+
+    public int getRestSearchCount(SearchRequest req, String memberId) {
+        return restaurantMapper.getRestSearchCount(req, memberId);
+    }//
+
+
+    @Transactional
+    public int deleteReview(Long reviewNo) {
+        return restaurantMapper.deleteReview(reviewNo);
+    }//
+
+    @Transactional
+    public int deleteRest(Long restNo) {
+        return restaurantMapper.deleteRest(restNo);
+    }//
 }

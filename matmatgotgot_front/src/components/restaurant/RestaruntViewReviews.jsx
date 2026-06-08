@@ -2,19 +2,21 @@ import styles from "./RestaruntViewReviews.module.css";
 import Pagination from "../../components/ui/Pagination";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const RestaruntViewReviews = () => {
+const RestaruntViewReviews = ({ restNo }) => {
   const [reviewList, setRivewList] = useState([]);
   const [reviewsCnt, setReviewsCnt] = useState(0);
   const [page, setPage] = useState(0);
   const [size] = useState(4); // 한 페이지에 보여줄 리뷰 수
   const [totalPage, setTotalPage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 리뷰 목록 조회
     axios
       .get(
-        `${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?page=${page}&size=${size}&restNo=1`,
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/reviews?page=${page}&size=${size}&restNo=${restNo}`,
       )
       .then((res) => {
         console.log(res.data.list);
@@ -33,7 +35,14 @@ const RestaruntViewReviews = () => {
       <div className={styles.review_top}>
         <div className={styles.review_count}>리뷰 수 {reviewsCnt}개</div>
         <div className={styles.btn_zone_reviews}>
-          <button type="button">리뷰 작성하기</button>
+          <button
+            type="button"
+            onClick={() => {
+              navigate(`/receipt/review/${restNo}`);
+            }}
+          >
+            리뷰 작성하기
+          </button>
         </div>
       </div>
 
@@ -58,8 +67,15 @@ const RestaruntViewReviews = () => {
 };
 
 const ReviewItem = ({ review }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className={styles.review_item}>
+    <div
+      className={styles.review_item}
+      onClick={() => {
+        navigate(`/rest/review/view/${review.reviewNo}`);
+      }}
+    >
       {/* 작성자 정보: 아바타 + 이름 + 현지인 뱃지 + 별점 */}
       <div className={styles.review_writer}>
         {/* 프로필 이미지: 없으면 기본 회색 원 표시 */}
@@ -85,7 +101,6 @@ const ReviewItem = ({ review }) => {
           </div>
           <div className={styles.review_rating}>
             {"★".repeat(Math.round(review.rating) || 5)}
-            <span className={styles.rating_num}>{review.rating}</span>
           </div>
         </div>
       </div>

@@ -20,6 +20,7 @@ public class Member {
     private String memberName;
     private String memberEmail;
     private String memberNickname;
+    private String memberAddress;
     private String memberThumb;
     private Integer memberStatus;
     private LocalDateTime enrollDate;
@@ -29,5 +30,8 @@ public class Member {
     private Double lng;
     private Integer adContent;
 
-    
+    private String newMemberPw;
+    private String newMemberPwRe;
+
+    private String newMemberEmail;
 }

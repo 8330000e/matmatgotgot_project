@@ -3,12 +3,13 @@
 <mapper namespace="com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper">
 
     <insert id="restaurantCreate" useGeneratedKeys="true" keyProperty="restNo">
-        INSERT INTO restaurant_tbl (member_no, rest_name, rest_addr, lat, lng, category, phone, hours, rest_content, rest_thumb, created_at)
-        VALUES (#{memberNo}, #{restName}, #{restAddr}, #{lat}, #{lng}, #{category}, #{phone}, #{hours}, #{restContent}, #{restThumb}, current_timestamp())
+        INSERT INTO restaurant_tbl (member_id, rest_name, rest_addr, lat, lng, category, phone, hours, rest_content, rest_thumb, created_at)
+        VALUES (#{memberId}, #{restName}, #{restAddr}, #{lat}, #{lng}, #{category}, #{phone}, #{hours}, #{restContent}, #{restThumb}, current_timestamp())
     </insert>
 
     <select id="restaurantViewInfo" resultType="restViewResponse">
         SELECT
+            r.rest_no,
             r.rest_name,
             r.rest_addr,
             r.category,
@@ -21,6 +22,8 @@
             r.rating_sum,
             r.review_total_count,
             ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
+            m.member_id,
+
             EXISTS (
                 SELECT 1
                 FROM rest_like_tbl rl
@@ -36,20 +39,23 @@
             ) AS is_report
 
         FROM restaurant_tbl r
+        INNER JOIN member_tbl m
+            ON r.member_id = m.member_id
         WHERE r.rest_no = #{restNo} AND r.rest_status = 'NORMAL'
     </select>
 
     <select id="getTags" resultType="String">
-        SELECT t.name
-        FROM restaurant_tags_tbl rt
-            INNER JOIN tags_tbl t ON rt.tag_no = t.tag_no
-        WHERE rt.rest_no = #{restNo}
+        SELECT DISTINCT tag_name
+        FROM review_tbl r
+                 INNER JOIN review_tags_tbl rt
+                            ON r.review_no = rt.review_no
+        WHERE rest_no = #{restNo}
     </select>
 
     <select id="getMenus" resultType="String">
-        SELECT menu_name
+        SELECT DISTINCT menu_name
         FROM review_menu_tbl
-        WHERE review_no = (SELECT review_no
+        WHERE review_no IN (SELECT review_no
                            FROM review_tbl
                            WHERE rest_no = #{restNo}
         );
@@ -66,7 +72,7 @@
 
     FROM review_tbl r
              INNER JOIN member_tbl m
-                        ON r.member_no = m.member_no
+                        ON r.member_id = m.member_id
     WHERE rest_no = #{restNo}
     ORDER BY r.visit_date DESC
 
@@ -83,9 +89,8 @@
         SELECT COUNT(*)
         FROM review_tbl r
                  INNER JOIN member_tbl m
-                            ON r.member_no = m.member_no
+                            ON r.member_id = m.member_id
         WHERE rest_no = #{restNo}
-        ORDER BY r.visit_date DESC
     </select>
 
     <insert id="reviewInsert" useGeneratedKeys="true" keyProperty="reviewNo">
@@ -119,16 +124,31 @@
 
     <select id="getReviewView" resultType="reviewViewResponse">
         SELECT
+            rt.rest_no,
+            rt.rest_name,
+            rt.rest_addr,
             m.member_thumb,
             m.member_name,
+            m.member_id,
             r.review_content,
             r.visit_date AS review_visit,
-            r.rating
+            r.rating,
+
+            EXISTS (
+                SELECT 1
+                FROM review_like_tbl rl
+                WHERE rl.member_id = #{memberId}
+                  AND rl.review_no = r.review_no
+            ) AS is_liked
 
         FROM review_tbl r
                  INNER JOIN member_tbl m
-                            ON r.member_no = m.member_no
-        WHERE review_no = #{reviewNo};
+                            ON r.member_id = m.member_id
+
+                 INNER JOIN restaurant_tbl rt
+                            ON r.rest_no = rt.rest_no
+
+        WHERE r.review_no = #{reviewNo}
     </select>
 
     <select id="getReviewImages" resultType="String">
@@ -152,7 +172,7 @@
     <select id="selectCommentList" resultType="reviewCommentResponse">
         SELECT
             c.comment_no,
-            c.member_no,
+            c.member_id,
             m.member_name     AS writerName,
             m.member_thumb,
             c.content,
@@ -161,7 +181,7 @@
             c.parent_comment
 
         FROM review_comment_tbl c
-                 INNER JOIN member_tbl m ON c.member_no = m.member_no
+                 INNER JOIN member_tbl m ON c.member_id = m.member_id
         WHERE c.review_no = #{reviewNo} AND c.com_status = 0
         ORDER BY
             COALESCE(c.parent_comment, c.comment_no),
@@ -172,7 +192,7 @@
     <select id="selectComment" resultType="reviewCommentResponse">
         SELECT
             c.comment_no,
-            c.member_no,
+            c.member_id,
             m.member_name     AS writerName,
             m.member_thumb,
             c.content,
@@ -181,15 +201,15 @@
             c.parent_comment
 
         FROM review_comment_tbl c
-                 INNER JOIN member_tbl m ON c.member_no = m.member_no
+                 INNER JOIN member_tbl m ON c.member_id = m.member_id
         WHERE c.comment_no = #{commentNo}
     </select>
 
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="req.commentNo">
         INSERT INTO review_comment_tbl
-            (review_no, member_no, parent_comment, depth, content)
+            (review_no, member_id, parent_comment, depth, content)
         VALUES
-            (#{reviewNo}, #{req.memberNo}, #{req.parentComment}, #{req.depth}, #{req.content})
+            (#{reviewNo}, #{req.memberId}, #{req.parentComment}, #{req.depth}, #{req.content})
     </insert>
 
     <update id="updateComment">
@@ -210,6 +230,7 @@
             r.rest_thumb,
             r.rest_addr,
             r.category,
+            r.review_total_count,
             ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
 
             EXISTS (
@@ -220,6 +241,12 @@
             ) AS is_like
 
         FROM restaurant_tbl r
+
+        ORDER BY
+            rating_avg DESC,
+            r.review_total_count DESC
+
+        LIMIT 10
     </select>
 
     <select id="getLike" resultType="recommand">
@@ -229,6 +256,7 @@
             r.rest_thumb,
             r.rest_addr,
             r.category,
+            r.review_total_count,
             ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
             TRUE AS is_like
 
@@ -245,6 +273,7 @@
         r.rest_thumb,
         r.rest_addr,
         r.category,
+        r.review_total_count,
         ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
 
         EXISTS (
@@ -276,5 +305,282 @@
         )
         ) <= 10
         ]]>
+
+        ORDER BY distance_km ASC
     </select>
+
+    <select id="getMainList" resultType="recommand">
+        SELECT
+        r.rest_no,
+        r.rest_name,
+        r.rest_thumb,
+        r.rest_addr,
+        r.category,
+        r.review_total_count,
+        ROUND( r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
+
+        EXISTS (
+        SELECT 1
+        FROM rest_like_tbl rl
+        WHERE rl.rest_no = r.rest_no
+        AND rl.member_id = #{memberId}
+        ) AS is_like
+
+        FROM restaurant_tbl r
+
+        <where>
+            <if test="req.region != null and req.region != ''">
+                r.rest_addr LIKE CONCAT('%', #{req.region}, '%')
+            </if>
+
+            <if test="req.categories != null and req.categories.length > 0">
+                AND r.category IN
+                <foreach collection="req.categories"
+                         item="category"
+                         open="("
+                         separator=","
+                         close=")">
+                    #{category}
+                </foreach>
+            </if>
+        </where>
+
+        <choose>
+            <when test="req.order == 'latest'">
+                ORDER BY r.created_at DESC
+            </when>
+
+            <when test="req.order == 'star'">
+                ORDER BY rating_avg DESC
+            </when>
+
+            <when test="req.order == 'oldest'">
+                ORDER BY r.created_at ASC
+            </when>
+
+            <when test="req.order == 'reviews'">
+                ORDER BY r.review_total_count DESC
+            </when>
+
+            <otherwise>
+                ORDER BY r.created_at DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{req.size} OFFSET #{req.offset}
+    </select>
+
+    <select id="getMainListCount" resultType="int">
+        SELECT COUNT(*)
+        FROM restaurant_tbl r
+        <where>
+            <if test="req.region != null and req.region != ''">
+                r.rest_addr LIKE CONCAT('%', #{req.region}, '%')
+            </if>
+
+            <if test="req.categories != null and req.categories.length > 0">
+                AND r.category IN
+                <foreach collection="req.categories"
+                         item="category"
+                         open="("
+                         separator=","
+                         close=")">
+                    #{category}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getRestSearch" resultType="recommand">
+        SELECT
+        r.rest_no,
+        r.rest_name,
+        r.rest_thumb,
+        r.rest_addr,
+        r.category,
+        r.review_total_count,
+
+        ROUND(
+        r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1
+        ) AS rating_avg,
+
+        EXISTS (
+        SELECT 1
+        FROM rest_like_tbl rl
+        WHERE rl.rest_no = r.rest_no
+        AND rl.member_id = #{memberId}
+        ) AS is_like
+
+        FROM restaurant_tbl r
+
+        <where>
+            <if test="req.restName != null and req.restName != ''">
+                r.rest_name LIKE CONCAT('%', #{req.restName}, '%')
+            </if>
+        </where>
+
+        ORDER BY r.created_at DESC
+
+        LIMIT #{req.size} OFFSET #{req.offset}
+    </select>
+
+    <select id="getRestSearchCount" resultType="int">
+        SELECT COUNT(*)
+        FROM restaurant_tbl r
+        <where>
+            <if test="req.restName != null and req.restName != ''">
+                r.rest_name LIKE CONCAT('%', #{req.restName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getSame" resultType="Long">
+        SELECT r.rest_no
+        FROM restaurant_tbl r
+        WHERE r.rest_name = #{storeName}
+          AND (
+                6371 * ACOS(
+                COS(RADIANS(#{lat}))
+                * COS(RADIANS(r.lat))
+                * COS(RADIANS(r.lng) - RADIANS(#{lng}))
+                + SIN(RADIANS(#{lat}))
+                * SIN(RADIANS(r.lat))
+                )
+          ) <![CDATA[ <= 0.1 ]]>
+    </select>
+
+    <update id="increaseRatingAvg">
+        UPDATE restaurant_tbl
+        SET rating_sum = rating_sum + #{rating},
+            review_total_count = review_total_count + 1
+        WHERE rest_no = #{restNo}
+    </update>
+
+    <insert id="restReport">
+        INSERT INTO rest_report_tbl (
+        member_id,
+        rest_no,
+        reason
+        <if test="reason == '기타'">
+            , detail
+        </if>
+        )
+        VALUES (
+        #{memberId},
+        #{no},
+        #{reason}
+        <if test="reason == '기타'">
+            , #{detail}
+        </if>
+        )
+    </insert>
+
+    <insert id="reviewReport">
+        INSERT INTO review_report_tbl (
+        member_id,
+        review_no,
+        reason
+        <if test="reason == '기타'">
+            , detail
+        </if>
+        )
+        VALUES (
+        #{memberId},
+        #{no},
+        #{reason}
+        <if test="reason == '기타'">
+            , #{detail}
+        </if>
+        )
+    </insert>
+
+    <insert id="commentReport">
+        INSERT INTO review_comment_report_tbl (
+        member_id,
+        comment_no,
+        reason
+        <if test="reason == '기타'">
+            , detail
+        </if>
+        )
+        VALUES (
+        #{memberId},
+        #{no},
+        #{reason}
+        <if test="reason == '기타'">
+            , #{detail}
+        </if>
+        )
+    </insert>
+
+    <insert id="reviewLike">
+        INSERT INTO review_like_tbl (review_no, member_id)
+        VALUES (#{reviewNo}, #{memberId})
+    </insert>
+
+    <delete id="reviewUnlike">
+        DELETE FROM review_like_tbl
+        WHERE member_id = #{memberId}
+          AND review_no = #{reviewNo}
+    </delete>
+
+    <insert id="restLike">
+        INSERT INTO rest_like_tbl (member_id, rest_no)
+        VALUES (#{memberId}, #{restNo})
+    </insert>
+
+    <delete id="restUnlike">
+        DELETE FROM rest_like_tbl
+        WHERE member_id = #{memberId}
+          AND rest_no = #{restNo}
+    </delete>
+
+    <update id="restaurantModify">
+        UPDATE restaurant_tbl
+        SET phone = #{phone},
+            hours = #{hours},
+            rest_content = #{restContent},
+            rest_thumb = #{restThumb}
+        WHERE rest_no = #{restNo}
+    </update>
+
+    <update id="reviewModifyContent">
+        UPDATE review_tbl
+        SET review_content = #{reviewContent}, rating = #{rating}
+        WHERE review_no = #{reviewNo}
+    </update>
+
+    <delete id="reviewDeleteTags">
+        DELETE FROM review_tags_tbl
+        WHERE review_no = #{reviewNo}
+    </delete>
+
+    <delete id="reviewDeleteImages">
+        DELETE FROM review_images_tbl
+        WHERE image_url IN
+        <foreach collection="deleteFileList"
+                 item="fileName"
+                 open="("
+                 separator=","
+                 close=")">
+            #{fileName}
+        </foreach>
+    </delete>
+
+    <update id="restModifyRating">
+        UPDATE restaurant_tbl
+        SET rating_sum = rating_sum - #{oldRating} + #{rating}
+        WHERE rest_no = #{restNo}
+    </update>
+
+    <delete id="deleteReview">
+        DELETE FROM review_tbl
+        WHERE review_no = #{reviewNo}
+    </delete>
+
+    <delete id="deleteRest">
+        DELETE FROM restaurant_tbl
+        WHERE rest_no = #{restNo}
+    </delete>
+
 </mapper>

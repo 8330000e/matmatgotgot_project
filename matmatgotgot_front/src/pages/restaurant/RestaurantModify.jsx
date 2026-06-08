@@ -7,7 +7,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const RestaurantModify = () => {
   const navigate = useNavigate();
-  // URL 파라미터에서 수정할 맛집 번호 추출
   const { restNo } = useParams();
 
   // 폼 필드 상태 — 기존 데이터를 불러와 초기값으로 세팅
@@ -27,13 +26,14 @@ const RestaurantModify = () => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/restaurants?restNo=${restNo}`)
       .then((res) => {
+        console.log(res.data);
         const data = res.data;
         setRestName(data.restName ?? "");
         setRestAddr(data.restAddr ?? "");
-        setRestHours(data.restHours ?? "");
-        setRestPhone(data.restPhone ?? "");
+        setRestHours(data.hours ?? "");
+        setRestPhone(data.phone ?? "");
         setCategory(data.category ?? "");
-        setContent(data.content ?? "");
+        setContent(data.restContent ?? "");
         // 기존 좌표가 있으면 지도 중심으로 세팅
         if (data.lat) setLat(data.lat);
         if (data.lng) setLng(data.lng);
@@ -64,15 +64,6 @@ const RestaurantModify = () => {
     naver.maps.Event.addListener(marker, "click", () => {
       infoWindow.getMap() ? infoWindow.close() : infoWindow.open(map, marker);
     });
-
-    // 지도 클릭 시 마커 위치(좌표) 업데이트
-    naver.maps.Event.addListener(map, "click", (e) => {
-      marker.setPosition(e.coord);
-      map.setCenter(e.coord);
-      setLat(e.coord.lat());
-      setLng(e.coord.lng());
-      if (infoWindow.getMap()) infoWindow.close();
-    });
   }, [lat, lng]);
 
   // 텍스트 에디터 내용 업데이트
@@ -82,19 +73,14 @@ const RestaurantModify = () => {
 
   // 카테고리 태그 목록
   const categoryList = [
-    { value: "kr", label: "한식" },
-    { value: "western", label: "양식" },
-    { value: "jp", label: "일식" },
-    { value: "ch", label: "중식" },
+    { value: "한식", label: "한식" },
+    { value: "양식", label: "양식" },
+    { value: "일식", label: "일식" },
+    { value: "중식", label: "중식" },
   ];
 
   // 맛집 수정 요청
   const modify = () => {
-    if (!restName || !restAddr || !category || !content || !lat || !lng) {
-      Swal.fire({ title: "필수 항목을 모두 입력해주세요.", icon: "warning" });
-      return;
-    }
-
     const requestData = {
       restNo,
       restName,
@@ -108,11 +94,11 @@ const RestaurantModify = () => {
     };
 
     axios
-      .put(`${import.meta.env.VITE_BACKSERVER}/restaurants`, requestData)
+      .put(`${import.meta.env.VITE_BACKSERVER}/restaurants/modify`, requestData)
       .then((res) => {
         if (res.data > 0) {
           Swal.fire({ title: "맛집 수정 완료", icon: "success" }).then(() => {
-            navigate(`/restaurant/${restNo}`);
+            navigate(`/rest/view/${restNo}`);
           });
         }
       })
@@ -141,6 +127,7 @@ const RestaurantModify = () => {
               id="restName"
               value={restName}
               onChange={(e) => setRestName(e.target.value)}
+              disabled={true}
             />
           </div>
 
@@ -154,6 +141,7 @@ const RestaurantModify = () => {
               id="restAddr"
               value={restAddr}
               onChange={(e) => setRestAddr(e.target.value)}
+              disabled={true}
             />
           </div>
 

@@ -46,7 +46,6 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 10px;
-  border-top: 1.5px solid var(--gray7); /* 방문정보와 버튼 영역 구분 */
 }
 
 /* 좌측: 신고 + 좋아요 */
@@ -126,6 +125,7 @@
 /* comment_section(ReviewViewComment)이 자체 border/배경으로 컨테이너 역할 수행 */
 .review_comment {
   padding: 20px 20px 60px;
+  border-top: 1px solid var(--gray5);
 }
 
 /* "댓글" 섹션 타이틀 */
@@ -134,4 +134,27 @@
   font-weight: 700;
   color: var(--text1);
   margin-bottom: 12px;
+}
+
+/* 전체 화면을 덮는 반투명 배경 */
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  /* flexbox로 모달을 정중앙에 배치 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 모달 박스 */
+.modal_content {
+  background: var(--gray8);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }

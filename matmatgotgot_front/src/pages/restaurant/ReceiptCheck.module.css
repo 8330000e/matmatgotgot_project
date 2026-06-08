@@ -426,3 +426,26 @@
   border-radius: 8px;
   overflow: hidden;
 }
+
+.addr_caution {
+  color: #d3a72f;
+}
+
+.confirmBtn_zone {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirmBtn_zone button {
+  margin-top: 10px;
+  padding: 8px 11px;
+  border: none;
+  background-color: var(--text1);
+  border-radius: 8px;
+  color: var(--gray8);
+  font-size: 600;
+}
+
+.confirmBtn_zone button:hover {
+  background-color: var(--footer);
+}

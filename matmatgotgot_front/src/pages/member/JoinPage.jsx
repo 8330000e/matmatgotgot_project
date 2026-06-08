@@ -1,32 +1,35 @@
-import axios from 'axios';
-import styles from './JoinPage.module.css';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Input } from '../../components/ui/Form.jsx';
-import check from '../../assets/check.svg';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import styles from "./JoinPage.module.css";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Input } from "../../components/ui/Form.jsx";
+import check from "../../assets/check.svg";
+import Swal from "sweetalert2";
+import { useKakaoPostcode } from "@clroot/react-kakao-postcode";
 
 const Join = () => {
   const navigate = useNavigate();
+  const detailRef = useRef();
   const [member, setMember] = useState({
-    memberId: '',
-    memberPw: '',
-    memberName: '',
-    memberNickname: '',
-    memberEmail: '',
+    memberId: "",
+    memberPw: "",
+    memberName: "",
+    memberNickname: "",
+    memberEmail: "",
+    memberAddress: "",
     adContent: 0,
   });
   const [checkId, setCheckId] = useState(0);
   const [checkPw, setCheckPw] = useState(0);
   const [checkPwRe, setCheckPwRe] = useState(0);
-  const [memberPwRe, setMemberPwRe] = useState('');
+  const [memberPwRe, setMemberPwRe] = useState("");
   const inputMember = (e) => {
     const { name, value } = e.target;
     setMember((prev) => ({ ...prev, [name]: value }));
   };
   const [mailAuth, setMailAuth] = useState(0);
   const [mailAuthCode, setMailAuthCode] = useState(null);
-  const [mailAuthInput, setMailAuthInput] = useState('');
+  const [mailAuthInput, setMailAuthInput] = useState("");
   const idDupCheck = () => {
     console.log(member);
     axios
@@ -39,7 +42,7 @@ const Join = () => {
           setCheckId(0);
         }
         if (res.data) {
-          if (member.memberId === '' || member.memberId == '') {
+          if (member.memberId === "" || member.memberId == "") {
             return setCheckId(0);
           }
           setCheckId(3);
@@ -70,16 +73,22 @@ const Join = () => {
       setCheckPw(1);
     }
   };
+  const { open } = useKakaoPostcode({
+    onComplete: (data) => {
+      setMember((prev) => ({ ...prev, ["memberAddress"]: data.roadAddress }));
+      detailRef.current.focus();
+    },
+  });
   const [time, setTime] = useState(180);
   const [timeout, setTimeout] = useState(null);
   const sendMail = () => {
     if (!member.memberEmail) {
       Swal.mixin({
         toast: true,
-        color: '#2b1b17',
-        borderRadius: '15px',
-        fontWeight: '800',
-        padding: '20px 10px',
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -88,9 +97,9 @@ const Join = () => {
           toast.onmouseleave = Swal.resumeTimer;
         },
       }).fire({
-        title: '인증 메일전송 실패',
-        text: '이메일을 입력해주세요.',
-        icon: 'error',
+        title: "인증 메일전송 실패",
+        text: "이메일을 입력해주세요.",
+        icon: "error",
       });
     }
     setTime(180);
@@ -117,10 +126,10 @@ const Join = () => {
         console.error(err);
         Swal.mixin({
           toast: true,
-          color: '#2b1b17',
-          borderRadius: '15px',
-          fontWeight: '800',
-          padding: '20px 10px',
+          color: "#2b1b17",
+          borderRadius: "15px",
+          fontWeight: "800",
+          padding: "20px 10px",
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true,
@@ -129,9 +138,9 @@ const Join = () => {
             toast.onmouseleave = Swal.resumeTimer;
           },
         }).fire({
-          title: '인증 메일전송 실패',
-          text: '올바른 이메일을 입력해주세요.',
-          icon: 'error',
+          title: "인증 메일전송 실패",
+          text: "올바른 이메일을 입력해주세요.",
+          icon: "error",
         });
         setMailAuth(0);
         return;
@@ -147,7 +156,7 @@ const Join = () => {
   }, [time]);
   const showTime = () => {
     const min = Math.floor(time / 60);
-    const sec = String(time % 60).padStart(2, '0');
+    const sec = String(time % 60).padStart(2, "0");
     return `${min}:${sec}`;
   };
   const joinMember = () => {
@@ -158,12 +167,12 @@ const Join = () => {
         if (res.data === 1) {
           Swal.mixin({
             toast: true,
-            position: 'top-end',
+            position: "top-end",
             topLayer: true,
-            background: '#ffd95a',
-            color: '#2b1b17',
-            fontWeight: '600',
-            iconColor: '#fff',
+            background: "#ffd95a",
+            color: "#2b1b17",
+            fontWeight: "600",
+            iconColor: "#fff",
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
@@ -172,10 +181,10 @@ const Join = () => {
               toast.onmouseleave = Swal.resumeTimer;
             },
           }).fire({
-            icon: 'success',
-            title: '회원가입 성공',
+            icon: "success",
+            title: "회원가입 성공",
           });
-          navigate('/login');
+          navigate("/login");
         }
       })
       .catch((err) => {
@@ -197,20 +206,20 @@ const Join = () => {
       ...prev,
       [key]: !prev[key], // 클릭된 key(예: 'privacy')의 상태만 반전
     }));
-    if (isCheckedAll['marketing'] === true) {
+    if (isCheckedAll["marketing"] === true) {
       setMember((prev) => ({
         ...prev,
-        ['marketing']: 3,
+        ["marketing"]: 3,
       }));
-    } else if (isCheckedAll['email'] === true) {
+    } else if (isCheckedAll["email"] === true) {
       setMember((prev) => ({
         ...prev,
-        ['email']: 1,
+        ["email"]: 1,
       }));
-    } else if (isCheckedAll['sms'] === true) {
+    } else if (isCheckedAll["sms"] === true) {
       setMember((prev) => ({
         ...prev,
-        ['sms']: 2,
+        ["sms"]: 2,
       }));
     }
   };
@@ -246,10 +255,10 @@ const Join = () => {
     ) {
       Swal.mixin({
         toast: true,
-        color: '#2b1b17',
-        borderRadius: '15px',
-        fontWeight: '800',
-        padding: '20px 10px',
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -258,9 +267,9 @@ const Join = () => {
           toast.onmouseleave = Swal.resumeTimer;
         },
       }).fire({
-        title: '회원가입 실패',
-        text: `${member.memberId ? (member.memberPw ? (memberPwRe ? (member.memberName ? (member.memberNickname ? (member.memberEmail ? null : '이메일을 입력하세요.') : '닉네임을 입력하세요') : '이름을 입력하세요.') : '비밀번호를 다시 입력하세요') : '비밀번호를 입력하세요') : '아이디를 입력하세요.'}`,
-        icon: 'error',
+        title: "회원가입 실패",
+        text: `${member.memberId ? (member.memberPw ? (memberPwRe ? (member.memberName ? (member.memberNickname ? (member.memberEmail ? null : "이메일을 입력하세요.") : "닉네임을 입력하세요") : "이름을 입력하세요.") : "비밀번호를 다시 입력하세요") : "비밀번호를 입력하세요") : "아이디를 입력하세요."}`,
+        icon: "error",
       });
       return;
     }
@@ -268,10 +277,10 @@ const Join = () => {
     if (!isCheckedAll.age || !isCheckedAll.terms || !isCheckedAll.privacy) {
       Swal.mixin({
         toast: true,
-        color: '#2b1b17',
-        borderRadius: '15px',
-        fontWeight: '800',
-        padding: '20px 10px',
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -280,9 +289,9 @@ const Join = () => {
           toast.onmouseleave = Swal.resumeTimer;
         },
       }).fire({
-        title: '회원가입 실패',
-        text: '필수약관에 동의해주세요.',
-        icon: 'error',
+        title: "회원가입 실패",
+        text: "필수약관에 동의해주세요.",
+        icon: "error",
       });
       return;
     }
@@ -478,6 +487,25 @@ const Join = () => {
               required
             />
           </div>
+          <div className={styles.input_address}>
+            <div className={styles.inputLabel}>
+              <label htmlFor="memberAddress">주소</label>
+            </div>
+            <div>
+              <Input
+                ref={detailRef}
+                type="text"
+                id="memberAddress"
+                name="memberAddress"
+                value={member.memberAddress}
+                onChange={inputMember}
+                required
+              />
+              <button type="button" className={styles.submit_s} onClick={open}>
+                주소찾기
+              </button>
+            </div>
+          </div>
           <div>
             <div className={styles.inputLabel}>
               <label htmlFor="memberEmail">이메일</label>
@@ -527,7 +555,7 @@ const Join = () => {
                         window.clearInterval(timeout);
                         setTimeout(null);
                       } else {
-                        alert('인증코드가 올바르지 않습니다.');
+                        alert("인증코드가 올바르지 않습니다.");
                       }
                     }}
                     disabled={mailAuth === 3}
@@ -536,7 +564,7 @@ const Join = () => {
                   </button>
                 </div>
                 <p className={styles.check_msg}>
-                  {mailAuth === 3 ? '인증되었습니다.' : showTime()}
+                  {mailAuth === 3 ? "인증되었습니다." : showTime()}
                 </p>
               </div>
             )}
@@ -567,7 +595,7 @@ const Join = () => {
                   <button
                     id="age"
                     type="button"
-                    onClick={() => toggleCheck('age')}
+                    onClick={() => toggleCheck("age")}
                     className={`${isCheckedAll.age ? `${styles.on}` : `${styles.off}`}`}
                   >
                     <img src={check} alt="체크여부" />
@@ -578,7 +606,7 @@ const Join = () => {
                   <button
                     id="terms"
                     type="button"
-                    onClick={() => toggleCheck('terms')}
+                    onClick={() => toggleCheck("terms")}
                     className={`${isCheckedAll.terms ? `${styles.on}` : `${styles.off}`}`}
                   >
                     <img src={check} alt="체크여부" />
@@ -589,7 +617,7 @@ const Join = () => {
                   <button
                     id="privacy"
                     type="button"
-                    onClick={() => toggleCheck('privacy')}
+                    onClick={() => toggleCheck("privacy")}
                     className={`${isCheckedAll.privacy ? `${styles.on}` : `${styles.off}`}`}
                   >
                     <img src={check} alt="체크여부" />
@@ -600,7 +628,7 @@ const Join = () => {
                   <button
                     id="location"
                     type="button"
-                    onClick={() => toggleCheck('location')}
+                    onClick={() => toggleCheck("location")}
                     className={`${isCheckedAll.location ? `${styles.on}` : `${styles.off}`}`}
                   >
                     <img src={check} alt="체크여부" />
@@ -611,7 +639,7 @@ const Join = () => {
                   <button
                     id="marketing"
                     type="button"
-                    onClick={() => toggleCheck('marketing')}
+                    onClick={() => toggleCheck("marketing")}
                     className={`${isCheckedAll.marketing ? `${styles.on}` : `${styles.off}`}`}
                   >
                     <img src={check} alt="체크여부" />
@@ -623,7 +651,7 @@ const Join = () => {
                     <button
                       id="email"
                       type="button"
-                      onClick={() => toggleCheck('email')}
+                      onClick={() => toggleCheck("email")}
                       className={`${isCheckedAll.email ? `${styles.on}` : `${styles.off}`}`}
                     >
                       <img src={check} alt="체크여부" />
@@ -634,7 +662,7 @@ const Join = () => {
                     <button
                       id="sms"
                       type="button"
-                      onClick={() => toggleCheck('sms')}
+                      onClick={() => toggleCheck("sms")}
                       className={`${isCheckedAll.sms ? `${styles.on}` : `${styles.off}`}`}
                     >
                       <img src={check} alt="체크여부" />

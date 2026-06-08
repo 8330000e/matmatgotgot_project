@@ -1,6 +1,7 @@
 .review_top {
   display: flex;
   justify-content: space-between;
+  margin: 10px 0;
 }
 
 /* ========== 리뷰 수 헤더 ========== */
@@ -46,6 +47,10 @@
   background-color: var(--gray8);
   border-radius: 8px;
   border: 1.5px solid var(--gray6);
+}
+
+.review_item:hover {
+  cursor: pointer;
 }
 
 /* 작성자 정보 행 */

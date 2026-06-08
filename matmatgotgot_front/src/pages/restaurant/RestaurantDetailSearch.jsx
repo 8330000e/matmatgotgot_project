@@ -4,21 +4,26 @@ import axios from "axios";
 import RestaurantItem from "../../components/restaurant/RestaurantItem";
 import Pagination from "../../components/ui/Pagination";
 import RestaurantMain from "./RestaurantMain";
+import { useNavigate } from "react-router-dom";
 
 const RestaurantDetailSearch = () => {
   const [region, setRegion] = useState("");
+  const [filterRegion, setFilterRegion] = useState("");
   const [categories, setCategories] = useState([]);
-  const [order, setOrder] = useState("latest"); // 기본값: 최신순
+  const [filterCategories, setFilterCategories] = useState([]);
+  const [order, setOrder] = useState("latest");
+  const [filterOrder, setFilterOrder] = useState("latest");
   const [restList, setRestList] = useState([]);
   const [page, setPage] = useState(0);
   const [size] = useState(12);
   const [totalPage, setTotalPage] = useState(null);
   const [restName, setRestName] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BACKSERVER}/restaurants/main?order=${order}&categories=${categories}`,
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/main?page=${page}&size=${size}&region=${filterRegion}&order=${filterOrder}&categories=${categories}`,
       )
       .then((res) => {
         console.log(res.data);
@@ -28,7 +33,7 @@ const RestaurantDetailSearch = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [order, categories]);
+  }, [filterRegion, filterOrder, filterCategories, page]);
 
   // 카테고리 체크박스 핸들러 (다중 선택 가능)
   const handleCategoryChange = (e) => {
@@ -49,12 +54,19 @@ const RestaurantDetailSearch = () => {
         params: { restName, page: 0, size },
       })
       .then((res) => {
-        setRestList(res.data);
+        setRestList(res.data.list);
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const doFilter = () => {
+    setFilterRegion(region);
+    setFilterOrder(order);
+    setFilterCategories(categories);
+    setPage(0);
   };
 
   return (
@@ -92,8 +104,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="kr"
-                  checked={categories.includes("kr")}
+                  value="한식"
+                  checked={categories.includes("한식")}
                   onChange={handleCategoryChange}
                 />
                 한식
@@ -101,8 +113,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="western"
-                  checked={categories.includes("western")}
+                  value="양식"
+                  checked={categories.includes("양식")}
                   onChange={handleCategoryChange}
                 />
                 양식
@@ -110,8 +122,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="ch"
-                  checked={categories.includes("ch")}
+                  value="중식"
+                  checked={categories.includes("중식")}
                   onChange={handleCategoryChange}
                 />
                 중식
@@ -119,8 +131,8 @@ const RestaurantDetailSearch = () => {
               <label>
                 <input
                   type="checkbox"
-                  value="jp"
-                  checked={categories.includes("jp")}
+                  value="일식"
+                  checked={categories.includes("일식")}
                   onChange={handleCategoryChange}
                 />
                 일식
@@ -176,7 +188,9 @@ const RestaurantDetailSearch = () => {
 
           {/* 필터 적용 버튼 (margin-top: auto 로 사이드바 최하단 고정) */}
           <div className={styles.filter_btn}>
-            <button type="button">필터 적용</button>
+            <button type="button" onClick={doFilter}>
+              필터 적용
+            </button>
           </div>
         </section>
 
@@ -226,7 +240,14 @@ const RestaurantDetailSearch = () => {
 
           {/* 맛집 등록 버튼 (화면 우하단 고정) */}
           <div className={styles.regist_btn}>
-            <button type="button">맛집 등록</button>
+            <button
+              type="button"
+              onClick={() => {
+                navigate(`/receipt/rest`);
+              }}
+            >
+              맛집 등록
+            </button>
           </div>
         </section>
       </div>

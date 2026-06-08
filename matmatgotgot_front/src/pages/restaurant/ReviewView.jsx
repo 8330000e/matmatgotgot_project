@@ -5,16 +5,18 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import ReviewViewInfo from "../../components/restaurant/ReviewViewInfo";
 import ReviewViewComment from "../../components/restaurant/ReviewViewComment";
+import ReportModal from "../../components/ui/ReportModal";
 
-// useAuthStore import 필요 — 실제 프로젝트 경로에 맞게 조정
-// import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const ReviewView = () => {
-  const { reviewNo } = useParams(); // URL 파라미터에서 reviewNo 추출
+  const { reviewNo } = useParams();
   const navigate = useNavigate();
+  const [reportModal, setReportModal] = useState(false);
 
-  // 로그인한 회원 번호 (본인 여부 확인용)
-  // const { memberId: loginMemberNo } = useAuthStore();
+  // 로그인한 회원 정보
+  const { memberNo, memberId } = useAuthStore();
+  console.log("memberNo: ", memberNo, "memberId", memberId);
 
   // 리뷰 상세 데이터 (서버에서 fetching)
   const [review, setReview] = useState(null);
@@ -22,20 +24,23 @@ const ReviewView = () => {
   // 좋아요 토글 상태
   const [liked, setLiked] = useState(false);
 
-  // ── 리뷰 데이터 조회 ─────────────────────────────────────
+  // 리뷰 데이터 조회
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}`)
+      .get(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/review?reviewNo=${reviewNo}`,
+      )
       .then((res) => {
         console.log(res.data);
         setReview(res.data);
+        setLiked(res.data.liked);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [reviewNo]);
 
-  // ── 리뷰 삭제 ───────────────────────────────────────────
+  // 리뷰 삭제
   const deleteReview = () => {
     Swal.fire({
       title: "삭제하시겠습니까?",
@@ -50,15 +55,52 @@ const ReviewView = () => {
           .delete(
             `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}`,
           )
-          .then(() => navigate(-1)) // 이전 페이지로 이동
+          .then((res) => {
+            if (res.data > 0) {
+              Swal.fire({
+                title: "삭제되었습니다.",
+                icon: "success",
+              }).then(() => {
+                navigate(`/rest`);
+              });
+            }
+          })
           .catch((err) => console.log(err));
       }
     });
   };
 
-  // 본인 리뷰 여부 (수정/삭제 버튼 표시 조건)
-  // const isOwner = review && loginMemberNo === review.memberNo;
-  const isOwner = true; // 임시: 항상 버튼 표시 (authStore 연동 후 위 줄로 교체)
+  const likeToggle = () => {
+    if (!liked) {
+      axios
+        .patch(
+          `${import.meta.env.VITE_BACKSERVER}/restaurants/review/like?reviewNo=${reviewNo}`,
+        )
+        .then((res) => {
+          console.log(res.data);
+          setLiked((prev) => !prev);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .delete(
+          `${import.meta.env.VITE_BACKSERVER}/restaurants/review/unlike?reviewNo=${reviewNo}`,
+        )
+        .then((res) => {
+          console.log(res.data);
+          setLiked((prev) => !prev);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  // 로그인 여부 + 본인 리뷰 여부 (수정/삭제 버튼 표시 조건)
+  const isLoggedIn = !!memberNo;
+  const isOwner = isLoggedIn && review && memberId === review.memberId;
 
   // 로딩 중 (review 미수신 시 렌더링 생략)
   if (!review) return null;
@@ -73,7 +115,9 @@ const ReviewView = () => {
             <button
               type="button"
               className={styles.info_btn}
-              onClick={() => navigate(`/review/modify/${reviewNo}`)}
+              onClick={() =>
+                navigate(`/review/modify/${reviewNo}/${review.restNo}`)
+              }
             >
               수정
             </button>
@@ -94,13 +138,23 @@ const ReviewView = () => {
         <div className={styles.btn_zone}>
           {/* 왼쪽: 신고 + 좋아요 */}
           <div className={styles.btn_zone_left}>
-            <button type="button" className={styles.report_btn}>
+            <button
+              type="button"
+              className={styles.report_btn}
+              onClick={() => {
+                if (!isLoggedIn) {
+                  Swal.fire({ title: "로그인이 필요합니다.", icon: "warning" });
+                  return;
+                }
+                setReportModal(true);
+              }}
+            >
               신고
             </button>
             <button
               type="button"
               className={`${styles.like_btn} ${liked ? styles.liked : ""}`}
-              onClick={() => setLiked((prev) => !prev)}
+              onClick={likeToggle}
             >
               좋아요
             </button>
@@ -111,7 +165,9 @@ const ReviewView = () => {
             <button
               type="button"
               className={styles.detail_btn}
-              onClick={() => navigate(`/restaurant/${review.restNo}`)}
+              onClick={() => {
+                navigate(`/rest/view/${review.restNo}`);
+              }}
             >
               맛집 상세 보기
             </button>
@@ -124,6 +180,27 @@ const ReviewView = () => {
         <div className={styles.comment_title}>댓글</div>
         <ReviewViewComment reviewNo={reviewNo} />
       </section>
+
+      {reportModal && (
+        <div
+          className={styles.modal_overlay}
+          onClick={(e) => {
+            e.stopPropagation();
+            setReportModal(false);
+          }}
+        >
+          <div
+            className={styles.modal_content}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ReportModal
+              type={"review"}
+              no={reviewNo}
+              setReportModal={setReportModal}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

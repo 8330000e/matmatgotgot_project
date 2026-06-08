@@ -1,12 +1,11 @@
 package com.twotwo.matmatgotgot.domain.member.mapper;
 
-import java.util.List;
-
+import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import org.apache.ibatis.annotations.Mapper;
-
-import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface MemberMapper {
@@ -33,4 +32,8 @@ public interface MemberMapper {
     int naverInsertMember(Member newMember);
 
     Member searchId(String memberId);
+
+    Integer updateMemberPw(@Param("memberId") String memberId, @Param("encPw") String encPw);
+
+    int updateThumbnail(Member m);
 }

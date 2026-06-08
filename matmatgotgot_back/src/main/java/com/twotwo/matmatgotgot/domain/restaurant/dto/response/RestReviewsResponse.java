@@ -14,6 +14,6 @@ public class RestReviewsResponse {
     private String writerThumb;
     private Integer rating;
     private String reviewContent;
-    private String visit_date;
+    private String visitDate;
     private List<String> menus;
 }

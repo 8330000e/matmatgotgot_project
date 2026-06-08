@@ -26,6 +26,17 @@
     font-size: 15px;
     font-weight: 600;
 }
+.input_address {
+    display: flex;
+    flex-direction: column;
+}
+.input_address > div:last-child {
+    display: flex;
+    gap: 8px;
+}
+.input_address > div:last-child > input {
+    width: 70%;
+}
 .idcheckt, .pwcheckt, .check_msg{
     font-size: 13px;
     padding: 3px;
@@ -44,6 +55,20 @@
     padding: 12px 32px;
     text-decoration: none;
     font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    border-radius: 10px;
+}
+.submit_s {
+    width: 20%;
+    flex: 1;
+    background-color: var(--text1);
+    color: #fff;
+    border: none;
+    padding: 0 10px;
+    text-decoration: none;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     outline: none;

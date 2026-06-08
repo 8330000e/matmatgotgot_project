@@ -1,8 +1,6 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
@@ -45,7 +43,8 @@ public interface RestaurantMapper {
     int insertReviewImages(@Param("reviewNo") Long reviewNo,
                            @Param("imageUrls") List<String> imageUrls);
 
-    ReviewViewResponse getReviewView(Long reviewNo);
+    ReviewViewResponse getReviewView(@Param("reviewNo") Long reviewNo,
+                                     @Param("memberId") String memberId);
 
     List<String> getReviewImages(Long reviewNo);
 
@@ -71,4 +70,55 @@ public interface RestaurantMapper {
 
     List<Recommand> getRegion(@Param("memberId") String memberId,
                               @Param("coords") Coords coords);
+
+    List<Recommand> getMainList(@Param("req") MainListRequest req,
+                                @Param("memberId") String memberId);
+
+    int getMainListCount(@Param("req") MainListRequest req,
+                             @Param("String") String memberId);
+
+    Long getSame(CheckDuplicationRequest chk);
+
+    int increaseRatingAvg(@Param("restNo") Long restNo,
+                          @Param("rating") int rating);
+
+
+    int restReport(ReportRequest report);
+
+    int reviewReport(ReportRequest report);
+
+    int reviewLike(@Param("reviewNo") Long reviewNo,
+                   @Param("memberId") String memberId);
+
+    int reviewUnlike(@Param("reviewNo") Long reviewNo,
+                     @Param("memberId") String memberId);
+
+    int restLike(@Param("restNo") Long restNo,
+                 @Param("memberId") String memberId);
+
+    int restUnlike(@Param("restNo") Long restNo,
+                   @Param("memberId") String memberId);
+
+    int restaurantModify(Restaurant restaurant);
+
+    int reviewModifyContent(ReviewCreateRequest req);
+
+
+    int reviewDeleteTags(Long reviewNo);
+
+    int reviewDeleteImages(ReviewCreateRequest req);
+
+    int restModifyRating(ReviewCreateRequest req);
+
+    List<Recommand> getRestSearch(@Param("req") SearchRequest req,
+                                  @Param("memberId") String memberId);
+
+    int getRestSearchCount(SearchRequest req, String memberId);
+
+    int commentReport(ReportRequest report);
+
+    int deleteReview(Long reviewNo);
+
+    int deleteRest(Long restNo);
+
 }
