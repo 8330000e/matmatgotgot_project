@@ -240,43 +240,38 @@ const BoardViewPage = () => {
             </div>
 
             <div className={styles.right_actions}>
-              {!admin && (
-                <>
-                  {isAdmin && (
-                    <Button
-                      className="btn primary outline"
-                      onClick={changeBoardStatus}
-                      style={{
-                        width: '70px',
-                        fontSize: '14px',
-                        color: 'var(--text1)',
-                      }}
-                    >
-                      {board.boardStatus === 1 ? '비공개' : '공개'}
-                    </Button>
-                  )}
+              {isAdmin && (
+                <Button
+                  className="btn primary outline"
+                  onClick={changeBoardStatus}
+                  style={{
+                    width: '70px',
+                    fontSize: '14px',
+                    color: 'var(--text1)',
+                  }}
+                >
+                  {board.boardStatus === 1 ? '비공개' : '공개'}
+                </Button>
+              )}
 
-                  {memberId && memberId === board.boardWriter && !isAdmin && (
-                    <Button
-                      className="btn primary"
-                      onClick={() => navigate(`/board/modify/${board.boardNo}`)}
-                      style={{ width: '70px', fontSize: '14px' }}
-                    >
-                      수정
-                    </Button>
-                  )}
+              {memberId && memberId === board.boardWriter && !isAdmin && (
+                <Button
+                  className="btn primary"
+                  onClick={() => navigate(`/board/modify/${board.boardNo}`)}
+                  style={{ width: '70px', fontSize: '14px' }}
+                >
+                  수정
+                </Button>
+              )}
 
-                  {(isAdmin ||
-                    (memberId && memberId === board.boardWriter)) && (
-                      <Button
-                        className="btn primary outline"
-                        onClick={deleteBoard}
-                        style={{ width: '70px', fontSize: '14px' }}
-                      >
-                        삭제
-                      </Button>
-                    )}
-                </>
+              {(isAdmin || (memberId && memberId === board.boardWriter)) && (
+                <Button
+                  className="btn primary outline"
+                  onClick={deleteBoard}
+                  style={{ width: '70px', fontSize: '14px' }}
+                >
+                  삭제
+                </Button>
               )}
             </div>
           </div>
@@ -297,7 +292,14 @@ const BoardViewPage = () => {
   );
 };
 
-const Like = ({ boardNo, memberId, memberNo, isBlocked, loginMsg, blockedLikeMsg }) => {
+const Like = ({
+  boardNo,
+  memberId,
+  memberNo,
+  isBlocked,
+  loginMsg,
+  blockedLikeMsg,
+}) => {
   const [likeInfo, setLikeInfo] = useState(null);
 
   useEffect(() => {
@@ -377,7 +379,13 @@ const Like = ({ boardNo, memberId, memberNo, isBlocked, loginMsg, blockedLikeMsg
   );
 };
 
-const Report = ({ boardNo, memberId, isBlocked, loginMsg, blockedReportMsg }) => {
+const Report = ({
+  boardNo,
+  memberId,
+  isBlocked,
+  loginMsg,
+  blockedReportMsg,
+}) => {
   const [reportInfo, setReportInfo] = useState(null);
 
   useEffect(() => {
@@ -388,7 +396,6 @@ const Report = ({ boardNo, memberId, isBlocked, loginMsg, blockedReportMsg }) =>
   }, [boardNo]);
 
   const reportOn = () => {
-
     if (!memberId) {
       loginMsg();
       return;
@@ -457,7 +464,6 @@ const Report = ({ boardNo, memberId, isBlocked, loginMsg, blockedReportMsg }) =>
   };
 
   const reportOff = () => {
-
     if (!memberId) {
       loginMsg();
       return;
@@ -628,7 +634,7 @@ const BoardCommentComponent = ({
                 boardCommentContent: e.target.value,
               });
             }}
-          //disabled={!memberId}
+            //disabled={!memberId}
           />
 
           <Button className="btn primary" onClick={registComment}>
@@ -775,7 +781,6 @@ const BoardComment = ({
   };
 
   const deleteCommentReport = () => {
-
     if (!memberId) {
       loginMsg();
       return;
@@ -785,7 +790,6 @@ const BoardComment = ({
       blockedReportMsg();
       return;
     }
-
 
     axios
       .delete(
