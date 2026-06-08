@@ -48,8 +48,8 @@
    노란색 배경으로 입력 영역 강조 */
 .info_left input {
   width: 100%;
-  background-color: var(--primary);
-  border: none;
+  background-color: var(--bg);
+  border: 1.5px solid var(--gray6);
   border-radius: 8px;
   padding: 9px 12px;
   font-family: inherit;
@@ -60,7 +60,7 @@
 }
 
 .info_left input:focus {
-  box-shadow: 0 0 0 2px rgba(255, 217, 90, 0.6);
+  border-color: var(--gray4);
 }
 
 /* ========== 우측: 지도 / 카테고리 / 태그 ========== */

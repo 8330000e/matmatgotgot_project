@@ -89,7 +89,7 @@
         SELECT COUNT(*)
         FROM review_tbl r
                  INNER JOIN MEMBER_TBL m
-                            ON r.member_no = m.member_no
+                            ON r.member_id = m.member_id
         WHERE rest_no = #{restNo}
     </select>
 

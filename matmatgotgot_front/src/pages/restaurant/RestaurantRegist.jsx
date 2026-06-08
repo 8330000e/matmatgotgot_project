@@ -164,6 +164,7 @@ const RestaurantRegist = () => {
               id="restName"
               value={restName}
               onChange={(e) => setRestName(e.target.value)}
+              disabled={true}
             />
           </div>
 
@@ -177,6 +178,7 @@ const RestaurantRegist = () => {
               id="restAddr"
               value={restAddr}
               onChange={(e) => setRestAddr(e.target.value)}
+              disabled={true}
             />
           </div>
 

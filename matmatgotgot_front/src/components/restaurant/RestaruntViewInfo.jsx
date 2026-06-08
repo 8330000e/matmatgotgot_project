@@ -122,11 +122,10 @@ const RestaruntViewInfo = ({ restView }) => {
         {/* 좌측: AI 총평(상단) → 리뷰된 메뉴(하단) — 이미지 기준 순서 */}
         <div className={styles.menu_ai_side}>
           {/* ai 리뷰 총평 섹션 */}
-          <div className={styles.ai_section}>
+          {/* <div className={styles.ai_section}>
             <div className={styles.section_title}>ai 리뷰 총평</div>
-            {/* AI 총평 내용 박스: 서버 데이터 수신 전 빈 박스 표시 */}
             <div className={styles.ai_content}>{restView.aiReview}</div>
-          </div>
+          </div> */}
 
           {/* 리뷰된 메뉴 섹션 */}
           <div className={styles.reviewed_menu_section}>

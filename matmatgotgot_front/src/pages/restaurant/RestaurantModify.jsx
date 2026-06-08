@@ -194,9 +194,7 @@ const RestaurantModify = () => {
         {/* 우측: 네이버 지도 */}
         <section className={styles.info_right}>
           <div className={styles.map_label}>
-            <span className={styles.field_label}>
-              위치 (지도 클릭으로 변경)
-            </span>
+            <span className={styles.field_label}>위치</span>
           </div>
           <div className={styles.map_div} ref={mapDivRef} />
         </section>
