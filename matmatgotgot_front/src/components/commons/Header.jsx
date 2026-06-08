@@ -7,7 +7,7 @@ import logo from '../../assets/logo/맛맛곳곳로고_300x398.png';
 export default function Header() {
   const location = useLocation();
   const { memberId, admin } = useAuthStore();
-
+  const logout = useAuthStore((state) => state.logout);
 
   return (
     <header className={styles.header}>
@@ -72,9 +72,11 @@ export default function Header() {
                 </button>
               </Link>}
 
-              <button aria-label="설정" className={styles.iconBtn}>
-                <FiSettings />
+              <Link to={"/logout"}>
+              <button aria-label="설정" className={styles.iconBtn} onClick={logout}>
+                {/*<FiSettings />*/}
               </button>
+              </Link>
             </div>
           ) : (
             <div className={styles.authMenu}>

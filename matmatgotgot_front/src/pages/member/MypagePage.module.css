@@ -4,6 +4,7 @@
 .mypage_wrap {
     width: 800px;
     margin: 15px auto;
+    margin-top: 35px;
     margin-bottom: 50px;
     display: flex;
     gap: 15px;

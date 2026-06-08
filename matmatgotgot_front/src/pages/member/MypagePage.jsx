@@ -67,8 +67,6 @@ export const MypagePage = () => {
 
   return (
     <div className="mypage">
-      <button onClick={logout}>로그아웃</button>
-
         <div className={styles.mypage_wrap}>
             <div className={styles.sidebar_wrap}>
                 <div>
