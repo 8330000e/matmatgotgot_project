@@ -134,7 +134,7 @@ export const MypagePage = () => {
 export const Myinfo = ({ memberInfo }) => {
     const inputRef = useRef(null);
     const { memberId, memberThumb } = useAuthStore();
-    const profileImgSrc = (memberThumb && memberThumb !== "null")
+    const profileImgSrc = (memberThumb && memberThumb !== defaultImg)
         ? `${import.meta.env.VITE_BACKSERVER}/upload/${memberThumb}`
         : defaultImg;
     const changeThumb = (e) => {
@@ -165,16 +165,15 @@ export const Myinfo = ({ memberInfo }) => {
     return (<>
         <div className={styles.content_menu_wrap}>
             <div className={styles.info_profile}>
-                <div>
-                    <img src={profileImgSrc} className={styles.defaultImg} alt="프로필" />
-                    <img src={changeImg} alt="변경" className={styles.changeImg} onClick={() => inputRef.current.click()} />
-                    <input
-                        type="file"
-                        accept="image/*"
-                        ref={inputRef}
-                        style={{ display: "none" }}
-                        onChange={changeThumb}
-                    />
+                <div className={styles.image_wrap}>
+                    {/* 💡 [이미지 원형 영역] 이 div에만 overflow: hidden을 줍니다. */}
+                    <div className={styles.profile_img_circle}>
+                        <img src={profileImgSrc} className={styles.defaultImg} alt="프로필" />
+                    </div>
+
+                    {/* 💡 [카메라 버튼] 원형 영역 바깥(image_wrap 안)에 위치시킵니다. */}
+                    <img src={changeImg} alt="변경" className={styles.changeImg} onClick={() => inputRef.current.click()}/>
+                    <input type="file" ref={inputRef} style={{ display: "none" }} onChange={changeThumb}/>
                 </div>
                 <div>
                     <div>
