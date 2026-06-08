@@ -7,7 +7,7 @@ import Header from "./components/commons/Header.jsx";
 import Footer from "./components/commons/Footer.jsx";
 import LoginPage from "./pages/member/LoginPage.jsx";
 import JoinPage from "./pages/member/JoinPage.jsx";
-import MypagePage from "./pages/member/MypagePage.jsx";
+import { MypagePage } from "./pages/member/MypagePage.jsx";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
@@ -29,6 +29,9 @@ import Main_login from "./pages/main/Main_login.jsx";
 import CreateCourse from "./pages/trip/CreateCourse.jsx";
 import CourseDetail from "./pages/trip/CourseDetail.jsx";
 import EditCourse from "./pages/trip/EditCourse.jsx";
+import ReportModal from "./components/ui/ReportModal.jsx";
+import RestaurantModify from "./pages/restaurant/RestaurantModify.jsx";
+import ReviewModify from "./pages/restaurant/ReviewModify.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -60,12 +63,30 @@ function App() {
           <Route path="/rest" element={<RestaurantDetailSearch />} />
           <Route path="/finding" element={<Finding />} />
           <Route path="/rest/regist" element={<RestaurantRegist />} />
-          <Route path="/rest/view" element={<RestaurantView />} />
-          <Route path="/rest/review/regist" element={<ReviewRegist />} />
+          <Route path="/rest/view/:restNo" element={<RestaurantView />} />
+          <Route
+            path="/rest/review/regist/:restNo"
+            element={<ReviewRegist />}
+          />
           <Route path="/rest/review/view/:reviewNo" element={<ReviewView />} />
-          <Route path="/receipt" element={<ReceiptCheck />} />
+          <Route path="/receipt/:mode/:restNo?" element={<ReceiptCheck />} />
+          <Route path="/rest/modify/:restNo" element={<RestaurantModify />} />
+          <Route
+            path="/review/modify/:reviewNo/:restNo"
+            element={<ReviewModify />}
+          />
 
-          <Route path="/mypage" element={<MypagePage />} />
+          <Route path="/mypage/myinfo" element={<MypagePage />} />
+          <Route path="/mypage/myreview" element={<MypagePage />} />
+          <Route path="/mypage/zzim" element={<MypagePage />} />
+          <Route path="/mypage/matzip" element={<MypagePage />} />
+          <Route path="/mypage/likeposts" element={<MypagePage />} />
+          <Route path="/mypage/myposts" element={<MypagePage />} />
+          <Route path="/mypage/reportposts" element={<MypagePage />} />
+          <Route path="/mypage/myask" element={<MypagePage />} />
+          <Route path="/mypage/myinfo/changePw" element={<MypagePage />} />
+          <Route path="/mypage/myinfo/changeEmail" element={<MypagePage />} />
+
           <Route path="/board/list" element={<BoardListPage />} />
           <Route path="/board/write" element={<BoardWritePage />} />
           <Route path="/board/view/:boardNo" element={<BoardViewPage />} />

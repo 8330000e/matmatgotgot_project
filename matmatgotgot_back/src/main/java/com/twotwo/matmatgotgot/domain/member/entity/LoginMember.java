@@ -18,6 +18,7 @@ public class LoginMember {
     private String memberThumb;
     private String memberNickname;
     private boolean admin;
+    private Integer memberStatus; // 지연 - 게시글 회원 차단
     private LocalDateTime validity; // ◀ LocalDateTime 사용
     private Long memberNo;
 }

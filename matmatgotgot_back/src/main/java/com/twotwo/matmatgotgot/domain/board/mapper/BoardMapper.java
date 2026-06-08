@@ -74,4 +74,5 @@ public interface BoardMapper {
     int selectIsCommentReport(Map<String, Object> params);
 
     int deleteCommentReport(Map<String, Object> map);
+
 }

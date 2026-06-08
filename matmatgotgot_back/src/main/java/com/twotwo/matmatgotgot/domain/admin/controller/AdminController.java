@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/admin")
@@ -43,6 +45,32 @@ public class AdminController {
     ) {
         return ResponseEntity.ok(
                 adminService.rejectReport(target, reportNo)
+        );
+    }
+
+    @PatchMapping("/members/{memberNo}/status")
+    public ResponseEntity<?> updateMemberStatus(
+            @PathVariable Long memberNo,
+            @RequestBody Map<String, Integer> body
+    ) {
+        return ResponseEntity.ok(
+                adminService.updateMemberStatus(
+                        memberNo,
+                        body.get("memberStatus")
+                )
+        );
+    }
+
+    @PatchMapping("/members/{memberNo}/admin")
+    public ResponseEntity<?> updateMemberAdmin(
+            @PathVariable Long memberNo,
+            @RequestBody Map<String, Integer> body
+    ) {
+        return ResponseEntity.ok(
+                adminService.updateMemberAdmin(
+                        memberNo,
+                        body.get("admin")
+                )
         );
     }
 }

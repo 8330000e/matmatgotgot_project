@@ -145,4 +145,14 @@ public class AdminService {
 
         return "NORMAL";
     }
+
+    @Transactional
+    public int updateMemberStatus(Long memberNo, Integer memberStatus) {
+        return adminMapper.updateMemberStatus(memberNo, memberStatus);
+    }
+
+    @Transactional
+    public int updateMemberAdmin(Long memberNo, Integer admin) {
+        return adminMapper.updateMemberAdmin(memberNo, admin);
+    }
 }

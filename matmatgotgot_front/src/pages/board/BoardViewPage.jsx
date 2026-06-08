@@ -12,6 +12,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined';
 import ReportIcon from '@mui/icons-material/Report';
+import { useCallback } from 'react';
 
 const BoardViewPage = () => {
   const navigate = useNavigate();
@@ -19,7 +20,6 @@ const BoardViewPage = () => {
   const boardNo = params.boardNo;
 
   const [board, setBoard] = useState(null);
-
 
   //로그인 구현 완료 시 사용할 코드
 
@@ -31,6 +31,37 @@ const BoardViewPage = () => {
     isReady,
   } = useAuthStore();
   //
+
+  const isBlocked = Number(memberStatus) === 1 || Number(memberStatus) === 3;
+  console.log('현재 memberStatus:', memberStatus);
+  console.log('isBlocked:', isBlocked);
+
+  const blockedCommentMsg = () => {
+    Swal.fire({
+      title: '댓글 작성 불가',
+      text: '해당 사용자는 댓글을 작성할 수 없습니다.',
+      icon: 'warning',
+      confirmButtonColor: 'var(--primary)',
+    });
+  };
+
+  const blockedReportMsg = () => {
+    Swal.fire({
+      title: '신고 불가',
+      text: '해당 사용자는 신고하기 기능을 이용할 수 없습니다.',
+      icon: 'warning',
+      confirmButtonColor: 'var(--primary)',
+    });
+  };
+
+  const blockedLikeMsg = () => {
+    Swal.fire({
+      title: '좋아요 불가',
+      text: '해당 사용자는 좋아요 기능을 사용할 수 없습니다.',
+      icon: 'warning',
+      confirmButtonColor: 'var(--primary)',
+    });
+  };
 
   /*
   // 로그인 구현 전 테스트용 코드(일반 유저)
@@ -54,7 +85,6 @@ const BoardViewPage = () => {
   console.log('현재 로그인 memberId:', memberId);
   console.log('현재 로그인 admin:', admin);
   console.log('isAdmin:', isAdmin);
-  const isBlocked = Number(memberStatus) >= 1;
 
   useEffect(() => {
     if (!isReady) return;
@@ -194,54 +224,54 @@ const BoardViewPage = () => {
                 boardNo={boardNo}
                 memberId={memberId}
                 memberNo={memberNo}
+                isBlocked={isBlocked}
                 loginMsg={loginMsg}
+                blockedLikeMsg={blockedLikeMsg}
               />
+
               <Report
                 boardNo={boardNo}
                 memberId={memberId}
                 memberNo={memberNo}
+                isBlocked={isBlocked}
                 loginMsg={loginMsg}
+                blockedReportMsg={blockedReportMsg}
               />
             </div>
 
             <div className={styles.right_actions}>
-              {!isBlocked && (
-                <>
-                  {isAdmin && (
-                    <Button
-                      className="btn primary outline"
-                      onClick={changeBoardStatus}
-                      style={{
-                        width: '70px',
-                        fontSize: '14px',
-                        color: 'var(--text1)',
-                      }}
-                    >
-                      {board.boardStatus === 1 ? '비공개' : '공개'}
-                    </Button>
-                  )}
+              {isAdmin && (
+                <Button
+                  className="btn primary outline"
+                  onClick={changeBoardStatus}
+                  style={{
+                    width: '70px',
+                    fontSize: '14px',
+                    color: 'var(--text1)',
+                  }}
+                >
+                  {board.boardStatus === 1 ? '비공개' : '공개'}
+                </Button>
+              )}
 
-                  {memberId && memberId === board.boardWriter && !isAdmin && (
-                    <Button
-                      className="btn primary"
-                      onClick={() => navigate(`/board/modify/${board.boardNo}`)}
-                      style={{ width: '70px', fontSize: '14px' }}
-                    >
-                      수정
-                    </Button>
-                  )}
+              {memberId && memberId === board.boardWriter && !isAdmin && (
+                <Button
+                  className="btn primary"
+                  onClick={() => navigate(`/board/modify/${board.boardNo}`)}
+                  style={{ width: '70px', fontSize: '14px' }}
+                >
+                  수정
+                </Button>
+              )}
 
-                  {(isAdmin ||
-                    (memberId && memberId === board.boardWriter)) && (
-                      <Button
-                        className="btn primary outline"
-                        onClick={deleteBoard}
-                        style={{ width: '70px', fontSize: '14px' }}
-                      >
-                        삭제
-                      </Button>
-                    )}
-                </>
+              {(isAdmin || (memberId && memberId === board.boardWriter)) && (
+                <Button
+                  className="btn primary outline"
+                  onClick={deleteBoard}
+                  style={{ width: '70px', fontSize: '14px' }}
+                >
+                  삭제
+                </Button>
               )}
             </div>
           </div>
@@ -253,6 +283,8 @@ const BoardViewPage = () => {
             isAdmin={isAdmin}
             isBlocked={isBlocked}
             loginMsg={loginMsg}
+            blockedCommentMsg={blockedCommentMsg}
+            blockedReportMsg={blockedReportMsg}
           />
         </>
       )}
@@ -260,7 +292,14 @@ const BoardViewPage = () => {
   );
 };
 
-const Like = ({ boardNo, memberId, memberNo, loginMsg }) => {
+const Like = ({
+  boardNo,
+  memberId,
+  memberNo,
+  isBlocked,
+  loginMsg,
+  blockedLikeMsg,
+}) => {
   const [likeInfo, setLikeInfo] = useState(null);
 
   useEffect(() => {
@@ -271,6 +310,15 @@ const Like = ({ boardNo, memberId, memberNo, loginMsg }) => {
   }, [boardNo]);
 
   const likeOn = () => {
+    if (!memberId) {
+      loginMsg();
+      return;
+    }
+
+    if (isBlocked) {
+      blockedLikeMsg();
+      return;
+    }
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/likes`, {
         memberNo: memberNo,
@@ -289,6 +337,15 @@ const Like = ({ boardNo, memberId, memberNo, loginMsg }) => {
   };
 
   const likeOff = () => {
+    if (!memberId) {
+      loginMsg();
+      return;
+    }
+
+    if (isBlocked) {
+      blockedLikeMsg();
+      return;
+    }
     axios
       .delete(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/likes`)
       .then((res) => {
@@ -322,7 +379,13 @@ const Like = ({ boardNo, memberId, memberNo, loginMsg }) => {
   );
 };
 
-const Report = ({ boardNo, memberId, loginMsg }) => {
+const Report = ({
+  boardNo,
+  memberId,
+  isBlocked,
+  loginMsg,
+  blockedReportMsg,
+}) => {
   const [reportInfo, setReportInfo] = useState(null);
 
   useEffect(() => {
@@ -333,6 +396,16 @@ const Report = ({ boardNo, memberId, loginMsg }) => {
   }, [boardNo]);
 
   const reportOn = () => {
+    if (!memberId) {
+      loginMsg();
+      return;
+    }
+
+    if (isBlocked) {
+      blockedReportMsg();
+      return;
+    }
+
     Swal.fire({
       title: '신고 사유 선택',
       input: 'select',
@@ -391,6 +464,16 @@ const Report = ({ boardNo, memberId, loginMsg }) => {
   };
 
   const reportOff = () => {
+    if (!memberId) {
+      loginMsg();
+      return;
+    }
+
+    if (isBlocked) {
+      blockedReportMsg();
+      return;
+    }
+
     axios
       .delete(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/reports`)
       .then((res) => {
@@ -417,6 +500,7 @@ const Report = ({ boardNo, memberId, loginMsg }) => {
           ) : (
             <ReportOutlinedIcon onClick={memberId ? reportOn : loginMsg} />
           )}
+
           <span>{reportInfo.reportCount}</span>
         </div>
       )}
@@ -431,6 +515,8 @@ const BoardCommentComponent = ({
   isAdmin,
   isBlocked,
   loginMsg,
+  blockedCommentMsg,
+  blockedReportMsg,
 }) => {
   const [boardComment, setBoardComment] = useState({
     boardCommentContent: '',
@@ -440,16 +526,16 @@ const BoardCommentComponent = ({
 
   const [boardCommentList, setBoardCommentList] = useState([]);
 
-  const getCommentList = () => {
+  const getCommentList = useCallback(() => {
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}/comments`)
       .then((res) => setBoardCommentList(res.data))
       .catch((err) => console.log(err));
-  };
+  }, [boardNo]);
 
   useEffect(() => {
     getCommentList();
-  }, [boardNo]);
+  }, [getCommentList]);
 
   const changeCommentStatus = (boardCommentNo, currentStatus) => {
     const newStatus = currentStatus === 1 ? 0 : 1;
@@ -508,11 +594,7 @@ const BoardCommentComponent = ({
     }
 
     if (isBlocked) {
-      Swal.fire({
-        title: '차단된 회원은 댓글을 작성할 수 없습니다.',
-        icon: 'warning',
-        confirmButtonColor: 'var(--primary)',
-      });
+      blockedCommentMsg();
       return;
     }
 
@@ -552,7 +634,7 @@ const BoardCommentComponent = ({
                 boardCommentContent: e.target.value,
               });
             }}
-          //disabled={!memberId}
+            //disabled={!memberId}
           />
 
           <Button className="btn primary" onClick={registComment}>
@@ -572,6 +654,7 @@ const BoardCommentComponent = ({
             isAdmin={isAdmin}
             isBlocked={isBlocked}
             loginMsg={loginMsg}
+            blockedReportMsg={blockedReportMsg}
             updateComment={updateComment}
             deleteComment={deleteComment}
             changeCommentStatus={changeCommentStatus}
@@ -590,6 +673,7 @@ const BoardComment = ({
   isAdmin,
   isBlocked,
   loginMsg,
+  blockedReportMsg,
   updateComment,
   deleteComment,
   changeCommentStatus,
@@ -617,6 +701,11 @@ const BoardComment = ({
   const reportComment = () => {
     if (!memberId) {
       loginMsg();
+      return;
+    }
+
+    if (isBlocked) {
+      blockedReportMsg();
       return;
     }
 
@@ -679,10 +768,29 @@ const BoardComment = ({
           });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+
+        Swal.fire({
+          title: '이용 제한',
+          text: '현재 회원 상태에서는 댓글 신고를 할 수 없습니다.',
+          icon: 'warning',
+          confirmButtonColor: 'var(--primary)',
+        });
+      });
   };
 
   const deleteCommentReport = () => {
+    if (!memberId) {
+      loginMsg();
+      return;
+    }
+
+    if (isBlocked) {
+      blockedReportMsg();
+      return;
+    }
+
     axios
       .delete(
         `${import.meta.env.VITE_BACKSERVER}/boards/comments/${comment.boardCommentNo}/reports`,
@@ -736,7 +844,7 @@ const BoardComment = ({
           )}
         </div>
 
-        {memberId && !isBlocked && (
+        {memberId && (
           <div className={styles.comment_btn_box}>
             {isModifyMode ? (
               <>

@@ -8,7 +8,7 @@ import org.apache.ibatis.type.Alias;
 public class ReviewCommentResponse {
 
     private Long commentNo;
-    private Long memberNo;
+    private String memberId;
     private String writerName;
     private String memberThumb;
     private String content;

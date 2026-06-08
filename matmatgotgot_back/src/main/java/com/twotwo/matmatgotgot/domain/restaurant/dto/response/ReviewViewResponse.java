@@ -9,6 +9,10 @@ import java.util.List;
 @Alias("reviewViewResponse")
 public class ReviewViewResponse {
 
+    private Long restNo;
+    private String memberId;
+    private String restName;
+    private String restAddr;
     private String memberThumb;
     private String memberName;
     private String reviewContent;
@@ -17,4 +21,5 @@ public class ReviewViewResponse {
     private List<String> images;
     private List<String> reviewMenu;
     private List<String> tags;
+    private boolean isLiked;
 }

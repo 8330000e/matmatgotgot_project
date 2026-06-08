@@ -18,6 +18,7 @@ import java.util.Map;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
 
 
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -165,17 +166,10 @@ public class BoardService {
 
     // 좋아요 등록
     @Transactional
-    public int insertLike(
-            Integer boardNo,
-            String token
-    ) {
+    public int insertLike(Integer boardNo, String token) {
+        Long memberNo = getLoginMemberNo(token);
 
-        Long memberNo =
-                getLoginMemberNo(token);
-
-        Map<String, Object> map =
-                new HashMap<>();
-
+        Map<String, Object> map = new HashMap<>();
         map.put("boardNo", boardNo);
         map.put("memberNo", memberNo);
 
@@ -270,22 +264,16 @@ public class BoardService {
 
     //댓글 등록
     @Transactional
-    public BoardComment insertComment(
-            BoardComment comment,
-            String token
-    ) {
-
-        Long memberNo =
-                getLoginMemberNo(token);
+    public BoardComment insertComment(BoardComment comment, String token) {
+        Long memberNo = getLoginMemberNo(token);
 
         comment.setMemberNo(memberNo);
 
         boardMapper.insertComment(comment);
 
-        return boardMapper.selectOneComment(
-                comment.getBoardCommentNo()
-        );
+        return boardMapper.selectOneComment(comment.getBoardCommentNo());
     }
+
     // 댓글 목록 조회
     public List<BoardComment> selectCommentList(
             Integer boardNo
@@ -320,12 +308,9 @@ public class BoardService {
             String token,
             Map<String, Object> reportData
     ) {
+        Long memberNo = getLoginMemberNo(token);
 
-        Long memberNo =
-                getLoginMemberNo(token);
-
-        Map<String, Object> map =
-                new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put("memberNo", memberNo);
         map.put("boardNo", boardNo);
@@ -342,11 +327,9 @@ public class BoardService {
             Map<String, Object> reportData,
             String token
     ) {
-        Long memberNo =
-                getLoginMemberNo(token);
+        Long memberNo = getLoginMemberNo(token);
 
-        Map<String, Object> map =
-                new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put("memberNo", memberNo);
         map.put("boardCommentNo", boardCommentNo);
@@ -372,6 +355,7 @@ public class BoardService {
         return boardMapper.selectIsCommentReport(params);
     }
 
+    // 회원번호로 회원상태 조회
     @Transactional
     public int deleteCommentReport(
             Integer boardCommentNo,
@@ -388,4 +372,5 @@ public class BoardService {
 
         return boardMapper.deleteCommentReport(map);
     }
+
 }

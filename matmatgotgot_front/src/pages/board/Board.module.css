@@ -73,7 +73,7 @@
   margin: 50px auto 0;
 }
 
-.btn_wrap>button {
+.btn_wrap > button {
   width: 100% !important;
   height: 50px !important;
   font-size: 18px !important;
@@ -113,6 +113,7 @@
 .search_wrap input {
   width: 220px;
   height: 36px;
+  min-height: 36px;
   padding: 0 12px;
   border: 1px solid #d9d9d9;
   border-radius: 6px;

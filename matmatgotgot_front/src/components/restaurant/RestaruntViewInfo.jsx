@@ -1,10 +1,40 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import styles from "./RestaruntViewInfo.module.css";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 
+// tiptap-extension-resize-image 가 저장한 containerstyle/wrapperstyle 속성을
+// 실제 래퍼 div의 인라인 스타일로 변환해 이미지 정렬을 복원한다.
+function processEditorHtml(html) {
+  if (!html) return "";
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  doc
+    .querySelectorAll("img[containerstyle], img[wrapperstyle]")
+    .forEach((img) => {
+      const containerStyle = img.getAttribute("containerstyle") || "";
+      const wrapperStyle = img.getAttribute("wrapperstyle") || "";
+
+      const wrapperDiv = document.createElement("div");
+      const containerDiv = document.createElement("div");
+      wrapperDiv.style.cssText = wrapperStyle;
+      containerDiv.style.cssText = containerStyle;
+
+      img.removeAttribute("containerstyle");
+      img.removeAttribute("wrapperstyle");
+
+      img.parentNode.insertBefore(wrapperDiv, img);
+      wrapperDiv.appendChild(containerDiv);
+      containerDiv.appendChild(img);
+    });
+  return doc.body.innerHTML;
+}
+
 const RestaruntViewInfo = ({ restView }) => {
   const mapDivRef = useRef(null);
+  const processedContent = useMemo(
+    () => processEditorHtml(restView?.restContent),
+    [restView?.restContent],
+  );
 
   useEffect(() => {
     if (!mapDivRef.current || !window.naver) return;
@@ -66,11 +96,11 @@ const RestaruntViewInfo = ({ restView }) => {
             </div>
             <div className={styles.hours}>
               <AccessTimeIcon className={styles.meta_icon} />
-              <span>{restView.hours}</span>
+              <span>{restView.hours ? restView.hours : "-"}</span>
             </div>
             <div className={styles.phone}>
               <LocalPhoneIcon className={styles.meta_icon} />
-              <span>{restView.phone}</span>
+              <span>{restView.phone ? restView.phone : "-"}</span>
             </div>
           </div>
         </div>
@@ -82,7 +112,7 @@ const RestaruntViewInfo = ({ restView }) => {
           className={styles.content}
           /* 본문이 없을 때 placeholder 표시 */
           dangerouslySetInnerHTML={{
-            __html: restView?.restContent || "맛집 본문 내용",
+            __html: processedContent || "맛집 본문 내용",
           }}
         />
       </section>

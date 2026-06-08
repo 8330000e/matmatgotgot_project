@@ -43,7 +43,6 @@ const ReviewViewInfo = ({ review }) => {
                 alt="프로필 이미지"
               />
             ) : (
-              // 프로필 없을 때 Material Icons 기본 아이콘 (CDN 필요)
               <span className="material-icons">account_circle</span>
             )}
           </div>
@@ -55,6 +54,10 @@ const ReviewViewInfo = ({ review }) => {
               <span className={styles.member_badge}>현지인</span>
             )}
           </div>
+        </div>
+        <div className={styles.rest_info}>
+          <div className={styles.rest_name}>{review.restName}</div>
+          <div className={styles.rest_addr}>{review.restAddr}</div>
         </div>
       </div>
 
@@ -72,7 +75,7 @@ const ReviewViewInfo = ({ review }) => {
               <SwiperSlide key={idx}>
                 <img
                   className={styles.swiper_img}
-                  src={`${imgBaseUrl}/restaurants/${image}`}
+                  src={`${import.meta.env.VITE_BACKSERVER}/restaurants/${image}`}
                   alt="리뷰 이미지"
                 />
               </SwiperSlide>

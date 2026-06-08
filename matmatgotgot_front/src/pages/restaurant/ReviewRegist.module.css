@@ -280,3 +280,33 @@
 .regist_btn:hover {
   background-color: var(--footer);
 }
+
+.menu_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.menu_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 12px;
+  background-color: var(--bg); /* 크림 배경 */
+  border: 1px solid var(--gray6);
+  border-radius: 6px;
+}
+
+.menu_item_name {
+  font-size: 14px;
+  color: var(--text1);
+}
+
+.no_value {
+  font-size: 13px;
+  color: var(--gray4);
+  font-style: italic;
+}

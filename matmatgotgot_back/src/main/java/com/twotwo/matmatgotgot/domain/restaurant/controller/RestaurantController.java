@@ -9,20 +9,24 @@ import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -59,8 +63,53 @@ public class RestaurantController {
         restaurant.setRestThumb(restThumb);
 
         int result = restaurantService.restaurantCreate(restaurant);
+        if (result == 1) {
+            return ResponseEntity.ok(restaurant.getRestNo());
+        }
+
+        return ResponseEntity.ok(-1);
+    }//
+
+    // 맛집 수정
+    @PutMapping("/modify")
+    public ResponseEntity<?> restaurantModify(@RequestBody RestCreateRequest request, Authentication auth) {
+        Restaurant restaurant = Restaurant.builder()
+                .restNo(request.getRestNo())
+                .restName(request.getRestName())
+                .restAddr(request.getRestAddr())
+                .hours(request.getRestHours())
+                .phone(request.getRestPhone())
+                .category(request.getCategory())
+                .restContent(request.getContent())
+                .lat(request.getLat())
+                .lng(request.getLng())
+                .memberId(auth.getName())
+                .build();
+
+        Document doc = Jsoup.parse(request.getContent());
+        // 이미지 태그 선택자로 첫 번째 요소를 가져옴
+        // 단, 이미지 태그가 한 개도 없으면 null 리턴
+        Element firstImg = doc.selectFirst("img");
+        String restThumb = firstImg == null ? null : firstImg.attr("src");
+        restaurant.setRestThumb(restThumb);
+
+        int result = restaurantService.restaurantModify(restaurant);
 
         return ResponseEntity.ok(result);
+    }//
+
+    // 리뷰 수정
+    @PutMapping("/review/modify")
+    public ResponseEntity<?> reviewModify(@ModelAttribute ReviewCreateRequest req, Authentication auth) {
+        try {
+            int result = restaurantService.reviewModify(req);
+            return ResponseEntity.ok(result);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
     }//
 
     // tip tap 이미지 등록
@@ -100,21 +149,28 @@ public class RestaurantController {
         return ResponseEntity.ok(res);
     }//
 
+    // 리뷰 등록
     @PostMapping("/review")
     public ResponseEntity<?> reviewCreate(@ModelAttribute ReviewCreateRequest request, Authentication auth) {
         request.setMemberId(auth.getName());
         try {
             boolean result = restaurantService.reviewCreate(request);
-            return ResponseEntity.ok(result);
+
+            return ResponseEntity.ok(ReviewCreateResponse.builder()
+                    .success(result)
+                    .reviewNo(request.getReviewNo())
+                    .build());
+
         } catch (RuntimeException e) {
+            log.info("error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+                    .body(false);
         }
     }//
 
-    @GetMapping("/review/{reviewNo}")
-    public ResponseEntity<?> getReviewView(@PathVariable Long reviewNo) {
-        ReviewViewResponse res = restaurantService.getReviewView(reviewNo);
+    @GetMapping("/review")
+    public ResponseEntity<?> getReviewView(@RequestParam Long reviewNo, Authentication auth) {
+        ReviewViewResponse res = restaurantService.getReviewView(reviewNo, auth.getName());
 
         return ResponseEntity.ok(res);
     }//
@@ -129,7 +185,9 @@ public class RestaurantController {
     // 댓글/대댓글 등록
     @PostMapping("/review/{reviewNo}/comments")
     public ResponseEntity<?> commentRegist(@PathVariable Long reviewNo,
-                                           @RequestBody ReviewCommentRequest request) {
+                                           @RequestBody ReviewCommentRequest request,
+                                           Authentication auth) {
+        request.setMemberId(auth.getName());
         ReviewCommentResponse saved = restaurantService.commentRegist(reviewNo, request);
         return ResponseEntity.ok(saved);
     }//
@@ -168,15 +226,24 @@ public class RestaurantController {
     // 맛집 메인화면 근처
     @GetMapping("/region")
     public ResponseEntity<?> getRegionList(@ModelAttribute Coords coords, Authentication auth) {
-       List<Recommand> region = restaurantService.getRegion(auth.getName(), coords);
+        List<Recommand> region = restaurantService.getRegion(auth.getName(), coords);
 
         return ResponseEntity.ok(region);
     }//
 
+    // 맛집 메인 - 메인리스트
     @GetMapping("/main")
     public ResponseEntity<?> getMainList(@ModelAttribute MainListRequest req, Authentication auth) {
+        List<Recommand> mainList = restaurantService.getMainList(req, auth.getName());
 
-        return null;
+        int count = restaurantService.getMainListCount(req, auth.getName());
+        int totalPage = (int) Math.ceil(count / (double) req.getSize());
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("list", mainList);
+        res.put("totalPage", totalPage);
+
+        return ResponseEntity.ok(res);
     }//
 
     // Main
@@ -213,4 +280,111 @@ public class RestaurantController {
         List<RestaurantMapMarkerDTO> visitedMarkers = restaurantService.getVisitedMapMarkers(memberId);
         return ResponseEntity.ok(visitedMarkers);
     }
+    // 맛집 - 이름 검색
+    @GetMapping("/search")
+    public ResponseEntity<?> restSearch(@ModelAttribute SearchRequest req, Authentication auth){
+        List<Recommand> searchList = restaurantService.getRestSearch(req, auth.getName());
+
+        int count = restaurantService.getRestSearchCount(req, auth.getName());
+        int totalPage = (int) Math.ceil(count / (double) req.getSize());
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("list", searchList);
+        res.put("totalPage", totalPage);
+
+        return ResponseEntity.ok(res);
+    }//
+
+    // 맛집 등록 중복 확인
+    @GetMapping("/isdup")
+    public ResponseEntity<?> isDup(@ModelAttribute CheckDuplicationRequest chk) {
+        CheckDuplicationResponse res = restaurantService.isDup(chk);
+
+        return ResponseEntity.ok(res);
+    }//
+
+    // 리뷰할 맛집 존재 확인
+    @GetMapping("/isexist")
+    public ResponseEntity<?> isExist(@ModelAttribute CheckDuplicationRequest chk) {
+        CheckDuplicationResponse res = restaurantService.isDup(chk);
+
+        if (res.isDuplicate()) {
+            if (Objects.equals(chk.getRestNo(), res.getRestNo())) {
+                // 영수증 storeName, lat, lng 로 찾은 restNo 와 리뷰등록버튼을 눌렀을 때 넘긴 restNo이 같으면 리뷰 등록 가능
+                return ResponseEntity.ok(true);
+            }
+        }
+
+        // 영수증 정보랑 리뷰등록버튼 눌렀을 때 넘긴 restNo이 다르면 리뷰 등록 불가
+        return ResponseEntity.ok(false);
+    }//
+
+    // 신고
+    @PostMapping("/report")
+    public ResponseEntity<?> report(@RequestBody ReportRequest report, Authentication auth) {
+        report.setMemberId(auth.getName());
+        try {
+            int result = restaurantService.report(report);
+            return ResponseEntity.ok(result);
+
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.badRequest()
+                    .body("이미 신고한 맛집입니다.");
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("신고 처리 중 오류가 발생했습니다.");
+        }
+    }//
+
+    // 리뷰 like
+    @PatchMapping("/review/like")
+    public ResponseEntity<?> reviewLike(@RequestParam Long reviewNo, Authentication auth) {
+        int result = restaurantService.reviewLike(reviewNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 리뷰 unlike
+    @DeleteMapping("/review/unlike")
+    public ResponseEntity<?> reviewUnlike(@RequestParam Long reviewNo, Authentication auth) {
+        int result = restaurantService.reviewUnlike(reviewNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 맛집 like
+    @PatchMapping("/rest/like")
+    public ResponseEntity<?> restLike(@RequestParam Long restNo, Authentication auth) {
+        int result = restaurantService.restLike(restNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 맛집 unlike
+    @DeleteMapping("/rest/unlike")
+    public ResponseEntity<?> restUnlike(@RequestParam Long restNo, Authentication auth) {
+        int result = restaurantService.restUnlike(restNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 리뷰 제거
+    @DeleteMapping("/review/{reviewNo}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewNo) {
+       int result = restaurantService.deleteReview(reviewNo);
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 맛집 제거
+    @DeleteMapping("rest/{restNo}")
+    public ResponseEntity<?> deleteRest(@PathVariable Long restNo) {
+        int result = restaurantService.deleteRest(restNo);
+
+        return ResponseEntity.ok(result);
+    }//
+
+
+
 }
