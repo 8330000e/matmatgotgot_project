@@ -131,6 +131,13 @@ public class RestaurantController {
     public ResponseEntity<?> restaurantViewInfo(@RequestParam Long restNo, Authentication auth) {
         RestViewResponse restRes = restaurantService.restaurantViewInfo(auth.getName(), restNo);
 
+        // 신고 기능 - 지연
+        if (restRes == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("비공개 또는 삭제된 맛집입니다.");
+        }
+        //
+
         return ResponseEntity.ok(restRes);
     }//
 
@@ -171,6 +178,11 @@ public class RestaurantController {
     @GetMapping("/review")
     public ResponseEntity<?> getReviewView(@RequestParam Long reviewNo, Authentication auth) {
         ReviewViewResponse res = restaurantService.getReviewView(reviewNo, auth.getName());
+
+        if (res == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("비공개 또는 삭제된 리뷰입니다.");
+        }
 
         return ResponseEntity.ok(res);
     }//

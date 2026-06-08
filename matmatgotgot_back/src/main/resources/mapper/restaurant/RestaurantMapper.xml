@@ -74,6 +74,7 @@
              INNER JOIN MEMBER_TBL m
                         ON r.member_id = m.member_id
     WHERE rest_no = #{restNo}
+      AND review_status = 0
     ORDER BY r.visit_date DESC
 
         LIMIT #{size} OFFSET #{offset}
@@ -91,6 +92,7 @@
                  INNER JOIN MEMBER_TBL m
                             ON r.member_id = m.member_id
         WHERE rest_no = #{restNo}
+          AND review_status = 0
     </select>
 
     <insert id="reviewInsert" useGeneratedKeys="true" keyProperty="reviewNo">
@@ -149,6 +151,7 @@
                             ON r.rest_no = rt.rest_no
 
         WHERE r.review_no = #{reviewNo}
+          AND r.review_status = 0
     </select>
 
     <select id="getReviewImages" resultType="String">

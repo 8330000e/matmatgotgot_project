@@ -47,6 +47,12 @@ public class RestaurantService {
         List<String> tags = restaurantMapper.getTags(restNo);
         List<String> menus = restaurantMapper.getMenus(restNo);
 
+        // 신고 기능 - 지연
+        if (restRes == null) {
+            return null;
+        }
+        //
+
         restRes.setTags(tags);
         restRes.setMenus(menus);
 
@@ -127,6 +133,10 @@ public class RestaurantService {
         List<String> images = restaurantMapper.getReviewImages(reviewNo);
         List<String> menu = restaurantMapper.getReviewMenu(reviewNo);
         List<String> tags = restaurantMapper.getReviewTags(reviewNo);
+
+        if (res == null) {
+            return null;
+        }
 
         res.setImages(images);
         res.setReviewMenu(menu);

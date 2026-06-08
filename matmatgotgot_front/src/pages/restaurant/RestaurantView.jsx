@@ -29,6 +29,18 @@ const RestaurantView = () => {
         setLiked(res.data.isLike);
       })
       .catch((err) => {
+        if (err.response?.status === 404) {
+          Swal.fire({
+            title: "조회할 수 없는 맛집입니다.",
+            text: "비공개 또는 삭제 처리된 맛집입니다.",
+            icon: "warning",
+            confirmButtonColor: "var(--primary)",
+          }).then(() => {
+            navigate("/rest");
+          });
+
+          return;
+        }
         console.log(err);
       });
   }, []);
