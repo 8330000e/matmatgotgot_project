@@ -1,4 +1,5 @@
 import styles from "./CourseSummaryPanel.module.css";
+import { useLocation } from "react-router-dom"; // 💡 URL 감지를 위해 useLocation 임포트
 
 const CourseSummaryPanel = ({
   courseTitle,
@@ -15,6 +16,11 @@ const CourseSummaryPanel = ({
   totalCost,
   onSubmit,
 }) => {
+  const location = useLocation(); // 💡 현재 주소 정보 객체 가져오기
+
+  // 💡 주소창 경로에 'edit'이라는 단어가 포함되어 있는지 확인하여 모드 판단
+  const isEditMode = location.pathname.includes("/trip/edit");
+
   const handleTagClick = (tag) => {
     if (tag.active) {
       onTagToggle(tag.id);
@@ -105,8 +111,9 @@ const CourseSummaryPanel = ({
       </div>
 
       <div className={styles.submitRow}>
+        {/* 💡 삼항 연산자를 이용해 조건부 텍스트 렌더링 적용 */}
         <button className={styles.registerBtn} onClick={onSubmit}>
-          등록하기 →
+          {isEditMode ? "수정하기 →" : "등록하기 →"}
         </button>
       </div>
     </div>
