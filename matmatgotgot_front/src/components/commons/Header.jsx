@@ -74,7 +74,7 @@ export default function Header() {
 
               <Link to={"/logout"}>
               <button aria-label="설정" className={styles.iconBtn} onClick={logout}>
-                {/*<FiSettings />*/}
+                <FiSettings />
               </button>
               </Link>
             </div>
