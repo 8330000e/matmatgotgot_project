@@ -7,14 +7,15 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore.js";
 
 const Slide = ({ text, list = [], type }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const navigate = useNavigate();
   const [swiperNav, setSwiperNav] = useState(false);
+  const { memberId } = useAuthStore();
 
-  // Swiper가 DOM 렌더링 완료 후 커스텀 버튼을 올바르게 인지하도록 강제 갱신 트리거 생성
   useEffect(() => {
     if (prevRef.current && nextRef.current) {
       setSwiperNav(true);
@@ -22,6 +23,11 @@ const Slide = ({ text, list = [], type }) => {
   }, [list]);
 
   const handleCardClick = (id) => {
+    if (!memberId) {
+      alert("로그인 후 이용해 주세요.");
+      return;
+    }
+
     if (type === "review") {
       navigate(`/board/detail/${id}`);
     } else if (type === "tour") {
@@ -29,7 +35,6 @@ const Slide = ({ text, list = [], type }) => {
     }
   };
 
-  // 데이터가 없을 때 슬라이더 전체를 대체할 깔끔한 컴포넌트 리턴 💡
   if (list.length === 0) {
     return (
       <div>
@@ -74,26 +79,27 @@ const Slide = ({ text, list = [], type }) => {
           {list.map((item) => {
             const id = item.boardNo || item.tplanNo;
             const title = item.boardTitle || item.tplanTitle;
+            const BACK_URL = import.meta.env.VITE_BACKSERVER;
 
             let thumb = null;
 
+            // 💡 타입별 썸네일 주소 할당 로직 가독성 개선 및 경로 점검
             if (type === "review") {
               if (item.boardThumb) {
-                const isReviewFullUrl = item.boardThumb.startsWith("http");
-                thumb = isReviewFullUrl
+                // 외부 URL(http/https) 형식이면 그대로 쓰고, 파일명만 있으면 서버 업로드 경로 결합
+                thumb = item.boardThumb.startsWith("http")
                   ? item.boardThumb
-                  : `${import.meta.env.VITE_BACKSERVER}/review/${item.boardThumb}`;
+                  : `${BACK_URL}/editor/${item.boardThumb}`; // ◀️ 백엔드 정적 리소스 주소와 일치하는지 확인 필요
               } else {
-                thumb = `${import.meta.env.VITE_BACKSERVER}/menu/basic.jpeg`;
+                thumb = `${BACK_URL}/menu/basic.jpeg`;
               }
             } else if (type === "tour") {
               if (item.menuImg) {
-                const isTourFullUrl = item.menuImg.startsWith("http");
-                thumb = isTourFullUrl
+                thumb = item.menuImg.startsWith("http")
                   ? item.menuImg
-                  : `${import.meta.env.VITE_BACKSERVER}/menu/${item.menuImg}`;
+                  : `${BACK_URL}/menu/${item.menuImg}`;
               } else {
-                thumb = `${import.meta.env.VITE_BACKSERVER}/menu/basic.jpeg`;
+                thumb = `${BACK_URL}/menu/basic.jpeg`;
               }
             }
 
