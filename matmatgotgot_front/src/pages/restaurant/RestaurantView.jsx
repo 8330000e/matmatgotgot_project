@@ -81,7 +81,9 @@ const RestaurantView = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${import.meta.env.VITE_BACKSERVER}/restaurants/${restNo}`)
+          .delete(
+            `${import.meta.env.VITE_BACKSERVER}/restaurants/rest/${restNo}`,
+          )
           .then((res) => {
             if (res.data > 0) {
               Swal.fire({

@@ -305,6 +305,8 @@
         )
         ) <= 10
         ]]>
+
+        ORDER BY distance_km ASC
     </select>
 
     <select id="getMainList" resultType="recommand">

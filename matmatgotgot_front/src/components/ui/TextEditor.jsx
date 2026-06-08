@@ -36,7 +36,9 @@ const TextEditor = ({ data, setData }) => {
   });
 
   useEffect(() => {
-    if (editor) {
+    if (!editor) return;
+
+    if (editor.getHTML() !== data) {
       editor.commands.setContent(data || "");
     }
   }, [editor, data]);

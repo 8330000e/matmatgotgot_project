@@ -510,7 +510,7 @@ const NaverMapSection = ({ initialAddress, data, mode, restNo }) => {
             navigate(`/rest/review/regist/${restNo}`);
           } else {
             Swal.fire({
-              title: "리뷰 할 맛집 정보와 영수증 정보가 다릅니다.",
+              title: "리뷰 할 맛집 정보와 \n영수증 정보가 다릅니다.",
               icon: "warning",
               confirmButtonText: "확인",
             }).then(() => {

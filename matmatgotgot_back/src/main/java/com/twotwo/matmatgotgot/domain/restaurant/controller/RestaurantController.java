@@ -112,7 +112,6 @@ public class RestaurantController {
         }
     }//
 
-
     // tip tap 이미지 등록
     @PostMapping(value = "/image-upload")
     public ResponseEntity<?> imageUpload(@RequestParam MultipartFile image) {
@@ -345,7 +344,7 @@ public class RestaurantController {
     }//
 
     // 맛집 제거
-    @DeleteMapping("/{restNo}")
+    @DeleteMapping("rest/{restNo}")
     public ResponseEntity<?> deleteRest(@PathVariable Long restNo) {
         int result = restaurantService.deleteRest(restNo);
 
