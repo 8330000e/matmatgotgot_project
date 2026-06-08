@@ -55,7 +55,16 @@ const ReviewView = () => {
           .delete(
             `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}`,
           )
-          .then(() => navigate(-1)) // 이전 페이지로 이동
+          .then((res) => {
+            if (res.data > 0) {
+              Swal.fire({
+                title: "삭제되었습니다.",
+                icon: "success",
+              }).then(() => {
+                navigate(`/rest`);
+              });
+            }
+          })
           .catch((err) => console.log(err));
       }
     });

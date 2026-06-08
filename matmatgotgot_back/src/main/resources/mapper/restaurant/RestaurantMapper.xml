@@ -571,5 +571,14 @@
         WHERE rest_no = #{restNo}
     </update>
 
+    <delete id="deleteReview">
+        DELETE FROM review_tbl
+        WHERE review_no = #{reviewNo}
+    </delete>
+
+    <delete id="deleteRest">
+        DELETE FROM restaurant_tbl
+        WHERE rest_no = #{restNo}
+    </delete>
 
 </mapper>

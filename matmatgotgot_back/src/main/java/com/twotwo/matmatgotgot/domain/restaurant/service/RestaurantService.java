@@ -291,4 +291,13 @@ public class RestaurantService {
     }//
 
 
+    @Transactional
+    public int deleteReview(Long reviewNo) {
+        return restaurantMapper.deleteReview(reviewNo);
+    }//
+
+    @Transactional
+    public int deleteRest(Long restNo) {
+        return restaurantMapper.deleteRest(restNo);
+    }//
 }

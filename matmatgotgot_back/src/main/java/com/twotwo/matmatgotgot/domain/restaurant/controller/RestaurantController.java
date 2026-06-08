@@ -163,6 +163,7 @@ public class RestaurantController {
                     .build());
 
         } catch (RuntimeException e) {
+            log.info("error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(false);
         }
@@ -331,6 +332,22 @@ public class RestaurantController {
     @DeleteMapping("/rest/unlike")
     public ResponseEntity<?> restUnlike(@RequestParam Long restNo, Authentication auth) {
         int result = restaurantService.restUnlike(restNo, auth.getName());
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 리뷰 제거
+    @DeleteMapping("/review/{reviewNo}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewNo) {
+       int result = restaurantService.deleteReview(reviewNo);
+
+        return ResponseEntity.ok(result);
+    }//
+
+    // 맛집 제거
+    @DeleteMapping("/{restNo}")
+    public ResponseEntity<?> deleteRest(@PathVariable Long restNo) {
+        int result = restaurantService.deleteRest(restNo);
 
         return ResponseEntity.ok(result);
     }//

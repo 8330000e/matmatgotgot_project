@@ -99,7 +99,7 @@ const ReviewRegist = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data.success);
         if (res.data.success) {
           Swal.fire({
             icon: "success",
@@ -113,12 +113,13 @@ const ReviewRegist = () => {
           Swal.fire({
             icon: "warning",
             title: "등록 실패",
-            text: "맛집 등록에 실패하였습니다.",
+            text: "리뷰 등록에 실패하였습니다.",
           });
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(res);
+        console.log(res.data);
       });
   };
 

@@ -117,4 +117,8 @@ public interface RestaurantMapper {
 
     int commentReport(ReportRequest report);
 
+    int deleteReview(Long reviewNo);
+
+    int deleteRest(Long restNo);
+
 }

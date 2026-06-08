@@ -69,6 +69,34 @@ const RestaurantView = () => {
     }
   };
 
+  // 리뷰 삭제
+  const deleteReview = () => {
+    Swal.fire({
+      title: "삭제하시겠습니까?",
+      text: "삭제 후 복구할 수 없습니다",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${import.meta.env.VITE_BACKSERVER}/restaurants/${restNo}`)
+          .then((res) => {
+            if (res.data > 0) {
+              Swal.fire({
+                title: "삭제되었습니다.",
+                icon: "success",
+              }).then(() => {
+                navigate(`/rest`);
+              });
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    });
+  };
+
   return (
     <div className={styles.wrap}>
       {/* ===== 맛집 정보 영역 ===== */}
@@ -84,7 +112,9 @@ const RestaurantView = () => {
             >
               수정
             </button>
-            <button type="button">삭제</button>
+            <button type="button" onClick={deleteReview}>
+              삭제
+            </button>
           </div>
         )}
 
