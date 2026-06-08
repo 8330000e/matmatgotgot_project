@@ -416,13 +416,16 @@ const ReportManage = ({ navigate }) => {
       return;
     }
 
+    // 맛집 상세 이동
     if (target === 'rest') {
-      navigate(`/rest/view?restNo=${report.contentNo}`);
+      navigate(`/rest/view/${report.contentNo}`);
       return;
     }
 
+    // 맛집 리뷰 상세 이동
     if (target === 'review' || target === 'reviewComment') {
-      navigate(`/rest/review/view?reviewNo=${report.reviewNo}`);
+      navigate(`/rest/review/view/${report.reviewNo}`);
+      return;
     }
   };
 
