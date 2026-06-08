@@ -231,7 +231,7 @@ const MemberManage = () => {
               <img
                 src={
                   member.memberThumb
-                    ? `${import.meta.env.VITE_BACKSERVER}/member/thumb/${member.memberThumb}`
+                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${member.memberThumb}`
                     : userImage
                 }
                 alt="프로필"
