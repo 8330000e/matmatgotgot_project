@@ -1,10 +1,7 @@
 package com.twotwo.matmatgotgot.domain.restaurant.mapper;
 
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestReviewsResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.RestViewResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewCommentResponse;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.response.ReviewViewResponse;
+import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
