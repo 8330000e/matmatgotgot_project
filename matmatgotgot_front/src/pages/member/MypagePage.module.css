@@ -718,3 +718,10 @@
     padding: 3px;
     color: #e82222;
 }
+.submit_chgM {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 10px;
+}

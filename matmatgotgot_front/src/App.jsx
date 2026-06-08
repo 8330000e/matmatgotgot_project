@@ -71,7 +71,8 @@ function App() {
           <Route path="/mypage/myposts" element={<MypagePage />} />
           <Route path="/mypage/reportposts" element={<MypagePage />} />
           <Route path="/mypage/myask" element={<MypagePage />} />
-          <Route path="/maypage/myinfo/changePw" element={<MypagePage />} />
+          <Route path="/mypage/myinfo/changePw" element={<MypagePage />} />
+          <Route path="/mypage/myinfo/changeEmail" element={<MypagePage />} />
 
           <Route path="/board/list" element={<BoardListPage />} />
           <Route path="/board/write" element={<BoardWritePage />} />

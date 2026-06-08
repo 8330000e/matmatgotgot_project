@@ -124,7 +124,8 @@ export const MypagePage = () => {
                 {path === "myposts" && <Myposts />}
                 {path === "reportposts" && <Reportposts />}
                 {path === "myask" && <Myask />}
-                {path === "/myinfo/changePw" && <ChangePw />}
+                {path === "myinfo/changePw" && <ChangePw />}
+                {path === "myinfo/changeEmail" && <ChangeEmail memberInfo={memberInfo} />}
             </div>
         </div>
     </div>
@@ -206,12 +207,12 @@ export const Myinfo = ({ memberInfo }) => {
                             <p>{memberInfo.memberEmail}</p>
                         </div>
                         <div>
-                            <button type="submit" className={styles.submit}>이메일 변경</button>
+                            <button type="submit" className={styles.submit} onClick={()=>window.location.href="/mypage/myinfo/changeEmail"}>이메일 변경</button>
                         </div>
                     </div>
                     <div className={styles.info_pwchange}>
                         <p className={styles.info_title}>비밀번호 변경</p>
-                        <button type="submit" className={styles.submit} onClick={()=>window.location.href="/maypage/myinfo/changePw"}>비밀번호 변경</button>
+                        <button type="submit" className={styles.submit} onClick={()=>window.location.href="/mypage/myinfo/changePw"}>비밀번호 변경</button>
                     </div>
                 </div>
                 <div className={styles.info_alarm}>
@@ -1330,4 +1331,25 @@ export const ChangePw = () => {
     </>);
 };
 
-export default { MypagePage, Myinfo, Myreview, Zzim, Matzip, Likeposts, Myposts, Reportposts, Myask, ChangePw };
+export const ChangeEmail = ({ memberInfo }) => {
+    const [mailMember, setMailMember] = useState({
+
+    });
+    return (
+        <>
+            <div className={styles.content_changePw_wrap}>
+                <div>이메일 변경</div>
+                <div>
+                    <label htmlFor="memberPw">현재 이메일</label>
+                    <Input type="password" name="memberPw" id="memberPw"  />
+                    <button type="submit" className={`${styles.submit} ${styles.submit_chgM}`}>인증메일 보내기</button>
+                </div>
+                <div>
+                </div>
+
+            </div>
+        </>
+    );
+};
+
+export default { MypagePage, Myinfo, Myreview, Zzim, Matzip, Likeposts, Myposts, Reportposts, Myask, ChangePw, ChangeEmail };
