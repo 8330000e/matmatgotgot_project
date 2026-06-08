@@ -10,7 +10,7 @@ import java.util.UUID;
 @Component
 public class FileUtil {
 
-    public String upload(String savepath, MultipartFile file) {
+    public static String upload(String savepath, MultipartFile file) {
         //사용자가 올린 원본 파일 이름
         String filename = file.getOriginalFilename();
         int dotIndex = filename.lastIndexOf(".");
@@ -19,7 +19,7 @@ public class FileUtil {
         if(dotIndex != -1) {//-1이면 빈 문자열, 아니면 확장자 찾아오기
             extension = filename.substring(dotIndex);
         }
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString().replace("-", "");
         String filepath = uuid + extension;
 
         File savefile = new File(savepath+filepath);

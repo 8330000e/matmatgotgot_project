@@ -17,11 +17,12 @@ public class EmailSender {
 	@Autowired
     private JavaMailSender sender;
 	
-	public void sendMail(String emailTitle, String receiver, String emailContent) {
+	public void sendMail(String emailTitle, String receiver, String emailContent) throws MessagingException {
 		MimeMessage message = sender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message);
 		
 		try {
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
 			//메일 전송 시간 설정
 			helper.setSentDate(new Date());
 			//보내는 사람 정보

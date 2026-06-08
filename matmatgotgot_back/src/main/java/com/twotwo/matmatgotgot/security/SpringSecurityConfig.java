@@ -13,6 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -40,10 +41,9 @@ public class SpringSecurityConfig {
 
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
-                // 회원가입, 로그인 등 인증이 필요 없는 주소는 완전히 허용
-                .requestMatchers("/members/logout/**","/members/login/kakao","/members/login/google","/login").permitAll()
-                .requestMatchers("/members/login", "/members/email-verification").permitAll()
-                .requestMatchers("/members/**","/members/join","/members/email-verification","/members/logout/**","/members/login/kakao","/members/login/google","/members/login", "/members/email-verification","/members/ranchar","/members/login/naver","/login").permitAll()
+                    // static 리소스나 에러 페이지 허용
+                    .requestMatchers("/error", "/favicon.ico").permitAll()
+                    .requestMatchers("/upload/**").permitAll()                    .requestMatchers("/members/**", "/login", "/members/pwMember").permitAll()
                 .requestMatchers("/boards/**").permitAll()
                     // 에디터 이미지 접근 허용
                     .requestMatchers("/editor/**").permitAll()
@@ -57,6 +57,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/menu/**").permitAll()
                 .anyRequest().authenticated()
             );
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -76,6 +77,10 @@ public class SpringSecurityConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")); // OPTIONS 포함 필수
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // 👈 핵심: axios의 withCredentials와 맞물리는 설정!
+
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config); // 모든 URL 경로에 위의 CORS 설정 적용

@@ -6,7 +6,8 @@ import logo from '../../assets/logo/맛맛곳곳로고_300x398.png';
 
 export default function Header() {
   const location = useLocation();
-  const { memberId } = useAuthStore();
+  const { memberId, admin } = useAuthStore();
+  const logout = useAuthStore((state) => state.logout);
 
   return (
     <header className={styles.header}>
@@ -61,15 +62,21 @@ export default function Header() {
                 <FiMail />
               </button>
 
-              <Link to="/mypage">
+              {admin ? <Link to="/admin">
+                <button aria-label="관리자페이지" className={styles.iconBtn}>
+                  <FiUser />
+                </button>
+              </Link> : <Link to="/mypage/myinfo">
                 <button aria-label="마이페이지" className={styles.iconBtn}>
                   <FiUser />
                 </button>
-              </Link>
+              </Link>}
 
-              <button aria-label="설정" className={styles.iconBtn}>
+              <Link to={"/logout"}>
+              <button aria-label="설정" className={styles.iconBtn} onClick={logout}>
                 <FiSettings />
               </button>
+              </Link>
             </div>
           ) : (
             <div className={styles.authMenu}>

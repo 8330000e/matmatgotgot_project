@@ -1,26 +1,5 @@
 package com.twotwo.matmatgotgot.domain.member.controller;
 
-import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
-import com.twotwo.matmatgotgot.global.util.EmailSender;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
@@ -29,16 +8,22 @@ import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.member.service.MemberService;
+import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.EmailSender;
+import com.twotwo.matmatgotgot.global.util.FileUtil;
 import com.twotwo.matmatgotgot.security.GoogleOAuthService;
 import com.twotwo.matmatgotgot.security.GoogleUserProfile;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -57,10 +42,20 @@ public class MemberController {
     private final MemberService memberService;
 	private final GoogleOAuthService googleOAuthService;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final FileUtil fileUtil;
+
+	@Value("${file.root}")
+	private String root;
 	
 	@GetMapping
 	public ResponseEntity<?> selectAll() {
 		return ResponseEntity.ok(ApiResponse.success(memberService.selectAll()));
+	}
+
+	@GetMapping(value = "/{memberId}")
+	public ResponseEntity<?> selectOne(@PathVariable String memberId) {
+		Member member = memberService.selectOne(memberId);
+		return ResponseEntity.ok(member);
 	}
 
 	@PostMapping
@@ -74,6 +69,19 @@ public class MemberController {
 		Member m = memberService.selectOneMember(memberId);
 		return ResponseEntity.ok(m==null);
 	}
+
+	@PatchMapping(value="/{memberId}/thumbnail")
+	public ResponseEntity<?> updateThumbnail(@PathVariable String memberId, @ModelAttribute MultipartFile file) {
+		String savepath = root + "member/";
+		String memberThumb = FileUtil.upload(savepath, file);
+		Member m = new Member();
+		m.setMemberThumb(memberThumb);
+		m.setMemberId(memberId);
+		int result = memberService.updateThumbnail(m);
+		return ResponseEntity.ok(memberThumb);
+	}
+
+
 
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
@@ -429,31 +437,81 @@ public class MemberController {
 		}
 	}	
 	
-	
+	@PostMapping(value = "/pwMember")
+	public ResponseEntity<?> updateMemberPw(@RequestBody Member member) {
+		Boolean memberOk = memberService.selectPw(member);
+		if (memberOk) {
+			Integer memberNewPw = memberService.updateMemberPw(member);
+			return ResponseEntity.ok(memberNewPw);
+		}
+		return ResponseEntity.ok(null);
+	}
 
 	@PostMapping(value="/email-verification")
-	public ResponseEntity<?> sendMail(@RequestBody Member member) {
+	public ResponseEntity<?> sendMail(@RequestBody Member member, Model model) throws MessagingException {
 		String emailTitle = "[맛맛곳곳] 회원가입 인증 메일입니다.";
 		Random r = new Random();
 		StringBuffer sb = new StringBuffer();
 		for(int i=0; i<6; i++) {
-			int num = r.nextInt(10);
-			sb.append(num);
-		}
-		int flag = r.nextInt(3);
-		if(flag == 0) {
-			int randomCode = r.nextInt(10);
-			sb.append(randomCode);
-		}else if(flag == 1) {
-			char randomCode = (char)(r.nextInt(26)+65);
-			sb.append(randomCode);
-		}else if(flag == 2) {
-			char randomCode = (char)(r.nextInt(26)+97);
-			sb.append(randomCode);
+			int flag = r.nextInt(3);
+
+			if (flag == 0) {
+				int randomCode = r.nextInt(10);
+				sb.append(randomCode);
+			} else if (flag == 1) {
+				char randomCode = (char)(r.nextInt(26) + 65);
+				sb.append(randomCode);
+			} else if (flag == 2) {
+				char randomCode = (char)(r.nextInt(26) + 97);
+				sb.append(randomCode);
+			}
 		}
 		String authCode = sb.toString();
-		String emailContent = "<!doctypehtml><htmllang=\"ko\"><head><metacharset=\"UTF-8\"/><metaname=\"viewport\"content=\"width=device-width,initial-scale=1.0\"/></head><body style=\"width:500px;margin:0auto;padding:0;background-color:#fdfbf7\"><div style=\"display:flex;align-items:center;justify-content:center;margin-top:50px;margin-bottom:15px;text-align:center;padding:10px;gap:8px;\"><img src=\"matmatgotgot_front\\scr\\assets\\logo\\맛맛곳곳로고_300x398.png\"alt=\"\"style=\"width:40px;margin-top:50px\"/><div style=\"margin-top:50px;font-weight:900;font-size:40px;color:#2b1b17;\">맛맛곳곳</div></div><div style=\"background-color:#fff;padding:30px50px;text-align:center;box-shadow:02px8pxrgba(0,0,0,0.2);border-radius:15px;\"><div><div style=\"display:flex;flex-direction:column;align-items:center;gap:20px;\"><p style=\"font-size:16px;color:#2b1b17;font-weight:500\">안녕하세요! 맛맛곳곳입니다.<br/>아래 코드를 복사하여 이메일 인증을 완료하여 주십시오.</p><div style=\"width:180px;border:1px solid #2b1b17;border-radius:10px\"><div style=\"padding:10px;font-weight:bold;font-size:24px;color:#2b1b17;\">"+authCode+"</div></div><div style=\"display:flex;flex-direction:column;align-items:center;margin-top:20px;gap:10px;\"><p style=\"margin-top:20px;font-size:13px;color:#2b1b17;font-weight:500;\">본인이 요청한 이메일 인증이 아니라면, 이 이메일을 무시하셔도 됩니다.</p></div></div></div></div><div style=\"font-size:12px;color:#2b1b17;text-align:center;margin-top:20px;font-weight:500;opacity:0.7;\">'맛맛곳곳'은 KH정보교육원 종로 301반 파이널프로젝트로,<br/>팀 twotwo에서 제작 및 배포했습니다.</div></body></html>";
-						emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
+		model.addAttribute("authCode", authCode);
+		String emailContent = memberService.joinEmail(authCode);
+		try {
+			// 1. 시도할 코드를 적습니다.
+			emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
+
+		} catch (MessagingException e) {
+			// 2. try가 끝나면 '바로 이어서' catch 문이 와야 합니다.
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("에러 발생");
+		}
+		return ResponseEntity.ok(ApiResponse.success(authCode));
+	}
+
+	@PostMapping(value = "/email-emailchange")
+	public ResponseEntity<?> sendChangeMail(@RequestBody Member member, Model model) throws MessagingException {
+		String emailTitle = "[맛맛곳곳] 이메일 변경 인증 메일입니다.";
+		Random r = new Random();
+		StringBuffer sb = new StringBuffer();
+		for(int i=0; i<6; i++) {
+			int flag = r.nextInt(3);
+
+			if (flag == 0) {
+				int randomCode = r.nextInt(10);
+				sb.append(randomCode);
+			} else if (flag == 1) {
+				char randomCode = (char)(r.nextInt(26) + 65);
+				sb.append(randomCode);
+			} else if (flag == 2) {
+				char randomCode = (char)(r.nextInt(26) + 97);
+				sb.append(randomCode);
+			}
+		}
+		String authCode = sb.toString();
+		model.addAttribute("authCode", authCode);
+		String emailContent = memberService.joinEmail(authCode);
+		try {
+			// 1. 시도할 코드를 적습니다.
+			emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
+
+		} catch (MessagingException e) {
+			// 2. try가 끝나면 '바로 이어서' catch 문이 와야 합니다.
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("에러 발생");
+		}
 		return ResponseEntity.ok(ApiResponse.success(authCode));
 	}
 

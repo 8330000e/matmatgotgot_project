@@ -7,7 +7,7 @@ import Header from "./components/commons/Header.jsx";
 import Footer from "./components/commons/Footer.jsx";
 import LoginPage from "./pages/member/LoginPage.jsx";
 import JoinPage from "./pages/member/JoinPage.jsx";
-import MypagePage from "./pages/member/MypagePage.jsx";
+import { MypagePage } from "./pages/member/MypagePage.jsx";
 import RestaurantDetailSearch from "./pages/restaurant/RestaurantDetailSearch.jsx";
 import RestaurantRegist from "./pages/restaurant/RestaurantRegist.jsx";
 import RestaurantView from "./pages/restaurant/RestaurantView.jsx";
@@ -74,7 +74,17 @@ function App() {
             element={<ReviewModify />}
           />
 
-          <Route path="/mypage" element={<MypagePage />} />
+          <Route path="/mypage/myinfo" element={<MypagePage />} />
+          <Route path="/mypage/myreview" element={<MypagePage />} />
+          <Route path="/mypage/zzim" element={<MypagePage />} />
+          <Route path="/mypage/matzip" element={<MypagePage />} />
+          <Route path="/mypage/likeposts" element={<MypagePage />} />
+          <Route path="/mypage/myposts" element={<MypagePage />} />
+          <Route path="/mypage/reportposts" element={<MypagePage />} />
+          <Route path="/mypage/myask" element={<MypagePage />} />
+          <Route path="/mypage/myinfo/changePw" element={<MypagePage />} />
+          <Route path="/mypage/myinfo/changeEmail" element={<MypagePage />} />
+
           <Route path="/board/list" element={<BoardListPage />} />
           <Route path="/board/write" element={<BoardWritePage />} />
           <Route path="/board/view/:boardNo" element={<BoardViewPage />} />

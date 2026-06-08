@@ -1,19 +1,22 @@
 import axios from "axios";
 import styles from "./JoinPage.module.css";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {Input} from "../../components/ui/Form.jsx";
 import check from "../../assets/check.svg"
 import Swal from "sweetalert2";
+import { useKakaoPostcode } from "@clroot/react-kakao-postcode";
 
 const Join = () => {
   const navigate = useNavigate();
+  const detailRef = useRef();
   const [member, setMember] = useState({
     memberId: "",
     memberPw: "",
     memberName: "",
     memberNickname: "",
     memberEmail: "",
+    memberAddress: "",
     adContent: 0,
   });
   const [checkId, setCheckId] = useState(0);
@@ -66,6 +69,12 @@ const Join = () => {
       setCheckPw(1);
     }
   };
+  const {open} = useKakaoPostcode({
+    onComplete : (data)=>{
+      setMember((prev) => ({ ...prev, ["memberAddress"]: data.roadAddress }));
+      detailRef.current.focus();
+    }
+  })
   const [time, setTime] = useState(180);
   const [timeout, setTimeout] = useState(null);
   const sendMail = () => {
@@ -447,6 +456,24 @@ const Join = () => {
           required
         />
           </div>
+        <div className={styles.input_address}>
+
+            <div className={styles.inputLabel}>
+              <label htmlFor="memberAddress">주소</label>
+            </div>
+          <div>
+            <Input
+                ref={detailRef}
+                type="text"
+                id="memberAddress"
+                name="memberAddress"
+                value={member.memberAddress}
+                onChange={inputMember}
+                required
+            />
+            <button type="button" className={styles.submit_s} onClick={open}>주소찾기</button>
+          </div>
+        </div>
               <div>
                 <div className={styles.inputLabel}>
         <label htmlFor="memberEmail">이메일</label>
