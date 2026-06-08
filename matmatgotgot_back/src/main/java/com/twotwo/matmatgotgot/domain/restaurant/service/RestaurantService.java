@@ -204,8 +204,10 @@ public class RestaurantService {
     public int report(ReportRequest report) {
         if (Objects.equals(report.getType(), "rest")) {
             return restaurantMapper.restReport(report);
-        } else {
+        } else if (Objects.equals(report.getType(), "review")){
             return restaurantMapper.reviewReport(report);
+        } else {
+            return restaurantMapper.commentReport(report);
         }
     }//
 

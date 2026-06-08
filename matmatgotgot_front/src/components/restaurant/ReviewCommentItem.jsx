@@ -1,30 +1,28 @@
-import { useEffect, useRef, useState } from "react"; // useRef 추가
+import { useEffect, useRef, useState } from "react";
 import styles from "./ReviewCommentItem.module.css";
 import Swal from "sweetalert2";
+import ReportModal from "../ui/ReportModal";
 
-// ReviewCommentItem  (depth = 0, 일반 댓글)
 const ReviewCommentItem = ({
   comment,
-  replies = [], // 기본값: 빈 배열 (대댓글 없을 때 오류 방지)
+  replies = [],
   loginMemberId,
   onUpdate,
   onDelete,
   onReplyAdd,
 }) => {
-  // 수정 모드 여부
   const [isEditing, setIsEditing] = useState(false);
-  // 수정 중인 내용 (초기값: 현재 댓글 내용)
   const [editContent, setEditContent] = useState(comment.content);
-
-  // 답글 입력창 표시 여부
   const [showReplyInput, setShowReplyInput] = useState(false);
-  // 대댓글 입력 내용
   const [replyContent, setReplyContent] = useState("");
+
+  // 신고 모달 표시 여부 (이 댓글 전용)
+  const [reportModal, setReportModal] = useState(false);
 
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
 
-  // 수정 textarea 자동 높이 조정 (내용에 따라 늘어남)
+  // 수정 textarea 자동 높이 조정
   useEffect(() => {
     if (editTextareaRef.current) {
       editTextareaRef.current.style.height = "auto";
@@ -42,12 +40,9 @@ const ReviewCommentItem = ({
     }
   }, [replyContent]);
 
-  // 댓글 수정
-  // "수정" 클릭 → 편집 모드 진입
-  // "완료" 클릭 → onUpdate 콜백 호출 후 편집 모드 종료
+  // 댓글 수정: "수정" 클릭 → 편집 모드 / "완료" 클릭 → onUpdate 호출
   const handleUpdate = () => {
     if (isEditing) {
-      // 완료 버튼: 내용이 바뀐 경우만 API 호출
       if (editContent.trim() && editContent !== comment.content) {
         onUpdate(comment.commentNo, editContent);
       }
@@ -55,8 +50,8 @@ const ReviewCommentItem = ({
     setIsEditing(!isEditing);
   };
 
-  // 댓글 삭제
-  // 삭제 시 해당 댓글의 대댓글도 DB CASCADE 로 함께 삭제됨
+  // 댓글 삭제: Swal 확인 후 onDelete 호출
+  // DB ON DELETE CASCADE 로 대댓글도 함께 삭제됨
   const handleDelete = () => {
     Swal.fire({
       title: "삭제하시겠습니까?",
@@ -75,9 +70,40 @@ const ReviewCommentItem = ({
   // 대댓글 등록
   const handleReplySubmit = () => {
     if (!replyContent.trim()) return;
-    onReplyAdd(comment.commentNo, replyContent); // 부모 commentNo 전달
-    setReplyContent(""); // 입력창 초기화
-    setShowReplyInput(false); // 입력창 닫기
+    onReplyAdd(comment.commentNo, replyContent);
+    setReplyContent("");
+    setShowReplyInput(false);
+  };
+
+  // ── 신고 버튼 클릭 처리 ──────────────────────────────────
+  // 1) 비로그인 상태 → 로그인 필요 안내
+  // 2) 자기 자신의 댓글 → 자기 신고 불가 안내
+  // 3) 정상 → 신고 모달 오픈
+  const handleReport = () => {
+    // 비로그인 체크: loginMemberId 가 null 이면 로그인 안 된 상태
+    if (!loginMemberId) {
+      Swal.fire({
+        title: "로그인이 필요합니다",
+        text: "신고하려면 먼저 로그인해 주세요.",
+        icon: "warning",
+        confirmButtonText: "확인",
+      });
+      return;
+    }
+
+    // 자기 자신 신고 체크: 댓글 작성자와 로그인 회원이 동일한 경우
+    if (loginMemberId === comment.memberId) {
+      Swal.fire({
+        title: "신고할 수 없습니다",
+        text: "자기 자신의 댓글은 신고할 수 없습니다.",
+        icon: "info",
+        confirmButtonText: "확인",
+      });
+      return;
+    }
+
+    // 모든 검사 통과 → 신고 모달 오픈
+    setReportModal(true);
   };
 
   // 로그인 회원이 이 댓글의 작성자인지 확인
@@ -85,9 +111,8 @@ const ReviewCommentItem = ({
 
   return (
     <div className={styles.comment_wrap}>
-      {/* 작성자 정보 + 수정/삭제 버튼 */}
+      {/* ── 작성자 정보 + 수정/삭제 버튼 ── */}
       <div className={styles.comment_header}>
-        {/* 프로필 + 이름 + 날짜 */}
         <div className={styles.writer}>
           <div
             className={
@@ -102,7 +127,6 @@ const ReviewCommentItem = ({
                 alt="프로필"
               />
             ) : (
-              // 프로필 이미지 없을 때 기본 아이콘
               <span className="material-icons">account_circle</span>
             )}
           </div>
@@ -114,12 +138,11 @@ const ReviewCommentItem = ({
         {isOwner && (
           <div
             className={styles.comment_btn_section}
-            onClick={(e) => e.stopPropagation()} // 이벤트 버블링 방지
+            onClick={(e) => e.stopPropagation()}
           >
             <button className={styles.comment_btn} onClick={handleUpdate}>
               {isEditing ? "완료" : "수정"}
             </button>
-            {/* 수정 중에는 삭제 버튼 숨김 */}
             {!isEditing && (
               <button className={styles.comment_btn} onClick={handleDelete}>
                 삭제
@@ -134,18 +157,14 @@ const ReviewCommentItem = ({
         <textarea
           ref={editTextareaRef}
           className={styles.textarea}
-          // 수정 모드: editContent / 읽기 모드: 서버 원본값 (state 변경 없이 보존)
           value={isEditing ? editContent : comment.content}
           onChange={(e) => setEditContent(e.target.value)}
-          disabled={!isEditing} // 수정 모드가 아니면 읽기 전용
+          disabled={!isEditing}
         />
       </div>
 
       {/* ── 답글 / 신고 버튼 ── */}
       <div className={styles.comment_actions}>
-        {/* depth=0 댓글에만 답글 버튼 표시
-            (depth=1 대댓글에는 이 컴포넌트 자체를 사용하지 않으므로
-             ReplyItem 참조) */}
         <button
           type="button"
           className={styles.action_btn}
@@ -153,9 +172,12 @@ const ReviewCommentItem = ({
         >
           답글
         </button>
+
+        {/* 신고 버튼: handleReport 에서 로그인·자기신고 검사 후 모달 오픈 */}
         <button
           type="button"
           className={`${styles.action_btn} ${styles.report_btn}`}
+          onClick={handleReport}
         >
           신고
         </button>
@@ -164,7 +186,6 @@ const ReviewCommentItem = ({
       {/* ── 대댓글 입력창 (답글 버튼 클릭 시 표시) ── */}
       {showReplyInput && (
         <div className={styles.reply_input_wrap}>
-          {/* 들여쓰기 구분선 */}
           <div className={styles.indent_line} />
           <div className={styles.reply_input}>
             <textarea
@@ -213,8 +234,36 @@ const ReviewCommentItem = ({
               loginMemberId={loginMemberId}
               onUpdate={onUpdate}
               onDelete={onDelete}
+              // ⚠ reportModal/setReportModal 을 내려주지 않음
+              //   ReplyItem 은 자체 state 로 모달을 관리함
+              //   (댓글마다 독립된 모달이 필요하기 때문)
             />
           ))}
+        </div>
+      )}
+
+      {/* ── 신고 모달 오버레이 ──────────────────────────────
+       * reportModal 이 true 일 때만 렌더링
+       * 오버레이 클릭 → 모달 닫기 (e.stopPropagation 으로 모달 내부 클릭은 무시)
+       */}
+      {reportModal && (
+        <div
+          className={styles.modal_overlay}
+          onClick={(e) => {
+            e.stopPropagation();
+            setReportModal(false);
+          }}
+        >
+          <div
+            className={styles.modal_content}
+            onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 오버레이 닫힘 방지
+          >
+            <ReportModal
+              type={"comment"} // 댓글 신고 타입
+              no={comment.commentNo} // 신고 대상 댓글 번호
+              setReportModal={setReportModal}
+            />
+          </div>
         </div>
       )}
     </div>
@@ -222,10 +271,11 @@ const ReviewCommentItem = ({
 };
 
 const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
-  // 수정 모드 여부
   const [isEditing, setIsEditing] = useState(false);
-  // 수정 중인 내용
   const [editContent, setEditContent] = useState(reply.content);
+
+  // 신고 모달 표시 여부 (이 대댓글 전용 — 부모와 독립)
+  const [reportModal, setReportModal] = useState(false);
 
   const textareaRef = useRef(null);
 
@@ -262,6 +312,34 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
         onDelete(reply.commentNo);
       }
     });
+  };
+
+  // ── 신고 버튼 클릭 처리 ──────────────────────────────────
+  // 1) 비로그인 상태 → 로그인 필요 안내
+  // 2) 자기 자신의 대댓글 → 자기 신고 불가 안내
+  // 3) 정상 → 신고 모달 오픈
+  const handleReport = () => {
+    if (!loginMemberId) {
+      Swal.fire({
+        title: "로그인이 필요합니다",
+        text: "신고하려면 먼저 로그인해 주세요.",
+        icon: "warning",
+        confirmButtonText: "확인",
+      });
+      return;
+    }
+
+    if (loginMemberId === reply.memberId) {
+      Swal.fire({
+        title: "신고할 수 없습니다",
+        text: "자기 자신의 댓글은 신고할 수 없습니다.",
+        icon: "info",
+        confirmButtonText: "확인",
+      });
+      return;
+    }
+
+    setReportModal(true);
   };
 
   const isOwner = loginMemberId === reply.memberId;
@@ -323,16 +401,43 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
           />
         </div>
 
-        {/* 답글 버튼 없음 — depth=1 은 대댓글을 달 수 없음 */}
+        {/* 답글 버튼 없음 — depth=1 은 대댓글을 달 수 없음 (DB CHECK 제약) */}
         <div className={styles.comment_actions}>
+          {/* 신고 버튼: handleReport 에서 로그인·자기신고 검사 후 모달 오픈 */}
           <button
             type="button"
             className={`${styles.action_btn} ${styles.report_btn}`}
+            onClick={handleReport}
           >
             신고
           </button>
         </div>
       </div>
+
+      {/* ── 신고 모달 오버레이 ──────────────────────────────
+       * 오버레이 클릭 → 모달 닫기
+       * 모달 내부 클릭 → 이벤트 버블링 차단 (모달 닫힘 방지)
+       */}
+      {reportModal && (
+        <div
+          className={styles.modal_overlay}
+          onClick={(e) => {
+            e.stopPropagation();
+            setReportModal(false);
+          }}
+        >
+          <div
+            className={styles.modal_content}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ReportModal
+              type={"review_comment"} // 댓글 신고 타입
+              no={reply.commentNo} // 신고 대상 대댓글 번호
+              setReportModal={setReportModal}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

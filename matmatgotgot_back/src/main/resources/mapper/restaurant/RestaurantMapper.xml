@@ -492,6 +492,24 @@
         )
     </insert>
 
+    <insert id="commentReport">
+        INSERT INTO review_comment_report_tbl (
+        member_id,
+        comment_no,
+        reason
+        <if test="reason == '기타'">
+            , detail
+        </if>
+        )
+        VALUES (
+        #{memberId},
+        #{no},
+        #{reason}
+        <if test="reason == '기타'">
+            , #{detail}
+        </if>
+        )
+    </insert>
 
     <insert id="reviewLike">
         INSERT INTO review_like_tbl (review_no, member_id)

@@ -115,4 +115,6 @@ public interface RestaurantMapper {
 
     int getRestSearchCount(SearchRequest req, String memberId);
 
+    int commentReport(ReportRequest report);
+
 }
