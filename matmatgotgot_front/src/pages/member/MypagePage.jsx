@@ -1333,20 +1333,157 @@ export const ChangePw = () => {
 
 export const ChangeEmail = ({ memberInfo }) => {
     const [mailMember, setMailMember] = useState({
-
+        memberId: "",
+        memberEmail: "",
+        newMemberEmail: ""
     });
+    const [mailAuth, setMailAuth] = useState(0);
+    const [mailAuthCode, setMailAuthCode] = useState(null);
+    const [mailAuthInput, setMailAuthInput] = useState("");
+    const [time, setTime] = useState(180);
+    const [timeout, setTimeout] = useState(null);
+    const sendMail = () => {
+        if(!member.memberEmail) {
+            Swal.mixin({
+                toast: true,
+                color: "#2b1b17",
+                borderRadius: "15px",
+                fontWeight: "800",
+                padding: "20px 10px",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire({
+                title: '인증 메일전송 실패',
+                text: '이메일을 입력해주세요.',
+                icon: 'error'
+            });
+        }
+        setTime(180);
+        if (timeout) {
+            window.clearInterval(timeout);
+        }
+        setMailAuth(1);
+        axios
+            .post(
+                `${import.meta.env.VITE_BACKSERVER}/members/email-emailchange`,
+                {
+                    memberEmail: member.memberEmail,
+                },
+            )
+            .then((res) => {
+                console.log(res);
+                setMailAuthCode(res.data.data);
+                setMailAuth(2);
+                const intervalId = window.setInterval(() => {
+                    setTime((prev) => {
+                        return prev - 1;
+                    });
+                }, 1000);
+                setTimeout(intervalId);
+            })
+            .catch((err) => {
+                console.error(err);
+                Swal.mixin({
+                    toast: true,
+                    color: "#2b1b17",
+                    borderRadius: "15px",
+                    fontWeight: "800",
+                    padding: "20px 10px",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                }).fire({
+                    title: '인증 메일전송 실패',
+                    text: '올바른 이메일을 입력해주세요.',
+                    icon: 'error'
+                });
+                setMailAuth(0);
+                return;
+            });
+    };
+    useEffect(() => {
+        if (time === 0) {
+            window.clearInterval(timeout);
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setMailAuthCode(null);
+            setTimeout(null);
+        }
+    }, [time])
+    const showTime = () => {
+        const min = Math.floor(time/60);
+        const sec = String(time%60).padStart(2, "0");
+        return `${min}:${sec}`;
+    };
+
     return (
         <>
             <div className={styles.content_changePw_wrap}>
                 <div>이메일 변경</div>
                 <div>
                     <label htmlFor="memberPw">현재 이메일</label>
-                    <Input type="password" name="memberPw" id="memberPw"  />
-                    <button type="submit" className={`${styles.submit} ${styles.submit_chgM}`}>인증메일 보내기</button>
+                    <Input type="text"
+                           name="memberEmail"
+                           id="memberEmail"
+                           // value={member.memberEmail}
+                           onChange={(e) => setMailMember((prev)=>({
+                               ...prev, [e.target.name]: e.target.value
+                           }))}
+                           required
+                           readOnly={mailAuth === 1 || mailAuth === 3}  />
+                    <button
+                        type="submit"
+                        className={`${styles.submit} ${styles.submit_chgM}`}
+                        onClick={sendMail}
+                        disabled={mailAuth === 1 || mailAuth === 3}>
+                        인증메일 보내기
+                    </button>
+                        {mailAuth > 1 && (
+                            <div>
+                            <div className={styles.inputLabel}>
+                                <label htmlFor="mailAuthInput">이메일 확인</label>
+                            </div>
+                            <div>
+                                <Input
+                                    type="text"
+                                    name="mailAuthInput"
+                                    id="mailAuthInput"
+                                    value={mailAuthInput}
+                                    onChange={(e)=>{
+                                        setMailAuthInput(e.target.value);
+                                    }}
+                                    disabled={mailAuth === 3}
+                                />
+                                <button
+                                    className={styles.submit}
+                                    type="button"
+                                    onClick={()=> {
+                                        if (mailAuthCode === mailAuthInput) {
+                                            setMailAuth(3);
+                                            window.clearInterval(timeout);
+                                            setTimeout(null);
+                                        } else {
+                                            alert("인증코드가 올바르지 않습니다.");
+                                        }
+                                    }}
+                                    disabled = {mailAuth === 3}
+                                >
+                                    인증하기
+                                </button>
+                            </div>
+                            <p className={styles.check_msg}>
+                                {mailAuth === 3 ? "인증되었습니다.": showTime()}
+                            </p>
+                        </div>)}
                 </div>
-                <div>
-                </div>
-
             </div>
         </>
     );
