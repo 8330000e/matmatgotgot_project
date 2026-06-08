@@ -55,3 +55,50 @@
 :global(.swiper-button-prev) {
   display: none !important;
 }
+
+.cardOverlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  color: #fff;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardSub {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+/* 💡 데이터가 없을 때 가득 채워지는 와이드 박스 스타일 정의 */
+.emptyContainer {
+  width: calc(275px * 4 + 20px * 3);
+  height: 180px; /* 기존 카드 높이보다는 조금 낮게 주어 컴팩트하게 연출 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gray8);
+  border: 1px dashed color-mix(in srgb, var(--text1) 15%, transparent); /* 대시 보더로 깔끔함 추가 */
+  border-radius: 12px;
+}
+
+/* 💡 데이터 없음 텍스트 스타일 지정 */
+.emptyText {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--gray5);
+  letter-spacing: -0.5px;
+}
