@@ -26,11 +26,12 @@
   color: var(--text1);
 }
 
+/* 💡 부모 박스: 상단 패딩을 살짝 넓혀서 카드가 위로 움직일 공간을 확보합니다. */
 .contentSection {
   display: flex;
   gap: 12px;
   background-color: var(--gray8);
-  padding: 20px;
+  padding: 26px 20px 20px;
   border: 1px solid color-mix(in srgb, var(--text1) 15%, transparent);
   position: relative;
   overflow: hidden;
@@ -38,16 +39,21 @@
   min-height: 240px;
 }
 
-/* 가로 스크롤 내부 박스 */
+/* 💡 가로 스크롤 트랙: 패딩과 음수 마진을 주어 호버 시 생기는 그림자가 잘리지 않게 방어합니다. */
 .myListItems {
   display: flex;
   gap: 16px;
   overflow-x: auto;
   scroll-behavior: smooth;
+  align-items: flex-start; /* 자식들이 고유의 크기를 유지하도록 정렬 */
   -ms-overflow-style: none;
   scrollbar-width: none;
   width: 100%;
-  align-items: stretch;
+
+  padding-top: 8px;
+  margin-top: -8px;
+  padding-bottom: 8px;
+  margin-bottom: -8px;
 }
 
 .myListItems::-webkit-scrollbar {
@@ -57,6 +63,7 @@
 /* --- 리뉴얼된 가로 스크롤 카드 아이템 디자인 --- */
 .cardItem {
   width: 210px;
+  min-height: 232px; /* 💡 고정 최소 높이를 지정하여 컨텐츠가 찌그러지지 않게 방지 */
   background-color: var(--gray8);
   border: 1px solid color-mix(in srgb, var(--text1) 12%, transparent);
   border-radius: 14px;
@@ -73,9 +80,10 @@
     box-shadow 0.2s ease;
 }
 
+/* 💡 호버 시 위로 자연스럽게 이동하며 그림자를 부드럽게 퍼뜨립니다. */
 .cardItem:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* 썸네일 및 일수 배지 */
@@ -170,6 +178,7 @@
 /* --- 새 코스 만들기 버튼 디자인 보완 --- */
 .createCourseBtn {
   width: 160px;
+  min-height: 232px; /* 💡 일반 카드 아이템과 높이를 정확히 통일시킵니다. */
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -239,6 +248,7 @@
   width: 100%;
   gap: 10px;
   color: var(--gray3);
+  align-self: center; /* 세로 중앙 정렬 보완 */
 }
 
 .emptyText {

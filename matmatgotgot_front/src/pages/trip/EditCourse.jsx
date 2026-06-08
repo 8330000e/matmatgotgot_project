@@ -9,7 +9,7 @@ import RestaurantSearch from "../../components/trip/RestaurantSearch";
 import SelectedCourseList from "../../components/trip/SelectedCourseList";
 import CourseSummaryPanel from "../../components/trip/CourseSummaryPanel";
 import AddMenuModal from "../../components/trip/AddMenuModal";
-import { useAuthStore } from "../../store/useAuthStore.js"; // 1. useAuthStore 임포트
+import { useAuthStore } from "../../store/useAuthStore.js";
 
 const EditCourse = () => {
   const { tplan_no } = useParams();
@@ -25,6 +25,7 @@ const EditCourse = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [transitTimes, setTransitTimes] = useState({});
   const [transitModes, setTransitModes] = useState({});
+  const [courseDesc, setCourseDesc] = useState(""); // 💡 코스 설명 state
 
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [targetRestaurantId, setTargetRestaurantId] = useState(null);
@@ -38,10 +39,10 @@ const EditCourse = () => {
 
   const [tags, setTags] = useState([]);
 
-  // 2. Zustand에서 로그인 회원 정보 및 준비 상태 가져오기
+  // Zustand에서 로그인 회원 정보 및 준비 상태 가져오기
   const { memberNo: loginMemberNo, isReady } = useAuthStore();
 
-  // 3. 비로그인 유저 1차 차단 가드 (Guard)
+  // 비로그인 유저 1차 차단 가드 (Guard)
   useEffect(() => {
     if (isReady && !loginMemberNo) {
       alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
@@ -49,9 +50,15 @@ const EditCourse = () => {
     }
   }, [isReady, loginMemberNo, navigate]);
 
+  // 코스 설명 글자 수 입력 제어 핸들러 (최대 300자)
+  const handleCourseDescChange = (value) => {
+    if (value.length <= 300) {
+      setCourseDesc(value);
+    }
+  };
+
   // 기존 코스 상세 데이터 및 태그 가져오기
   useEffect(() => {
-    // Auth 상태가 로드되기 전이거나, 비로그인 상태면 실행 안 함
     if (!isReady || !loginMemberNo) return;
 
     const fetchOriginalCourseData = async () => {
@@ -68,23 +75,38 @@ const EditCourse = () => {
         );
         const course = detailResponse.data;
 
-        // 4. ⭐ 소유권 체크 (코스 작성자와 로그인한 유저가 다르면 수정 불가)
+        // 소유권 체크 (코스 작성자와 로그인한 유저가 다르면 수정 불가)
         if (course.memberNo !== loginMemberNo) {
           alert("본인이 작성한 코스만 수정할 수 있습니다.");
           navigate(`/trip/detail/${tplan_no}`);
           return;
         }
 
-        // 기본 텍스트 및 기본 메타 데이터 매핑
-        setCourseTitle(course.title);
+        // 💡 기존 데이터 바인딩 (코스명, 코스설명, 여행일수)
+        setCourseTitle(course.title || course.tplanTitle || "");
+        setCourseDesc(course.tplanDesc || course.desc || "");
         setTravelDays(course.tplanDays);
 
         // 태그 활성화 유무 기존 정보 비교 매핑
-        if (course.tags && course.tags.length > 0) {
-          tagList = tagList.map((t) => ({
-            ...t,
-            active: course.tags.includes(t.tagName || t.name),
-          }));
+        if (
+          course.tags &&
+          Array.isArray(course.tags) &&
+          course.tags.length > 0
+        ) {
+          tagList = tagList.map((t) => {
+            const isActive = course.tags.some((courseTag) => {
+              if (typeof courseTag === "object" && courseTag !== null) {
+                return (
+                  (courseTag.tagName || courseTag.name) ===
+                  (t.tagName || t.name)
+                );
+              }
+              return (
+                courseTag === (t.tagName || t.name) || courseTag === t.tagNo
+              );
+            });
+            return { ...t, active: isActive };
+          });
         }
         setTags(tagList);
 
@@ -125,6 +147,7 @@ const EditCourse = () => {
                 return {
                   restNo: node.restNo,
                   restName: node.restName,
+                  restAddr: node.restAddr || node.rest_addr, // 💡 주소 데이터 유실 방지
                   lat: node.lat,
                   lng: node.lng,
                   selectedMenus: node.selectedMenus || [],
@@ -332,7 +355,6 @@ const EditCourse = () => {
       (r) => String(r.restNo) === destinationNo,
     );
 
-    // 좌표 정보가 하나라도 없으면 실행하지 않고 안전하게 리턴
     if (!origin?.lat || !origin?.lng || !destination?.lat || !destination?.lng)
       return;
 
@@ -348,7 +370,6 @@ const EditCourse = () => {
           : "https://apis.openapi.sk.com/tmap/routes?version=1&format=json";
 
       try {
-        // Tmap에 보낼 바디 객체를 혼선이 없도록 먼저 명확하게 선언합니다.
         const requestBody =
           mode === "WALK"
             ? {
@@ -401,7 +422,7 @@ const EditCourse = () => {
             apiKey: ODSAY_API_KEY,
           },
           headers: {
-            Authorization: null, // 전역 토큰 CORS 차단 해결
+            Authorization: null,
           },
         });
 
@@ -478,17 +499,70 @@ const EditCourse = () => {
     return hr > 0 ? (mn > 0 ? `${hr}시간 ${mn}분` : `${hr}시간`) : `${mn}분`;
   };
 
+  // 💡 CreateCourse에서 가져온 지역 추출 헬퍼 함수
+  const extractCityName = (addr) => {
+    if (!addr) return "";
+    const trimAddr = addr.trim();
+    const firstWord = trimAddr.split(" ")[0];
+
+    if (firstWord.endsWith("도") && trimAddr.split(" ").length > 1) {
+      return trimAddr.split(" ")[1];
+    }
+    return firstWord;
+  };
+
+  // 코스 수정 반영 함수
   const handleUpdateCourse = async () => {
     if (!courseTitle.trim()) {
       alert("코스명을 입력해 주세요.");
       return;
     }
 
-    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
-    if (Object.values(selectedRestaurants).flat().length === 0) {
+    const allSelectedList = Object.values(selectedRestaurants).flat();
+    if (allSelectedList.length === 0) {
       alert("최소 한 개 이상의 식당을 코스에 추가해야 합니다.");
       return;
     }
+
+    // 추천 메뉴 및 이동수단 검사 유효성 루프
+    for (const dayStr of Object.keys(selectedRestaurants)) {
+      const dayNum = Number(dayStr);
+      const restaurantList = selectedRestaurants[dayNum] || [];
+
+      for (let index = 0; index < restaurantList.length; index++) {
+        const res = restaurantList[index];
+
+        if (!res.selectedMenus || res.selectedMenus.length === 0) {
+          alert(
+            `[Day ${dayNum}] '${res.restName || "선택한 식당"}'의 추천 메뉴를 최소 1개 이상 선택해 주세요.`,
+          );
+          setCurrentDay(dayNum);
+          return;
+        }
+
+        const nextRes = restaurantList[index + 1];
+        if (nextRes) {
+          const transitKey = `Day${dayNum}_${res.restNo}_${nextRes.restNo}`;
+          if (!transitModes[transitKey]) {
+            alert(
+              `[Day ${dayNum}] '${res.restName || "출발지"}'에서 '${nextRes.restName || "목적지"}'로 이동하는 교통수단을 선택해 주세요.`,
+            );
+            setCurrentDay(dayNum);
+            return;
+          }
+        }
+      }
+    }
+
+    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
+
+    // 💡 [지역 설정 기능 복원] 주소 기반으로 대대표 지역명 문자열 조합
+    const cities = allSelectedList
+      .map((res) => extractCityName(res.restAddr || res.rest_addr))
+      .filter((city) => city !== "");
+
+    const uniqueCities = [...new Set(cities)];
+    const tplanRegionValue = uniqueCities.join(", ");
 
     const daysData = Object.keys(selectedRestaurants).map((dayStr) => {
       const dayNum = Number(dayStr);
@@ -517,8 +591,8 @@ const EditCourse = () => {
     const payload = {
       tplanNo: tplan_no,
       tplanTitle: courseTitle,
-      tplanDesc: "",
-      tplanRegion: "",
+      tplanDesc: courseDesc, // 💡 불러온 설명 데이터 페이로드 반영
+      tplanRegion: tplanRegionValue, // 💡 자동 갱신된 지역 정보 반영
       tplanDays: travelDays,
       tplanTotalPrice: totalCost,
       tagNos: activeTags,
@@ -566,7 +640,6 @@ const EditCourse = () => {
     return () => clearTimeout(delayDebounceTimer);
   }, [searchKeyword]);
 
-  // Auth 스토어가 완전히 준비되기 전이거나, 로그인이 안 된 상태면 화면 렌더링 차단 (로딩 스피너)
   if (!isReady || !loginMemberNo) {
     return (
       <div className={styles.loading}>페이지 접근 권한을 확인 중입니다...</div>
@@ -611,9 +684,12 @@ const EditCourse = () => {
         </div>
 
         <div className={styles.rightColumn}>
+          {/* 💡 설명 및 변경 핸들러가 정상 바인딩된 요약 패널 */}
           <CourseSummaryPanel
             courseTitle={courseTitle}
             setCourseTitle={setCourseTitle}
+            courseDesc={courseDesc}
+            onCourseDescChange={handleCourseDescChange}
             travelDays={travelDays}
             onTravelDaysChange={handleTravelDaysChange}
             tags={tags}
