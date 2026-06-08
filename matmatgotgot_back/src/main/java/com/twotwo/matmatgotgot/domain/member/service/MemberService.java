@@ -165,4 +165,13 @@ public class MemberService {
         int result = memberMapper.updateThumbnail(m);
         return result;
     }
+
+    public String changePwEmail(String authCode) {
+        Context context = new Context();
+        context.setVariable("authCode", authCode);
+
+        String htmlContent = templateEngine.process("changePwEmail", context);
+
+        return htmlContent;
+    }
 }

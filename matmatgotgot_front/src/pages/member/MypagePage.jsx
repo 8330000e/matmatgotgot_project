@@ -2,7 +2,7 @@
 
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import defaultImg from "../../assets/img/defaultImg.svg";
 import changeImg from "../../assets/img/changeImg.svg";
 import native from "../../assets/img/native.svg";
@@ -138,7 +138,7 @@ export const Myinfo = ({ memberInfo }) => {
     const profileImgSrc = (memberThumb && memberThumb !== defaultImg)
         ? `${import.meta.env.VITE_BACKSERVER}/upload/${memberThumb}`
         : defaultImg;
-    const changeThumb = (e) => {
+    const changeThumb = () => {
         const file = inputRef.current.files && inputRef.current.files[0];
         if (!file) return;
 
@@ -1343,7 +1343,7 @@ export const ChangeEmail = ({ memberInfo }) => {
     const [time, setTime] = useState(180);
     const [timeout, setTimeout] = useState(null);
     const sendMail = () => {
-        if(!member.memberEmail) {
+        if(!mailMember.memberEmail) {
             Swal.mixin({
                 toast: true,
                 color: "#2b1b17",
@@ -1370,22 +1370,18 @@ export const ChangeEmail = ({ memberInfo }) => {
         setMailAuth(1);
         axios
             .post(
-                `${import.meta.env.VITE_BACKSERVER}/members/email-emailchange`,
-                {
-                    memberEmail: member.memberEmail,
-                },
-            )
-            .then((res) => {
-                console.log(res);
-                setMailAuthCode(res.data.data);
-                setMailAuth(2);
-                const intervalId = window.setInterval(() => {
-                    setTime((prev) => {
-                        return prev - 1;
-                    });
-                }, 1000);
-                setTimeout(intervalId);
-            })
+                `${import.meta.env.VITE_BACKSERVER}/members/email-emailchange`, mailMember)
+                .then((res) => {
+                    console.log(res);
+                    setMailAuthCode(res.data.data);
+                    setMailAuth(2);
+                    const intervalId = window.setInterval(() => {
+                        setTime((prev) => {
+                            return prev - 1;
+                        });
+                    }, 1000);
+                    setTimeout(intervalId);
+                })
             .catch((err) => {
                 console.error(err);
                 Swal.mixin({
@@ -1429,14 +1425,14 @@ export const ChangeEmail = ({ memberInfo }) => {
             <div className={styles.content_changePw_wrap}>
                 <div>이메일 변경</div>
                 <div>
-                    <label htmlFor="memberPw">현재 이메일</label>
+                    <label htmlFor="memberEmail">현재 이메일</label>
                     <Input type="text"
                            name="memberEmail"
                            id="memberEmail"
-                           // value={member.memberEmail}
-                           onChange={(e) => setMailMember((prev)=>({
-                               ...prev, [e.target.name]: e.target.value
-                           }))}
+                           value={mailMember.memberEmail}
+                           onChange={(e) => {
+                               setMailMember(e.target.value);
+                           }}
                            required
                            readOnly={mailAuth === 1 || mailAuth === 3}  />
                     <button
@@ -1449,16 +1445,16 @@ export const ChangeEmail = ({ memberInfo }) => {
                         {mailAuth > 1 && (
                             <div>
                             <div className={styles.inputLabel}>
-                                <label htmlFor="mailAuthInput">이메일 확인</label>
+                                <label htmlFor="newMemberEmail">이메일 확인</label>
                             </div>
                             <div>
                                 <Input
                                     type="text"
-                                    name="mailAuthInput"
-                                    id="mailAuthInput"
-                                    value={mailAuthInput}
+                                    name="newMemberEmail"
+                                    id="newMemberEmail"
+                                    value={mailMember.newMemberEmail}
                                     onChange={(e)=>{
-                                        setMailAuthInput(e.target.value);
+                                        setMailMember(e.target.value);
                                     }}
                                     disabled={mailAuth === 3}
                                 />

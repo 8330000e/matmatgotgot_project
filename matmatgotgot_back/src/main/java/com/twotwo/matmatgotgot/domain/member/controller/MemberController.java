@@ -81,7 +81,7 @@ public class MemberController {
 		return ResponseEntity.ok(memberThumb);
 	}
 
-	
+
 
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
@@ -470,6 +470,40 @@ public class MemberController {
 		String authCode = sb.toString();
 		model.addAttribute("authCode", authCode);
 		String emailContent = memberService.joinEmail(authCode);
+		try {
+			// 1. 시도할 코드를 적습니다.
+			emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
+
+		} catch (MessagingException e) {
+			// 2. try가 끝나면 '바로 이어서' catch 문이 와야 합니다.
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("에러 발생");
+		}
+		return ResponseEntity.ok(ApiResponse.success(authCode));
+	}
+
+	@PostMapping(value = "/email-emailchange")
+	public ResponseEntity<?> sendChangeMail(@RequestBody Member member) throws MessagingException {
+		String emailTitle = "[맛맛곳곳] 이메일 변경 인증 메일입니다.";
+		Random r = new Random();
+		StringBuffer sb = new StringBuffer();
+		for(int i=0; i<6; i++) {
+			int num = r.nextInt(10);
+			sb.append(num);
+		}
+		int flag = r.nextInt(3);
+		if(flag == 0) {
+			int randomCode = r.nextInt(10);
+			sb.append(randomCode);
+		}else if(flag == 1) {
+			char randomCode = (char)(r.nextInt(26)+65);
+			sb.append(randomCode);
+		}else if(flag == 2) {
+			char randomCode = (char)(r.nextInt(26)+97);
+			sb.append(randomCode);
+		}
+		String authCode = sb.toString();
+		String emailContent = memberService.changePwEmail(authCode);
 		try {
 			// 1. 시도할 코드를 적습니다.
 			emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);

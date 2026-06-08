@@ -32,4 +32,6 @@ public class Member {
 
     private String newMemberPw;
     private String newMemberPwRe;
+
+    private String newMemberEmail;
 }
