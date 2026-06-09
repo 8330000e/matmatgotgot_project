@@ -2,7 +2,7 @@
 
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import defaultImg from "../../assets/img/defaultImg.svg";
 import changeImg from "../../assets/img/changeImg.svg";
 import native from "../../assets/img/native.svg";
@@ -121,7 +121,7 @@ export const MypagePage = () => {
                 {path === "zzim" && <Zzim />}
                 {path === "matzip" && <Matzip />}
                 {path === "likeposts" && <Likeposts />}
-                {path === "myposts" && <Myposts />}
+                {path === "myposts" && <Myposts memberInfo={memberInfo}/>}
                 {path === "reportposts" && <Reportposts />}
                 {path === "myask" && <Myask />}
                 {path === "myinfo/changePw" && <ChangePw />}
@@ -393,6 +393,8 @@ export const Matzip = () => {
     </>);};
 
 export const Likeposts = () => {
+    const [sort, setSort] = useState(0);
+
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -402,9 +404,9 @@ export const Likeposts = () => {
                 </div>
                 <div>
                     <ul>
-                        <li>작성순</li>
-                        <li>좋아요순</li>
-                        <li>별점순</li>
+                        <li onClick={()=>setSort(1)}>작성순</li>
+                        <li onClick={()=>setSort(2)}>좋아요순</li>
+                        <li onClick={()=>setSort(3)}>별점순</li>
                     </ul>
                 </div>
             </div>
@@ -430,7 +432,21 @@ export const Likeposts = () => {
         </div>
     </>);};
 
-export const Myposts = () => {
+export const Myposts = ({memberInfo}) => {
+    const { memberId, memberNo} = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
+    const [sort, setSort] = useState(0);
+    const [myboard, setMyboard] = useState([]);
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/my`)
+            .then((res)=>{
+                console.log(res.data);
+                setMyboard(res.data);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    },[]);
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_mypost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -440,9 +456,9 @@ export const Myposts = () => {
                 </div>
                 <div>
                     <ul>
-                        <li>작성순</li>
-                        <li>좋아요순</li>
-                        <li>별점순</li>
+                        <li onClick={()=>setSort(1)}>작성순</li>
+                        <li onClick={()=>setSort(2)}>좋아요순</li>
+                        <li onClick={()=>setSort(3)}>별점순</li>
                     </ul>
                 </div>
             </div>
