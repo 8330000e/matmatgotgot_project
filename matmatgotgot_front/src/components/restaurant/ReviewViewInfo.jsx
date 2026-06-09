@@ -43,7 +43,7 @@ const ReviewViewInfo = ({ review }) => {
                 alt="프로필 이미지"
               />
             ) : (
-              <span className="material-icons">account_circle</span>
+              ""
             )}
           </div>
 

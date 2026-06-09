@@ -16,15 +16,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3FileUtil {
 
-    // [수정] S3Config 에서 빈으로 등록한 S3Client 주입
     private final S3Client s3Client;
 
-    // application.properties 의 cloud.aws.s3.bucket 값 주입
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    // application.properties 의 cloud.aws.region.static 값 주입
-    // S3 퍼블릭 URL 조합 시 사용: https://{bucket}.s3.{region}.amazonaws.com/{key}
     @Value("${cloud.aws.region.static}")
     private String region;
 

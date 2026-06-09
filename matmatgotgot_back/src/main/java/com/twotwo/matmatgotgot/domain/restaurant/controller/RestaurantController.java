@@ -7,13 +7,14 @@ import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.service.RestaurantService;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
+import com.twotwo.matmatgotgot.global.util.S3FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Value;
+// [수정] @Value("${file.root}") 제거 → S3 업로드는 FileUtil 내부에서 처리하므로 불필요
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.io.File;
+// [수정] java.io.File 제거 → S3 업로드로 전환되어 로컬 File 객체 불필요
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +35,9 @@ import java.util.Objects;
 @RequestMapping(value = "/restaurants")
 public class RestaurantController {
 
-    @Value("${file.root}")
-    private String root;
-
+    // file.root 필드 제거 → S3 업로드는 FileUtil 내부에서 버킷/경로를 직접 관리
     private final RestaurantService restaurantService;
-    private final FileUtil fileUtil;
+    private final S3FileUtil fileUtil;
 
     // 맛집 등록
     @PostMapping
@@ -100,7 +99,7 @@ public class RestaurantController {
 
     // 리뷰 수정
     @PutMapping("/review/modify")
-    public ResponseEntity<?> reviewModify(@ModelAttribute ReviewCreateRequest req, Authentication auth) {
+    public ResponseEntity<?> reviewModify(@ModelAttribute ReviewCreateRequest req) {
         try {
             int result = restaurantService.reviewModify(req);
             return ResponseEntity.ok(result);
@@ -112,18 +111,21 @@ public class RestaurantController {
         }
     }//
 
-    // tip tap 이미지 등록
+    // TipTap 에디터 이미지 업로드
+    // S3 "restaurant" 폴더에 업로드 후 S3 퍼블릭 URL 전체 반환
+    //          → TipTap 에디터는 반환된 URL을 <img src> 에 바로 삽입
     @PostMapping(value = "/image-upload")
     public ResponseEntity<?> imageUpload(@RequestParam MultipartFile image) {
-        String savepath = root + "restaurant/";
-        File dir = new File(savepath);  // 디렉토리 없으면 생성
-        if (!dir.exists()) {
-            dir.mkdirs();
+        // 로컬 경로 대신 S3 폴더명("restaurant")을 인자로 전달
+        String s3Url = fileUtil.upload("restaurant", image);
+        return ResponseEntity.ok(s3Url);
+    }//
+
+    @DeleteMapping("/images")
+    public void imageDelete(@RequestBody List<String> deletedUrls) {
+        for (String url : deletedUrls) {
+            fileUtil.deleteFile(url);
         }
-
-        String filepath = fileUtil.upload(savepath, image);
-
-        return ResponseEntity.ok(filepath);
     }//
 
     //
@@ -246,40 +248,6 @@ public class RestaurantController {
         return ResponseEntity.ok(res);
     }//
 
-    // Main
-    @GetMapping("/my-wish")
-    public ResponseEntity<List<RestaurantResponseDTO>> getMyWishList(@RequestParam("memberId") String memberId) {
-        List<RestaurantResponseDTO> wishList = restaurantService.getMyWishList(memberId);
-        return ResponseEntity.ok(wishList);
-    }
-
-    @GetMapping("/popular-list")
-    public ResponseEntity<List<RestaurantResponseDTO>> getPopularList() {
-        List<RestaurantResponseDTO> popularList = restaurantService.getPopularList();
-        return ResponseEntity.ok(popularList);
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<RestaurantResponseDTO>> getAllList() {
-        List<RestaurantResponseDTO> allList = restaurantService.getAllList();
-        return ResponseEntity.ok(allList);
-    }
-
-    @GetMapping("/my-wish-map")
-    public ResponseEntity<List<RestaurantMapMarkerDTO>> getMyWishMapMarkers(
-            @RequestParam("memberId") String memberId) {
-
-        List<RestaurantMapMarkerDTO> wishMarkers = restaurantService.getWishMapMarkers(memberId);
-        return ResponseEntity.ok(wishMarkers);
-    }
-
-    @GetMapping("/my-visited-map")
-    public ResponseEntity<List<RestaurantMapMarkerDTO>> getMyVisitedMapMarkers(
-            @RequestParam("memberId") String memberId) {
-
-        List<RestaurantMapMarkerDTO> visitedMarkers = restaurantService.getVisitedMapMarkers(memberId);
-        return ResponseEntity.ok(visitedMarkers);
-    }
     // 맛집 - 이름 검색
     @GetMapping("/search")
     public ResponseEntity<?> restSearch(@ModelAttribute SearchRequest req, Authentication auth){
@@ -372,7 +340,7 @@ public class RestaurantController {
     // 리뷰 제거
     @DeleteMapping("/review/{reviewNo}")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewNo) {
-       int result = restaurantService.deleteReview(reviewNo);
+        int result = restaurantService.deleteReview(reviewNo);
 
         return ResponseEntity.ok(result);
     }//

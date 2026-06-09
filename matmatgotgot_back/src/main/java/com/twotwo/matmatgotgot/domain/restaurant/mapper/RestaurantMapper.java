@@ -124,4 +124,7 @@ public interface RestaurantMapper {
 
     int deleteRest(Long restNo);
 
+    List<String> findUrlByReviewNo(Long reviewNo);
+
+    List<String> findUrlByRestNo(Long restNo);
 }

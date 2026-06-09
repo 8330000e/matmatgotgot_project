@@ -27,12 +27,12 @@ public class WebConfig implements WebMvcConfigurer {
         //회원 프로필 이미지
         registry.addResourceHandler("/upload/**")
                 .addResourceLocations(finalLocation);
-    
+
         registry
                 .addResourceHandler("/restaurants/**")	// 요청 패턴
                 .addResourceLocations("file:///" + root + "restaurant/");	// 실제 경로
 
-                
+
         registry.addResourceHandler("/menu/**")
                 .addResourceLocations("file:///" + root + "menu/");
 
