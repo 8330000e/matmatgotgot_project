@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
+import org.springframework.data.relational.core.mapping.Column;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,15 +19,23 @@ public class Board {
     private String boardTitle;
     private String boardContent;
     private String boardDate;
+    @Column(name = "board_status")
     private Integer boardStatus;   //게시글 상태(0:관리자 비공개/1:공개/2:삭제)
     private String boardThumb;
     private Integer placeNo;       //장소 번호
+    private Integer boardView;
+    private Integer boardLike;
+    private Integer boardComment;
 
     //-- 목록/상세보기 조회용 --
     private String memberThumb;    //회원 프로필
     private String boardWriter; //화면에 보여줄 작성자 닉네임/아이디용 변수
     private String placeName; //장소명
     private String addressName;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_board_report_status")
+    private boardReport boardReportStatus;
 
     private Double placeLat;
     private Double placeLng;

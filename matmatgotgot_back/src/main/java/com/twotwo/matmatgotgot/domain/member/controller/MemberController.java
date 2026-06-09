@@ -486,24 +486,24 @@ public class MemberController {
 	public ResponseEntity<?> sendChangeMail(@RequestBody Member member, Model model) throws MessagingException {
 		String emailTitle = "[맛맛곳곳] 이메일 변경 인증 메일입니다.";
 		Random r = new Random();
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sbm = new StringBuffer();
 		for(int i=0; i<6; i++) {
 			int flag = r.nextInt(3);
 
 			if (flag == 0) {
 				int randomCode = r.nextInt(10);
-				sb.append(randomCode);
+				sbm.append(randomCode);
 			} else if (flag == 1) {
 				char randomCode = (char)(r.nextInt(26) + 65);
-				sb.append(randomCode);
+				sbm.append(randomCode);
 			} else if (flag == 2) {
 				char randomCode = (char)(r.nextInt(26) + 97);
-				sb.append(randomCode);
+				sbm.append(randomCode);
 			}
 		}
-		String authCode = sb.toString();
-		model.addAttribute("authCode", authCode);
-		String emailContent = memberService.joinEmail(authCode);
+		String mailauthCode = sbm.toString();
+		model.addAttribute("authCode", mailauthCode);
+		String emailContent = memberService.updateEmail(mailauthCode);
 		try {
 			// 1. 시도할 코드를 적습니다.
 			emailSender.sendMail(emailTitle, member.getMemberEmail(), emailContent);
@@ -513,7 +513,13 @@ public class MemberController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("에러 발생");
 		}
-		return ResponseEntity.ok(ApiResponse.success(authCode));
+		return ResponseEntity.ok(ApiResponse.success(mailauthCode));
+	}
+
+	@PostMapping(value = "/changeEmail")
+	public ResponseEntity<?> changeEmail(@RequestBody Member member) {
+		int result = memberService.updateEmail(member);
+		return ResponseEntity.ok(result);
 	}
 
 	@PatchMapping("/location")

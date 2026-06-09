@@ -141,6 +141,17 @@ public class MemberService {
         return htmlContent;
     }
 
+    public String updateEmail(String mailauthCode) {
+        // 1. 타임리프 컨텍스트 생성 (데이터 담는 바구니)
+        Context context = new Context();
+        context.setVariable("authCode", mailauthCode);
+
+        // 2. templates/email.html 파일을 읽어와 변수를 채운 뒤 String으로 반환
+        String htmlContent = templateEngine.process("joinEmail", context);
+
+        return htmlContent;
+    }
+
     public Member selectOne(String memberId) {
         Member member = memberMapper.selectOneMember(memberId);
         return member;
@@ -173,5 +184,10 @@ public class MemberService {
         String htmlContent = templateEngine.process("changePwEmail", context);
 
         return htmlContent;
+    }
+
+    public int updateEmail(Member member) {
+        int result = memberMapper.updateEmail(member);
+        return result;
     }
 }
