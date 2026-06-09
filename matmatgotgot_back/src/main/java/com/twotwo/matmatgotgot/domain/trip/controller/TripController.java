@@ -128,4 +128,24 @@ public class TripController {
         List<MyUnfinishedCourseDTO> list = tripService.getMyUnfinishedCourses(memberNo);
         return ResponseEntity.ok(list);
     }
+
+    @DeleteMapping("/{tplanNo}")
+    public ResponseEntity<String> deleteTripPlan(
+            @PathVariable("tplanNo") Long tplanNo,
+            @RequestParam("memberNo") Long memberNo) {
+        try {
+            boolean isDeleted = tripService.removeTripPlan(tplanNo, memberNo);
+            if (isDeleted) {
+                return ResponseEntity.ok("코스가 정상적으로 삭제되었습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제 처리에 실패했습니다.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
+    }
 }

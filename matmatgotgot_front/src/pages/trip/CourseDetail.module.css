@@ -446,3 +446,9 @@
   color: var(--gray4, #999999);
   margin: 0;
 }
+
+.deleteBtn:hover {
+  color: #ff4d4d !important;
+  border-color: #ff4d4d !important;
+  background-color: #fff5f5 !important;
+}
