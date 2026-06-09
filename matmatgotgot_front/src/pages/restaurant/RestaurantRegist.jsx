@@ -1,17 +1,18 @@
-import { useState, useEffect, useRef } from "react";
-import styles from "./RestaurantRegist.module.css";
-import TextEditor from "../../components/ui/TextEditor";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from 'react';
+import styles from './RestaurantRegist.module.css';
+import TextEditor from '../../components/ui/TextEditor';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const RestaurantRegist = () => {
-  const [restName, setRestName] = useState("");
-  const [restAddr, setRestAddr] = useState("");
-  const [restHours, setRestHours] = useState("");
-  const [restPhone, setRestPhone] = useState("");
-  const [category, setCategory] = useState("");
-  const [content, setContent] = useState("");
+  const [restName, setRestName] = useState('');
+  const [restAddr, setRestAddr] = useState('');
+  const [restHours, setRestHours] = useState('');
+  const [restPhone, setRestPhone] = useState('');
+  const [category, setCategory] = useState('');
+  const [content, setContent] = useState('');
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
 
@@ -19,8 +20,10 @@ const RestaurantRegist = () => {
 
   const navigate = useNavigate();
 
+  const memberStatus = useAuthStore((state) => state.memberStatus); //지연
+
   useEffect(() => {
-    const savedData = sessionStorage.getItem("receiptData");
+    const savedData = sessionStorage.getItem('receiptData');
 
     if (!savedData) return;
 
@@ -53,7 +56,7 @@ const RestaurantRegist = () => {
       content: `<h3>${restName}</h3>`,
     });
 
-    naver.maps.Event.addListener(marker, "click", () => {
+    naver.maps.Event.addListener(marker, 'click', () => {
       if (infoWindow.getMap()) {
         infoWindow.close();
       } else {
@@ -61,7 +64,7 @@ const RestaurantRegist = () => {
       }
     });
 
-    naver.maps.Event.addListener(map, "click", (e) => {
+    naver.maps.Event.addListener(map, 'click', (e) => {
       map.setCenter(e.coord);
 
       if (infoWindow.getMap()) {
@@ -85,23 +88,33 @@ const RestaurantRegist = () => {
   };
 
   const regist = () => {
+    // 지연 - 회원 상태 비정상/정지 맛집 등록 막아둠
+    if (Number(memberStatus) === 1 || Number(memberStatus) === 3) {
+      Swal.fire({
+        title: '맛집 등록 불가',
+        text: '현재 회원 상태에서는 맛집을 등록할 수 없습니다.',
+        icon: 'warning',
+        confirmButtonColor: 'var(--primary)',
+      });
+      return;
+    }
     if (
-      restName === "" ||
-      restAddr === "" ||
-      category === "" ||
-      content === "" ||
-      lat === "" ||
-      lng === ""
+      restName === '' ||
+      restAddr === '' ||
+      category === '' ||
+      content === '' ||
+      lat === '' ||
+      lng === ''
     ) {
-      if (category === "") {
+      if (category === '') {
         Swal.fire({
-          icon: "warning",
-          title: "카테고리를 선택해 주세요.",
+          icon: 'warning',
+          title: '카테고리를 선택해 주세요.',
         });
-      } else if (content === "") {
+      } else if (content === '') {
         Swal.fire({
-          icon: "warning",
-          title: "본문을 작성해 주세요.",
+          icon: 'warning',
+          title: '본문을 작성해 주세요.',
         });
       }
 
@@ -111,8 +124,8 @@ const RestaurantRegist = () => {
     const requestData = {
       restName,
       restAddr,
-      restHours: restHours === "" ? null : restHours,
-      restPhone: restPhone === "" ? null : restPhone,
+      restHours: restHours === '' ? null : restHours,
+      restPhone: restPhone === '' ? null : restPhone,
       category,
       content,
       lat: Number(lat),
@@ -125,18 +138,18 @@ const RestaurantRegist = () => {
         console.log(res.data);
         if (res.data > 0) {
           Swal.fire({
-            icon: "success",
-            title: "등록 완료",
-            text: "맛집 상세 페이지로 이동합니다.",
+            icon: 'success',
+            title: '등록 완료',
+            text: '맛집 상세 페이지로 이동합니다.',
           }).then(() => {
-            sessionStorage.removeItem("receiptData");
+            sessionStorage.removeItem('receiptData');
             navigate(`/rest/view/${res.data}`);
           });
         } else {
           Swal.fire({
-            icon: "warning",
-            title: "등록 실패",
-            text: "맛집 등록에 실패하였습니다.",
+            icon: 'warning',
+            title: '등록 실패',
+            text: '맛집 등록에 실패하였습니다.',
           });
         }
       })
@@ -217,7 +230,7 @@ const RestaurantRegist = () => {
                   type="radio"
                   name="category"
                   value="한식"
-                  checked={category === "한식"}
+                  checked={category === '한식'}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 한식
@@ -227,7 +240,7 @@ const RestaurantRegist = () => {
                   type="radio"
                   name="category"
                   value="양식"
-                  checked={category === "양식"}
+                  checked={category === '양식'}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 양식
@@ -237,7 +250,7 @@ const RestaurantRegist = () => {
                   type="radio"
                   name="category"
                   value="일식"
-                  checked={category === "일식"}
+                  checked={category === '일식'}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 일식
@@ -247,7 +260,7 @@ const RestaurantRegist = () => {
                   type="radio"
                   name="category"
                   value="중식"
-                  checked={category === "중식"}
+                  checked={category === '중식'}
                   onChange={(e) => setCategory(e.target.value)}
                 />
                 중식
