@@ -57,6 +57,13 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
+    // 내 좋아요 게시글 목록 조회
+    @GetMapping(value = "/{memberNo}/myreport")
+    public ResponseEntity<?> selectMyBoardReportList(@ModelAttribute ListItem request, @PathVariable("memberNo") String memberNo) {
+        ListResponse response = boardService.selectMyBoardReportList(request, memberNo);
+        return ResponseEntity.ok(response);
+    }
+
     // 이미지 업로드 (원래 코드 유지)
     @PostMapping("/image-upload")
     public ResponseEntity<?> imageUpload(

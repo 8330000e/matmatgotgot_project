@@ -31,6 +31,7 @@ import {Input} from "../../components/ui/Form.jsx";
 import BoardList from "../../components/member/BoardList.jsx";
 import Swal from "sweetalert2";
 import BoardLikeList from "../../components/member/BoardLikeList.jsx";
+import BoardReports from "../../components/member/BoardReports.jsx";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -117,12 +118,12 @@ export const MypagePage = () => {
             </div>
             <div className={styles.content_wrap}>
                 {path === "myinfo" && <Myinfo memberInfo={memberInfo} />}
-                {path === "myreview" && <Myreview />}
-                {path === "zzim" && <Zzim />}
-                {path === "matzip" && <Matzip />}
+                {path === "myreview" && <Myreview memberInfo={memberInfo} />}
+                {path === "zzim" && <Zzim memberInfo={memberInfo} />}
+                {path === "matzip" && <Matzip memberInfo={memberInfo} />}
                 {path === "likeposts" && <Likeposts memberInfo={memberInfo} />}
                 {path === "myposts" && <Myposts memberInfo={memberInfo}/>}
-                {path === "reportposts" && <Reportposts />}
+                {path === "reportposts" && <Reportposts memberInfo={memberInfo} />}
                 {path === "myask" && <Myask />}
                 {path === "myinfo/changePw" && <ChangePw />}
                 {path === "myinfo/changeEmail" && <ChangeEmail memberInfo={memberInfo} />}
@@ -261,7 +262,7 @@ export const Myinfo = ({ memberInfo }) => {
     </>);
 };
 
-export const Myreview = () => {
+export const Myreview = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_myreview_wrap}`}>
             <div className={styles.posts_bar}>
@@ -303,7 +304,7 @@ export const Myreview = () => {
         </div>
     </>);};
 
-export const Zzim = () => {
+export const Zzim = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_zzim_wrap}`}>
             <div className={styles.posts_bar}>
@@ -347,7 +348,7 @@ export const Zzim = () => {
         </div>
     </>);};
 
-export const Matzip = () => {
+export const Matzip = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_tuar_wrap}`}>
             <div className={styles.posts_bar}>
@@ -498,7 +499,31 @@ export const Myposts = ({memberInfo}) => {
         </div>
     </>);};
 
-export const Reportposts = () => {
+export const Reportposts = ({memberInfo}) => {
+    const { memberId, memberNo } = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
+    const [order, setOrder] = useState(0);
+    const [myboard, setMyboard] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/myreport`,{
+            params: {
+                page,
+                size,
+                order
+            },
+        })
+            .then((res)=>{
+                console.log(res.data);
+                setMyboard(res.data.items);
+                setTotalPage(res.data.totalPage);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    },[page, order]);
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -510,21 +535,21 @@ export const Reportposts = () => {
                 </div>
             </div>
             <div className={styles.reports}>
+                <BoardReports myboard={myboard} />
                 {/*더미데이터*/}
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_send}>신고접수</div>
-                </div>
-
+                {/*<div className={styles.report}>*/}
+                {/*    <div>1</div>*/}
+                {/*    <div>게시글 제목</div>*/}
+                {/*    <div>*/}
+                {/*        <ul>*/}
+                {/*            <li><img src={comment} alt=""/>2</li>*/}
+                {/*            <li><img src={heart} alt=""/>12</li>*/}
+                {/*            <li><img src={view} alt=""/>231</li>*/}
+                {/*        </ul>*/}
+                {/*    </div>*/}
+                {/*    <div>2026.05.08</div>*/}
+                {/*    <div className={styles.report_send}>신고접수</div>*/}
+                {/*</div>*/}
                 {/*더미데이터*/}
             </div>
             <div>
@@ -533,7 +558,7 @@ export const Reportposts = () => {
         </div>
     </>);};
 
-export const Myask = () => {
+export const Myask = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>

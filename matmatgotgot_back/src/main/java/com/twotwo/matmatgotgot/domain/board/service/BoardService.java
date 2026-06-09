@@ -138,6 +138,32 @@ public class BoardService {
         return new ListResponse(list, totalPage);
     }
 
+    // 내 신고 게시글 조회
+    public ListResponse selectMyBoardReportList(ListItem request, String memberNo) {
+        if (request.getPage() == null || request.getPage() < 0) {
+            request.setPage(0);
+        }
+
+        if (request.getSize() == null || request.getSize() < 1) {
+            request.setSize(10);
+        }
+
+        request.setOffset(
+                request.getPage() * request.getSize()
+        );
+
+        Integer totalCount =
+                boardMapper.selectBoardCount(request);
+
+        int totalPage =
+                (int)Math.ceil(totalCount / (double)request.getSize());
+
+        List<Board> list =
+                boardMapper.selectMyBoardReportList(request, memberNo);
+
+        return new ListResponse(list, totalPage);
+    }
+
     // 게시글 등록
     @Transactional
     public int insertBoard(Board board) {

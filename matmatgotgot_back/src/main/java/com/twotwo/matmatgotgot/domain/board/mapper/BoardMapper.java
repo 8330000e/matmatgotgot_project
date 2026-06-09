@@ -78,4 +78,6 @@ public interface BoardMapper {
     List<Board> selectMyBoardList(ListItem request, String memberNo);
 
     List<Board> selectMyBoardLikeList(ListItem request, String memberNo);
+
+    List<Board> selectMyBoardReportList(ListItem request, String memberNo);
 }
