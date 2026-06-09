@@ -96,7 +96,6 @@ const MyCourse = () => {
                 <span className={styles.dateText}>{course.formattedDate}</span>
               </div>
 
-              {/* 호버 딤 처리 */}
               <div className={styles.myCourseListCover}>편집 계속하기</div>
             </div>
           ))

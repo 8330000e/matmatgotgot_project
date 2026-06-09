@@ -79,11 +79,11 @@ public class AdminService {
                 result = adminMapper.updateRestReportStatus(reportNo, 1);
             }
             case "review" -> {
-                adminMapper.updateReviewContentStatus(request.getContentNo(), numberStatus);
+                adminMapper.updateReviewContentStatus(request.getContentNo(), getReviewStatus(request.getAction()));
                 result = adminMapper.updateReviewReportStatus(reportNo, 1);
             }
             case "reviewComment" -> {
-                adminMapper.updateReviewCommentContentStatus(request.getContentNo(), numberStatus);
+                adminMapper.updateReviewCommentContentStatus(request.getContentNo(), getReviewStatus(request.getAction()));
                 result = adminMapper.updateReviewCommentReportStatus(reportNo, 1);
             }
             case "boardComment" -> {
@@ -132,6 +132,19 @@ public class AdminService {
         }
 
         return 1;
+    }
+
+    //추가 - 관리자 신고 관리(지연)
+    private Integer getReviewStatus(String action) {
+        if ("private".equals(action)) {
+            return 1;
+        }
+
+        if ("delete".equals(action)) {
+            return 2;
+        }
+
+        return 0;
     }
 
     private String getRestStatus(String action) {

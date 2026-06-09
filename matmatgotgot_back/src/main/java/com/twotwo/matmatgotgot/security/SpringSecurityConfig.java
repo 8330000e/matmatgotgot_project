@@ -56,6 +56,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/trips/**").permitAll()
                 .requestMatchers("/menu/**").permitAll()
                 .requestMatchers("/api/route/**").permitAll()
+                .requestMatchers("/main/**").permitAll()
                 .anyRequest().authenticated()
             );
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

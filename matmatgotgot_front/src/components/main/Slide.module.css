@@ -55,3 +55,48 @@
 :global(.swiper-button-prev) {
   display: none !important;
 }
+
+.cardOverlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  color: #fff;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardSub {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+.emptyContainer {
+  width: calc(275px * 4 + 20px * 3);
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gray8);
+  border: 1px dashed color-mix(in srgb, var(--text1) 15%, transparent);
+  border-radius: 12px;
+}
+
+.emptyText {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--gray5);
+  letter-spacing: -0.5px;
+}

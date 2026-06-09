@@ -9,7 +9,7 @@ import RestaurantSearch from "../../components/trip/RestaurantSearch";
 import SelectedCourseList from "../../components/trip/SelectedCourseList";
 import CourseSummaryPanel from "../../components/trip/CourseSummaryPanel";
 import AddMenuModal from "../../components/trip/AddMenuModal";
-import { useAuthStore } from "../../store/useAuthStore.js"; // 1. useAuthStore 임포트
+import { useAuthStore } from "../../store/useAuthStore.js";
 
 const EditCourse = () => {
   const { tplan_no } = useParams();
@@ -25,6 +25,9 @@ const EditCourse = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [transitTimes, setTransitTimes] = useState({});
   const [transitModes, setTransitModes] = useState({});
+  const [courseDesc, setCourseDesc] = useState("");
+  // 💡 기존 코스의 지역 정보를 백업해둘 상태 추가
+  const [originalRegion, setOriginalRegion] = useState("");
 
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [targetRestaurantId, setTargetRestaurantId] = useState(null);
@@ -38,10 +41,8 @@ const EditCourse = () => {
 
   const [tags, setTags] = useState([]);
 
-  // 2. Zustand에서 로그인 회원 정보 및 준비 상태 가져오기
   const { memberNo: loginMemberNo, isReady } = useAuthStore();
 
-  // 3. 비로그인 유저 1차 차단 가드 (Guard)
   useEffect(() => {
     if (isReady && !loginMemberNo) {
       alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
@@ -49,46 +50,66 @@ const EditCourse = () => {
     }
   }, [isReady, loginMemberNo, navigate]);
 
-  // 기존 코스 상세 데이터 및 태그 가져오기
+  const handleCourseDescChange = (value) => {
+    if (value.length <= 300) {
+      setCourseDesc(value);
+    }
+  };
+
   useEffect(() => {
-    // Auth 상태가 로드되기 전이거나, 비로그인 상태면 실행 안 함
     if (!isReady || !loginMemberNo) return;
 
     const fetchOriginalCourseData = async () => {
       try {
-        // 1. 태그 전체 목록 먼저 호출
         const tagResponse = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/create/tags`,
         );
         let tagList = tagResponse.data;
 
-        // 2. 기존 코스 상세 정보 데이터 호출
         const detailResponse = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/detail/${tplan_no}`,
         );
         const course = detailResponse.data;
+        console.log("불러온 원본 데이터:", course);
 
-        // 4. ⭐ 소유권 체크 (코스 작성자와 로그인한 유저가 다르면 수정 불가)
         if (course.memberNo !== loginMemberNo) {
           alert("본인이 작성한 코스만 수정할 수 있습니다.");
           navigate(`/trip/detail/${tplan_no}`);
           return;
         }
 
-        // 기본 텍스트 및 기본 메타 데이터 매핑
-        setCourseTitle(course.title);
+        setCourseTitle(course.title || "");
+        setCourseDesc(course.desc || "");
         setTravelDays(course.tplanDays);
+        setOriginalRegion(course.region || "");
 
-        // 태그 활성화 유무 기존 정보 비교 매핑
-        if (course.tags && course.tags.length > 0) {
-          tagList = tagList.map((t) => ({
-            ...t,
-            active: course.tags.includes(t.tagName || t.name),
-          }));
+        if (
+          course.tags &&
+          Array.isArray(course.tags) &&
+          course.tags.length > 0
+        ) {
+          tagList = tagList.map((t) => {
+            const targetText = t.text ? t.text.replace(/^#/, "") : "";
+
+            const isActive = course.tags.some((courseTag) => {
+              console.log(courseTag);
+              if (typeof courseTag === "object" && courseTag !== null) {
+                const courseTagName = courseTag.replace(/^#/, "");
+                return courseTagName === targetText;
+              }
+
+              if (typeof courseTag === "string") {
+                return courseTag.replace(/^#/, "") === targetText;
+              }
+
+              return courseTag === t.tagNo;
+            });
+
+            return { ...t, active: isActive };
+          });
         }
         setTags(tagList);
 
-        // 일차별 데이터 구조 재구조화 매핑
         if (course.dayRoutes) {
           const loadedRestaurants = {};
           const loadedTransitModes = {};
@@ -98,7 +119,6 @@ const EditCourse = () => {
 
             const routesWithMenus = await Promise.all(
               routes.map(async (node, index) => {
-                // 이동 정보 복원 로직
                 if (index < routes.length - 1) {
                   const nextNode = routes[index + 1];
                   const transitKey = `Day${dayKey}_${node.restNo}_${nextNode.restNo}`;
@@ -125,6 +145,7 @@ const EditCourse = () => {
                 return {
                   restNo: node.restNo,
                   restName: node.restName,
+                  restAddr: node.restAddr || node.rest_addr || node.addr || "",
                   lat: node.lat,
                   lng: node.lng,
                   selectedMenus: node.selectedMenus || [],
@@ -332,7 +353,6 @@ const EditCourse = () => {
       (r) => String(r.restNo) === destinationNo,
     );
 
-    // 좌표 정보가 하나라도 없으면 실행하지 않고 안전하게 리턴
     if (!origin?.lat || !origin?.lng || !destination?.lat || !destination?.lng)
       return;
 
@@ -348,7 +368,6 @@ const EditCourse = () => {
           : "https://apis.openapi.sk.com/tmap/routes?version=1&format=json";
 
       try {
-        // Tmap에 보낼 바디 객체를 혼선이 없도록 먼저 명확하게 선언합니다.
         const requestBody =
           mode === "WALK"
             ? {
@@ -401,7 +420,7 @@ const EditCourse = () => {
             apiKey: ODSAY_API_KEY,
           },
           headers: {
-            Authorization: null, // 전역 토큰 CORS 차단 해결
+            Authorization: null,
           },
         });
 
@@ -478,16 +497,71 @@ const EditCourse = () => {
     return hr > 0 ? (mn > 0 ? `${hr}시간 ${mn}분` : `${hr}시간`) : `${mn}분`;
   };
 
+  const extractCityName = (addr) => {
+    if (!addr) return "";
+    const trimAddr = addr.trim();
+    const firstWord = trimAddr.split(" ")[0];
+
+    if (firstWord.endsWith("도") && trimAddr.split(" ").length > 1) {
+      return trimAddr.split(" ")[1];
+    }
+    return firstWord;
+  };
+
   const handleUpdateCourse = async () => {
     if (!courseTitle.trim()) {
       alert("코스명을 입력해 주세요.");
       return;
     }
 
-    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
-    if (Object.values(selectedRestaurants).flat().length === 0) {
+    const allSelectedList = Object.values(selectedRestaurants).flat();
+    if (allSelectedList.length === 0) {
       alert("최소 한 개 이상의 식당을 코스에 추가해야 합니다.");
       return;
+    }
+
+    for (const dayStr of Object.keys(selectedRestaurants)) {
+      const dayNum = Number(dayStr);
+      const restaurantList = selectedRestaurants[dayNum] || [];
+
+      for (let index = 0; index < restaurantList.length; index++) {
+        const res = restaurantList[index];
+
+        if (!res.selectedMenus || res.selectedMenus.length === 0) {
+          alert(
+            `[Day ${dayNum}] '${res.restName || "선택한 식당"}'의 추천 메뉴를 최소 1개 이상 선택해 주세요.`,
+          );
+          setCurrentDay(dayNum);
+          return;
+        }
+
+        const nextRes = restaurantList[index + 1];
+        if (nextRes) {
+          const transitKey = `Day${dayNum}_${res.restNo}_${nextRes.restNo}`;
+          if (!transitModes[transitKey]) {
+            alert(
+              `[Day ${dayNum}] '${res.restName || "출발지"}'에서 '${nextRes.restName || "목적지"}'로 이동하는 교통수단을 선택해 주세요.`,
+            );
+            setCurrentDay(dayNum);
+            return;
+          }
+        }
+      }
+    }
+
+    const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
+
+    // 💡 주소 데이터 추출
+    const cities = allSelectedList
+      .map((res) => extractCityName(res.restAddr))
+      .filter((city) => city !== "");
+
+    const uniqueCities = [...new Set(cities)];
+
+    // 💡 [핵심 방어 코드] 추출된 도시명이 없다면 백업해둔 기존 지역 이름(originalRegion)을 최종 할당
+    let tplanRegionValue = uniqueCities.join(", ");
+    if (!tplanRegionValue && originalRegion) {
+      tplanRegionValue = originalRegion;
     }
 
     const daysData = Object.keys(selectedRestaurants).map((dayStr) => {
@@ -517,8 +591,8 @@ const EditCourse = () => {
     const payload = {
       tplanNo: tplan_no,
       tplanTitle: courseTitle,
-      tplanDesc: "",
-      tplanRegion: "",
+      tplanDesc: courseDesc,
+      tplanRegion: tplanRegionValue, // 💡 이제 빈 값이 아닌 온전한 지역 데이터가 담김
       tplanDays: travelDays,
       tplanTotalPrice: totalCost,
       tagNos: activeTags,
@@ -566,7 +640,6 @@ const EditCourse = () => {
     return () => clearTimeout(delayDebounceTimer);
   }, [searchKeyword]);
 
-  // Auth 스토어가 완전히 준비되기 전이거나, 로그인이 안 된 상태면 화면 렌더링 차단 (로딩 스피너)
   if (!isReady || !loginMemberNo) {
     return (
       <div className={styles.loading}>페이지 접근 권한을 확인 중입니다...</div>
@@ -614,6 +687,8 @@ const EditCourse = () => {
           <CourseSummaryPanel
             courseTitle={courseTitle}
             setCourseTitle={setCourseTitle}
+            courseDesc={courseDesc}
+            onCourseDescChange={handleCourseDescChange}
             travelDays={travelDays}
             onTravelDaysChange={handleTravelDaysChange}
             tags={tags}

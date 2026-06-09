@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import styles from "./Main.module.css";
 import LeftSideBar from "../../components/commons/Header";
 import mainFoodImg from "../../assets/main/main-food.png";
@@ -7,6 +9,31 @@ import ModeOfTravelIcon from "@mui/icons-material/ModeOfTravel";
 import Slide from "../../components/main/Slide";
 
 const Main = () => {
+  const [bestReviews, setBestReviews] = useState([]);
+  const [bestTours, setBestTours] = useState([]);
+
+  useEffect(() => {
+    const fetchMainData = async () => {
+      try {
+        const serverUrl = import.meta.env.VITE_BACKSERVER;
+
+        const [reviewRes, tourRes] = await Promise.all([
+          axios.get(`${serverUrl}/main/best-reviews`),
+          axios.get(`${serverUrl}/main/best-tours`),
+        ]);
+
+        setBestReviews(reviewRes.data);
+        setBestTours(tourRes.data);
+
+        console.log(tourRes.data);
+      } catch (error) {
+        console.error("메인 슬라이드 데이터를 불러오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchMainData();
+  }, []);
+
   return (
     <div className={styles.main}>
       <div className={styles.mainTripImg}>
@@ -49,8 +76,8 @@ const Main = () => {
       <div className={styles.mainTripDev}></div>
 
       <div className={styles.mainReviewDev}>
-        <Slide text="베스트 리뷰" />
-        <Slide text="베스트 투어" />
+        <Slide text="베스트 리뷰" list={bestReviews} type="review" />
+        <Slide text="베스트 투어" list={bestTours} type="tour" />
       </div>
     </div>
   );

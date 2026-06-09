@@ -57,13 +57,11 @@ const ListFrame = ({ order, iconText, items = [] }) => {
     handleScroll();
   }, [items]);
 
-  // 카드 클릭 시 디테일 페이지 이동 함수
   const handleCardClick = (tplanNo) => {
     if (!tplanNo) return;
     navigate(`/trip/detail/${tplanNo}`);
   };
 
-  // 새 코스 만들기 버튼 클릭 시 이동 함수
   const handleCreateCourseClick = () => {
     navigate("/trip/create");
   };
@@ -90,7 +88,6 @@ const ListFrame = ({ order, iconText, items = [] }) => {
           onMouseMove={onMouseMove}
           style={{ cursor: "grab" }}
         >
-          {/* order === 0 (내가 만든 코스)일 때는 데이터 유무와 상관없이 항상 생성 버튼 노출 */}
           {order === 0 && (
             <div
               className={styles.createCourseBtn}
@@ -104,7 +101,6 @@ const ListFrame = ({ order, iconText, items = [] }) => {
             </div>
           )}
 
-          {/* 데이터가 없을 때 처리 */}
           {items.length === 0
             ? order !== 0 && (
                 <div className={styles.emptyContainer}>
@@ -136,7 +132,6 @@ const ListFrame = ({ order, iconText, items = [] }) => {
                     className={styles.cardItem}
                     onClick={() => handleCardClick(item.tplanNo)}
                   >
-                    {/* 썸네일 박스 & 일수 배지 */}
                     <div className={styles.thumbnailBox}>
                       <img
                         src={imgSrc}
@@ -153,7 +148,6 @@ const ListFrame = ({ order, iconText, items = [] }) => {
                       )}
                     </div>
 
-                    {/* 텍스트 컨텐츠 박스 */}
                     <div className={styles.descBox}>
                       <div className={styles.title}>{item.title}</div>
                       <div className={styles.description}>
@@ -163,7 +157,6 @@ const ListFrame = ({ order, iconText, items = [] }) => {
                       </div>
                     </div>
 
-                    {/* 하단 메타 통계 정보 */}
                     <div className={styles.cardMeta}>
                       <div className={styles.metaItem}>
                         <FavoriteIcon className={styles.likeIcon} />

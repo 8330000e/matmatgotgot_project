@@ -26,7 +26,7 @@ public class RestaurantResponseDTO {
     public RestaurantResponseDTO(Restaurant entity) {
         this.restNo = entity.getRestNo();
         this.title = entity.getRestName();
-        this.imgName = entity.getRestThumb() != null ? entity.getRestThumb() : "default_rest.png";
+        this.imgName = entity.getRestThumb() != null ? entity.getRestThumb() : "basic.jpeg";
         this.desc = entity.getRestContent();
         this.restAddr = entity.getRestAddr();
         this.lat = entity.getLat();

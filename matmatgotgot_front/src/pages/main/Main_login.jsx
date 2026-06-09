@@ -9,6 +9,7 @@ import { useAuthStore } from "../../store/useAuthStore.js";
 import MyCourse from "../../components/main/MyCourse";
 import HorizontalFadeScroll from "../../components/main/HorizontalFadeScroll";
 import CardTemp from "../../components/main/CardTemp";
+import { useNavigate } from "react-router-dom";
 
 const Main_login = () => {
   const [mapTitleStatus, setMapTitleStatus] = useState(0); // 0: 가고 싶은, 1: 다녀왔던
@@ -21,6 +22,12 @@ const Main_login = () => {
 
   const mapRef = useRef(null);
   const markersRef = useRef([]);
+  const navigate = useNavigate();
+
+  const handleRestaurantClick = (restNo) => {
+    if (!restNo) return;
+    navigate(`/rest/view/${restNo}`);
+  };
 
   const clickMapTitle = (status) => {
     setMapTitleStatus(status);
@@ -82,7 +89,6 @@ const Main_login = () => {
     fetchMainData();
   }, [memberId, isReady]);
 
-  // 지도 초기화 및 마커 관리 logic
   useEffect(() => {
     if (!isReady || !memberId) return;
 
@@ -166,13 +172,16 @@ const Main_login = () => {
             infoWindow.setMap(null);
           });
 
+          marker.addListener("click", () => {
+            handleRestaurantClick(item.restNo);
+          });
+
           markersRef.current.push(marker);
           bounds.extend(markerPosition);
         });
 
         mapRef.current.fitBounds(bounds);
 
-        // 💡 [티맵 렌더링 버그 해결 핵심] 마커들이 찍힌 후 지도의 크기를 컨테이너 박스에 맞게 강제 리사이즈 및 갱신합니다.
         setTimeout(() => {
           if (mapRef.current) {
             mapRef.current.resize();
@@ -187,7 +196,6 @@ const Main_login = () => {
     fetchMapMarkers();
   }, [mapTitleStatus, memberId, isReady]);
 
-  // 💡 더보기 클릭 여부와 관계없이 카드가 터져 나가지 않도록 변경
   const visibleRestaurants = isExpanded
     ? randomRecommendList
     : randomRecommendList.slice(0, 8);
@@ -225,13 +233,15 @@ const Main_login = () => {
                   아직 찜한 식당이 없습니다. 마음에 드는 식당을 추가해 보세요!
                 </div>
               ) : (
-                <HorizontalFadeScroll items={myWishList} />
+                <HorizontalFadeScroll
+                  items={myWishList}
+                  onCardClick={(id) => handleRestaurantClick(id)}
+                />
               )}
             </div>
           </div>
         </div>
 
-        {/* 지도 섹션 */}
         <div className={styles.mapSection}>
           <div className={styles.mapTitle}>
             <div
@@ -264,7 +274,10 @@ const Main_login = () => {
           </div>
         </div>
         <div className={styles.tasteRestaurantContent}>
-          <HorizontalFadeScroll items={tasteList} />
+          <HorizontalFadeScroll
+            items={tasteList}
+            onCardClick={(id) => handleRestaurantClick(id)}
+          />
         </div>
       </div>
 
@@ -276,22 +289,25 @@ const Main_login = () => {
           <div className={styles.titleText}>오늘은 이 식당 어떠세요?</div>
         </div>
 
-        {/* 💡 [수정] 접힘/펼침 상태에 맞춰 CSS 클래스가 유동적으로 얹어지도록 템플릿 리터럴로 바인딩 */}
         <div
           className={`${styles.howAboutHereContent} ${!isExpanded ? styles.isCollapsed : ""}`}
         >
           <div className={styles.howAboutHereList}>
             {visibleRestaurants.map((item, index) => (
-              <CardTemp item={item} key={`howAbout-${index}`} />
+              <div
+                key={`howAbout-${index}`}
+                onClick={() => handleRestaurantClick(item.restNo)}
+                style={{ cursor: "pointer" }}
+              >
+                <CardTemp item={item} />
+              </div>
             ))}
           </div>
 
-          {/* 💡 [수정] 8개보다 많고 '접혀있는 상태'일 때만 은은한 하단 그라데이션 페이드 오버레이 활성화 */}
           {randomRecommendList.length > 8 && !isExpanded && (
             <div className={styles.fadeOverlayBottom}></div>
           )}
 
-          {/* 버튼 컨테이너 */}
           {randomRecommendList.length > 8 && (
             <div className={styles.buttonContainer}>
               <button

@@ -4,11 +4,17 @@ const CardTemp = ({ item }) => {
   const isFullUrl = item.imgName?.startsWith("http");
   const imgSrc = isFullUrl
     ? item.imgName
-    : `${import.meta.env.VITE_BACKSERVER}/menu/${item.imgName || "default_rest.png"}`;
+    : `${import.meta.env.VITE_BACKSERVER}/menu/${item.imgName || "basic.jpeg"}`;
+
+  // 💡 HTML 태그를 제거하는 함수 추가
+  const stripHtmlTags = (htmlString) => {
+    if (!htmlString) return "";
+    // 정규식을 이용해 <...태그...> 형태를 전부 공백으로 치환합니다.
+    return htmlString.replace(/<[^>]*>/g, "").trim();
+  };
 
   return (
     <div className={styles.card}>
-      {/* 1. 이미지 영역 */}
       <div className={styles.imageBox}>
         <img
           src={imgSrc}
@@ -17,24 +23,20 @@ const CardTemp = ({ item }) => {
         />
       </div>
 
-      {/* 2. 정보 콘텐츠 영역 */}
       <div className={styles.infoBox}>
-        {/* 상단에 주소/위치를 작게 얹어 시선 분산 방지 */}
         {item.restAddr && (
           <span className={styles.addressText} title={item.restAddr}>
-            {item.restAddr.split(" ")[0]} {item.restAddr.split(" ")[1] || ""}{" "}
-            {/* 예: '서울 강남구' 까지만 깔끔하게 출력 */}
+            {item.restAddr.split(" ")[0]}{" "}
+            {item.restAddr.split(" ")[1] || ""}{" "}
           </span>
         )}
 
-        {/* 주인공인 식당명은 한 줄을 온전히 크게 차지 */}
         <h3 className={styles.title}>{item.title}</h3>
 
-        {/* 얇은 에센셜 라인 */}
         <div className={styles.divider}></div>
 
-        {/* 맛집 설명글 */}
-        <p className={styles.description}>{item.desc}</p>
+        {/* 💡 함수를 거쳐 순수 텍스트만 렌더링하도록 수정 */}
+        <p className={styles.description}>{stripHtmlTags(item.desc)}</p>
       </div>
     </div>
   );

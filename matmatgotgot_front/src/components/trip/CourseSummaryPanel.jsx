@@ -1,10 +1,11 @@
 import styles from "./CourseSummaryPanel.module.css";
+import { useLocation } from "react-router-dom";
 
 const CourseSummaryPanel = ({
   courseTitle,
   setCourseTitle,
   courseDesc,
-  onCourseDescChange, // 부모에서 전달받은 300자 제한 전용 핸들러
+  onCourseDescChange,
   travelDays,
   onTravelDaysChange,
   tags,
@@ -15,6 +16,10 @@ const CourseSummaryPanel = ({
   totalCost,
   onSubmit,
 }) => {
+  const location = useLocation();
+
+  const isEditMode = location.pathname.includes("/trip/edit");
+
   const handleTagClick = (tag) => {
     if (tag.active) {
       onTagToggle(tag.id);
@@ -30,7 +35,6 @@ const CourseSummaryPanel = ({
 
   return (
     <div className={styles.metaConfigPanel}>
-      {/* 1. 코스명 입력 */}
       <div className={styles.inputGroup}>
         <label>코스명</label>
         <input
@@ -41,7 +45,6 @@ const CourseSummaryPanel = ({
         />
       </div>
 
-      {/* 2. 코스 설명 입력 영역 (300자 카운터 탑재) */}
       <div className={styles.inputGroup} style={{ position: "relative" }}>
         <label>코스 설명</label>
         <textarea
@@ -54,7 +57,6 @@ const CourseSummaryPanel = ({
         <div className={styles.charCounter}>{courseDesc.length} / 300</div>
       </div>
 
-      {/* 3. 여행 기간 */}
       <div className={styles.inputGroup}>
         <label>여행 기간</label>
         <select
@@ -70,7 +72,6 @@ const CourseSummaryPanel = ({
         </select>
       </div>
 
-      {/* 4. 카테고리 태그 설정 */}
       <div className={styles.tagGroupWrap}>
         <label>카테고리 설정</label>
         <div className={styles.tagGrid}>
@@ -86,7 +87,6 @@ const CourseSummaryPanel = ({
         </div>
       </div>
 
-      {/* 5. 대시보드 및 제출 */}
       <div className={styles.summaryDashboard}>
         <div className={styles.summaryLine}>
           <span>총 소요 시간 (전체)</span>
@@ -106,7 +106,7 @@ const CourseSummaryPanel = ({
 
       <div className={styles.submitRow}>
         <button className={styles.registerBtn} onClick={onSubmit}>
-          등록하기 →
+          {isEditMode ? "수정하기 →" : "등록하기 →"}
         </button>
       </div>
     </div>
