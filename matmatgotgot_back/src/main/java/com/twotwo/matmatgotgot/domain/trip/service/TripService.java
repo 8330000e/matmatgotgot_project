@@ -100,7 +100,6 @@ public class TripService {
     @Transactional(rollbackFor = Exception.class)
     public void createTripCourse(TripCreateRequestDTO dto) {
 
-        // 1. TRAVEL_PLAN_TBL 데이터 바인딩 및 인서트
         Map<String, Object> planMap = new HashMap<>();
         planMap.put("memberNo", dto.getMemberNo());
         planMap.put("tplanTitle", dto.getTplanTitle());
@@ -110,21 +109,17 @@ public class TripService {
         planMap.put("tplanTotalPrice", dto.getTplanTotalPrice());
 
         tripMapper.insertTravelPlan(planMap);
-        // MyBatis의 selectKey에 의해 planMap에 tplan_no가 주입됩니다.
         Long tplanNo = (Long) planMap.get("tplan_no");
 
-        // 2. PLAN_TAG_TBL 인서트 (선택한 태그 리스트 순회)
         if (dto.getTagNos() != null && !dto.getTagNos().isEmpty()) {
             for (Integer tagNo : dto.getTagNos()) {
                 tripMapper.insertPlanTag(tplanNo, tagNo);
             }
         }
 
-        // 3. 일차별 코스 순회 및 일정 등록
         if (dto.getDays() != null) {
             for (TripCreateRequestDTO.DayData dayData : dto.getDays()) {
 
-                // 3-1. 우선 해당 일차의 모든 일정(TRAVEL_SCHEDULE_TBL)과 추천 메뉴를 선제적으로 인서트
                 for (TripCreateRequestDTO.ScheduleData scheData : dayData.getSchedules()) {
                     Map<String, Object> scheMap = new HashMap<>();
                     scheMap.put("tplanNo", tplanNo);
@@ -133,11 +128,9 @@ public class TripService {
                     scheMap.put("restNo", scheData.getRestNo());
 
                     tripMapper.insertTravelSchedule(scheMap);
-                    // 생성된 일정 고유번호를 확보하여 DTO 내부 저장 객체에 기록해 둡니다.
                     Long tscheNo = (Long) scheMap.get("tscheNo");
                     scheData.setGeneratedTscheNo(tscheNo);
 
-                    // RECOMMEND_MENU_TBL 인서트 (식당별 선택 메뉴가 있다면 저장)
                     if (scheData.getSelectedMenuNos() != null && !scheData.getSelectedMenuNos().isEmpty()) {
                         for (Long menuNo : scheData.getSelectedMenuNos()) {
                             tripMapper.insertRecommendMenu(tscheNo, menuNo);
@@ -145,13 +138,10 @@ public class TripService {
                     }
                 }
 
-                // 3-2. 같은 일차 내부에서 스케줄 간 이동 경로(TRAVEL_ROUTE_TBL) 매핑
-                // index 번의 일정 정보에 Route가 기록되어 있다면 -> '현재 일정번호(from)'에서 'index+1 번의 일정번호(to)'로 이동함을 의미
                 for (int i = 0; i < dayData.getSchedules().size() - 1; i++) {
                     TripCreateRequestDTO.ScheduleData currentSche = dayData.getSchedules().get(i);
                     TripCreateRequestDTO.ScheduleData nextSche = dayData.getSchedules().get(i + 1);
 
-                    // 다음 목적지가 존재하고 프론트에서 이동 수단을 지정해 준 경우에만 저장
                     if (currentSche.getRoute() != null && currentSche.getRoute().getTransitType() != null) {
                         Long fromTscheNo = currentSche.getGeneratedTscheNo();
                         Long toTscheNo = nextSche.getGeneratedTscheNo();
@@ -174,7 +164,6 @@ public class TripService {
         List<TripCourseResponse> allPlans =
                 tripMapper.selectAllPlans();
 
-        // 내가 만든 코스
         List<TripCourseResponse> myPlans =
                 allPlans.stream()
                         .filter(plan ->
@@ -182,7 +171,6 @@ public class TripService {
                                         memberNo.equals(plan.getMemberNo()))
                         .toList();
 
-        // TOP10
         List<TripCourseResponse> top10Plans =
                 allPlans.stream()
                         .sorted(
@@ -260,11 +248,10 @@ public class TripService {
         int count = tripMapper.checkFavorite(req);
         if (count > 0) {
             tripMapper.deleteFavorite(req);
-            // 추가로 TRAVEL_PLAN_TBL의 tplan_like 카운트를 -1 하는 로직을 넣으면 더 좋습니다.
-            return false; // 찜 해제됨
+            return false;
         } else {
             tripMapper.insertFavorite(req);
-            return true; // 찜 등록됨
+            return true;
         }
     }
 
@@ -288,31 +275,26 @@ public class TripService {
     public void updateCourse(TripUpdateDTO updateDto) {
         Long tplanNo = updateDto.getTplanNo();
 
-        // 1. 메인 마스터 정보 테이블 UPDATE
         tripMapper.updateTravelPlan(updateDto);
 
-        // 2. 종속 테이블 데이터 기존 내역 초기화 (외래키 ON DELETE CASCADE로 인해 tplan_no 기준 하위 자동삭제 연동 가능)
         tripMapper.deletePlanTags(tplanNo);
         tripMapper.deleteTravelSchedules(tplanNo);
 
-        // 3. 태그(PLAN_TAG_TBL) 재등록
         if (updateDto.getTagNos() != null && !updateDto.getTagNos().isEmpty()) {
             for (Integer tagNo : updateDto.getTagNos()) {
                 tripMapper.insertPlanTag(tplanNo, tagNo);
             }
         }
 
-        // 4. 스케줄 및 경로 재등록
         if (updateDto.getDays() != null) {
             for (TripUpdateDTO.DayDataDto dayDto : updateDto.getDays()) {
                 if (dayDto.getSchedules() == null) continue;
 
-                Long prevTscheNo = null; // 💡 이전 등록된 일정번호를 저장하여 경로 테이블에 바인딩
-                String pendingTransitType = null; // 출발지 스케줄 기준의 이동수단 임시 보관
+                Long prevTscheNo = null;
+                String pendingTransitType = null;
 
                 for (TripUpdateDTO.ScheduleDto scheDto : dayDto.getSchedules()) {
 
-                    // 4-1. TRAVEL_SCHEDULE_TBL 등록
                     Map<String, Object> scheParam = new HashMap<>();
                     scheParam.put("tplanNo", tplanNo);
                     scheParam.put("tscheDayNo", scheDto.getTscheDayNo());
@@ -320,22 +302,18 @@ public class TripService {
                     scheParam.put("restNo", scheDto.getRestNo());
 
                     tripMapper.insertTravelSchedule(scheParam);
-                    Long currentTscheNo = (Long) scheParam.get("tscheNo"); // 자동 생성된 PK
+                    Long currentTscheNo = (Long) scheParam.get("tscheNo");
 
-                    // 4-2. RECOMMEND_MENU_TBL (추천 메뉴 매핑) 등록
                     if (scheDto.getSelectedMenuNos() != null && !scheDto.getSelectedMenuNos().isEmpty()) {
                         for (Long menuNo : scheDto.getSelectedMenuNos()) {
                             tripMapper.insertRecommendMenu(currentTscheNo, menuNo);
                         }
                     }
 
-                    // 4-3. TRAVEL_ROUTE_TBL (이동 경로) 등록
-                    // 이전 스케줄이 존재한다면, '이전 목적지 -> 현재 목적지'로 가는 경로를 완성하여 삽입
                     if (prevTscheNo != null && pendingTransitType != null) {
                         tripMapper.createTripCourse(prevTscheNo, currentTscheNo, pendingTransitType);
                     }
 
-                    // 다음 루프를 위해 현재 스케줄 번호와 이동 경로 수단을 백업
                     prevTscheNo = currentTscheNo;
                     pendingTransitType = (scheDto.getRoute() != null) ? scheDto.getRoute().getTransitType() : null;
                 }
@@ -345,5 +323,20 @@ public class TripService {
 
     public List<MyUnfinishedCourseDTO> getMyUnfinishedCourses(Long memberNo) {
         return tripMapper.selectUnfinishedCoursesByMemberNo(memberNo);
+    }
+
+    @Transactional
+    public boolean removeTripPlan(Long tplanNo, Long memberNo) {
+        Long ownerNo = tripMapper.selectMemberNoByTplanNo(tplanNo);
+
+        if (ownerNo == null) {
+            throw new IllegalArgumentException("존재하지 않는 여행 코스입니다.");
+        }
+
+        if (!ownerNo.equals(memberNo)) {
+            throw new SecurityException("본인이 작성한 코스만 삭제할 수 있습니다.");
+        }
+
+        return tripMapper.deleteTravelPlan(tplanNo) > 0;
     }
 }

@@ -313,4 +313,15 @@
             P.created_at DESC
             LIMIT 5
     </select>
+
+    <select id="selectMemberNoByTplanNo" resultType="long">
+        SELECT member_no
+        FROM TRAVEL_PLAN_TBL
+        WHERE tplan_no = #{tplanNo}
+    </select>
+
+    <delete id="deleteTravelPlan">
+        DELETE FROM TRAVEL_PLAN_TBL
+        WHERE tplan_no = #{tplanNo}
+    </delete>
 </mapper>

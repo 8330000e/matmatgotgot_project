@@ -7,9 +7,10 @@ import ShareIcon from "@mui/icons-material/Share";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete"; // 💡 삭제 아이콘 추가
 import CourseRouteMap from "../../components/trip/CourseRouteMap";
 import { fetchOdsayDuration, fetchTmapDuration } from "../../api/routeApi";
-import { useAuthStore } from "../../store/useAuthStore.js"; // 1. useAuthStore 임포트
+import { useAuthStore } from "../../store/useAuthStore.js";
 
 const CourseDetail = () => {
   const navigate = useNavigate();
@@ -29,7 +30,6 @@ const CourseDetail = () => {
   useEffect(() => {
     if (!isReady) return;
 
-    console.log(memberNo);
     const fetchDetailData = async () => {
       try {
         setLoading(true);
@@ -40,7 +40,6 @@ const CourseDetail = () => {
         setCourseData(response.data);
         setLikeCount(response.data.tplanLike || 0);
 
-        // 로그인 상태이고, 작성자 번호와 로그인한 유저 번호가 같으면 수정 권한 부여
         setIsOwner(!!memberNo && response.data.memberNo === memberNo);
 
         if (response.data.dayRoutes) {
@@ -53,19 +52,15 @@ const CourseDetail = () => {
       }
     };
     if (tplan_no) fetchDetailData();
-  }, [tplan_no, isReady, memberNo]); // 의존성 배열에 관련 상태 추가
+  }, [tplan_no, isReady, memberNo]);
 
-  // 로그인된 경우에만 찜 상태 확인 API 호출
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/favorite/check`,
           {
-            params: {
-              memberNo: memberNo,
-              tplanNo: tplan_no,
-            },
+            params: { memberNo, tplanNo: tplan_no },
           },
         );
         setIsLiked(res.data.isFavorite);
@@ -77,16 +72,39 @@ const CourseDetail = () => {
     if (tplan_no && memberNo) {
       fetchFavoriteStatus();
     } else {
-      setIsLiked(false); // 로그아웃 상태면 찜 상태도 빈 하트로 초기화
+      setIsLiked(false);
     }
   }, [tplan_no, memberNo]);
 
+  // 💡 삭제 처리 비동기 함수 추가
+  const handleDeleteCourse = async () => {
+    if (
+      !window.confirm(
+        "정말로 이 여행 코스를 삭제하시겠습니까? 관련 데이터가 모두 삭제됩니다.",
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKSERVER}/trips/${tplan_no}`,
+        {
+          params: { memberNo }, // 본인 검증용 백엔드 파라미터 전달
+        },
+      );
+      alert("여행 코스가 성공적으로 삭제되었습니다.");
+      navigate("/trip"); // 삭제 후 여행 메인으로 리다이렉트
+    } catch (error) {
+      console.error("코스 삭제 중 오류 발생:", error);
+      alert(error.response?.data || "삭제 권한이 없거나 처리에 실패했습니다.");
+    }
+  };
+
   const calculateAllDurations = async (dayRoutes) => {
     const durationsMap = {};
-
     for (const day of Object.keys(dayRoutes)) {
       const routes = dayRoutes[day] || [];
-
       for (let i = 0; i < routes.length - 1; i++) {
         const startNode = routes[i];
         const endNode = routes[i + 1];
@@ -105,7 +123,6 @@ const CourseDetail = () => {
         const mapKey = `${startNode.tscheNo}_${endNode.tscheNo}`;
 
         let duration = null;
-
         if (type === "WALK" || type === "CAR") {
           duration = await fetchTmapDuration(startPos, endPos, type);
         } else if (type === "PUB") {
@@ -120,38 +137,29 @@ const CourseDetail = () => {
     setTransitDurations(durationsMap);
   };
 
-  // 3. 찜하기 클릭 시 비로그인 유저 차단 로직 적용
   const handleLikeToggle = async () => {
     if (!memberNo) {
       alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
-      navigate("/"); // 비로그인 유저 리다이렉트 처리
+      navigate("/");
       return;
     }
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKSERVER}/trips/favorite/toggle`,
-        {
-          memberNo: memberNo,
-          tplanNo: tplan_no,
-        },
+        { memberNo, tplanNo: tplan_no },
       );
 
       const isNowLiked = response.data;
-
       const countResponse = await axios.post(
         `${import.meta.env.VITE_BACKSERVER}/trips/favorite/count`,
-        {
-          tplanNo: tplan_no,
-          action: isNowLiked ? "INCREMENT" : "DECREMENT",
-        },
+        { tplanNo: tplan_no, action: isNowLiked ? "INCREMENT" : "DECREMENT" },
       );
 
       setIsLiked(isNowLiked);
       setLikeCount(countResponse.data);
     } catch (error) {
-      console.error("찜하기 및 카운트 연동 중 오류가 발생했습니다.", error);
-      alert("처리에 실패했습니다. 다시 시도해 주세요.");
+      console.error("찜하기 및 카운트 연동 오류:", error);
     }
   };
 
@@ -163,7 +171,6 @@ const CourseDetail = () => {
 
   const formatDuration = (totalMinutes) => {
     if (!totalMinutes || totalMinutes <= 0) return "0분";
-
     const days = Math.floor(totalMinutes / (24 * 60));
     const hours = Math.floor((totalMinutes % (24 * 60)) / 60);
     const minutes = totalMinutes % 60;
@@ -172,14 +179,12 @@ const CourseDetail = () => {
     if (days > 0) result.push(`${days}일`);
     if (hours > 0) result.push(`${hours}시간`);
     if (minutes > 0) result.push(`${minutes}분`);
-
     return result.join(" ");
   };
 
   const renderTransitText = (currentNode, nextNode) => {
     const mapKey = `${currentNode.tscheNo}_${nextNode.tscheNo}`;
     const info = transitDurations[mapKey];
-
     const typeText =
       currentNode.transitType === "WALK"
         ? "🚶 도보"
@@ -187,25 +192,16 @@ const CourseDetail = () => {
           ? "🚌 대중교통"
           : "🚗 자차";
 
-    if (!info) {
-      return `${typeText} 계산 중...`;
-    }
-
+    if (!info) return `${typeText} 계산 중...`;
     return `${typeText} 약 ${formatDuration(info.duration)}`;
   };
 
-  // Auth 스토어 준비 전이거나 데이터 받아오는 중일 때 로딩 가드
   if (!isReady || loading)
     return (
       <div className={styles.loading}>코스 상세 정보를 로딩 중입니다...</div>
     );
-
   if (!courseData)
-    return (
-      <div className={styles.loading}>
-        존재하지 않는 코스이거나 데이터를 불러오지 못했습니다.
-      </div>
-    );
+    return <div className={styles.loading}>존재하지 않는 코스입니다.</div>;
 
   const dayRoutesSource = courseData.dayRoutes || {};
   const currentDayRoutes =
@@ -233,14 +229,24 @@ const CourseDetail = () => {
         </div>
 
         <div className={styles.headerActions}>
+          {/* 💡 작성자 본인 카드일 때만 수정 및 삭제 버튼 렌더링 */}
           {isOwner && (
-            <button
-              className={styles.actionBtn}
-              title="코스 수정"
-              onClick={() => navigate(`/trip/edit/${tplan_no}`)}
-            >
-              <EditIcon />
-            </button>
+            <>
+              <button
+                className={styles.actionBtn}
+                title="코스 수정"
+                onClick={() => navigate(`/trip/edit/${tplan_no}`)}
+              >
+                <EditIcon />
+              </button>
+              <button
+                className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                title="코스 삭제"
+                onClick={handleDeleteCourse}
+              >
+                <DeleteIcon />
+              </button>
+            </>
           )}
           <button
             className={styles.actionBtn}
@@ -256,6 +262,7 @@ const CourseDetail = () => {
           >
             {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
           </button>
+
           {showSharePopup && (
             <div className={styles.sharePopupLayer}>
               <div className={styles.popupHeader}>
@@ -298,13 +305,11 @@ const CourseDetail = () => {
           <div className={styles.ticketLeft}>
             <CourseRouteMap routes={currentDayRoutes} />
           </div>
-
           <div className={styles.ticketDivider}>
             <div className={styles.notchTop}></div>
             <div className={styles.dashedLine}></div>
             <div className={styles.notchBottom}></div>
           </div>
-
           <div className={styles.ticketRight}>
             <div className={styles.infoSummaryGroup}>
               <div className={styles.infoSummaryLine}>
@@ -352,7 +357,6 @@ const CourseDetail = () => {
                         const imgSrc = isFullUrl
                           ? menu.imagePreview
                           : `${import.meta.env.VITE_BACKSERVER}/menu/${menu.imagePreview}`;
-
                         return (
                           <div key={mIdx} className={styles.detailPhotoCard}>
                             {menu.imagePreview ? (
