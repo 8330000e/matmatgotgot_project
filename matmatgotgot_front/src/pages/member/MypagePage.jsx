@@ -1,8 +1,6 @@
-"use no cache";
-
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import defaultImg from "../../assets/img/defaultImg.svg";
 import changeImg from "../../assets/img/changeImg.svg";
 import native from "../../assets/img/native.svg";
@@ -30,7 +28,10 @@ import axios from "axios";
 import {useEffect, useRef, useState} from "react";
 import Pagination from "../../components/ui/Pagination.jsx";
 import {Input} from "../../components/ui/Form.jsx";
+import BoardList from "../../components/member/BoardList.jsx";
 import Swal from "sweetalert2";
+import BoardLikeList from "../../components/member/BoardLikeList.jsx";
+import BoardReports from "../../components/member/BoardReports.jsx";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -89,7 +90,7 @@ export const MypagePage = () => {
                         </Link>
                         <Link to="/mypage/matzip">
                             <li className={path === "matzip" ? styles.sidebar_active : styles.sidebar_default}>
-                           맛집 여행 목록
+                           내 코스 목록
                             </li>
                         </Link>
                         <Link to="/mypage/likeposts">
@@ -117,12 +118,12 @@ export const MypagePage = () => {
             </div>
             <div className={styles.content_wrap}>
                 {path === "myinfo" && <Myinfo memberInfo={memberInfo} />}
-                {path === "myreview" && <Myreview />}
-                {path === "zzim" && <Zzim />}
-                {path === "matzip" && <Matzip />}
-                {path === "likeposts" && <Likeposts />}
-                {path === "myposts" && <Myposts />}
-                {path === "reportposts" && <Reportposts />}
+                {path === "myreview" && <Myreview memberInfo={memberInfo} />}
+                {path === "zzim" && <Zzim memberInfo={memberInfo} />}
+                {path === "matzip" && <Matzip memberInfo={memberInfo} />}
+                {path === "likeposts" && <Likeposts memberInfo={memberInfo} />}
+                {path === "myposts" && <Myposts memberInfo={memberInfo}/>}
+                {path === "reportposts" && <Reportposts memberInfo={memberInfo} />}
                 {path === "myask" && <Myask />}
                 {path === "myinfo/changePw" && <ChangePw />}
                 {path === "myinfo/changeEmail" && <ChangeEmail memberInfo={memberInfo} />}
@@ -261,7 +262,7 @@ export const Myinfo = ({ memberInfo }) => {
     </>);
 };
 
-export const Myreview = () => {
+export const Myreview = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_myreview_wrap}`}>
             <div className={styles.posts_bar}>
@@ -295,70 +296,6 @@ export const Myreview = () => {
                     </div>
                 </div>
                 </div>
-                <div className={styles.post}>
-                    <div>
-                        <div>
-                            <p>맛집상호명</p>
-                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
-                        </div>
-                        <div>2026.05.08</div>
-                    </div>
-                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
-                    <div>
-                        <div>
-                            <p><img src={heart} /> 12</p>
-                            <p><img src={view} /> 321</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.post}>
-                    <div>
-                        <div>
-                            <p>맛집상호명</p>
-                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
-                        </div>
-                        <div>2026.05.08</div>
-                    </div>
-                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
-                    <div>
-                        <div>
-                            <p><img src={heart} /> 12</p>
-                            <p><img src={view} /> 321</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.post}>
-                    <div>
-                        <div>
-                            <p>맛집상호명</p>
-                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
-                        </div>
-                        <div>2026.05.08</div>
-                    </div>
-                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
-                    <div>
-                        <div>
-                            <p><img src={heart} /> 12</p>
-                            <p><img src={view} /> 321</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.post}>
-                    <div>
-                        <div>
-                            <p>맛집상호명</p>
-                            <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
-                        </div>
-                        <div>2026.05.08</div>
-                    </div>
-                    <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
-                    <div>
-                        <div>
-                            <p><img src={heart} /> 12</p>
-                            <p><img src={view} /> 321</p>
-                        </div>
-                    </div>
-                </div>
                 {/*더미데이터*/}
             </div>
             <div>
@@ -367,7 +304,7 @@ export const Myreview = () => {
         </div>
     </>);};
 
-export const Zzim = () => {
+export const Zzim = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_zzim_wrap}`}>
             <div className={styles.posts_bar}>
@@ -403,96 +340,6 @@ export const Zzim = () => {
                         <p><img src={blackStar} alt=""/></p>
                     </div>
                 </div>
-                <div className={styles.matzip}>
-                    <div>
-                        <p>맛집상호명</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>맛곳광역시 맛곳구 맛곳동</p>
-                        <p>중식당</p>
-                        <p>운영 전 9:00 오픈</p>
-                    </div>
-                    <div>
-                        <p><img src={heart} alt=""/> 123</p>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.matzip}>
-                    <div>
-                        <p>맛집상호명</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>맛곳광역시 맛곳구 맛곳동</p>
-                        <p>중식당</p>
-                        <p>운영 전 9:00 오픈</p>
-                    </div>
-                    <div>
-                        <p><img src={heart} alt=""/> 123</p>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.matzip}>
-                    <div>
-                        <p>맛집상호명</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>맛곳광역시 맛곳구 맛곳동</p>
-                        <p>중식당</p>
-                        <p>운영 전 9:00 오픈</p>
-                    </div>
-                    <div>
-                        <p><img src={heart} alt=""/> 123</p>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.matzip}>
-                    <div>
-                        <p>맛집상호명</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>맛곳광역시 맛곳구 맛곳동</p>
-                        <p>중식당</p>
-                        <p>운영 전 9:00 오픈</p>
-                    </div>
-                    <div>
-                        <p><img src={heart} alt=""/> 123</p>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.matzip}>
-                    <div>
-                        <p>맛집상호명</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>맛곳광역시 맛곳구 맛곳동</p>
-                        <p>중식당</p>
-                        <p>운영 전 9:00 오픈</p>
-                    </div>
-                    <div>
-                        <p><img src={heart} alt=""/> 123</p>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
                 {/*더미데이터*/}
             </div>
             <div>
@@ -501,7 +348,7 @@ export const Zzim = () => {
         </div>
     </>);};
 
-export const Matzip = () => {
+export const Matzip = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_tuar_wrap}`}>
             <div className={styles.posts_bar}>
@@ -521,114 +368,13 @@ export const Matzip = () => {
                 {/*더미데이터*/}
                 <div className={styles.tuar}>
                     <div>
-                        <p>플랜1</p>
+                        <p>코스명1</p>
                         <div><img src={menu} alt="" /></div>
                     </div>
                     <div>
                         <img src={Rectangle} alt=""/>
                     </div>
                     <div>
-                        <p>여행지이름</p>
-                        <ul>
-                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
-                            <li><img src={spot} alt=""/><span>여행지역</span></li>
-                            <li><img src={people} alt=""/><span>부모님</span></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.tuar}>
-                    <div>
-                        <p>플랜1</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>여행지이름</p>
-                        <ul>
-                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
-                            <li><img src={spot} alt=""/><span>여행지역</span></li>
-                            <li><img src={people} alt=""/><span>부모님</span></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.tuar}>
-                    <div>
-                        <p>플랜1</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>여행지이름</p>
-                        <ul>
-                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
-                            <li><img src={spot} alt=""/><span>여행지역</span></li>
-                            <li><img src={people} alt=""/><span>부모님</span></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.tuar}>
-                    <div>
-                        <p>플랜1</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>여행지이름</p>
-                        <ul>
-                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
-                            <li><img src={spot} alt=""/><span>여행지역</span></li>
-                            <li><img src={people} alt=""/><span>부모님</span></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.tuar}>
-                    <div>
-                        <p>플랜1</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>여행지이름</p>
-                        <ul>
-                            <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
-                            <li><img src={spot} alt=""/><span>여행지역</span></li>
-                            <li><img src={people} alt=""/><span>부모님</span></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p><img src={blackStar} alt=""/></p>
-                    </div>
-                </div>
-                <div className={styles.tuar}>
-                    <div>
-                        <p>플랜1</p>
-                        <div><img src={menu} alt="" /></div>
-                    </div>
-                    <div>
-                        <img src={Rectangle} alt=""/>
-                    </div>
-                    <div>
-                        <p>여행지이름</p>
                         <ul>
                             <li><img src={calendar} alt=""/><span>2026.05.08 ~ 2026.05.10</span></li>
                             <li><img src={spot} alt=""/><span>여행지역</span></li>
@@ -647,7 +393,31 @@ export const Matzip = () => {
         </div>
     </>);};
 
-export const Likeposts = () => {
+export const Likeposts = ({memberInfo}) => {
+    const { memberId, memberNo} = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
+    const [order, setOrder] = useState(0);
+    const [myboard, setMyboard] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/mylike`,{
+            params: {
+                page,
+                size,
+                order
+            },
+        })
+            .then((res)=>{
+                console.log(res.data);
+                setMyboard(res.data.items);
+                setTotalPage(res.data.totalPage);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    },[page, order]);
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -657,143 +427,52 @@ export const Likeposts = () => {
                 </div>
                 <div>
                     <ul>
-                        <li>작성순</li>
-                        <li>좋아요순</li>
-                        <li>별점순</li>
+                        <li onClick={()=>setOrder(1)}>작성순</li>
+                        <li onClick={()=>setOrder(2)}>좋아요순</li>
+                        <li onClick={()=>setOrder(3)}>조회수순</li>
                     </ul>
                 </div>
             </div>
             <div className={styles.likeposts}>
-                {/*더미데이터*/}
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div><div className={styles.likepost}>
-                <div>1</div>
-                <div>게시글 제목</div>
-                <div>
-                    <ul>
-                        <li><img src={comment} alt=""/>2</li>
-                        <li><img src={heart} alt=""/>12</li>
-                        <li><img src={view} alt=""/>231</li>
-                    </ul>
-                </div>
-                <div>2026.05.08</div>
-            </div><div className={styles.likepost}>
-                <div>1</div>
-                <div>게시글 제목</div>
-                <div>
-                    <ul>
-                        <li><img src={comment} alt=""/>2</li>
-                        <li><img src={heart} alt=""/>12</li>
-                        <li><img src={view} alt=""/>231</li>
-                    </ul>
-                </div>
-                <div>2026.05.08</div>
-            </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                {/*더미데이터*/}
+                <BoardLikeList myboard={myboard} />
             </div>
             <div>
-                <Pagination/>
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPage={totalPage}
+                    naviSize={5}/>
             </div>
         </div>
     </>);};
 
-export const Myposts = () => {
+export const Myposts = ({memberInfo}) => {
+    const { memberId, memberNo} = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
+    const [order, setOrder] = useState(0);
+    const [myboard, setMyboard] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/my`,{
+            params: {
+                page,
+                size,
+                order
+            },
+        })
+            .then((res)=>{
+                console.log(res.data);
+                setMyboard(res.data.items);
+                setTotalPage(res.data.totalPage);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    },[page, order]);
     return (<>
-        <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
+        <div className={`${styles.content_menu_wrap} ${styles.content_mypost_wrap}`}>
             <div className={styles.posts_bar}>
                 <div>
                     <p>전체 선택</p>
@@ -801,141 +480,50 @@ export const Myposts = () => {
                 </div>
                 <div>
                     <ul>
-                        <li>작성순</li>
-                        <li>좋아요순</li>
-                        <li>별점순</li>
+                        <li onClick={()=>setOrder(1)}>작성순</li>
+                        <li onClick={()=>setOrder(2)}>좋아요순</li>
+                        <li onClick={()=>setOrder(3)}>조회수순</li>
                     </ul>
                 </div>
             </div>
-            <div className={styles.likeposts}>
-                {/*더미데이터*/}
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div><div className={styles.likepost}>
-                <div>1</div>
-                <div>게시글 제목</div>
-                <div>
-                    <ul>
-                        <li><img src={comment} alt=""/>2</li>
-                        <li><img src={heart} alt=""/>12</li>
-                        <li><img src={view} alt=""/>231</li>
-                    </ul>
-                </div>
-                <div>2026.05.08</div>
-            </div><div className={styles.likepost}>
-                <div>1</div>
-                <div>게시글 제목</div>
-                <div>
-                    <ul>
-                        <li><img src={comment} alt=""/>2</li>
-                        <li><img src={heart} alt=""/>12</li>
-                        <li><img src={view} alt=""/>231</li>
-                    </ul>
-                </div>
-                <div>2026.05.08</div>
-            </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                {/*더미데이터*/}
+            <div className={styles.myposts}>
+                <BoardList myboard={myboard} />
             </div>
             <div>
-                <Pagination/>
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPage={totalPage}
+                    naviSize={5}/>
             </div>
         </div>
     </>);};
 
-export const Reportposts = () => {
+export const Reportposts = ({memberInfo}) => {
+    const { memberId, memberNo } = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
+    const [order, setOrder] = useState(0);
+    const [myboard, setMyboard] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/myreport`,{
+            params: {
+                page,
+                size,
+                order
+            },
+        })
+            .then((res)=>{
+                console.log(res.data);
+                setMyboard(res.data.items);
+                setTotalPage(res.data.totalPage);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    },[page, order]);
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -947,137 +535,21 @@ export const Reportposts = () => {
                 </div>
             </div>
             <div className={styles.reports}>
+                <BoardReports myboard={myboard} />
                 {/*더미데이터*/}
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_send}>신고접수</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_send}>신고접수</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_send}>신고접수</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_ing}>처리중</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_finished}>처리완료</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_err}>반려</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_finished}>처리완료</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_finished}>처리완료</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_finished}>처리완료</div>
-                </div>
-                <div className={styles.report}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.report_finished}>처리완료</div>
-                </div>
+                {/*<div className={styles.report}>*/}
+                {/*    <div>1</div>*/}
+                {/*    <div>게시글 제목</div>*/}
+                {/*    <div>*/}
+                {/*        <ul>*/}
+                {/*            <li><img src={comment} alt=""/>2</li>*/}
+                {/*            <li><img src={heart} alt=""/>12</li>*/}
+                {/*            <li><img src={view} alt=""/>231</li>*/}
+                {/*        </ul>*/}
+                {/*    </div>*/}
+                {/*    <div>2026.05.08</div>*/}
+                {/*    <div className={styles.report_send}>신고접수</div>*/}
+                {/*</div>*/}
                 {/*더미데이터*/}
             </div>
             <div>
@@ -1086,7 +558,7 @@ export const Reportposts = () => {
         </div>
     </>);};
 
-export const Myask = () => {
+export const Myask = ({memberInfo}) => {
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -1112,96 +584,6 @@ export const Myask = () => {
                     </div>
                     <div>2026.05.08</div>
                     <div>문의접수</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div>문의접수</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div>문의접수</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
-                </div>
-                <div className={styles.ask}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <img src={comment} alt=""/>
-                        <span>2</span>
-                    </div>
-                    <div>2026.05.08</div>
-                    <div className={styles.ask_finished}>답변완료</div>
                 </div>
                 {/*더미데이터*/}
             </div>
@@ -1332,18 +714,21 @@ export const ChangePw = () => {
 };
 
 export const ChangeEmail = ({ memberInfo }) => {
+    const { memberId } = useAuthStore();
     const [mailMember, setMailMember] = useState({
-        memberId: "",
+        memberId: memberInfo?.memberId || memberId,
         memberEmail: "",
-        newMemberEmail: ""
+        newMemberEmail: "",
+        newMemberEmailRe: ""
     });
     const [mailAuth, setMailAuth] = useState(0);
+    const [newMailAuth, setNewMailAuth] = useState(0);
     const [mailAuthCode, setMailAuthCode] = useState(null);
     const [mailAuthInput, setMailAuthInput] = useState("");
     const [time, setTime] = useState(180);
     const [timeout, setTimeout] = useState(null);
     const sendMail = () => {
-        if(!mailMember.memberEmail) {
+        if(mailMember.memberEmail != memberInfo.memberEmail) {
             Swal.mixin({
                 toast: true,
                 color: "#2b1b17",
@@ -1362,6 +747,7 @@ export const ChangeEmail = ({ memberInfo }) => {
                 text: '이메일을 입력해주세요.',
                 icon: 'error'
             });
+            return;
         }
         setTime(180);
         if (timeout) {
@@ -1370,11 +756,14 @@ export const ChangeEmail = ({ memberInfo }) => {
         setMailAuth(1);
         axios
             .post(
-                `${import.meta.env.VITE_BACKSERVER}/members/email-emailchange`, mailMember)
+                `${import.meta.env.VITE_BACKSERVER}/members/email-emailchange`,{
+                    memberEmail: mailMember.memberEmail,
+                })
                 .then((res) => {
                     console.log(res);
                     setMailAuthCode(res.data.data);
                     setMailAuth(2);
+                    setNewMailAuth(2);
                     const intervalId = window.setInterval(() => {
                         setTime((prev) => {
                             return prev - 1;
@@ -1403,7 +792,7 @@ export const ChangeEmail = ({ memberInfo }) => {
                     icon: 'error'
                 });
                 setMailAuth(0);
-                return;
+                setNewMailAuth(0);
             });
     };
     useEffect(() => {
@@ -1419,6 +808,89 @@ export const ChangeEmail = ({ memberInfo }) => {
         const sec = String(time%60).padStart(2, "0");
         return `${min}:${sec}`;
     };
+    const handleAuthCheck = () => {
+        if (mailAuthCode === mailMember.newMemberEmail) {
+            setMailAuth(3);
+            setNewMailAuth(1); // 🌟 안전하게 이벤트 안에서 상태를 변경합니다!
+            window.clearInterval(timeout);
+            setTimeout(null);
+        } else {
+            Swal.mixin({
+                toast: true,
+                color: "#2b1b17",
+                borderRadius: "15px",
+                fontWeight: "800",
+                padding: "20px 10px",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire({
+                title: '인증 실패',
+                text: '인증코드가 올바르지 않습니다.',
+                icon: 'error'
+            });
+        }
+    };
+    const updateEmail = () => {
+        axios.post(`${import.meta.env.VITE_BACKSERVER}/members/changeEmail`, mailMember)
+            .then((res) => {
+                console.log(res);
+                if(res.data > 0) {
+                    Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        topLayer: true,
+                        background: "#ffd95a",
+                        color: "#2b1b17",
+                        fontWeight: "600",
+                        iconColor: "#fff",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    }).fire({
+                        icon: "success",
+                        title: "이메일 변경 성공",
+                    });
+                }
+            })
+            .catch((err) => {console.log(err);});
+    };
+    // 💡 두 번째 새로운 이메일 변경 및 성공 알림 처리
+    const handleEmailChangeSubmit = () => {
+        if (mailAuthCode === mailMember.newMemberEmailRe) {
+            setNewMailAuth(3);
+            window.clearInterval(timeout);
+            setTimeout(null);
+        } else {
+            Swal.mixin({
+                toast: true,
+                color: "#2b1b17",
+                borderRadius: "15px",
+                fontWeight: "800",
+                padding: "20px 10px",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire({
+                title: '인증 실패',
+                text: '인증코드가 올바르지 않습니다.',
+                icon: 'error'
+            });
+        }
+    };
+
 
     return (
         <>
@@ -1426,13 +898,14 @@ export const ChangeEmail = ({ memberInfo }) => {
                 <div>이메일 변경</div>
                 <div>
                     <label htmlFor="memberEmail">현재 이메일</label>
-                    <Input type="text"
+                    <Input type="email"
                            name="memberEmail"
                            id="memberEmail"
                            value={mailMember.memberEmail}
-                           onChange={(e) => {
-                               setMailMember(e.target.value);
-                           }}
+                           onChange={(e)=>setMailMember((prev)=>({
+                               ...prev,
+                               [e.target.name]: e.target.value
+                           }))}
                            required
                            readOnly={mailAuth === 1 || mailAuth === 3}  />
                     <button
@@ -1453,32 +926,59 @@ export const ChangeEmail = ({ memberInfo }) => {
                                     name="newMemberEmail"
                                     id="newMemberEmail"
                                     value={mailMember.newMemberEmail}
-                                    onChange={(e)=>{
-                                        setMailMember(e.target.value);
-                                    }}
+                                    onChange={(e)=>setMailMember((prev)=>({
+                                        ...prev,
+                                        [e.target.name]: e.target.value
+                                    }))}
                                     disabled={mailAuth === 3}
                                 />
+                                <p className={styles.check_msg}>
+                                    {mailAuth === 3 ? "인증되었습니다.": showTime()}
+                                </p>
                                 <button
-                                    className={styles.submit}
+                                    className={styles.submit_chgM}
                                     type="button"
-                                    onClick={()=> {
-                                        if (mailAuthCode === mailAuthInput) {
-                                            setMailAuth(3);
-                                            window.clearInterval(timeout);
-                                            setTimeout(null);
-                                        } else {
-                                            alert("인증코드가 올바르지 않습니다.");
-                                        }
-                                    }}
+                                    onClick={handleAuthCheck}
                                     disabled = {mailAuth === 3}
                                 >
                                     인증하기
                                 </button>
                             </div>
-                            <p className={styles.check_msg}>
-                                {mailAuth === 3 ? "인증되었습니다.": showTime()}
-                            </p>
-                        </div>)}
+                        </div>
+                    )}
+
+                    {newMailAuth === 1 && (
+                        <div>
+                            <div className={styles.inputLabel}>
+                                <label htmlFor="newMemberEmail">새로운 이메일 주소</label>
+                            </div>
+                            <div>
+                                <Input
+                                    type="email"
+                                    name="newMemberEmail"
+                                    id="newMemberEmail"
+                                    value={mailMember.newMemberEmailRe}
+                                    onChange={(e)=>setMailMember((prev)=>({
+                                        ...prev,
+                                        [e.target.name]: e.target.value
+                                    }))}
+                                    disabled={newMailAuth === 3}
+                                />
+                                <p className={styles.check_msg}>
+                                    {newMailAuth === 3 ? updateEmail(): showTime()}
+                                </p>
+                                <button
+                                    className={styles.submit_chgM}
+                                    type="button"
+                                    onClick={handleEmailChangeSubmit}
+                                    disabled = {newMailAuth === 3}
+                                >
+                                    이메일 변경하기
+                                </button>
+                            </div>
+
+                        </div>
+                    )}
                 </div>
             </div>
         </>

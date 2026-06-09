@@ -36,4 +36,6 @@ public interface MemberMapper {
     Integer updateMemberPw(@Param("memberId") String memberId, @Param("encPw") String encPw);
 
     int updateThumbnail(Member m);
+
+    int updateEmail(Member member);
 }

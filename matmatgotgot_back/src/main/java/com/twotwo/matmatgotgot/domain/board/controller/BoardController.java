@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -39,6 +40,27 @@ public class BoardController {
             @ModelAttribute ListItem request
     ) {
         ListResponse response = boardService.selectBoardList(request);
+        return ResponseEntity.ok(response);
+    }
+
+    // 내 게시글 목록 조회
+    @GetMapping(value = "/{memberNo}/my")
+    public ResponseEntity<?> selectMyBoardList(@ModelAttribute ListItem request, @PathVariable("memberNo") String memberNo) {
+        ListResponse response = boardService.selectMyBoardList(request, memberNo);
+        return ResponseEntity.ok(response);
+    }
+
+    // 내 좋아요 게시글 목록 조회
+    @GetMapping(value = "/{memberNo}/mylike")
+    public ResponseEntity<?> selectMyBoardLikeList(@ModelAttribute ListItem request, @PathVariable("memberNo") String memberNo) {
+        ListResponse response = boardService.selectMyBoardLikeList(request, memberNo);
+        return ResponseEntity.ok(response);
+    }
+
+    // 내 좋아요 게시글 목록 조회
+    @GetMapping(value = "/{memberNo}/myreport")
+    public ResponseEntity<?> selectMyBoardReportList(@ModelAttribute ListItem request, @PathVariable("memberNo") String memberNo) {
+        ListResponse response = boardService.selectMyBoardReportList(request, memberNo);
         return ResponseEntity.ok(response);
     }
 
