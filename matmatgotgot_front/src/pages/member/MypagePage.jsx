@@ -393,7 +393,7 @@ export const Matzip = () => {
     </>);};
 
 export const Likeposts = () => {
-    const [sort, setSort] = useState(0);
+    const [order, setOrder] = useState(0);
 
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
@@ -404,9 +404,9 @@ export const Likeposts = () => {
                 </div>
                 <div>
                     <ul>
-                        <li onClick={()=>setSort(1)}>작성순</li>
-                        <li onClick={()=>setSort(2)}>좋아요순</li>
-                        <li onClick={()=>setSort(3)}>별점순</li>
+                        <li onClick={()=>setOrder(1)}>작성순</li>
+                        <li onClick={()=>setOrder(2)}>좋아요순</li>
+                        <li onClick={()=>setOrder(3)}>별점순</li>
                     </ul>
                 </div>
             </div>
@@ -435,10 +435,19 @@ export const Likeposts = () => {
 export const Myposts = ({memberInfo}) => {
     const { memberId, memberNo} = useAuthStore();
     const memberno = memberInfo?.memberNo || memberNo;
-    const [sort, setSort] = useState(0);
+    const [order, setOrder] = useState(0);
     const [myboard, setMyboard] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/my`)
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/my`,{
+            params: {
+                page,
+                size,
+                order
+            },
+        })
             .then((res)=>{
                 console.log(res.data);
                 setMyboard(res.data);
@@ -456,14 +465,13 @@ export const Myposts = ({memberInfo}) => {
                 </div>
                 <div>
                     <ul>
-                        <li onClick={()=>setSort(1)}>작성순</li>
-                        <li onClick={()=>setSort(2)}>좋아요순</li>
-                        <li onClick={()=>setSort(3)}>별점순</li>
+                        <li onClick={()=>setOrder(1)}>작성순</li>
+                        <li onClick={()=>setOrder(2)}>좋아요순</li>
+                        <li onClick={()=>setOrder(3)}>별점순</li>
                     </ul>
                 </div>
             </div>
             <div className={styles.myposts}>
-                {/*더미데이터*/}
                 <div className={styles.mypost}>
                     <div>1</div>
                     <div>게시글 제목</div>
@@ -477,9 +485,15 @@ export const Myposts = ({memberInfo}) => {
                     <div>2026.05.08</div>
                 </div>
                 {/*더미데이터*/}
+
+                {/*더미데이터*/}
             </div>
             <div>
-                <Pagination/>
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPage={totalPage}
+                    naviSize={5}/>
             </div>
         </div>
     </>);};

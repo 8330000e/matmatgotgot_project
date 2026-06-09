@@ -45,8 +45,8 @@ public class BoardController {
 
     // 내 게시글 목록 조회
     @GetMapping(value = "/{memberNo}/my")
-    public ResponseEntity<?> selectMyBoardList(ListItem item, @PathVariable("memberNo") String memberNo) {
-        ListResponse response = boardService.selectMyBoardList(item, memberNo);
+    public ResponseEntity<?> selectMyBoardList(@ModelAttribute ListItem request, @PathVariable("memberNo") String memberNo) {
+        ListResponse response = boardService.selectMyBoardList(request, memberNo);
         return ResponseEntity.ok(response);
     }
 
