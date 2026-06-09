@@ -405,7 +405,7 @@ export const Likeposts = () => {
                     <ul>
                         <li onClick={()=>setOrder(1)}>작성순</li>
                         <li onClick={()=>setOrder(2)}>좋아요순</li>
-                        <li onClick={()=>setOrder(3)}>별점순</li>
+                        <li onClick={()=>setOrder(3)}>조회수순</li>
                     </ul>
                 </div>
             </div>
@@ -467,7 +467,7 @@ export const Myposts = ({memberInfo}) => {
                     <ul>
                         <li onClick={()=>setOrder(1)}>작성순</li>
                         <li onClick={()=>setOrder(2)}>좋아요순</li>
-                        <li onClick={()=>setOrder(3)}>별점순</li>
+                        <li onClick={()=>setOrder(3)}>조회수순</li>
                     </ul>
                 </div>
             </div>

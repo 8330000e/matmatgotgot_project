@@ -131,10 +131,13 @@
 
         GROUP BY B.BOARD_NO <choose>
         <when test="request.order == 1">
-            ORDER BY B.BOARD_NO ASC
+            ORDER BY B.BOARD_NO DESC
         </when>
         <when test="request.order == 2">
             ORDER BY B.BOARD_DATE DESC
+        </when>
+        <when test="request.order == 3">
+            ORDER BY B.BOARD_VIEW DESC
         </when>
     </choose>
 
