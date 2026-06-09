@@ -7,7 +7,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete"; // 💡 삭제 아이콘 추가
+import DeleteIcon from "@mui/icons-material/Delete";
 import CourseRouteMap from "../../components/trip/CourseRouteMap";
 import { fetchOdsayDuration, fetchTmapDuration } from "../../api/routeApi";
 import { useAuthStore } from "../../store/useAuthStore.js";
@@ -36,7 +36,7 @@ const CourseDetail = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/detail/${tplan_no}`,
         );
-
+        console.log(response.data);
         setCourseData(response.data);
         setLikeCount(response.data.tplanLike || 0);
 
@@ -76,7 +76,6 @@ const CourseDetail = () => {
     }
   }, [tplan_no, memberNo]);
 
-  // 💡 삭제 처리 비동기 함수 추가
   const handleDeleteCourse = async () => {
     if (
       !window.confirm(
@@ -90,11 +89,11 @@ const CourseDetail = () => {
       await axios.delete(
         `${import.meta.env.VITE_BACKSERVER}/trips/${tplan_no}`,
         {
-          params: { memberNo }, // 본인 검증용 백엔드 파라미터 전달
+          params: { memberNo },
         },
       );
       alert("여행 코스가 성공적으로 삭제되었습니다.");
-      navigate("/trip"); // 삭제 후 여행 메인으로 리다이렉트
+      navigate("/trip");
     } catch (error) {
       console.error("코스 삭제 중 오류 발생:", error);
       alert(error.response?.data || "삭제 권한이 없거나 처리에 실패했습니다.");
@@ -229,7 +228,6 @@ const CourseDetail = () => {
         </div>
 
         <div className={styles.headerActions}>
-          {/* 💡 작성자 본인 카드일 때만 수정 및 삭제 버튼 렌더링 */}
           {isOwner && (
             <>
               <button
@@ -283,7 +281,6 @@ const CourseDetail = () => {
         </div>
       </div>
 
-      {/* 다일차 탭 */}
       {courseData.tplanDays > 1 && (
         <div className={styles.dayTabContainer}>
           {Array.from({ length: courseData.tplanDays }, (_, i) => i + 1).map(
@@ -346,7 +343,13 @@ const CourseDetail = () => {
                   <div className={styles.routeNodeHeader}>
                     <div className={styles.nodeTitleBox}>
                       <span className={styles.nodeBadge}>{index + 1}</span>
-                      <h3 className={styles.nodeResName}>{route.restName}</h3>
+                      <h3
+                        className={styles.nodeResName}
+                        onClick={() => navigate(`/rest/view/${route.restNo}`)}
+                        title={`${route.restName} 상세 보기`}
+                      >
+                        {route.restName}
+                      </h3>
                     </div>
                   </div>
 

@@ -83,13 +83,11 @@ const Slide = ({ text, list = [], type }) => {
 
             let thumb = null;
 
-            // 💡 타입별 썸네일 주소 할당 로직 가독성 개선 및 경로 점검
             if (type === "review") {
               if (item.boardThumb) {
-                // 외부 URL(http/https) 형식이면 그대로 쓰고, 파일명만 있으면 서버 업로드 경로 결합
                 thumb = item.boardThumb.startsWith("http")
                   ? item.boardThumb
-                  : `${BACK_URL}/editor/${item.boardThumb}`; // ◀️ 백엔드 정적 리소스 주소와 일치하는지 확인 필요
+                  : `${BACK_URL}/editor/${item.boardThumb}`;
               } else {
                 thumb = `${BACK_URL}/menu/basic.jpeg`;
               }

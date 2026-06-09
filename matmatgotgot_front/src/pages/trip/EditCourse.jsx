@@ -25,7 +25,7 @@ const EditCourse = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [transitTimes, setTransitTimes] = useState({});
   const [transitModes, setTransitModes] = useState({});
-  const [courseDesc, setCourseDesc] = useState(""); // 💡 코스 설명 state
+  const [courseDesc, setCourseDesc] = useState("");
 
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [targetRestaurantId, setTargetRestaurantId] = useState(null);
@@ -39,10 +39,8 @@ const EditCourse = () => {
 
   const [tags, setTags] = useState([]);
 
-  // Zustand에서 로그인 회원 정보 및 준비 상태 가져오기
   const { memberNo: loginMemberNo, isReady } = useAuthStore();
 
-  // 비로그인 유저 1차 차단 가드 (Guard)
   useEffect(() => {
     if (isReady && !loginMemberNo) {
       alert("로그인이 필요한 서비스입니다. 메인 페이지로 이동합니다.");
@@ -50,44 +48,37 @@ const EditCourse = () => {
     }
   }, [isReady, loginMemberNo, navigate]);
 
-  // 코스 설명 글자 수 입력 제어 핸들러 (최대 300자)
   const handleCourseDescChange = (value) => {
     if (value.length <= 300) {
       setCourseDesc(value);
     }
   };
 
-  // 기존 코스 상세 데이터 및 태그 가져오기
   useEffect(() => {
     if (!isReady || !loginMemberNo) return;
 
     const fetchOriginalCourseData = async () => {
       try {
-        // 1. 태그 전체 목록 먼저 호출
         const tagResponse = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/create/tags`,
         );
         let tagList = tagResponse.data;
 
-        // 2. 기존 코스 상세 정보 데이터 호출
         const detailResponse = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/detail/${tplan_no}`,
         );
         const course = detailResponse.data;
 
-        // 소유권 체크 (코스 작성자와 로그인한 유저가 다르면 수정 불가)
         if (course.memberNo !== loginMemberNo) {
           alert("본인이 작성한 코스만 수정할 수 있습니다.");
           navigate(`/trip/detail/${tplan_no}`);
           return;
         }
 
-        // 💡 기존 데이터 바인딩 (코스명, 코스설명, 여행일수)
         setCourseTitle(course.title || course.tplanTitle || "");
         setCourseDesc(course.tplanDesc || course.desc || "");
         setTravelDays(course.tplanDays);
 
-        // 태그 활성화 유무 기존 정보 비교 매핑
         if (
           course.tags &&
           Array.isArray(course.tags) &&
@@ -110,7 +101,6 @@ const EditCourse = () => {
         }
         setTags(tagList);
 
-        // 일차별 데이터 구조 재구조화 매핑
         if (course.dayRoutes) {
           const loadedRestaurants = {};
           const loadedTransitModes = {};
@@ -120,7 +110,6 @@ const EditCourse = () => {
 
             const routesWithMenus = await Promise.all(
               routes.map(async (node, index) => {
-                // 이동 정보 복원 로직
                 if (index < routes.length - 1) {
                   const nextNode = routes[index + 1];
                   const transitKey = `Day${dayKey}_${node.restNo}_${nextNode.restNo}`;
@@ -147,7 +136,7 @@ const EditCourse = () => {
                 return {
                   restNo: node.restNo,
                   restName: node.restName,
-                  restAddr: node.restAddr || node.rest_addr, // 💡 주소 데이터 유실 방지
+                  restAddr: node.restAddr || node.rest_addr,
                   lat: node.lat,
                   lng: node.lng,
                   selectedMenus: node.selectedMenus || [],
@@ -499,7 +488,6 @@ const EditCourse = () => {
     return hr > 0 ? (mn > 0 ? `${hr}시간 ${mn}분` : `${hr}시간`) : `${mn}분`;
   };
 
-  // 💡 CreateCourse에서 가져온 지역 추출 헬퍼 함수
   const extractCityName = (addr) => {
     if (!addr) return "";
     const trimAddr = addr.trim();
@@ -511,7 +499,6 @@ const EditCourse = () => {
     return firstWord;
   };
 
-  // 코스 수정 반영 함수
   const handleUpdateCourse = async () => {
     if (!courseTitle.trim()) {
       alert("코스명을 입력해 주세요.");
@@ -524,7 +511,6 @@ const EditCourse = () => {
       return;
     }
 
-    // 추천 메뉴 및 이동수단 검사 유효성 루프
     for (const dayStr of Object.keys(selectedRestaurants)) {
       const dayNum = Number(dayStr);
       const restaurantList = selectedRestaurants[dayNum] || [];
@@ -556,7 +542,6 @@ const EditCourse = () => {
 
     const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
 
-    // 💡 [지역 설정 기능 복원] 주소 기반으로 대대표 지역명 문자열 조합
     const cities = allSelectedList
       .map((res) => extractCityName(res.restAddr || res.rest_addr))
       .filter((city) => city !== "");
@@ -591,8 +576,8 @@ const EditCourse = () => {
     const payload = {
       tplanNo: tplan_no,
       tplanTitle: courseTitle,
-      tplanDesc: courseDesc, // 💡 불러온 설명 데이터 페이로드 반영
-      tplanRegion: tplanRegionValue, // 💡 자동 갱신된 지역 정보 반영
+      tplanDesc: courseDesc,
+      tplanRegion: tplanRegionValue,
       tplanDays: travelDays,
       tplanTotalPrice: totalCost,
       tagNos: activeTags,
@@ -684,7 +669,6 @@ const EditCourse = () => {
         </div>
 
         <div className={styles.rightColumn}>
-          {/* 💡 설명 및 변경 핸들러가 정상 바인딩된 요약 패널 */}
           <CourseSummaryPanel
             courseTitle={courseTitle}
             setCourseTitle={setCourseTitle}

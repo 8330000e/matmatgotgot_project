@@ -37,7 +37,6 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
   width: 100%;
-  /* 💡 호버 시 카드 쉐도우나 카드가 상단으로 들릴 때 잘리는 현상을 막기 위해 위아래 패딩 부여 */
   padding: 8px 4px;
 }
 

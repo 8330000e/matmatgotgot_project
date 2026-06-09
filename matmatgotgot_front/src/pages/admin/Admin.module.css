@@ -155,8 +155,8 @@
 }
 
 .active_tab {
-  background-color: #ffd95a;
-  border-color: #ffd95a;
+  background-color: var(--primary);
+  border-color: var(--primary);
   font-weight: 700;
 }
 
@@ -206,7 +206,7 @@
 }
 
 .star_text {
-  color: #ffd95a;
+  color: var(--primary);
   font-size: 13px;
 }
 

@@ -51,7 +51,7 @@ const CourseRouteMap = ({ routes: propsRoutes }) => {
             d={pathD}
             className={styles.dashedPath}
             fill="none"
-            stroke="#2b1b17"
+            stroke="var(--text1)"
             strokeWidth="3"
             strokeDasharray="6,6"
           />
