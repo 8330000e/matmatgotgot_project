@@ -7,13 +7,10 @@
   margin-bottom: 35px;
 }
 
-/* ==========================================================================
-   상단 레이아웃 (좌측 리스트들과 우측 지도)
-   ========================================================================== */
 .tripMainWrap .topSection {
   display: flex;
   gap: 24px;
-  align-items: stretch; /* 좌측 컨테이너의 크기에 맞춰 지도 박스가 유연하게 늘어남 */
+  align-items: stretch;
 }
 
 .tripMainWrap .topSection .leftSection {
@@ -30,7 +27,6 @@
   overflow: hidden;
 }
 
-/* 💡 지도 레이아웃 프레임 */
 .tripMainWrap .mapSection {
   flex: 1;
   display: flex;
@@ -60,26 +56,21 @@
   color: color-mix(in srgb, var(--text1) 30%, transparent);
 }
 
-/* 💡 티맵 엔진이 감싸는 영역의 높이를 100% 인식하도록 제어 */
 .tripMainWrap .mapSection .mapContainer {
   flex: 1;
-  min-height: 440px; /* 고정 최소 높이를 보정하여 아래 흰 공백이 생기는 현상을 철저히 방어 */
+  min-height: 440px;
   position: relative;
   overflow: hidden;
   display: flex;
 }
 
-/* 티맵의 실제 #tmap_container 타겟 도메인 */
 .tripMainWrap .mapSection .map {
   width: 100%;
-  height: 100% !important; /* 내부 인라인 스타일 오버라이딩 차단 */
+  height: 100% !important;
   border-radius: 19px;
   flex: 1;
 }
 
-/* ==========================================================================
-   중간 먹킷리스트 & 인기 맛집 섹션
-   ========================================================================== */
 .myListContent,
 .tasteRestaurantContent {
   padding: 20px;
@@ -96,9 +87,6 @@
   font-size: 14px;
 }
 
-/* ==========================================================================
-   하단 오늘은 이 식당 어떠세요? 그리드 및 접기/펼치기
-   ========================================================================== */
 .howAboutHereSection {
   display: flex;
   flex-direction: column;
@@ -109,9 +97,8 @@
   transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* 💡 카드가 화면 밑으로 튀어나오지 않고 정해진 줄 내부에서 페이드 아웃 되도록 차단 */
 .howAboutHereContent.isCollapsed {
-  max-height: 840px; /* 카드 2줄 정렬(8개) 높이에 맞춰 깔끔하게 재계산 */
+  max-height: 840px;
   overflow: hidden;
 }
 
@@ -120,10 +107,9 @@
   grid-template-columns: repeat(4, 245px);
   justify-content: space-between;
   row-gap: 35px;
-  padding: 40px 30px 100px; /* 아래 버튼이 안 겹치게 하단 패딩 충분히 확보 */
+  padding: 40px 30px 100px;
 }
 
-/* 은은하게 사라지는 아래 그라데이션 안개 오버레이 */
 .fadeOverlayBottom {
   position: absolute;
   bottom: 0;
@@ -137,7 +123,6 @@
   border-bottom-right-radius: 20px;
 }
 
-/* 💡 버튼을 하단 정중앙에 플로팅 형태로 얹기 위한 컨테이너 */
 .buttonContainer {
   position: absolute;
   bottom: 30px;
@@ -149,17 +134,16 @@
   width: 100%;
 }
 
-/* 💡 깔끔하고 직관적인 메인 시그니처 버튼 */
 .moreButton {
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--gray8);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 13px 36px;
   border: none;
-  border-radius: 25px; /* 세련된 라운드 알약형 알림 버튼 형태 */
+  border-radius: 25px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -183,9 +167,6 @@
   transition: transform 0.2s ease;
 }
 
-/* ==========================================================================
-   타이틀 및 공통 박스 프레임워크
-   ========================================================================== */
 .tripMainWrap .title {
   display: flex;
   align-items: center;
@@ -215,7 +196,6 @@
   color: var(--text1);
 }
 
-/* 박스 백그라운드 그레이 일괄 매핑 */
 .tripMainWrap .myCourseContent,
 .tripMainWrap .myListContent,
 .tripMainWrap .mapContainer,

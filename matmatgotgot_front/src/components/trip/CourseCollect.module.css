@@ -38,7 +38,6 @@
   flex-grow: 1;
 }
 
-/* 전체 코스가 비어있을 때 센터링 스타일 */
 .collectEmptyWrap {
   display: flex;
   flex-direction: column;
@@ -164,7 +163,6 @@
   font-weight: 600;
 }
 
-/* --- 리뉴얼된 카드 격자 레이아웃 --- */
 .cardGridContainer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -191,7 +189,6 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* 이미지 및 일수 배지 */
 .thumbnailBox {
   position: relative;
   width: 100%;
@@ -219,7 +216,6 @@
   backdrop-filter: blur(2px);
 }
 
-/* 텍스트 컨텐츠 구조화 */
 .cardContent {
   padding: 16px;
   flex-grow: 1;
@@ -250,7 +246,6 @@
   text-overflow: ellipsis;
 }
 
-/* 카드 하단 메타 통계 영역 */
 .cardMeta {
   padding: 12px 16px;
   border-top: 1px solid color-mix(in srgb, var(--text1) 8%, transparent);
@@ -279,7 +274,6 @@
   color: var(--gray4);
 }
 
-/* 더보기 및 스피너 무한스크롤 관련 */
 .moreButtonContainer {
   display: flex;
   justify-content: center;
@@ -333,7 +327,6 @@
   }
 }
 
-/* CourseCollect.module.css 맨 밑에 추가 */
 .emptyRegionText {
   font-size: 13px;
   color: var(--gray4, #999);
@@ -341,9 +334,6 @@
   user-select: none;
 }
 
-/* CourseCollect.module.css 최하단에 복사/붙여넣기 */
-
-/* 정렬 셀렉트 필터 디자인 */
 .sortSelect {
   padding: 8px 14px;
   border: 1px solid var(--gray6, #e2e2e2);
@@ -355,14 +345,13 @@
   outline: none;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
-  margin-left: auto; /* 필터 버튼 라인 오른쪽 끝으로 밀착 정렬 */
+  margin-left: auto;
 }
 
 .sortSelect:hover {
   border-color: var(--primary, #ffa500);
 }
 
-/* 카드 내부 가격 영역 구조 */
 .cardPriceRow {
   display: flex;
   align-items: center;

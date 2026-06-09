@@ -16,7 +16,7 @@ const TripMain = () => {
   const [allPlans, setAllPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate(); // 2. navigate 함수 생성
+  const navigate = useNavigate();
 
   const { memberNo, isReady } = useAuthStore();
 

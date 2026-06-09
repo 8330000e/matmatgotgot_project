@@ -22,50 +22,26 @@ import { useAuthStore } from "../../store/useAuthStore.js";
 
 const CreateCourse = () => {
   const navigate = useNavigate();
-
   const [searchKeyword, setSearchKeyword] = useState("");
-
   const [selectedRestaurants, setSelectedRestaurants] = useState({ 1: [] });
-
   const [currentDay, setCurrentDay] = useState(1);
-
   const [travelDays, setTravelDays] = useState(1);
-
   const [courseTitle, setCourseTitle] = useState("");
-
   const [openAccordionId, setOpenAccordionId] = useState(null);
-
   const [restaurants, setRestaurants] = useState([]);
-
   const [transitTimes, setTransitTimes] = useState({});
-
   const [transitModes, setTransitModes] = useState({});
-
   const [courseDesc, setCourseDesc] = useState("");
-
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
-
   const [targetRestaurantId, setTargetRestaurantId] = useState(null);
-
   const [newMenuName, setNewMenuName] = useState("");
-
   const [newMenuPrice, setNewMenuPrice] = useState("");
-
   const [newMenuImage, setNewMenuImage] = useState(null);
-
   const [newMenuImagePreview, setNewMenuImagePreview] = useState("");
-
   const TMAP_APP_KEY = import.meta.env.VITE_TMAP_APP_KEY;
-
   const ODSAY_API_KEY = import.meta.env.VITE_ODSAY_API_KEY;
-
   const [tags, setTags] = useState([]);
-
-  // Zustand에서 회원 번호 및 권한 로딩 상태 가져오기
-
   const { memberNo, isReady } = useAuthStore();
-
-  // 비로그인 유저 접근 차단 가드 (Guard)
 
   useEffect(() => {
     if (isReady && !memberNo) {
@@ -74,8 +50,6 @@ const CreateCourse = () => {
       navigate("/");
     }
   }, [isReady, memberNo, navigate]);
-
-  // 코스 설명 글자 수 입력 제어 핸들러 (최대 300자)
 
   const handleCourseDescChange = (value) => {
     if (value.length <= 300) {
@@ -109,7 +83,6 @@ const CreateCourse = () => {
 
   const handleRestaurantClick = async (res) => {
     const currentDayList = selectedRestaurants[currentDay] || [];
-
     const isExist = currentDayList.find((item) => item.restNo === res.restNo);
 
     if (isExist) {
@@ -224,9 +197,7 @@ const CreateCourse = () => {
       const formData = new FormData();
 
       formData.append("restNo", targetRestaurantId);
-
       formData.append("menuName", newMenuName);
-
       formData.append("menuPrice", newMenuPrice);
 
       if (newMenuImage) formData.append("image", newMenuImage);
@@ -260,13 +231,9 @@ const CreateCourse = () => {
       }));
 
       setIsMenuModalOpen(false);
-
       setNewMenuName("");
-
       setNewMenuPrice("");
-
       setNewMenuImage(null);
-
       setNewMenuImagePreview("");
     } catch (error) {
       console.error(error);
@@ -293,11 +260,9 @@ const CreateCourse = () => {
     if (draggedIndex === null) return;
 
     const currentDayList = [...selectedRestaurants[currentDay]];
-
     const draggedItem = currentDayList[draggedIndex];
 
     currentDayList.splice(draggedIndex, 1);
-
     currentDayList.splice(index, 0, draggedItem);
 
     setSelectedRestaurants((prev) => ({
@@ -307,9 +272,7 @@ const CreateCourse = () => {
     }));
 
     setDraggedIndex(null);
-
     setTransitModes({});
-
     setTransitTimes({});
   };
 
@@ -317,11 +280,8 @@ const CreateCourse = () => {
     setTransitModes((prev) => ({ ...prev, [transitKey]: mode }));
 
     const [, originNo, destinationNo] = transitKey.split("_");
-
     const currentDayList = selectedRestaurants[currentDay] || [];
-
     const origin = currentDayList.find((r) => String(r.restNo) === originNo);
-
     const destination = currentDayList.find(
       (r) => String(r.restNo) === destinationNo,
     );
@@ -333,11 +293,8 @@ const CreateCourse = () => {
     }
 
     const startX = Number(origin.lng);
-
     const startY = Number(origin.lat);
-
     const endX = Number(destination.lng);
-
     const endY = Number(destination.lat);
 
     if (mode === "WALK" || mode === "CAR") {
@@ -350,39 +307,26 @@ const CreateCourse = () => {
         mode === "WALK"
           ? {
               startX,
-
               startY,
-
               endX,
-
               endY,
-
               startName: origin.restName || "출발지",
-
               endName: destination.restName || "목적지",
             }
           : {
               startX,
-
               startY,
-
               endX,
-
               endY,
-
               reqCoordType: "WGS84GEO",
-
               resCoordType: "WGS84GEO",
-
               searchOption: "0",
             };
 
       try {
         const response = await fetch(endpoint, {
           method: "POST",
-
           headers: { "Content-Type": "application/json", appKey: TMAP_APP_KEY },
-
           body: JSON.stringify(bodyPayload),
         });
 
@@ -401,7 +345,6 @@ const CreateCourse = () => {
         }
       } catch (error) {
         console.error(`${mode} 시간 조회 실패:`, error);
-
         setTransitTimes((prev) => ({ ...prev, [transitKey]: "조회 실패" }));
       }
     } else if (mode === "PUB") {
@@ -411,13 +354,9 @@ const CreateCourse = () => {
         const response = await axios.get(url, {
           params: {
             SX: startX,
-
             SY: startY,
-
             EX: endX,
-
             EY: endY,
-
             apiKey: ODSAY_API_KEY,
           },
 
@@ -546,8 +485,6 @@ const CreateCourse = () => {
       return;
     }
 
-    // 💡 [필수값 검증 로직 추가] 추천 메뉴 및 이동수단 검사 실행
-
     for (const dayStr of Object.keys(selectedRestaurants)) {
       const dayNum = Number(dayStr);
 
@@ -556,19 +493,15 @@ const CreateCourse = () => {
       for (let index = 0; index < restaurantList.length; index++) {
         const res = restaurantList[index];
 
-        // 1. 추천 메뉴 필수 검증
-
         if (!res.selectedMenus || res.selectedMenus.length === 0) {
           alert(
             `[Day ${dayNum}] '${res.restName || "선택한 식당"}'의 추천 메뉴를 최소 1개 이상 선택해 주세요.`,
           );
 
-          setCurrentDay(dayNum); // 사용자가 인지하기 편하게 해당 Day 탭으로 자동 이동
+          setCurrentDay(dayNum);
 
           return;
         }
-
-        // 2. 이동수단 필수 검증 (다음 목적지가 존재할 때만 검사)
 
         const nextRes = restaurantList[index + 1];
 
@@ -580,7 +513,7 @@ const CreateCourse = () => {
               `[Day ${dayNum}] '${res.restName || "출발지"}'에서 '${nextRes.restName || "목적지"}'로 이동하는 교통수단을 선택해 주세요.`,
             );
 
-            setCurrentDay(dayNum); // 해당 Day 탭으로 이동
+            setCurrentDay(dayNum);
 
             return;
           }
@@ -589,11 +522,8 @@ const CreateCourse = () => {
     }
 
     const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
-
     const cities = allSelectedList
-
       .map((res) => extractCityName(res.restAddr || res.rest_addr))
-
       .filter((city) => city !== "");
 
     const uniqueCities = [...new Set(cities)];
@@ -602,25 +532,18 @@ const CreateCourse = () => {
 
     const daysData = Object.keys(selectedRestaurants).map((dayStr) => {
       const dayNum = Number(dayStr);
-
       const restaurantList = selectedRestaurants[dayNum] || [];
-
       const schedules = restaurantList.map((res, index) => {
         const nextRes = restaurantList[index + 1];
-
         const transitKey = nextRes
           ? `Day${dayNum}_${res.restNo}_${nextRes.restNo}`
           : null;
 
         return {
           tscheDayNo: dayNum,
-
           tscheOrderNo: index + 1,
-
           restNo: res.restNo,
-
           selectedMenuNos: res.selectedMenus.map((m) => m.menuNo),
-
           route: nextRes
             ? {
                 transitType: transitModes[transitKey],
@@ -631,33 +554,24 @@ const CreateCourse = () => {
 
       return {
         day: dayNum,
-
         schedules: schedules,
       };
     });
 
     const payload = {
       memberNo: memberNo,
-
       tplanTitle: courseTitle,
-
       tplanDesc: courseDesc,
-
       tplanRegion: tplanRegionValue,
-
       tplanDays: travelDays,
-
       tplanTotalPrice: totalCost,
-
       tagNos: activeTags,
-
       days: daysData,
     };
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKSERVER}/trips/create`,
-
         payload,
       );
 
@@ -668,7 +582,6 @@ const CreateCourse = () => {
       }
     } catch (error) {
       console.error("코스 등록 실패:", error);
-
       alert(
         error.response?.data?.message || "코스 등록 중 오류가 발생했습니다.",
       );
@@ -678,7 +591,6 @@ const CreateCourse = () => {
   useEffect(() => {
     if (!searchKeyword.trim()) {
       setRestaurants([]);
-
       return;
     }
 
@@ -686,7 +598,6 @@ const CreateCourse = () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKSERVER}/trips/create/search`,
-
           {
             params: { keyword: searchKeyword },
           },
