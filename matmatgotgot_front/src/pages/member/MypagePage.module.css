@@ -436,6 +436,9 @@
     justify-content: space-between;
     font-weight: 800;
 }
+.matzip > div:first-child > p {
+    padding: 0 3px;
+}
 .matzip > div:first-child > div > img {
     width: 15px;
 }
@@ -492,6 +495,9 @@
     display: flex;
     justify-content: space-between;
     font-weight: 800;
+}
+.tuar > div:first-child > p {
+    padding: 0 3px;
 }
 .tuar > div:first-child > div > img {
     width: 15px;
