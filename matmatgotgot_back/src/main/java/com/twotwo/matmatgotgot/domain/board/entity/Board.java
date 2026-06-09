@@ -22,6 +22,8 @@ public class Board {
     private String boardThumb;
     private Integer placeNo;       //장소 번호
     private Integer boardView;
+    private Integer boardLike;
+    private Integer boardComment;
 
     //-- 목록/상세보기 조회용 --
     private String memberThumb;    //회원 프로필

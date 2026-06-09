@@ -121,34 +121,22 @@
         B.BOARD_TITLE,
         B.BOARD_STATUS,
         B.BOARD_VIEW,
-        COUNT(M.MEMBER_NO),
-        COUNT(C.BOARD_COMMENT_NO),
+        COUNT(DISTINCT L.MEMBER_NO) AS BOARD_LIKE,
+        COUNT(DISTINCT C.BOARD_COMMENT_NO) AS BOARD_COMMENT,
+        DATE_FORMAT(B.BOARD_DATE, '%Y-%m-%d') AS BOARD_DATE
+        FROM BOARD_TBL B
+        JOIN MEMBER_TBL M ON B.MEMBER_NO = M.MEMBER_NO
+        LEFT JOIN BOARD_LIKE_TBL L ON B.BOARD_NO = L.BOARD_NO       LEFT JOIN BOARD_COMMENT_TBL C ON B.BOARD_NO = C.BOARD_NO    <where>
+        B.MEMBER_NO = #{memberNo} </where>
 
-        DATE_FORMAT(B.BOARD_DATE, '%Y-%m-%d') AS BOARD_DATE FROM BOARD_TBL B
-        JOIN MEMBER_TBL M
-        ON B.MEMBER_NO = M.MEMBER_NO
-        JOIN BOARD_LIKE_TBL L
-        ON B.MEMBER_NO = L.MEMBER_NO
-        JOIN BOARD_COMMENT_TBL C
-        ON B.MEMBER_NO = C.MEMBER_NO
-
-        <where>
-
-            WHERE B.MEMBER_NO = #{memberNo}
-
-        </where>
-
-        <choose>
-
-            <when test="request.order == 1">
-                ORDER BY B.BOARD_NO ASC
-            </when>
-
-            <when test="request.order == 2">
-                ORDER BY B.BOARD_DATE DESC
-            </when>
-
-        </choose>
+        GROUP BY B.BOARD_NO <choose>
+        <when test="request.order == 1">
+            ORDER BY B.BOARD_NO ASC
+        </when>
+        <when test="request.order == 2">
+            ORDER BY B.BOARD_DATE DESC
+        </when>
+    </choose>
 
         LIMIT #{request.offset}, #{request.size}
     </select>

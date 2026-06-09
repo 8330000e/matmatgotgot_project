@@ -450,7 +450,7 @@ export const Myposts = ({memberInfo}) => {
             .then((res)=>{
                 console.log(res.data);
                 setMyboard(res.data.items);
-                setTotalPage(res.data.totalPage)
+                setTotalPage(res.data.totalPage);
             })
             .catch((err)=>{
                 console.log(err);

@@ -86,6 +86,7 @@ public class BoardService {
 
         return new ListResponse(list, totalPage);
     }
+
     // 내 게시글 조회
     public ListResponse selectMyBoardList(ListItem request, String memberNo) {
         if (request.getPage() == null || request.getPage() < 0) {
@@ -115,7 +116,6 @@ public class BoardService {
     // 게시글 등록
     @Transactional
     public int insertBoard(Board board) {
-
         return boardMapper.insertBoard(board);
     }
 

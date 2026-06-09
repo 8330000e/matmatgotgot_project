@@ -23,8 +23,8 @@ const BoardItem = ({ board, no }) => {
                 <div>{board.boardTitle}</div>
                 <div>
                     <ul>
-                        <li><img src={comment} alt=""/>{board.boardView}</li>
-                        <li><img src={heart} alt=""/>{board.boardView}</li>
+                        <li><img src={comment} alt=""/>{board.boardComment}</li>
+                        <li><img src={heart} alt=""/>{board.boardLike}</li>
                         <li><img src={view} alt=""/>{board.boardView}</li>
                     </ul>
                 </div>
