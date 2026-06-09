@@ -9,7 +9,7 @@ import { useAuthStore } from "../../store/useAuthStore.js";
 import MyCourse from "../../components/main/MyCourse";
 import HorizontalFadeScroll from "../../components/main/HorizontalFadeScroll";
 import CardTemp from "../../components/main/CardTemp";
-import { useNavigate } from "react-router-dom"; // 💡 useNavigate 추가 확인
+import { useNavigate } from "react-router-dom";
 
 const Main_login = () => {
   const [mapTitleStatus, setMapTitleStatus] = useState(0); // 0: 가고 싶은, 1: 다녀왔던
@@ -22,9 +22,8 @@ const Main_login = () => {
 
   const mapRef = useRef(null);
   const markersRef = useRef([]);
-  const navigate = useNavigate(); // 💡 라우터 이동용 훅 선언
+  const navigate = useNavigate();
 
-  // 💡 식당 카드 클릭 시 상세 페이지로 이동하는 공통 핸들러 함수
   const handleRestaurantClick = (restNo) => {
     if (!restNo) return;
     navigate(`/rest/view/${restNo}`);
@@ -90,7 +89,6 @@ const Main_login = () => {
     fetchMainData();
   }, [memberId, isReady]);
 
-  // 지도 초기화 및 마커 관리 logic
   useEffect(() => {
     if (!isReady || !memberId) return;
 
@@ -235,7 +233,6 @@ const Main_login = () => {
                   아직 찜한 식당이 없습니다. 마음에 드는 식당을 추가해 보세요!
                 </div>
               ) : (
-                /* 💡 수정된 HorizontalFadeScroll에 클릭 이벤트를 매핑합니다. */
                 <HorizontalFadeScroll
                   items={myWishList}
                   onCardClick={(id) => handleRestaurantClick(id)}
@@ -245,7 +242,6 @@ const Main_login = () => {
           </div>
         </div>
 
-        {/* 지도 섹션 */}
         <div className={styles.mapSection}>
           <div className={styles.mapTitle}>
             <div
@@ -278,7 +274,6 @@ const Main_login = () => {
           </div>
         </div>
         <div className={styles.tasteRestaurantContent}>
-          {/* 💡 취향저격 맛집 스크롤 컴포넌트에도 클릭 이벤트를 바인딩합니다. */}
           <HorizontalFadeScroll
             items={tasteList}
             onCardClick={(id) => handleRestaurantClick(id)}

@@ -5,15 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="360bc756-0ced-4946-9768-93539bd9b427" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/matmatgotgot_back/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mysql/init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/matmatgotgot.test.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/security/SpringSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/java/com/twotwo/matmatgotgot/security/SpringSecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/src/pages/member/JoinPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,12 +29,7 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="matmatgotgot" type="f1a62948:ProjectNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -64,7 +58,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "kgy",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/user1/Desktop/matmatgotgot_project",
@@ -121,6 +115,7 @@
       <workItem from="1779429043039" duration="2938000" />
       <workItem from="1779754088144" duration="171000" />
       <workItem from="1780355471248" duration="2310000" />
+      <workItem from="1780971396001" duration="2934000" />
     </task>
     <servers />
   </component>

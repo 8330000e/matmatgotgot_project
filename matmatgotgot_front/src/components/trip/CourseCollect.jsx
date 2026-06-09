@@ -8,7 +8,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import axios from "axios";
 
-// 헬퍼 함수: 한글 초성 추출
 const getChosung = (str) => {
   const cho = [
     "ㄱ",
@@ -54,15 +53,12 @@ const CourseCollect = ({ items = [] }) => {
   const [regions, setRegions] = useState([]);
   const [sortOrder, setSortOrder] = useState("latest");
 
-  // 사용자가 입력창에 치는 실시간 검색어
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 💡 화면 출렁임을 막기 위해 디바운싱 처리가 완료된 최종 필터링 리스트 상태 관리
   const [filteredAndSortedItems, setFilteredAndSortedItems] = useState([]);
 
   const observerRef = useRef(null);
 
-  // 1. 컴포넌트 마운트 시 마스터 태그 리스트 가져오기
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -83,7 +79,6 @@ const CourseCollect = ({ items = [] }) => {
     fetchTags();
   }, []);
 
-  // 2. 부모가 준 items 기반 동적 지역 추출 및 중복 제거
   useEffect(() => {
     if (!items || items.length === 0) {
       setRegions([]);
@@ -109,12 +104,11 @@ const CourseCollect = ({ items = [] }) => {
     setRegions(parsedRegions);
   }, [items]);
 
-  // 💡 3. 통합 디바운싱 Effect: 타자 입력, 태그/지역 클릭 후 0.3초간 멈춤이 있을 때만 가공 실행
   useEffect(() => {
     const handler = setTimeout(() => {
       const result = getFilteredAndSortedItems();
       setFilteredAndSortedItems(result);
-      setVisibleCount(8); // 조건 변경 시 페이징 단위 초기화
+      setVisibleCount(8);
       setIsInfinite(false);
     }, 300);
 
@@ -123,7 +117,6 @@ const CourseCollect = ({ items = [] }) => {
     };
   }, [searchQuery, tags, regions, sortOrder, items]);
 
-  // 필터링 및 정렬 처리 함수 핵심부
   const getFilteredAndSortedItems = () => {
     const activeTagTexts = tags
       .filter((t) => t.active)
@@ -143,17 +136,14 @@ const CourseCollect = ({ items = [] }) => {
       let matchesSearch = false;
 
       if (!searchLower) {
-        matchesSearch = true; // 검색어가 비어있으면 무조건 통과
+        matchesSearch = true;
       } else if (isChosungOnly) {
         const titleChosung = getChosung(titleText);
-        // 💡 '시작하는 것만' 매칭되도록 기존 includes에서 startsWith로 변경
         matchesSearch = titleChosung.startsWith(searchChosung);
       } else {
-        // 일반 글자 검색은 유저 편의성을 위해 포함 여부(includes) 유지
         matchesSearch = titleText.includes(searchLower);
       }
 
-      // 태그 필터링 (순수 텍스트 비교)
       const itemTagsStr = item.tplanTags || "";
       const itemTagsArr = itemTagsStr
         .split(",")
@@ -162,7 +152,6 @@ const CourseCollect = ({ items = [] }) => {
         itemTagsArr.includes(tag),
       );
 
-      // 지역 필터링
       const itemRegionStr = item.tplanRegion || item.region || "";
       const itemRegionsArr = itemRegionStr.split(",").map((r) => r.trim());
       const matchesRegions =
@@ -174,7 +163,6 @@ const CourseCollect = ({ items = [] }) => {
       return matchesSearch && matchesTags && matchesRegions;
     });
 
-    // 정렬 처리
     if (sortOrder === "latest") {
       filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } else if (sortOrder === "priceAsc") {
@@ -190,7 +178,6 @@ const CourseCollect = ({ items = [] }) => {
     return filtered;
   };
 
-  // 렌더링에 노출할 현재 개수만큼 슬라이싱
   const currentItems = filteredAndSortedItems.slice(0, visibleCount);
 
   const toggleTag = (id) => {
@@ -238,7 +225,6 @@ const CourseCollect = ({ items = [] }) => {
     navigate(`/trip/detail/${tplanNo}`);
   };
 
-  // 무한 스크롤 인터섹션 설정
   useEffect(() => {
     if (!isInfinite || visibleCount >= filteredAndSortedItems.length) return;
 

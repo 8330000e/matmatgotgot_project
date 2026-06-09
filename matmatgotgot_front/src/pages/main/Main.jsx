@@ -17,7 +17,6 @@ const Main = () => {
       try {
         const serverUrl = import.meta.env.VITE_BACKSERVER;
 
-        // 두 개의 요청을 병렬로 처리합니다.
         const [reviewRes, tourRes] = await Promise.all([
           axios.get(`${serverUrl}/main/best-reviews`),
           axios.get(`${serverUrl}/main/best-tours`),
@@ -77,7 +76,6 @@ const Main = () => {
       <div className={styles.mainTripDev}></div>
 
       <div className={styles.mainReviewDev}>
-        {/* 💡 전달받은 list 데이터를 자식 컴포넌트에 넘겨줍니다 */}
         <Slide text="베스트 리뷰" list={bestReviews} type="review" />
         <Slide text="베스트 투어" list={bestTours} type="tour" />
       </div>

@@ -67,7 +67,7 @@
 
 .pinIcon {
   font-size: 38px !important;
-  color: #2b1b17;
+  color: var(--text1);
 }
 
 .markerNumber {
@@ -75,20 +75,20 @@
   top: 6px;
   font-size: 11px;
   font-weight: 800;
-  color: #ffd95a;
+  color: var(--primary);
 }
 
 .balloonName {
   margin-top: 2px;
-  background-color: #ffffff;
-  color: #2b1b17;
+  background-color: var(--gray8);
+  color: var(--text1);
   font-size: 11px;
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 20px;
   white-space: nowrap;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-  border: 1.5px solid #2b1b17;
+  border: 1.5px solid var(--text1);
   position: relative;
 }
 
@@ -100,7 +100,7 @@
   transform: translateX(-50%);
   border-width: 0 5px 6px 5px;
   border-style: solid;
-  border-color: transparent transparent #2b1b17 transparent;
+  border-color: transparent transparent var(--text1) transparent;
 }
 
 .balloonName::after {
@@ -111,5 +111,5 @@
   transform: translateX(-50%);
   border-width: 0 4px 5px 4px;
   border-style: solid;
-  border-color: transparent transparent #ffffff transparent;
+  border-color: transparent transparent var(--gray8) transparent;
 }

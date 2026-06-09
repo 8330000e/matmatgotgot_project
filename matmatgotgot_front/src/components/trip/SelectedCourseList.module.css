@@ -11,14 +11,13 @@
   padding: 0 !important;
 }
 
-/* Day 선택 탭 바 스타일 */
 .dayTabContainer {
   display: flex;
   gap: 8px;
   padding: 16px 20px;
   border-bottom: 1px solid var(--gray6);
   background-color: var(--header, var(--gray8));
-  flex-shrink: 0; /* 탭 바 고정 */
+  flex-shrink: 0;
 }
 
 .dayTabButton {
@@ -45,17 +44,17 @@
 }
 
 .panelScrollAreaPadding {
-  flex: 1; /* 상단 탭바를 제외한 남은 공간 전체 차지 */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* ✨ Chrome/Firefox에서 Flex 자식의 스크롤 붕괴를 막는 핵심 코드 */
-  padding: 20px; /* 원하셨던 안쪽 패딩 20px 적용 */
+  min-height: 0;
+  padding: 20px;
 }
 
 .panelScrollArea {
   width: 100%;
-  flex: 1; /* 부모(panelScrollAreaPadding)의 100% 높이를 채움 */
-  overflow-y: auto; /* 내용이 넘칠 때 스크롤 생성 */
+  flex: 1;
+  overflow-y: auto;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -293,7 +292,7 @@
 }
 
 .activeTransit {
-  background-color: #ffffff;
+  background-color: var(--gray8);
   color: #228be6;
   font-weight: bold;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
