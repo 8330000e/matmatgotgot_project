@@ -117,7 +117,7 @@ export const MypagePage = () => {
                 </div>
             </div>
             <div className={styles.content_wrap}>
-                {path === "myinfo" && <Myinfo memberInfo={memberInfo} />}
+                {path === "myinfo" && <Myinfo memberInfo={memberInfo} setMemberInfo={setMemberInfo} />}
                 {path === "myreview" && <Myreview memberInfo={memberInfo} />}
                 {path === "zzim" && <Zzim memberInfo={memberInfo} />}
                 {path === "matzip" && <Matzip memberInfo={memberInfo} />}
@@ -133,12 +133,16 @@ export const MypagePage = () => {
   );
 };
 
-export const Myinfo = ({ memberInfo }) => {
+export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     const inputRef = useRef(null);
     const { memberId, memberThumb } = useAuthStore();
+    const [updateMode, setUpdateMode] = useState(false);
     const profileImgSrc = (memberThumb && memberThumb !== defaultImg)
         ? `${import.meta.env.VITE_BACKSERVER}/upload/${memberThumb}`
         : defaultImg;
+    const updateModeChange = () => {
+        setUpdateMode((prev) => !prev);
+    };
     const changeThumb = () => {
         const file = inputRef.current.files && inputRef.current.files[0];
         if (!file) return;
@@ -174,12 +178,26 @@ export const Myinfo = ({ memberInfo }) => {
                     </div>
 
                     {/* 💡 [카메라 버튼] 원형 영역 바깥(image_wrap 안)에 위치시킵니다. */}
-                    <img src={changeImg} alt="변경" className={styles.changeImg} onClick={() => inputRef.current.click()}/>
-                    <input type="file" ref={inputRef} style={{ display: "none" }} onChange={changeThumb}/>
+                    {updateMode ? (
+                        <>
+                            <img
+                                src={changeImg}
+                                alt="변경"
+                                className={styles.changeImg}
+                                onClick={() => inputRef.current.click()}
+                            />
+                            <input
+                                type="file"
+                                ref={inputRef}
+                                style={{ display: "none" }}
+                                onChange={changeThumb}
+                            />
+                        </>
+                    ) : null}
                 </div>
                 <div>
                     <div>
-                        <div className={styles.info_nick}>{memberInfo.memberNickname}</div>
+                        <div className={styles.info_nick}>{updateMode ? <Input type="text" name="memberNickname" id="memberNickname" value={memberInfo.memberNickname} onChange={(e)=>setMemberInfo((prev)=>({...prev, [e.target.name]:e.target.value}))} /> : `${memberInfo.memberNickname}`}</div>
                         <div><img src={native} alt="인증" /></div>
                     </div>
                     <ul className={styles.info_member}>
@@ -197,7 +215,7 @@ export const Myinfo = ({ memberInfo }) => {
                     </ul>
                 </div>
                 <div className={styles.profile_submit}>
-                    <button type="submit" className={styles.submit}>프로필 수정</button>
+                    <button type="submit" className={styles.submit} onClick={updateModeChange}>{updateMode?"프로필 수정 완료" : "프로필 수정"}</button>
                 </div>
             </div>
             <div className={styles.info_2line}>
