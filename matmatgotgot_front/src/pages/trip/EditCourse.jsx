@@ -26,6 +26,8 @@ const EditCourse = () => {
   const [transitTimes, setTransitTimes] = useState({});
   const [transitModes, setTransitModes] = useState({});
   const [courseDesc, setCourseDesc] = useState("");
+  // 💡 기존 코스의 지역 정보를 백업해둘 상태 추가
+  const [originalRegion, setOriginalRegion] = useState("");
 
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [targetRestaurantId, setTargetRestaurantId] = useState(null);
@@ -68,6 +70,7 @@ const EditCourse = () => {
           `${import.meta.env.VITE_BACKSERVER}/trips/detail/${tplan_no}`,
         );
         const course = detailResponse.data;
+        console.log("불러온 원본 데이터:", course);
 
         if (course.memberNo !== loginMemberNo) {
           alert("본인이 작성한 코스만 수정할 수 있습니다.");
@@ -75,9 +78,10 @@ const EditCourse = () => {
           return;
         }
 
-        setCourseTitle(course.title || course.tplanTitle || "");
-        setCourseDesc(course.tplanDesc || course.desc || "");
+        setCourseTitle(course.title || "");
+        setCourseDesc(course.desc || "");
         setTravelDays(course.tplanDays);
+        setOriginalRegion(course.region || "");
 
         if (
           course.tags &&
@@ -85,17 +89,22 @@ const EditCourse = () => {
           course.tags.length > 0
         ) {
           tagList = tagList.map((t) => {
+            const targetText = t.text ? t.text.replace(/^#/, "") : "";
+
             const isActive = course.tags.some((courseTag) => {
+              console.log(courseTag);
               if (typeof courseTag === "object" && courseTag !== null) {
-                return (
-                  (courseTag.tagName || courseTag.name) ===
-                  (t.tagName || t.name)
-                );
+                const courseTagName = courseTag.replace(/^#/, "");
+                return courseTagName === targetText;
               }
-              return (
-                courseTag === (t.tagName || t.name) || courseTag === t.tagNo
-              );
+
+              if (typeof courseTag === "string") {
+                return courseTag.replace(/^#/, "") === targetText;
+              }
+
+              return courseTag === t.tagNo;
             });
+
             return { ...t, active: isActive };
           });
         }
@@ -136,7 +145,7 @@ const EditCourse = () => {
                 return {
                   restNo: node.restNo,
                   restName: node.restName,
-                  restAddr: node.restAddr || node.rest_addr,
+                  restAddr: node.restAddr || node.rest_addr || node.addr || "",
                   lat: node.lat,
                   lng: node.lng,
                   selectedMenus: node.selectedMenus || [],
@@ -542,12 +551,18 @@ const EditCourse = () => {
 
     const activeTags = tags.filter((t) => t.active).map((t) => t.id || t.tagNo);
 
+    // 💡 주소 데이터 추출
     const cities = allSelectedList
-      .map((res) => extractCityName(res.restAddr || res.rest_addr))
+      .map((res) => extractCityName(res.restAddr))
       .filter((city) => city !== "");
 
     const uniqueCities = [...new Set(cities)];
-    const tplanRegionValue = uniqueCities.join(", ");
+
+    // 💡 [핵심 방어 코드] 추출된 도시명이 없다면 백업해둔 기존 지역 이름(originalRegion)을 최종 할당
+    let tplanRegionValue = uniqueCities.join(", ");
+    if (!tplanRegionValue && originalRegion) {
+      tplanRegionValue = originalRegion;
+    }
 
     const daysData = Object.keys(selectedRestaurants).map((dayStr) => {
       const dayNum = Number(dayStr);
@@ -577,7 +592,7 @@ const EditCourse = () => {
       tplanNo: tplan_no,
       tplanTitle: courseTitle,
       tplanDesc: courseDesc,
-      tplanRegion: tplanRegionValue,
+      tplanRegion: tplanRegionValue, // 💡 이제 빈 값이 아닌 온전한 지역 데이터가 담김
       tplanDays: travelDays,
       tplanTotalPrice: totalCost,
       tagNos: activeTags,

@@ -111,13 +111,11 @@ public class TripController {
             @PathVariable("tplanNo") Long tplanNo,
             @RequestBody TripUpdateDTO updateDto) {
         System.out.println(updateDto);
-
-        // URL에 담긴 코스 식별자를 DTO 내부에 강제 바인딩 안전장치
         updateDto.setTplanNo(tplanNo);
 
         try {
             tripService.updateCourse(updateDto);
-            return ResponseEntity.ok().build(); // 200 OK 응답 반환
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(500).body("코스 수정 중 오류가 발생했습니다: " + e.getMessage());
         }
