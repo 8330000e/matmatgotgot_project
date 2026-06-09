@@ -51,7 +51,7 @@ const BoardItem = ({ board }) => {
               <img
                 src={
                   board.memberThumb
-                    ? `${import.meta.env.VITE_BACKSERVER}/member/thumb/${board.memberThumb}`
+                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${board.memberThumb}`
                     : userImage
                 }
                 alt="프로필"

@@ -152,6 +152,17 @@ const BoardViewPage = () => {
       .catch((err) => console.error(err));
   };
 
+  /*
+  s3 만든 후
+    <img
+                      src={
+                        board.memberThumb
+                          ? `${import.meta.env.VITE_IMG_SERVER}/member/thumb/${board.memberThumb}`
+                          : userImage
+                      }
+                      alt="writer"
+                    />
+*/
   return (
     <section className={styles.board_wrap}>
       {board && (
@@ -181,7 +192,7 @@ const BoardViewPage = () => {
                     <img
                       src={
                         board.memberThumb
-                          ? `${import.meta.env.VITE_IMG_SERVER}/member/thumb/${board.memberThumb}`
+                          ? `${import.meta.env.VITE_BACKSERVER}/upload/${board.memberThumb}`
                           : userImage
                       }
                       alt="writer"
@@ -807,6 +818,17 @@ const BoardComment = ({
     memberId === comment.boardCommentWriter ||
     Number(memberNo) === Number(comment.memberNo);
 
+  /*
+  s3 만든 후
+                  <img
+                src={
+                  comment.memberThumb
+                    ? `${import.meta.env.VITE_IMG_SERVER}/member/thumb/${comment.memberThumb}`
+                    : userImage
+                }
+                alt="comment-writer"
+              />
+    */
   return (
     <ul className={styles.comment_item}>
       <li className={styles.comment_info}>
@@ -818,7 +840,7 @@ const BoardComment = ({
               <img
                 src={
                   comment.memberThumb
-                    ? `${import.meta.env.VITE_IMG_SERVER}/member/thumb/${comment.memberThumb}`
+                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${comment.memberThumb}`
                     : userImage
                 }
                 alt="comment-writer"

@@ -36,7 +36,19 @@ const ReviewView = () => {
         setLiked(res.data.liked);
       })
       .catch((err) => {
-        console.log(err);
+
+        if (err.response?.status === 404) {
+          Swal.fire({
+            title: "조회할 수 없는 리뷰입니다.",
+            text: "비공개 또는 삭제 처리된 리뷰입니다.",
+            icon: "warning",
+            confirmButtonColor: "var(--primary)",
+          }).then(() => {
+            navigate("/rest");
+          });
+
+          return;
+        }
       });
   }, [reviewNo]);
 
