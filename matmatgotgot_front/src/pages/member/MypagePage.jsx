@@ -30,6 +30,7 @@ import Pagination from "../../components/ui/Pagination.jsx";
 import {Input} from "../../components/ui/Form.jsx";
 import BoardList from "../../components/member/BoardList.jsx";
 import Swal from "sweetalert2";
+import BoardLikeList from "../../components/member/BoardLikeList.jsx";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -119,7 +120,7 @@ export const MypagePage = () => {
                 {path === "myreview" && <Myreview />}
                 {path === "zzim" && <Zzim />}
                 {path === "matzip" && <Matzip />}
-                {path === "likeposts" && <Likeposts />}
+                {path === "likeposts" && <Likeposts memberInfo={memberInfo} />}
                 {path === "myposts" && <Myposts memberInfo={memberInfo}/>}
                 {path === "reportposts" && <Reportposts />}
                 {path === "myask" && <Myask />}
@@ -391,9 +392,31 @@ export const Matzip = () => {
         </div>
     </>);};
 
-export const Likeposts = () => {
+export const Likeposts = ({memberInfo}) => {
+    const { memberId, memberNo} = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
     const [order, setOrder] = useState(0);
-
+    const [myboard, setMyboard] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/mylike`,{
+            params: {
+                page,
+                size,
+                order
+            },
+        })
+            .then((res)=>{
+                console.log(res.data);
+                setMyboard(res.data.items);
+                setTotalPage(res.data.totalPage);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    },[page, order]);
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -410,23 +433,14 @@ export const Likeposts = () => {
                 </div>
             </div>
             <div className={styles.likeposts}>
-                {/*더미데이터*/}
-                <div className={styles.likepost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                {/*더미데이터*/}
+                <BoardLikeList myboard={myboard} />
             </div>
             <div>
-                <Pagination/>
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPage={totalPage}
+                    naviSize={5}/>
             </div>
         </div>
     </>);};

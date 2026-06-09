@@ -76,4 +76,6 @@ public interface BoardMapper {
     int deleteCommentReport(Map<String, Object> map);
 
     List<Board> selectMyBoardList(ListItem request, String memberNo);
+
+    List<Board> selectMyBoardLikeList(ListItem request, String memberNo);
 }
