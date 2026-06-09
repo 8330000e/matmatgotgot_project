@@ -24,6 +24,8 @@ public class S3Config {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    
+
     /**
      * AWS S3Client 빈 생성
      * - StaticCredentialsProvider: access-key / secret-key 를 고정값으로 인증

@@ -1,6 +1,7 @@
 package com.twotwo.matmatgotgot.global.util;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class S3FileUtil {
@@ -47,7 +49,7 @@ public class S3FileUtil {
         }
 
         // UUID 기반 고유 파일명 생성 → S3 오브젝트 키 (폴더/파일명)
-        String s3Key = folder + "/" + UUID.randomUUID() + extension;
+        String s3Key = "Temp/upload/web/matgot/" + folder + "/" + UUID.randomUUID() + extension;
 
         try {
             // S3 업로드 요청 객체 생성
