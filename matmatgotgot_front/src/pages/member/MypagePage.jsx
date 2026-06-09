@@ -553,7 +553,11 @@ export const Reportposts = ({memberInfo}) => {
                 {/*더미데이터*/}
             </div>
             <div>
-                <Pagination/>
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPage={totalPage}
+                    naviSize={5}/>
             </div>
         </div>
     </>);};
