@@ -32,6 +32,12 @@ import EditCourse from "./pages/trip/EditCourse.jsx";
 import ReportModal from "./components/ui/ReportModal.jsx";
 import RestaurantModify from "./pages/restaurant/RestaurantModify.jsx";
 import ReviewModify from "./pages/restaurant/ReviewModify.jsx";
+import Notice from "./pages/else/Notice.jsx";
+import Faq from "./pages/else/Faq.jsx";
+import Inquiry from "./pages/else/Inquiry.jsx";
+import Terms from "./pages/else/Terms.jsx";
+import Privacy from "./pages/else/Privacy.jsx";
+import LocationTerms from "./pages/else/LocationTerms.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -98,6 +104,13 @@ function App() {
           <Route path="/trip/create" element={<CreateCourse />} />
           <Route path="/trip/edit/:tplan_no" element={<EditCourse />} />
           <Route path="/trip/detail/:tplan_no" element={<CourseDetail />} />
+
+          <Route path="/notice" element={<Notice />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/qna" element={<Inquiry />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/location" element={<LocationTerms />} />
         </Routes>
       </div>
       <Footer />
