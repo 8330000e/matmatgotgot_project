@@ -432,7 +432,7 @@ export const Likeposts = () => {
 
 export const Myposts = () => {
     return (<>
-        <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
+        <div className={`${styles.content_menu_wrap} ${styles.content_mypost_wrap}`}>
             <div className={styles.posts_bar}>
                 <div>
                     <p>전체 선택</p>
@@ -446,9 +446,9 @@ export const Myposts = () => {
                     </ul>
                 </div>
             </div>
-            <div className={styles.likeposts}>
+            <div className={styles.myposts}>
                 {/*더미데이터*/}
-                <div className={styles.likepost}>
+                <div className={styles.mypost}>
                     <div>1</div>
                     <div>게시글 제목</div>
                     <div>
