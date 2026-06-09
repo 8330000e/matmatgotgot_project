@@ -1,0 +1,5 @@
+.board_list_wrap > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

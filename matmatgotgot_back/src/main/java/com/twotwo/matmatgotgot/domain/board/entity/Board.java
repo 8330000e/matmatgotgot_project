@@ -21,6 +21,7 @@ public class Board {
     private Integer boardStatus;   //게시글 상태(0:관리자 비공개/1:공개/2:삭제)
     private String boardThumb;
     private Integer placeNo;       //장소 번호
+    private Integer boardView;
 
     //-- 목록/상세보기 조회용 --
     private String memberThumb;    //회원 프로필

@@ -1,5 +1,3 @@
-"use no cache";
-
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
 import {Link, useLocation, useParams} from "react-router-dom";
@@ -30,6 +28,7 @@ import axios from "axios";
 import {useEffect, useRef, useState} from "react";
 import Pagination from "../../components/ui/Pagination.jsx";
 import {Input} from "../../components/ui/Form.jsx";
+import BoardList from "../../components/member/BoardList.jsx";
 import Swal from "sweetalert2";
 
 export const MypagePage = () => {
@@ -450,12 +449,13 @@ export const Myposts = ({memberInfo}) => {
         })
             .then((res)=>{
                 console.log(res.data);
-                setMyboard(res.data);
+                setMyboard(res.data.items);
+                setTotalPage(res.data.totalPage)
             })
             .catch((err)=>{
                 console.log(err);
             });
-    },[]);
+    },[page, order]);
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_mypost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -472,21 +472,7 @@ export const Myposts = ({memberInfo}) => {
                 </div>
             </div>
             <div className={styles.myposts}>
-                <div className={styles.mypost}>
-                    <div>1</div>
-                    <div>게시글 제목</div>
-                    <div>
-                        <ul>
-                            <li><img src={comment} alt=""/>2</li>
-                            <li><img src={heart} alt=""/>12</li>
-                            <li><img src={view} alt=""/>231</li>
-                        </ul>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                {/*더미데이터*/}
-
-                {/*더미데이터*/}
+                <BoardList myboard={myboard} />
             </div>
             <div>
                 <Pagination
