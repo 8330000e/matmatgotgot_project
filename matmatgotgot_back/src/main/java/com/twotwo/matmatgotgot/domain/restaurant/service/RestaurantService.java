@@ -74,36 +74,6 @@ public class RestaurantService {
         return restaurantMapper.restaurantViewReviewsCnt(request);
     }//
 
-    // Main
-    public List<RestaurantResponseDTO> getMyWishList(String memberId) {
-        List<Restaurant> list = restaurantMapper.selectMyWishList(memberId);
-        return list.stream()
-                .map(RestaurantResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<RestaurantResponseDTO> getPopularList() {
-        List<Restaurant> list = restaurantMapper.selectPopularList();
-        return list.stream()
-                .map(RestaurantResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<RestaurantResponseDTO> getAllList() {
-        List<Restaurant> list = restaurantMapper.selectAllList();
-        return list.stream()
-                .map(RestaurantResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<RestaurantMapMarkerDTO> getWishMapMarkers(String memberId) {
-        return restaurantMapper.selectWishMapMarkers(memberId);
-    }
-
-    public List<RestaurantMapMarkerDTO> getVisitedMapMarkers(String memberId) {
-        return restaurantMapper.selectVisitedMapMarkers(memberId);
-    }
-
     @Transactional
     public boolean reviewCreate(ReviewCreateRequest request) {
         int res1 = restaurantMapper.reviewInsert(request);
