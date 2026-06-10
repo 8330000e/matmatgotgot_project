@@ -1,9 +1,8 @@
 .swiperTitle {
-  width: 1160px;
-  margin: 0 auto 20px;
+  width: calc(275px * 4 + 20px * 3);
+  margin: 0 auto 10px;
   font-weight: 900;
-  font-size: 1.6em;
-  letter-spacing: -0.5px;
+  font-size: 1.5em;
 }
 
 .swiperContainer {
@@ -12,12 +11,11 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  width: 100%;
+  width: 65%;
 }
 
 .mySwiper {
-  width: 100%;
-  max-width: calc(275px * 4 + 20px * 3);
+  width: calc(275px * 4 + 20px * 3);
 }
 
 .mySlide {
@@ -48,11 +46,10 @@
   color: var(--primary);
 }
 .prevArrow {
-  left: -40px;
+  left: 0;
 }
-
 .nextArrow {
-  right: -40px;
+  right: 0;
 }
 :global(.swiper-button-next),
 :global(.swiper-button-prev) {
@@ -87,8 +84,7 @@
 }
 
 .emptyContainer {
-  width: 100%;
-  max-width: calc(275px * 4 + 20px * 3);
+  width: calc(275px * 4 + 20px * 3);
   height: 180px;
   display: flex;
   align-items: center;
