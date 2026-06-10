@@ -32,6 +32,7 @@ import BoardList from "../../components/member/BoardList.jsx";
 import Swal from "sweetalert2";
 import BoardLikeList from "../../components/member/BoardLikeList.jsx";
 import BoardReports from "../../components/member/BoardReports.jsx";
+import {useKakaoPostcode} from "@clroot/react-kakao-postcode";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -135,11 +136,18 @@ export const MypagePage = () => {
 
 export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     const inputRef = useRef(null);
+    const detailRef = useRef();
     const { memberId, memberThumb } = useAuthStore();
     const [updateMode, setUpdateMode] = useState(false);
     const profileImgSrc = (memberThumb && memberThumb !== defaultImg)
         ? `${import.meta.env.VITE_BACKSERVER}/upload/${memberThumb}`
         : defaultImg;
+    const { open } = useKakaoPostcode({
+        onComplete: (data) => {
+            setMemberInfo((prev) => ({ ...prev, ["memberAddress"]: data.roadAddress }));
+            detailRef.current.focus();
+        },
+    });
     const updateModeChange = () => {
         setUpdateMode((prev) => !prev);
     };
@@ -203,11 +211,11 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     <ul className={styles.info_member}>
                         <li>
                             <img src={navigate} alt=""/>
-                            <div>{memberInfo.memberAddress}</div>
+                            <div className={styles.info_profile_addr}>{updateMode ? <> <Input ref={detailRef} type="text" name="memberAddress" id="memberAddress" value={memberInfo.memberAddress} onChange={(e)=>setMemberInfo((prev)=>({...prev, [e.target.name]:e.target.value}))} /> <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
-                            <div>현지인 인증됨</div>
+                            {updateMode? <><button className={styles.native_submit}>현지인 재인증</button></> : <div>현지인 인증됨</div>}
                         </li>
                         <li>
                             2026.06.04 ~ 2026.12.04
