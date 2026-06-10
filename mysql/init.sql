@@ -1,32 +1,20 @@
-SET NAMES utf8mb4;
-SET character_set_client = utf8mb4;
-SET character_set_connection = utf8mb4;
-SET character_set_results = utf8mb4;
-
 -- 1. 데이터베이스 생성 및 선택
 CREATE DATABASE IF NOT EXISTS matgotdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE matgotdb;
 
--- -- 2. 관리자 계정 생성 및 권한 부여
--- CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY '2222';
--- CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY '2222';
--- GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
--- GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
--- FLUSH PRIVILEGES;
-
 -- 3. 회원 테이블 생성
 CREATE TABLE `MEMBER_TBL` (
-`member_no`              BIGINT   NOT NULL AUTO_INCREMENT,
-`member_id`       VARCHAR(50)       NOT NULL,
-`member_pw`       CHAR(60)          NOT NULL,
-`member_name`     VARCHAR(30)       NOT NULL,
-`member_email`    VARCHAR(50)       NOT NULL,
-`member_nickname` VARCHAR(20)       NOT NULL,
-`member_thumb`    VARCHAR(255)      NULL,
-`member_address`  VARCHAR(300)  NULL,
-`member_status`   TINYINT UNSIGNED  NOT NULL DEFAULT 0 COMMENT '0:정상/1:비정상',
-`enroll_date`     DATETIME          NOT NULL DEFAULT CURRENT_TIMESTAMP,
-`admin`           BOOLEAN           NOT NULL DEFAULT 0 COMMENT '0:일반회원/1:관리자',
+`member_no`        BIGINT   NOT NULL AUTO_INCREMENT,
+`member_id`        VARCHAR(50)       NOT NULL,
+`member_pw`        CHAR(60)          NOT NULL,
+`member_name`      VARCHAR(30)       NOT NULL,
+`member_email`     VARCHAR(50)       NOT NULL,
+`member_nickname`  VARCHAR(20)       NOT NULL,
+`member_thumb`     VARCHAR(255)      NULL,
+`member_address`   VARCHAR(300)  NULL,
+`member_status`    TINYINT UNSIGNED  NOT NULL DEFAULT 0 COMMENT '0:정상/1:비정상',
+`enroll_date`      DATETIME          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`admin`            BOOLEAN           NOT NULL DEFAULT 0 COMMENT '0:일반회원/1:관리자',
 `lat`                                DOUBLE,
 `lng`                                DOUBLE,
 `ad_content`        TINYINT UNSIGNED        NULL        DEFAULT 0        COMMENT '0:수신비동의/1:메일수신동의/2.문자수신동의/3:이메일문자수신종의',
@@ -36,14 +24,14 @@ UNIQUE KEY `UQ_MEMBER_EMAIL`    (`member_email`),
 UNIQUE KEY `UQ_MEMBER_NICKNAME` (`member_nickname`)
 );
 
--- 🔥 [중요] 외래키 에러 방지를 위해 테스트 멤버(test01) 데이터 먼저 삽입!
+-- 🔥 [중요] 외래키 에러 방지를 위해 테스트 멤버 데이터 먼저 삽입 (60자 Bcrypt 포맷 더미 적용)
 INSERT INTO `MEMBER_TBL` (`member_id`, `member_pw`, `member_name`, `member_email`, `member_nickname`)
-VALUES ('test01', '$2a$10$xyz...', '테스터', 'test01@matgot.com', '맛갓나그네');
+VALUES ('test01', '$2a$10$Ex9LgPclt6T3hHNJwLgREuxD3NlGjZ1KjGfMbeu6i1/gVfEaVwZ12', '테스터', 'test01@matgot.com', '맛갓나그네');
 
 -- 4. 기타 회원 관련 테이블 생성
 CREATE TABLE `NATIVES_TBL` (
 `native_no`       BIGINT       NOT NULL AUTO_INCREMENT,
-`member_id`       VARCHAR(20)  NULL,
+`member_id`       VARCHAR(50)  NULL, -- 👈 VARCHAR(20)에서 50으로 수정하여 외래키 매칭 성공
 `region`          VARCHAR(50)  NOT NULL COMMENT '시도 시군구 동면읍',
 `native_deadline` DATETIME     NULL COMMENT 'NULL이면 제한 없음',
 PRIMARY KEY (`native_no`),
@@ -117,7 +105,7 @@ detail TEXT,
 report_status TINYINT NOT NULL DEFAULT 0 CHECK (report_status IN (0, 1, 2)),
 report_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 CONSTRAINT fk_rest_report_member FOREIGN KEY (member_id) REFERENCES MEMBER_TBL(member_id) ON DELETE CASCADE,
-CONSTRAINT fk_report_restaurant FOREIGN KEY (restaurant_tbl) REFERENCES restaurant_tbl(rest_no) ON DELETE CASCADE,
+CONSTRAINT fk_report_restaurant FOREIGN KEY (rest_no) REFERENCES restaurant_tbl(rest_no) ON DELETE CASCADE, -- 👈 오타 수정
 CONSTRAINT uk_report_unique_rest UNIQUE (member_id, rest_no)
 );
 
@@ -316,7 +304,7 @@ tplan_view INT NOT NULL DEFAULT 0 COMMENT '조회수',
 tplan_like INT NOT NULL DEFAULT 0 COMMENT '좋아요수',
 created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (tplan_no),
-CONSTRAINT FK_TRAVEL_PLAN_MEMBER FOREIGN KEY (member_no) REFERENCES MEMBER_TBL (member_no) ON DELETE CASCADE
+CONSTRAINT FK_TRAVEL_PLAN_MEMBER FOREIGN KEY (member_no) REFERENCES MEMBER_TBL(member_no) ON DELETE CASCADE
 );
 
 CREATE TABLE PLAN_TAG_TBL (
@@ -362,10 +350,11 @@ member_no BIGINT NOT NULL COMMENT '회원번호',
 tplan_no BIGINT NOT NULL COMMENT '여행계획번호',
 created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '찜한일시',
 PRIMARY KEY (member_no, tplan_no),
-CONSTRAINT FK_FAVORITE_MEMBER FOREIGN KEY (member_no) REFERENCES MEMBER_TBL (member_no) ON DELETE CASCADE,
+CONSTRAINT FK_FAVORITE_MEMBER FOREIGN KEY (member_no) REFERENCES MEMBER_TBL(member_no) ON DELETE CASCADE,
 CONSTRAINT FK_FAVORITE_PLAN FOREIGN KEY (tplan_no) REFERENCES TRAVEL_PLAN_TBL (tplan_no) ON DELETE CASCADE
 );
 
+-- 태그 데이터 보존 및 삽입
 INSERT INTO TAG_TBL (tag_name) VALUES
 ('감성'), ('분위기좋은'), ('조용한'), ('힙한'), ('뷰맛집'),
 ('사진맛집'), ('연인과'), ('가족과'), ('친구와'), ('혼밥'),
