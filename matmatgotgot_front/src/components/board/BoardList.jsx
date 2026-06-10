@@ -1,7 +1,7 @@
-import styles from './BoardList.module.css';
-import defaultImage from '../../assets/board/image.png';
-import userImage from '../../assets/board/user.png';
-import { useNavigate } from 'react-router-dom';
+import styles from "./BoardList.module.css";
+import defaultImage from "../../assets/board/image.png";
+import userImage from "../../assets/board/user.png";
+import { useNavigate } from "react-router-dom";
 
 const BoardList = ({ boardList }) => {
   return (
@@ -17,11 +17,12 @@ const BoardItem = ({ board }) => {
   const navigate = useNavigate();
 
   const getCategoryName = (category) => {
-    if (category === 1) return '여행후기';
-    if (category === 2) return '자유게시글';
-    return '';
+    if (category === 1) return "여행후기";
+    if (category === 2) return "자유게시글";
+    return "";
   };
 
+  console.log(board);
   return (
     <li
       className={styles.board_item}
@@ -29,11 +30,7 @@ const BoardItem = ({ board }) => {
     >
       <div className={styles.board_img_wrap}>
         <img
-          src={
-            board.boardThumb
-              ? `${import.meta.env.VITE_BACKSERVER}/editor/${board.boardThumb}`
-              : defaultImage
-          }
+          src={board.boardThumb ? `${board.boardThumb}` : defaultImage}
           alt="썸네일"
         />
       </div>
@@ -46,14 +43,10 @@ const BoardItem = ({ board }) => {
         <div className={styles.board_sub_info}>
           <div className={styles.board_writer}>
             <div
-              className={board.memberThumb ? styles.member_thumb_exists : ''}
+              className={board.memberThumb ? styles.member_thumb_exists : ""}
             >
               <img
-                src={
-                  board.memberThumb
-                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${board.memberThumb}`
-                    : userImage
-                }
+                src={board.memberThumb ? `${board.memberThumb}` : userImage}
                 alt="프로필"
               />
             </div>

@@ -122,12 +122,9 @@ const ReviewCommentItem = ({
             }
           >
             {comment.memberThumb ? (
-              <img
-                src={`${import.meta.env.VITE_BACKSERVER}/matgot/member/${comment.memberThumb}`}
-                alt="프로필"
-              />
+              <img src={`${comment.memberThumb}`} alt="프로필" />
             ) : (
-              <span className="material-icons">account_circle</span>
+              ""
             )}
           </div>
           <span className={styles.comment_name}>{comment.writerName}</span>
@@ -361,12 +358,9 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
               }
             >
               {reply.memberThumb ? (
-                <img
-                  src={`${import.meta.env.VITE_BACKSERVER}/matgot/member/${reply.memberThumb}`}
-                  alt="프로필"
-                />
+                <img src={`${reply.memberThumb}`} alt="프로필" />
               ) : (
-                <span className="material-icons">account_circle</span>
+                ""
               )}
             </div>
             <span className={styles.comment_name}>{reply.writerName}</span>

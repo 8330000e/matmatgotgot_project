@@ -120,26 +120,28 @@ public class BoardController {
         // 첫 번째 이미지 추출
         Document doc = Jsoup.parse(board.getBoardContent());
         Element firstImg = doc.selectFirst("img");
-        String boardThumb = null;
+        String boardThumb = firstImg == null ? null : firstImg.attr("src");
 
-        if (firstImg != null) {
-            String imgSrc = firstImg.attr("src");
+//        String boardThumb = null;
+//
+//        if (firstImg != null) {
+//            String imgSrc = firstImg.attr("src");
 
-            // 주소에 어떤 도메인이나 쿼리 스트링이 붙어있든 상관없이 오직 순수한 파일명(예: b5dbbf41-c310-....jpg)만 안전하게 추출
-            if (imgSrc.contains("/editor/")) {
-                // /editor/ 뒷부분만 싹 잘라냄
-                boardThumb = imgSrc.substring(imgSrc.lastIndexOf("/editor/") + 8);
-            } else if (imgSrc.contains("/")) {
-                boardThumb = imgSrc.substring(imgSrc.lastIndexOf("/") + 1);
-            } else {
-                boardThumb = imgSrc;
-            }
+//            // 주소에 어떤 도메인이나 쿼리 스트링이 붙어있든 상관없이 오직 순수한 파일명(예: b5dbbf41-c310-....jpg)만 안전하게 추출
+//            if (imgSrc.contains("/editor/")) {
+//                // /editor/ 뒷부분만 싹 잘라냄
+//                boardThumb = imgSrc.substring(imgSrc.lastIndexOf("/editor/") + 8);
+//            } else if (imgSrc.contains("/")) {
+//                boardThumb = imgSrc.substring(imgSrc.lastIndexOf("/") + 1);
+//            } else {
+//                boardThumb = imgSrc;
+//            }
 
             // 물음표(?)나 파라미터가 뒤에 붙어있을 경우를 대비해 순수 파일명만 한 번 더 정제
-            if (boardThumb.contains("?")) {
-                boardThumb = boardThumb.substring(0, boardThumb.indexOf("?"));
-            }
-        }
+//            if (boardThumb.contains("?")) {
+//                boardThumb = boardThumb.substring(0, boardThumb.indexOf("?"));
+//            }
+//        }
 
         // DB에 'b5dbbf41-c310-4c88-86ba-7dff76bb10df.jpg' 같은 파일명만 들어감
         // 이렇게 저장되어야 리액트 BoardList.jsx의 `${import.meta.env.VITE_BACKSERVER}/editor/${board.boardThumb}` 코드와 결합됨

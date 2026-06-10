@@ -1,18 +1,18 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import styles from './BoardViewPage.module.css';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import userImage from '../../assets/board/user.png';
-import Button from '../../components/ui/Button';
-import { useAuthStore } from '../../store/useAuthStore';
-import Swal from 'sweetalert2';
-import { TextArea } from '../../components/ui/Form.jsx';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined';
-import ReportIcon from '@mui/icons-material/Report';
-import { useCallback } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
+import styles from "./BoardViewPage.module.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import userImage from "../../assets/board/user.png";
+import Button from "../../components/ui/Button";
+import { useAuthStore } from "../../store/useAuthStore";
+import Swal from "sweetalert2";
+import { TextArea } from "../../components/ui/Form.jsx";
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import ReportOutlinedIcon from "@mui/icons-material/ReportOutlined";
+import ReportIcon from "@mui/icons-material/Report";
+import { useCallback } from "react";
 
 const BoardViewPage = () => {
   const navigate = useNavigate();
@@ -33,33 +33,33 @@ const BoardViewPage = () => {
   //
 
   const isBlocked = Number(memberStatus) === 1 || Number(memberStatus) === 3;
-  console.log('현재 memberStatus:', memberStatus);
-  console.log('isBlocked:', isBlocked);
+  console.log("현재 memberStatus:", memberStatus);
+  console.log("isBlocked:", isBlocked);
 
   const blockedCommentMsg = () => {
     Swal.fire({
-      title: '댓글 작성 불가',
-      text: '해당 사용자는 댓글을 작성할 수 없습니다.',
-      icon: 'warning',
-      confirmButtonColor: 'var(--primary)',
+      title: "댓글 작성 불가",
+      text: "해당 사용자는 댓글을 작성할 수 없습니다.",
+      icon: "warning",
+      confirmButtonColor: "var(--primary)",
     });
   };
 
   const blockedReportMsg = () => {
     Swal.fire({
-      title: '신고 불가',
-      text: '해당 사용자는 신고하기 기능을 이용할 수 없습니다.',
-      icon: 'warning',
-      confirmButtonColor: 'var(--primary)',
+      title: "신고 불가",
+      text: "해당 사용자는 신고하기 기능을 이용할 수 없습니다.",
+      icon: "warning",
+      confirmButtonColor: "var(--primary)",
     });
   };
 
   const blockedLikeMsg = () => {
     Swal.fire({
-      title: '좋아요 불가',
-      text: '해당 사용자는 좋아요 기능을 사용할 수 없습니다.',
-      icon: 'warning',
-      confirmButtonColor: 'var(--primary)',
+      title: "좋아요 불가",
+      text: "해당 사용자는 좋아요 기능을 사용할 수 없습니다.",
+      icon: "warning",
+      confirmButtonColor: "var(--primary)",
     });
   };
 
@@ -82,9 +82,9 @@ const BoardViewPage = () => {
 */
 
   const isAdmin = Number(admin) === 1;
-  console.log('현재 로그인 memberId:', memberId);
-  console.log('현재 로그인 admin:', admin);
-  console.log('isAdmin:', isAdmin);
+  console.log("현재 로그인 memberId:", memberId);
+  console.log("현재 로그인 admin:", admin);
+  console.log("isAdmin:", isAdmin);
 
   useEffect(() => {
     if (!isReady) return;
@@ -101,29 +101,29 @@ const BoardViewPage = () => {
 
   const loginMsg = () => {
     Swal.fire({
-      title: '로그인 후 이용 가능합니다.',
-      icon: 'info',
-      iconColor: 'var(--primary)',
-      confirmButtonColor: 'var(--primary)',
+      title: "로그인 후 이용 가능합니다.",
+      icon: "info",
+      iconColor: "var(--primary)",
+      confirmButtonColor: "var(--primary)",
     });
   };
 
   const deleteBoard = () => {
     Swal.fire({
-      title: '게시글을 삭제하시겠습니까?',
-      icon: 'warning',
+      title: "게시글을 삭제하시겠습니까?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: '삭제',
-      cancelButtonText: '취소',
-      confirmButtonColor: 'var(--primary)',
-      cancelButtonColor: 'var(--gray4)',
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--primary)",
+      cancelButtonColor: "var(--gray4)",
     }).then((result) => {
       if (result.isConfirmed) {
         axios
           .delete(`${import.meta.env.VITE_BACKSERVER}/boards/${boardNo}`)
           .then((res) => {
             if (res.data === 1) {
-              navigate('/board/list');
+              navigate("/board/list");
             }
           })
           .catch((err) => console.log(err));
@@ -143,9 +143,9 @@ const BoardViewPage = () => {
           setBoard({ ...board, boardStatus: newStatus });
 
           Swal.fire({
-            title: `게시글이 ${newStatus === 1 ? '공개' : '비공개'} 처리되었습니다.`,
-            icon: 'success',
-            confirmButtonColor: 'var(--primary)',
+            title: `게시글이 ${newStatus === 1 ? "공개" : "비공개"} 처리되었습니다.`,
+            icon: "success",
+            confirmButtonColor: "var(--primary)",
           });
         }
       })
@@ -171,7 +171,7 @@ const BoardViewPage = () => {
             <div className={styles.board_view_header}>
               <h2 className={styles.board_title}>
                 <span className={styles.category_prefix}>
-                  [{board.boardCategory === 1 ? '여행후기' : '자유게시글'}]
+                  [{board.boardCategory === 1 ? "여행후기" : "자유게시글"}]
                 </span>
                 {board.boardTitle}
 
@@ -191,9 +191,7 @@ const BoardViewPage = () => {
                   >
                     <img
                       src={
-                        board.memberThumb
-                          ? `${import.meta.env.VITE_BACKSERVER}/upload/${board.memberThumb}`
-                          : userImage
+                        board.memberThumb ? `${board.memberThumb}` : userImage
                       }
                       alt="writer"
                     />
@@ -256,12 +254,12 @@ const BoardViewPage = () => {
                   className="btn primary outline"
                   onClick={changeBoardStatus}
                   style={{
-                    width: '70px',
-                    fontSize: '14px',
-                    color: 'var(--text1)',
+                    width: "70px",
+                    fontSize: "14px",
+                    color: "var(--text1)",
                   }}
                 >
-                  {board.boardStatus === 1 ? '비공개' : '공개'}
+                  {board.boardStatus === 1 ? "비공개" : "공개"}
                 </Button>
               )}
 
@@ -269,7 +267,7 @@ const BoardViewPage = () => {
                 <Button
                   className="btn primary"
                   onClick={() => navigate(`/board/modify/${board.boardNo}`)}
-                  style={{ width: '70px', fontSize: '14px' }}
+                  style={{ width: "70px", fontSize: "14px" }}
                 >
                   수정
                 </Button>
@@ -279,7 +277,7 @@ const BoardViewPage = () => {
                 <Button
                   className="btn primary outline"
                   onClick={deleteBoard}
-                  style={{ width: '70px', fontSize: '14px' }}
+                  style={{ width: "70px", fontSize: "14px" }}
                 >
                   삭제
                 </Button>
@@ -418,33 +416,33 @@ const Report = ({
     }
 
     Swal.fire({
-      title: '신고 사유 선택',
-      input: 'select',
+      title: "신고 사유 선택",
+      input: "select",
       inputOptions: {
-        허위정보: '허위정보',
-        욕설비방: '욕설비방',
-        광고스팸: '광고스팸',
-        기타: '기타',
+        허위정보: "허위정보",
+        욕설비방: "욕설비방",
+        광고스팸: "광고스팸",
+        기타: "기타",
       },
-      inputPlaceholder: '신고 사유를 선택하세요.',
+      inputPlaceholder: "신고 사유를 선택하세요.",
       showCancelButton: true,
-      confirmButtonText: '다음',
-      cancelButtonText: '취소',
-      confirmButtonColor: 'var(--primary)',
+      confirmButtonText: "다음",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--primary)",
     }).then((result) => {
       if (!result.isConfirmed) return;
 
       const reportReason = result.value;
 
-      if (reportReason === '기타') {
+      if (reportReason === "기타") {
         Swal.fire({
-          title: '상세 사유 입력',
-          input: 'textarea',
-          inputPlaceholder: '신고 내용을 입력하세요.',
+          title: "상세 사유 입력",
+          input: "textarea",
+          inputPlaceholder: "신고 내용을 입력하세요.",
           showCancelButton: true,
-          confirmButtonText: '신고',
-          cancelButtonText: '취소',
-          confirmButtonColor: 'var(--primary)',
+          confirmButtonText: "신고",
+          cancelButtonText: "취소",
+          confirmButtonColor: "var(--primary)",
         }).then((detailResult) => {
           if (!detailResult.isConfirmed) return;
 
@@ -530,7 +528,7 @@ const BoardCommentComponent = ({
   blockedReportMsg,
 }) => {
   const [boardComment, setBoardComment] = useState({
-    boardCommentContent: '',
+    boardCommentContent: "",
     memberNo: memberNo,
     boardNo: boardNo,
   });
@@ -609,7 +607,7 @@ const BoardCommentComponent = ({
       return;
     }
 
-    if (boardComment.boardCommentContent.trim() === '') {
+    if (boardComment.boardCommentContent.trim() === "") {
       return;
     }
 
@@ -622,7 +620,7 @@ const BoardCommentComponent = ({
       .then((res) => {
         setBoardCommentList([...boardCommentList, res.data]);
         setBoardComment({
-          boardCommentContent: '',
+          boardCommentContent: "",
           memberNo,
           boardNo,
         });
@@ -721,33 +719,33 @@ const BoardComment = ({
     }
 
     Swal.fire({
-      title: '댓글 신고 사유 선택',
-      input: 'select',
+      title: "댓글 신고 사유 선택",
+      input: "select",
       inputOptions: {
-        허위정보: '허위정보',
-        욕설비방: '욕설비방',
-        광고스팸: '광고스팸',
-        기타: '기타',
+        허위정보: "허위정보",
+        욕설비방: "욕설비방",
+        광고스팸: "광고스팸",
+        기타: "기타",
       },
-      inputPlaceholder: '신고 사유를 선택하세요.',
+      inputPlaceholder: "신고 사유를 선택하세요.",
       showCancelButton: true,
-      confirmButtonText: '다음',
-      cancelButtonText: '취소',
-      confirmButtonColor: 'var(--primary)',
+      confirmButtonText: "다음",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--primary)",
     }).then((result) => {
       if (!result.isConfirmed) return;
 
       const reportReason = result.value;
 
-      if (reportReason === '기타') {
+      if (reportReason === "기타") {
         Swal.fire({
-          title: '상세 사유 입력',
-          input: 'textarea',
-          inputPlaceholder: '신고 내용을 입력하세요.',
+          title: "상세 사유 입력",
+          input: "textarea",
+          inputPlaceholder: "신고 내용을 입력하세요.",
           showCancelButton: true,
-          confirmButtonText: '신고',
-          cancelButtonText: '취소',
-          confirmButtonColor: 'var(--primary)',
+          confirmButtonText: "신고",
+          cancelButtonText: "취소",
+          confirmButtonColor: "var(--primary)",
         }).then((detailResult) => {
           if (!detailResult.isConfirmed) return;
 
@@ -773,9 +771,9 @@ const BoardComment = ({
           setIsCommentReport(1);
 
           Swal.fire({
-            title: '신고가 접수되었습니다.',
-            icon: 'success',
-            confirmButtonColor: 'var(--primary)',
+            title: "신고가 접수되었습니다.",
+            icon: "success",
+            confirmButtonColor: "var(--primary)",
           });
         }
       })
@@ -783,10 +781,10 @@ const BoardComment = ({
         console.log(err);
 
         Swal.fire({
-          title: '이용 제한',
-          text: '현재 회원 상태에서는 댓글 신고를 할 수 없습니다.',
-          icon: 'warning',
-          confirmButtonColor: 'var(--primary)',
+          title: "이용 제한",
+          text: "현재 회원 상태에서는 댓글 신고를 할 수 없습니다.",
+          icon: "warning",
+          confirmButtonColor: "var(--primary)",
         });
       });
   };
@@ -835,14 +833,10 @@ const BoardComment = ({
         <div className={styles.comment_left_info}>
           <div className={styles.comment_writer_wrap}>
             <div
-              className={comment.memberThumb ? styles.member_thumb_exists : ''}
+              className={comment.memberThumb ? styles.member_thumb_exists : ""}
             >
               <img
-                src={
-                  comment.memberThumb
-                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${comment.memberThumb}`
-                    : userImage
-                }
+                src={comment.memberThumb ? `${comment.memberThumb}` : userImage}
                 alt="comment-writer"
               />
             </div>
@@ -876,7 +870,7 @@ const BoardComment = ({
                     updateComment(modifyComment, index);
                     setIsModifyMode(false);
                   }}
-                  style={{ width: '70px', fontSize: '14px' }}
+                  style={{ width: "70px", fontSize: "14px" }}
                 >
                   수정완료
                 </Button>
@@ -890,7 +884,7 @@ const BoardComment = ({
                     });
                     setIsModifyMode(false);
                   }}
-                  style={{ width: '70px', fontSize: '14px' }}
+                  style={{ width: "70px", fontSize: "14px" }}
                 >
                   수정취소
                 </Button>
@@ -907,12 +901,12 @@ const BoardComment = ({
                       )
                     }
                     style={{
-                      width: '70px',
-                      fontSize: '14px',
-                      color: 'var(--text1)',
+                      width: "70px",
+                      fontSize: "14px",
+                      color: "var(--text1)",
                     }}
                   >
-                    {comment.commentStatus === 1 ? '비공개' : '공개'}
+                    {comment.commentStatus === 1 ? "비공개" : "공개"}
                   </Button>
                 )}
 
@@ -920,7 +914,7 @@ const BoardComment = ({
                   <Button
                     className="btn primary"
                     onClick={() => setIsModifyMode(true)}
-                    style={{ width: '70px', fontSize: '14px' }}
+                    style={{ width: "70px", fontSize: "14px" }}
                   >
                     수정
                   </Button>
@@ -931,20 +925,20 @@ const BoardComment = ({
                     className="btn primary outline sm"
                     onClick={() => {
                       Swal.fire({
-                        title: '댓글을 삭제하시겠습니까?',
-                        icon: 'warning',
+                        title: "댓글을 삭제하시겠습니까?",
+                        icon: "warning",
                         showCancelButton: true,
-                        confirmButtonText: '삭제',
-                        cancelButtonText: '취소',
-                        confirmButtonColor: 'var(--primary)',
-                        cancelButtonColor: 'var(--gray4)',
+                        confirmButtonText: "삭제",
+                        cancelButtonText: "취소",
+                        confirmButtonColor: "var(--primary)",
+                        cancelButtonColor: "var(--gray4)",
                       }).then((result) => {
                         if (result.isConfirmed) {
                           deleteComment(comment.boardCommentNo);
                         }
                       });
                     }}
-                    style={{ width: '70px', fontSize: '14px' }}
+                    style={{ width: "70px", fontSize: "14px" }}
                   >
                     삭제
                   </Button>
@@ -959,14 +953,14 @@ const BoardComment = ({
         {comment.commentStatus === 1 || isAdmin || isWriter ? (
           <div
             className={
-              comment.commentStatus === 0 ? styles.comment_hidden_admin : ''
+              comment.commentStatus === 0 ? styles.comment_hidden_admin : ""
             }
           >
             {comment.commentStatus === 0 && (
               <p className={styles.admin_notice}>
                 {isAdmin
-                  ? '* 이 댓글은 현재 일반 사용자에게 비공개 상태입니다.'
-                  : '* 이 댓글은 관리자에 의해 비공개 처리되었습니다.'}
+                  ? "* 이 댓글은 현재 일반 사용자에게 비공개 상태입니다."
+                  : "* 이 댓글은 관리자에 의해 비공개 처리되었습니다."}
               </p>
             )}
 

@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import styles from './Admin.module.css';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/ui/Button';
-import Pagination from '../../components/ui/Pagination';
-import { Input } from '../../components/ui/Form';
-import Swal from 'sweetalert2';
-import ReportIcon from '@mui/icons-material/Report';
-import { useAuthStore } from '../../store/useAuthStore';
-import userImage from '../../assets/board/user.png';
+import { useEffect, useState } from "react";
+import styles from "./Admin.module.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/ui/Button";
+import Pagination from "../../components/ui/Pagination";
+import { Input } from "../../components/ui/Form";
+import Swal from "sweetalert2";
+import ReportIcon from "@mui/icons-material/Report";
+import { useAuthStore } from "../../store/useAuthStore";
+import userImage from "../../assets/board/user.png";
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const AdminPage = () => {
   const { admin, isReady } = useAuthStore();
 
   const [menu, setMenu] = useState(
-    sessionStorage.getItem('adminMenu') || 'member',
+    sessionStorage.getItem("adminMenu") || "member",
   );
 
   useEffect(() => {
@@ -24,19 +24,19 @@ const AdminPage = () => {
 
     if (Number(admin) !== 1) {
       Swal.fire({
-        title: '접근 제한',
-        text: '관리자만 접근 가능한 페이지입니다.',
-        icon: 'error',
-        confirmButtonColor: 'var(--primary)',
+        title: "접근 제한",
+        text: "관리자만 접근 가능한 페이지입니다.",
+        icon: "error",
+        confirmButtonColor: "var(--primary)",
       }).then(() => {
-        navigate('/');
+        navigate("/");
       });
     }
   }, [admin, isReady, navigate]);
 
   const changeMenu = (newMenu) => {
     setMenu(newMenu);
-    sessionStorage.setItem('adminMenu', newMenu);
+    sessionStorage.setItem("adminMenu", newMenu);
   };
 
   if (!isReady) return null;
@@ -48,25 +48,25 @@ const AdminPage = () => {
 
         <button
           className={
-            menu === 'member' ? styles.active_side_btn : styles.side_btn
+            menu === "member" ? styles.active_side_btn : styles.side_btn
           }
-          onClick={() => changeMenu('member')}
+          onClick={() => changeMenu("member")}
         >
           회원 관리
         </button>
 
         <button
           className={
-            menu === 'report' ? styles.active_side_btn : styles.side_btn
+            menu === "report" ? styles.active_side_btn : styles.side_btn
           }
-          onClick={() => changeMenu('report')}
+          onClick={() => changeMenu("report")}
         >
           신고 관리
         </button>
       </aside>
 
       <div className={styles.admin_content}>
-        {menu === 'member' ? (
+        {menu === "member" ? (
           <MemberManage />
         ) : (
           <ReportManage navigate={navigate} />
@@ -80,10 +80,10 @@ const MemberManage = () => {
   const [memberList, setMemberList] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(null);
-  const [keyword, setKeyword] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [memberStatus, setMemberStatus] = useState('');
-  const [nameOrder, setNameOrder] = useState('asc');
+  const [keyword, setKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [memberStatus, setMemberStatus] = useState("");
+  const [nameOrder, setNameOrder] = useState("asc");
 
   const getMemberList = () => {
     axios
@@ -109,13 +109,13 @@ const MemberManage = () => {
 
   const changeMemberStatus = (member, newStatus) => {
     Swal.fire({
-      title: '회원 상태를 변경하시겠습니까?',
-      icon: 'warning',
+      title: "회원 상태를 변경하시겠습니까?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: '변경',
-      cancelButtonText: '취소',
-      confirmButtonColor: 'var(--primary)',
-      cancelButtonColor: 'var(--gray4)',
+      confirmButtonText: "변경",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--primary)",
+      cancelButtonColor: "var(--gray4)",
     }).then((result) => {
       if (!result.isConfirmed) return;
 
@@ -137,13 +137,13 @@ const MemberManage = () => {
 
   const changeMemberAdmin = (member, newAdmin) => {
     Swal.fire({
-      title: '회원 권한을 변경하시겠습니까?',
-      icon: 'warning',
+      title: "회원 권한을 변경하시겠습니까?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: '변경',
-      cancelButtonText: '취소',
-      confirmButtonColor: 'var(--primary)',
-      cancelButtonColor: 'var(--gray4)',
+      confirmButtonText: "변경",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--primary)",
+      cancelButtonColor: "var(--gray4)",
     }).then((result) => {
       if (!result.isConfirmed) return;
 
@@ -185,10 +185,10 @@ const MemberManage = () => {
             type="submit"
             className="btn primary"
             style={{
-              width: '60px',
-              height: '30px',
-              fontSize: '14px',
-              lineHeight: '1',
+              width: "60px",
+              height: "30px",
+              fontSize: "14px",
+              lineHeight: "1",
             }}
           >
             검색
@@ -229,11 +229,7 @@ const MemberManage = () => {
           <div className={styles.member_card} key={member.memberNo}>
             <div className={styles.member_thumb}>
               <img
-                src={
-                  member.memberThumb
-                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${member.memberThumb}`
-                    : userImage
-                }
+                src={member.memberThumb ? `${member.memberThumb}` : userImage}
                 alt="프로필"
               />
             </div>
@@ -244,7 +240,7 @@ const MemberManage = () => {
               <Info label="닉네임" value={member.memberNickname} />
               <Info label="이름" value={member.memberName} />
               <Info label="가입일" value={member.enrollDate} />
-              <Info label="지역" value={member.region || '-'} />
+              <Info label="지역" value={member.region || "-"} />
 
               <Info
                 label="회원등급"
@@ -293,25 +289,25 @@ const MemberManage = () => {
 
 const ReportManage = ({ navigate }) => {
   const [target, setTarget] = useState(
-    sessionStorage.getItem('adminReportTarget') || 'board',
+    sessionStorage.getItem("adminReportTarget") || "board",
   );
 
   const [reportList, setReportList] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(null);
   const [searchType, setSearchType] = useState(1);
-  const [keyword, setKeyword] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [keyword, setKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [category, setCategory] = useState(0);
   const [order, setOrder] = useState(1);
-  const [reportStatus, setReportStatus] = useState('');
+  const [reportStatus, setReportStatus] = useState("");
 
   const targetTabs = [
-    { value: 'rest', label: '맛집' },
-    { value: 'review', label: '맛집 리뷰' },
-    { value: 'reviewComment', label: '맛집 댓글' },
-    { value: 'board', label: '게시글' },
-    { value: 'boardComment', label: '게시글 댓글' },
+    { value: "rest", label: "맛집" },
+    { value: "review", label: "맛집 리뷰" },
+    { value: "reviewComment", label: "맛집 댓글" },
+    { value: "board", label: "게시글" },
+    { value: "boardComment", label: "게시글 댓글" },
   ];
 
   const getReportList = () => {
@@ -341,24 +337,24 @@ const ReportManage = ({ navigate }) => {
 
   const resetFilter = (newTarget) => {
     setTarget(newTarget);
-    sessionStorage.setItem('adminReportTarget', newTarget);
+    sessionStorage.setItem("adminReportTarget", newTarget);
     setPage(0);
     setCategory(0);
     setOrder(1);
-    setReportStatus('');
-    setKeyword('');
-    setSearchKeyword('');
+    setReportStatus("");
+    setKeyword("");
+    setSearchKeyword("");
   };
 
   const rejectReport = (report) => {
     Swal.fire({
-      title: '신고를 반려하시겠습니까?',
-      icon: 'warning',
+      title: "신고를 반려하시겠습니까?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: '반려',
-      cancelButtonText: '취소',
-      confirmButtonColor: 'var(--primary)',
-      cancelButtonColor: 'var(--gray4)',
+      confirmButtonText: "반려",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--primary)",
+      cancelButtonColor: "var(--gray4)",
     }).then((result) => {
       if (!result.isConfirmed) return;
 
@@ -377,16 +373,16 @@ const ReportManage = ({ navigate }) => {
 
   const processReport = (report, action) => {
     const actionName =
-      action === 'public' ? '공개' : action === 'private' ? '비공개' : '삭제';
+      action === "public" ? "공개" : action === "private" ? "비공개" : "삭제";
 
     Swal.fire({
       title: `${actionName} 처리하시겠습니까?`,
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: '처리',
-      cancelButtonText: '취소',
-      confirmButtonColor: 'var(--primary)',
-      cancelButtonColor: 'var(--gray4)',
+      confirmButtonText: "처리",
+      cancelButtonText: "취소",
+      confirmButtonColor: "var(--primary)",
+      cancelButtonColor: "var(--gray4)",
     }).then((result) => {
       if (!result.isConfirmed) return;
 
@@ -408,22 +404,22 @@ const ReportManage = ({ navigate }) => {
   };
 
   const goDetail = (report) => {
-    sessionStorage.setItem('adminMenu', 'report');
-    sessionStorage.setItem('adminReportTarget', target);
+    sessionStorage.setItem("adminMenu", "report");
+    sessionStorage.setItem("adminReportTarget", target);
 
-    if (target === 'board' || target === 'boardComment') {
+    if (target === "board" || target === "boardComment") {
       navigate(`/board/view/${report.boardNo}`);
       return;
     }
 
     // 맛집 상세 이동
-    if (target === 'rest') {
+    if (target === "rest") {
       navigate(`/rest/view/${report.contentNo}`);
       return;
     }
 
     // 맛집 리뷰 상세 이동
-    if (target === 'review' || target === 'reviewComment') {
+    if (target === "review" || target === "reviewComment") {
       navigate(`/rest/review/view/${report.reviewNo}`);
       return;
     }
@@ -460,10 +456,10 @@ const ReportManage = ({ navigate }) => {
             type="submit"
             className="btn primary"
             style={{
-              width: '60px',
-              height: '30px',
-              fontSize: '14px',
-              lineHeight: '1',
+              width: "60px",
+              height: "30px",
+              fontSize: "14px",
+              lineHeight: "1",
             }}
           >
             검색
@@ -471,7 +467,7 @@ const ReportManage = ({ navigate }) => {
         </form>
 
         <div className={styles.option_right}>
-          {(target === 'board' || target === 'boardComment') && (
+          {(target === "board" || target === "boardComment") && (
             <select
               className={styles.small_select}
               value={category}
@@ -537,10 +533,10 @@ const ReportManage = ({ navigate }) => {
             <div className={styles.report_left}>
               <strong>{report.title}</strong>
 
-              {target === 'review' && (
+              {target === "review" && (
                 <span className={styles.star_text}>
-                  {'★'.repeat(Number(report.rating || 0))}
-                  {'☆'.repeat(5 - Number(report.rating || 0))}
+                  {"★".repeat(Number(report.rating || 0))}
+                  {"☆".repeat(5 - Number(report.rating || 0))}
                 </span>
               )}
 
@@ -560,11 +556,11 @@ const ReportManage = ({ navigate }) => {
 
               <div className={styles.report_meta_group}>
                 <span className={styles.report_reporter}>
-                  신고자: {report.reporter || '-'}
+                  신고자: {report.reporter || "-"}
                 </span>
 
                 <span className={styles.report_writer}>
-                  작성자: {report.writer || '-'}
+                  작성자: {report.writer || "-"}
                 </span>
 
                 <span className={styles.report_date}>{report.reportDate}</span>
@@ -591,10 +587,10 @@ const ReportManage = ({ navigate }) => {
                   }`}
                 >
                   {Number(report.reportStatus) === 0
-                    ? '처리대기'
+                    ? "처리대기"
                     : Number(report.reportStatus) === 1
-                      ? '처리완료'
-                      : '반려'}
+                      ? "처리완료"
+                      : "반려"}
                 </span>
 
                 <select
@@ -604,7 +600,7 @@ const ReportManage = ({ navigate }) => {
                     if (!e.target.value) return;
 
                     processReport(report, e.target.value);
-                    e.target.value = '';
+                    e.target.value = "";
                   }}
                 >
                   <option value="">처리</option>

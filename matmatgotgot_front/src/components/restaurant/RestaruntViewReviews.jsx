@@ -83,10 +83,7 @@ const ReviewItem = ({ review }) => {
           className={`${styles.member_thumb} ${review.writerThumb ? styles.thumb_exists : styles.thumb_default}`}
         >
           {review.writerThumb && (
-            <img
-              src={`${import.meta.env.VITE_BACKSERVER}/member/thumb/${review.writerThumb}`}
-              alt="프로필 이미지"
-            />
+            <img src={`${review.writerThumb}`} alt="프로필 이미지" />
           )}
         </div>
 
