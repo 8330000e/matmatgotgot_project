@@ -1,78 +1,96 @@
 version: "3.8"
 
 services:
-  # ===== MySQL =====
+  # ===================== DB =====================
   db:
     image: mysql:8.0
     container_name: matgotdb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: matgotdb
-      MYSQL_CHARACTER_SET_SERVER: utf8mb4
-      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+      MYSQL_DATABASE: ${DB_NAME}
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
-      - --init-connect=SET NAMES utf8mb4
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - board-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      - matgot-network
 
-  # ===== Spring Boot Backend =====
-  matmatgotgot_back: # 💡 들여쓰기 위치 정렬 완료
+  # ===================== Backend =====================
+  backend:
     build:
       context: ./matmatgotgot_back
-      dockerfile: Dockerfile
     container_name: matgot-backend
     restart: always
+    depends_on:
+      - db
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      # ===== DB =====
+      DB_HOST: db
+      DB_PORT: 3306
       DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
+      DB_USER: root
       DB_PASSWORD: ${DB_PASSWORD}
+
+      # ===== JWT =====
       JWT_SECRET: ${JWT_SECRET}
-      S3_BUCKET: ${S3_BUCKET}
-      AWS_REGION: ${AWS_REGION}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+
+      # ===== AWS =====
       AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
       AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: ap-northeast-2
+      S3_BUCKET: ${S3_BUCKET}
+
+      # ===== GOOGLE =====
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+
+      # ===== NAVER =====
+      NAVER_CLIENT_ID: ${NAVER_CLIENT_ID}
+      NAVER_SECRET: ${NAVER_SECRET}
+
+      # ===== CLOVA =====
+      CLOVA_SECRET_KEY: ${CLOVA_SECRET_KEY}
+      CLOVA_API_URL: ${CLOVA_API_URL}
+
+      # ===== MAIL =====
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+
     ports:
       - "8080:8080"
     networks:
-      - board-network
+      - matgot-network
 
-  # ===== React Frontend (Nginx) =====
-  matmatgotgot_front:
+  # ===================== Frontend =====================
+  frontend:
     build:
       context: ./matmatgotgot_front
-      dockerfile: Dockerfile
     container_name: matgot-frontend
     restart: always
+    depends_on:
+      - backend
     ports:
       - "80:80"
-    depends_on:
-      - matmatgotgot_back # 💡 'backend'에서 실제 이름인 'matmatgotgot_back'으로 수정
     networks:
-      - board-network
+      - matgot-network
 
-# ===== 볼륨 =====
-volumes: # 💡 DB 데이터 보존을 위해 주석 해제
+# =====================
+# Volume
+# =====================
+volumes:
   mysql-data:
-    name: board-mysql-data
 
-# ===== 네트워크 =====
+# =====================
+# Network
+# =====================
 networks:
-  board-network:
-    name: matgot-network
+  matgot-network:
     driver: bridge
