@@ -258,40 +258,6 @@ public class RestaurantController {
         return ResponseEntity.ok(res);
     }//
 
-    // Main
-    @GetMapping("/my-wish")
-    public ResponseEntity<List<RestaurantResponseDTO>> getMyWishList(@RequestParam("memberId") String memberId) {
-        List<RestaurantResponseDTO> wishList = restaurantService.getMyWishList(memberId);
-        return ResponseEntity.ok(wishList);
-    }
-
-    @GetMapping("/popular-list")
-    public ResponseEntity<List<RestaurantResponseDTO>> getPopularList() {
-        List<RestaurantResponseDTO> popularList = restaurantService.getPopularList();
-        return ResponseEntity.ok(popularList);
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<RestaurantResponseDTO>> getAllList() {
-        List<RestaurantResponseDTO> allList = restaurantService.getAllList();
-        return ResponseEntity.ok(allList);
-    }
-
-    @GetMapping("/my-wish-map")
-    public ResponseEntity<List<RestaurantMapMarkerDTO>> getMyWishMapMarkers(
-            @RequestParam("memberId") String memberId) {
-
-        List<RestaurantMapMarkerDTO> wishMarkers = restaurantService.getWishMapMarkers(memberId);
-        return ResponseEntity.ok(wishMarkers);
-    }
-
-    @GetMapping("/my-visited-map")
-    public ResponseEntity<List<RestaurantMapMarkerDTO>> getMyVisitedMapMarkers(
-            @RequestParam("memberId") String memberId) {
-
-        List<RestaurantMapMarkerDTO> visitedMarkers = restaurantService.getVisitedMapMarkers(memberId);
-        return ResponseEntity.ok(visitedMarkers);
-    }
     // 맛집 - 이름 검색
     @GetMapping("/search")
     public ResponseEntity<?> restSearch(@ModelAttribute SearchRequest req, Authentication auth){
@@ -397,6 +363,39 @@ public class RestaurantController {
         return ResponseEntity.ok(result);
     }//
 
+    // Main
+    @GetMapping("/my-wish")
+    public ResponseEntity<List<RestaurantResponseDTO>> getMyWishList(@RequestParam(value = "memberId") String memberId) {
+        List<RestaurantResponseDTO> wishList = restaurantService.getMyWishList(memberId);
+        return ResponseEntity.ok(wishList);
+    }
 
+    @GetMapping("/popular-list")
+    public ResponseEntity<List<RestaurantResponseDTO>> getPopularList() {
+        List<RestaurantResponseDTO> popularList = restaurantService.getPopularList();
+        return ResponseEntity.ok(popularList);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<RestaurantResponseDTO>> getAllList() {
+        List<RestaurantResponseDTO> allList = restaurantService.getAllList();
+        return ResponseEntity.ok(allList);
+    }
+
+    @GetMapping("/my-wish-map")
+    public ResponseEntity<List<RestaurantMapMarkerDTO>> getMyWishMapMarkers(
+            @RequestParam("memberId") String memberId) {
+
+        List<RestaurantMapMarkerDTO> wishMarkers = restaurantService.getWishMapMarkers(memberId);
+        return ResponseEntity.ok(wishMarkers);
+    }
+
+    @GetMapping("/my-visited-map")
+    public ResponseEntity<List<RestaurantMapMarkerDTO>> getMyVisitedMapMarkers(
+            @RequestParam("memberId") String memberId) {
+
+        List<RestaurantMapMarkerDTO> visitedMarkers = restaurantService.getVisitedMapMarkers(memberId);
+        return ResponseEntity.ok(visitedMarkers);
+    }
 
 }
