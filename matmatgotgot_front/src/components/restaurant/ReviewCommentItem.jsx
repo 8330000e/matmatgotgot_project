@@ -127,7 +127,7 @@ const ReviewCommentItem = ({
                 alt="프로필"
               />
             ) : (
-              <span className="material-icons">account_circle</span>
+              ""
             )}
           </div>
           <span className={styles.comment_name}>{comment.writerName}</span>
@@ -366,7 +366,7 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
                   alt="프로필"
                 />
               ) : (
-                <span className="material-icons">account_circle</span>
+                ""
               )}
             </div>
             <span className={styles.comment_name}>{reply.writerName}</span>

@@ -43,7 +43,7 @@ const ReviewViewInfo = ({ review }) => {
                 alt="프로필 이미지"
               />
             ) : (
-              <span className="material-icons">account_circle</span>
+              ""
             )}
           </div>
 
@@ -75,7 +75,7 @@ const ReviewViewInfo = ({ review }) => {
               <SwiperSlide key={idx}>
                 <img
                   className={styles.swiper_img}
-                  src={`${import.meta.env.VITE_BACKSERVER}/restaurants/${image}`}
+                  src={`${image}`}
                   alt="리뷰 이미지"
                 />
               </SwiperSlide>

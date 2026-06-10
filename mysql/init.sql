@@ -7,12 +7,12 @@ SET character_set_results = utf8mb4;
 CREATE DATABASE IF NOT EXISTS matgotdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE matgotdb;
 
--- 2. 관리자 계정 생성 및 권한 부여
-CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY '2222';
-CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY '2222';
-GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
-FLUSH PRIVILEGES;
+-- -- 2. 관리자 계정 생성 및 권한 부여
+-- CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY '2222';
+-- CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY '2222';
+-- GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
+-- GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
+-- FLUSH PRIVILEGES;
 
 -- 3. 회원 테이블 생성
 CREATE TABLE `MEMBER_TBL` (

@@ -635,4 +635,17 @@
         WHERE rest_no = #{restNo}
     </delete>
 
+    <select id="findUrlByReviewNo" resultType="String">
+        SELECT image_url FROM review_images_tbl
+        WHERE review_no = #{reviewNo}
+    </select>
+
+    <select id="findUrlByRestNo" resultType="String">
+        SELECT image_url
+        FROM review_images_tbl
+        WHERE review_no IN (SELECT review_no
+                            FROM review_tbl
+                            WHERE rest_no = #{restNo})
+    </select>
+
 </mapper>

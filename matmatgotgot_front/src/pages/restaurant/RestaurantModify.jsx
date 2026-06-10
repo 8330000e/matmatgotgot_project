@@ -16,6 +16,7 @@ const RestaurantModify = () => {
   const [restPhone, setRestPhone] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
+  const originalContent = useRef("");
 
   const mapDivRef = useRef(null);
   const [lat, setLat] = useState(37.5696734);
@@ -34,6 +35,7 @@ const RestaurantModify = () => {
         setRestPhone(data.phone ?? "");
         setCategory(data.category ?? "");
         setContent(data.restContent ?? "");
+        originalContent.current = data.restContent ?? "";
         // 기존 좌표가 있으면 지도 중심으로 세팅
         if (data.lat) setLat(data.lat);
         if (data.lng) setLng(data.lng);
@@ -79,8 +81,28 @@ const RestaurantModify = () => {
     { value: "중식", label: "중식" },
   ];
 
+  // URL 추출 헬퍼
+  const extractImageUrls = (html) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    return [...doc.querySelectorAll("img")].map((img) => img.src);
+  };
+
   // 맛집 수정 요청
-  const modify = () => {
+  const modify = async () => {
+    // 삭제된 이미지 URL 계산
+    const prevUrls = extractImageUrls(originalContent.current);
+    const nextUrls = extractImageUrls(content);
+    const deletedUrls = prevUrls.filter((url) => !nextUrls.includes(url));
+
+    // 삭제된 이미지가 있으면 먼저 처리
+    if (deletedUrls.length > 0) {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKSERVER}/restaurants/images`,
+        { data: deletedUrls },
+      );
+    }
+
     const requestData = {
       restNo,
       restName,
@@ -194,9 +216,7 @@ const RestaurantModify = () => {
         {/* 우측: 네이버 지도 */}
         <section className={styles.info_right}>
           <div className={styles.map_label}>
-            <span className={styles.field_label}>
-              위치 (지도 클릭으로 변경)
-            </span>
+            <span className={styles.field_label}>위치</span>
           </div>
           <div className={styles.map_div} ref={mapDivRef} />
         </section>

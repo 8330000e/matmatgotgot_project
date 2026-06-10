@@ -10,6 +10,9 @@
 	<select id="selectOneMember" resultType="member">
 		select * from MEMBER_TBL where member_id = #{memberId}
 	</select>
+	<update id="updateEmail">
+		update member_tbl set member_email = #{newMemberEmail} where member_id = #{memberId}
+	</update>
 	<update id="updateThumbnail">
 		update member_tbl set member_thumb = #{memberThumb} where member_id = #{memberId}
 	</update>
@@ -35,6 +38,6 @@
 		insert into LOGIN_LOG_TBL (member_no, login_status) value (#{memberNo}, 1)
 	</insert>
 	<update id="updateLocation">
-		update member_tbl set lat = #{coords.lat} and lng = #{coords.lng} where member_id = #{memberId}
+		update member_tbl set lat = #{coords.lat}, lng = #{coords.lng} where member_id = #{memberId}
 	</update>
 </mapper>

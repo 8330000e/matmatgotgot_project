@@ -1,8 +1,5 @@
 package com.twotwo.matmatgotgot.domain.restaurant.service;
 
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.RestViewReviewsRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCommentRequest;
-import com.twotwo.matmatgotgot.domain.restaurant.dto.request.ReviewCreateRequest;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.request.*;
 import com.twotwo.matmatgotgot.domain.restaurant.dto.response.*;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
@@ -10,14 +7,15 @@ import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
 import com.twotwo.matmatgotgot.global.util.FileUtil;
+import com.twotwo.matmatgotgot.global.util.S3FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+// [수정] @Value("${file.root}") 제거 → S3 경로 관리는 FileUtil 내부에서 처리
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+// [수정] java.io.File 제거 → S3 업로드 전환으로 로컬 File 객체 불필요
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,10 +25,8 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     private final RestaurantMapper restaurantMapper;
-    private final FileUtil fileUtil;
-
-    @Value("${file.root}")
-    private String root;
+    private final S3FileUtil fileUtil;
+    // [수정] file.root 필드 제거 → S3 폴더명은 FileUtil.upload() 호출 시 직접 지정
 
     @Transactional
     public int restaurantCreate(Restaurant restaurant) {
@@ -96,19 +92,16 @@ public class RestaurantService {
         }
 
         if (request.getFiles() != null && !request.getFiles().isEmpty()) {
-            String savepath = root + "restaurant/";
-            File dir = new File(savepath);  // 디렉토리 없으면 생성
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
             List<String> imageUrls = new ArrayList<>();
 
             for (MultipartFile file : request.getFiles()) {
                 if (file.isEmpty()) continue;
 
-                String savedFileName = fileUtil.upload(savepath, file); // UUID 파일명 반환
-                imageUrls.add(savedFileName);
+                // [수정] 로컬 경로 대신 S3 폴더명("restaurant")을 전달
+                //        upload() 반환값이 S3 퍼블릭 URL 전체로 변경됨
+                //        예: "https://bucket.s3.region.amazonaws.com/restaurant/uuid.jpg"
+                String s3Url = fileUtil.upload("restaurant", file);
+                imageUrls.add(s3Url);
             }
 
             if (!imageUrls.isEmpty()) {
@@ -196,41 +189,12 @@ public class RestaurantService {
         return restaurantMapper.getRegion(memberId, coords);
     }//
 
-    // Main
-    public List<RestaurantResponseDTO> getMyWishList(String memberId) {
-        List<Restaurant> list = restaurantMapper.selectMyWishList(memberId);
-        return list.stream()
-                .map(RestaurantResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<RestaurantResponseDTO> getPopularList() {
-        List<Restaurant> list = restaurantMapper.selectPopularList();
-        return list.stream()
-                .map(RestaurantResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<RestaurantResponseDTO> getAllList() {
-        List<Restaurant> list = restaurantMapper.selectAllList();
-        return list.stream()
-                .map(RestaurantResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<RestaurantMapMarkerDTO> getWishMapMarkers(String memberId) {
-        return restaurantMapper.selectWishMapMarkers(memberId);
-    }
-
-    public List<RestaurantMapMarkerDTO> getVisitedMapMarkers(String memberId) {
-        return restaurantMapper.selectVisitedMapMarkers(memberId);
-    }
     public List<Recommand> getMainList(MainListRequest req, String memberId) {
         return restaurantMapper.getMainList(req, memberId);
     }//
 
     public int getMainListCount(MainListRequest req, String memberId) {
-       return restaurantMapper.getMainListCount(req, memberId);
+        return restaurantMapper.getMainListCount(req, memberId);
     }//
 
     public CheckDuplicationResponse isDup(CheckDuplicationRequest chk) {
@@ -295,24 +259,26 @@ public class RestaurantService {
         }
 
         // 5. 이미지 삭제
-        restaurantMapper.reviewDeleteImages(req);
+        if(req.getDeleteFileList() != null && !req.getDeleteFileList().isEmpty()){
+            for (String url : req.getDeleteFileList()) {
+                fileUtil.deleteFile(url);
+            }
+            restaurantMapper.reviewDeleteImages(req);
+        }
 
         // 6. 이미지 삽입
         if (req.getFiles() != null && !req.getFiles().isEmpty()) {
-            String savepath = root + "restaurant/";
-            File dir = new File(savepath);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
             List<String> imageUrls = new ArrayList<>();
             for (MultipartFile file : req.getFiles()) {
                 if (file.isEmpty()) continue;
-                String savedFileName = fileUtil.upload(savepath, file);
-                if (savedFileName == null || savedFileName.isEmpty()) {
-                    throw new RuntimeException("파일 업로드 실패: " + file.getOriginalFilename());
+
+                // 로컬 경로 대신 S3 폴더명("restaurant") 전달
+                //        upload() 반환값: S3 퍼블릭 URL 전체
+                String s3Url = fileUtil.upload("restaurant", file);
+                if (s3Url == null || s3Url.isBlank()) {
+                    throw new RuntimeException("S3 파일 업로드 실패: " + file.getOriginalFilename());
                 }
-                imageUrls.add(savedFileName);
+                imageUrls.add(s3Url);
             }
 
             if (!imageUrls.isEmpty()) {
@@ -335,11 +301,22 @@ public class RestaurantService {
 
     @Transactional
     public int deleteReview(Long reviewNo) {
+        List<String> urls = restaurantMapper.findUrlByReviewNo(reviewNo);
+        for (String url : urls) {
+            fileUtil.deleteFile(url);
+        }
+
         return restaurantMapper.deleteReview(reviewNo);
     }//
 
     @Transactional
     public int deleteRest(Long restNo) {
+        List<String> urls = restaurantMapper.findUrlByRestNo(restNo);
+        for (String url : urls) {
+            fileUtil.deleteFile(url);
+        }
+
         return restaurantMapper.deleteRest(restNo);
     }//
+
 }
