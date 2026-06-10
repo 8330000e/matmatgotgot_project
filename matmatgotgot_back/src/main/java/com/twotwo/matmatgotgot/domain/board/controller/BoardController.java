@@ -7,7 +7,6 @@ import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
 import com.twotwo.matmatgotgot.domain.board.service.BoardService;
 
 import com.twotwo.matmatgotgot.global.util.FileUtil;
-import com.twotwo.matmatgotgot.global.util.S3FileUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.jsoup.Jsoup;
