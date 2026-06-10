@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="519cdeb0-4587-473c-a12e-b8c4f86a73d9" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_back/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matmatgotgot_front/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/matmatgotgot_front/Dockerfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,27 +33,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
-  <component name="ProjectId" id="3Ew7RBdQBsY9gO4DUNvmgpHS2on" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
     "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/user1/Desktop/matmatgotgot_project",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+    "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
   <component name="RunManager">
@@ -74,7 +57,6 @@
       <option name="presentableId" value="Default" />
       <updated>1781045529176</updated>
       <workItem from="1781045529670" duration="12000" />
-      <workItem from="1781077768677" duration="230000" />
     </task>
     <servers />
   </component>
