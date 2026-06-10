@@ -1,28 +1,26 @@
-import { useEffect, useState } from 'react';
-import styles from './ReviewRegist.module.css';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import { useNavigate, useParams } from 'react-router-dom';
-import Rating from '@mui/material/Rating';
-import ClearIcon from '@mui/icons-material/Clear';
-import { useAuthStore } from '../../store/useAuthStore'; //지연
+import { useEffect, useState } from "react";
+import styles from "./ReviewRegist.module.css";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useNavigate, useParams } from "react-router-dom";
+import Rating from "@mui/material/Rating";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const ReviewRegist = () => {
   const { restNo } = useParams();
   const navigate = useNavigate();
-  const memberStatus = useAuthStore((state) => state.memberStatus); //지연
 
   // 폼 필드 상태
   const [review, setReview] = useState({
-    restName: '',
-    restAddr: '',
-    reviewVisit: '',
+    restName: "",
+    restAddr: "",
+    reviewVisit: "",
   });
   const [menus, setMenus] = useState([]);
-  const [reviewContent, setReviewContent] = useState('');
+  const [reviewContent, setReviewContent] = useState("");
 
   useEffect(() => {
-    const savedData = sessionStorage.getItem('receiptData');
+    const savedData = sessionStorage.getItem("receiptData");
 
     if (!savedData) return;
 
@@ -70,17 +68,6 @@ const ReviewRegist = () => {
 
   // 리뷰 등록
   const registReview = () => {
-    //지연 - 회원 상태 비정상/정지일 때 리뷰 등록 막음
-    if (Number(memberStatus) === 1 || Number(memberStatus) === 3) {
-      Swal.fire({
-        title: '리뷰 작성 불가',
-        text: '현재 회원 상태에서는 리뷰를 작성할 수 없습니다.',
-        icon: 'warning',
-        confirmButtonColor: 'var(--primary)',
-      });
-      return;
-    }
-
     // 필수 항목 검증
     if (
       !review.restName.trim() ||
@@ -90,43 +77,43 @@ const ReviewRegist = () => {
       !(menus.length > 0) ||
       rating === 0
     ) {
-      Swal.fire({ title: '필수 항목을 입력해주세요', icon: 'warning' });
+      Swal.fire({ title: "필수 항목을 입력해주세요", icon: "warning" });
       return;
     }
 
     // 파일 포함 요청 → FormData 사용
     const form = new FormData();
 
-    form.append('restNo', restNo);
-    form.append('restName', review.restName);
-    form.append('restAddr', review.restAddr);
-    form.append('reviewVisit', review.reviewVisit);
-    form.append('reviewContent', reviewContent);
-    form.append('rating', rating);
-    menus.forEach((menu) => form.append('reviewMenus', menu.name));
-    tags.forEach((tag) => form.append('tags', tag));
-    files.forEach((file) => form.append('files', file));
+    form.append("restNo", restNo);
+    form.append("restName", review.restName);
+    form.append("restAddr", review.restAddr);
+    form.append("reviewVisit", review.reviewVisit);
+    form.append("reviewContent", reviewContent);
+    form.append("rating", rating);
+    menus.forEach((menu) => form.append("reviewMenus", menu.name));
+    tags.forEach((tag) => form.append("tags", tag));
+    files.forEach((file) => form.append("files", file));
 
     axios
       .post(`${import.meta.env.VITE_BACKSERVER}/restaurants/review`, form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
         console.log(res.data.success);
         if (res.data.success) {
           Swal.fire({
-            icon: 'success',
-            title: '등록 완료',
-            text: '리뷰 상세 페이지로 이동합니다.',
+            icon: "success",
+            title: "등록 완료",
+            text: "리뷰 상세 페이지로 이동합니다.",
           }).then(() => {
-            sessionStorage.removeItem('receiptData');
+            sessionStorage.removeItem("receiptData");
             navigate(`/rest/review/view/${res.data.reviewNo}`);
           });
         } else {
           Swal.fire({
-            icon: 'warning',
-            title: '등록 실패',
-            text: '리뷰 등록에 실패하였습니다.',
+            icon: "warning",
+            title: "등록 실패",
+            text: "리뷰 등록에 실패하였습니다.",
           });
         }
       })
@@ -137,11 +124,11 @@ const ReviewRegist = () => {
   };
 
   const tagList = [
-    { value: '야외석', label: '야외석' },
-    { value: '국물', label: '국물' },
-    { value: '분위기', label: '분위기' },
-    { value: '혼밥', label: '혼밥' },
-    { value: '데이트', label: '데이트' },
+    { value: "야외석", label: "야외석" },
+    { value: "국물", label: "국물" },
+    { value: "분위기", label: "분위기" },
+    { value: "혼밥", label: "혼밥" },
+    { value: "데이트", label: "데이트" },
   ];
 
   return (
@@ -212,9 +199,9 @@ const ReviewRegist = () => {
               onChange={(e, newValue) => setRating(newValue)}
               size="large"
               sx={{
-                color: 'var(--primary)', // 선택된 별 — 노란색
-                '& .MuiRating-iconEmpty': {
-                  color: 'var(--gray5)', // 미선택 별 — 회색
+                color: "var(--primary)", // 선택된 별 — 노란색
+                "& .MuiRating-iconEmpty": {
+                  color: "var(--gray5)", // 미선택 별 — 회색
                 },
               }}
             />
@@ -248,7 +235,7 @@ const ReviewRegist = () => {
               id="files"
               accept="image/*"
               multiple
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               onChange={(e) => addFiles(Array.from(e.target.files))}
             />
 
