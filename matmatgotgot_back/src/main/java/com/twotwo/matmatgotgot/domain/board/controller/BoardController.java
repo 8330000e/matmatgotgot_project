@@ -6,6 +6,7 @@ import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
 import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
 import com.twotwo.matmatgotgot.domain.board.service.BoardService;
 
+import com.twotwo.matmatgotgot.global.util.FileUtil;
 import com.twotwo.matmatgotgot.global.util.S3FileUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +30,7 @@ import java.util.Map;
 public class BoardController {
 
     private final BoardService boardService;
-    private final S3FileUtil fileUtil;
+    private final FileUtil fileUtil;
 
     @Value("${file.root}")
     private String root;
@@ -76,7 +77,7 @@ public class BoardController {
             dir.mkdirs();
         }
 
-        String filePath = fileUtil.upload("editor", image);
+        String filePath = fileUtil.upload(savePath, image);
         return ResponseEntity.ok(filePath);
     }
 
