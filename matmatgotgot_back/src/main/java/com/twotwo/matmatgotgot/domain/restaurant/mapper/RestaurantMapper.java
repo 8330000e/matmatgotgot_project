@@ -32,10 +32,10 @@ public interface RestaurantMapper {
     int reviewInsert(ReviewCreateRequest request);
 
     int insertReviewMenus(@Param("reviewNo") Long reviewNo,
-                           @Param("menuList") List<String> menuList);
+                          @Param("menuList") List<String> menuList);
 
     int insertReviewTags(@Param("reviewNo") Long reviewNo,
-                          @Param("tagList") List<String> tagList);
+                         @Param("tagList") List<String> tagList);
 
     int insertReviewImages(@Param("reviewNo") Long reviewNo,
                            @Param("imageUrls") List<String> imageUrls);
@@ -78,7 +78,7 @@ public interface RestaurantMapper {
                                 @Param("memberId") String memberId);
 
     int getMainListCount(@Param("req") MainListRequest req,
-                             @Param("String") String memberId);
+                         @Param("String") String memberId);
 
     Long getSame(CheckDuplicationRequest chk);
 
@@ -124,4 +124,7 @@ public interface RestaurantMapper {
 
     int deleteRest(Long restNo);
 
+    List<String> findUrlByReviewNo(Long reviewNo);
+
+    List<String> findUrlByRestNo(Long restNo);
 }
