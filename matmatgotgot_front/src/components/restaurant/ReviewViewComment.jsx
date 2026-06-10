@@ -1,19 +1,22 @@
-import { useState, useEffect } from "react"; // useEffect 추가
-import ReviewCommentItem from "./ReviewCommentItem";
-import styles from "./ReviewViewComment.module.css";
-import axios from "axios";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useState, useEffect } from 'react'; // useEffect 추가
+import ReviewCommentItem from './ReviewCommentItem';
+import styles from './ReviewViewComment.module.css';
+import axios from 'axios';
+import { useAuthStore } from '../../store/useAuthStore'; //지연
+import Swal from 'sweetalert2';
 
 const ReviewViewComment = ({ reviewNo }) => {
   // 로그인한 회원 번호 (본인 댓글 수정/삭제 여부 판단에 사용)
   const loginMemberId = useAuthStore((state) => state.memberId);
   // const loginMemberNo = authStore.memberId;
 
+  const memberStatus = useAuthStore((state) => state.memberStatus); //지연
+
   // 서버에서 받은 전체 댓글 flat list
   const [commentList, setCommentList] = useState([]);
 
   // 새 댓글 입력값
-  const [newCommentContent, setNewCommentContent] = useState("");
+  const [newCommentContent, setNewCommentContent] = useState('');
 
   // 댓글 목록 조회
   // reviewNo 가 바뀔 때마다 재조회
@@ -36,6 +39,16 @@ const ReviewViewComment = ({ reviewNo }) => {
 
   // 새 댓글 등록 (depth = 0)
   const registComment = () => {
+    //지연 - 회원 상태 정지/비공개
+    if (Number(memberStatus) === 1 || Number(memberStatus) === 3) {
+      Swal.fire({
+        title: '댓글 작성 불가',
+        text: '현재 회원 상태에서는 댓글을 작성할 수 없습니다.',
+        icon: 'warning',
+        confirmButtonColor: 'var(--primary)',
+      });
+      return;
+    }
     if (!newCommentContent.trim()) return; // 빈 내용 방지
 
     axios
@@ -50,7 +63,7 @@ const ReviewViewComment = ({ reviewNo }) => {
       .then((res) => {
         // 등록된 댓글을 목록 끝에 추가
         setCommentList([...commentList, res.data]);
-        setNewCommentContent(""); // 입력창 초기화
+        setNewCommentContent(''); // 입력창 초기화
       })
       .catch((err) => {
         console.log(err);
@@ -162,7 +175,7 @@ const ReviewViewComment = ({ reviewNo }) => {
           onChange={(e) => setNewCommentContent(e.target.value)}
           // Enter(Shift 없이) 입력 시 등록
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
+            if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
               registComment();
             }

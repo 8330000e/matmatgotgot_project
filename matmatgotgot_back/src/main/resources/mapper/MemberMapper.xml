@@ -38,7 +38,7 @@
 		insert into LOGIN_LOG_TBL (member_no, login_status) value (#{memberNo}, 1)
 	</insert>
 	<update id="updateLocation">
-		update member_tbl set lat = #{coords.lat} and lng = #{coords.lng} where member_id = #{memberId}
+		update member_tbl set lat = #{coords.lat}, lng = #{coords.lng} where member_id = #{memberId}
 	</update>
 	<select id="getNative" resultType="natives">
 		select * from natives_tbl where member_id = #{memberId}
