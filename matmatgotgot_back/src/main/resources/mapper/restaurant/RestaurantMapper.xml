@@ -39,8 +39,8 @@
             ) AS is_report
 
         FROM RESTAURANT_TBL r
-        INNER JOIN MEMBER_TBL m
-            ON r.member_id = m.member_id
+                 INNER JOIN MEMBER_TBL m
+                            ON r.member_id = m.member_id
         WHERE r.rest_no = #{restNo} AND r.rest_status = 'NORMAL'
     </select>
 
@@ -56,29 +56,29 @@
         SELECT DISTINCT menu_name
         FROM REVIEW_MENU_TBL
         WHERE review_no IN (SELECT review_no
-                           FROM REVIEW_TBL
-                           WHERE rest_no = #{restNo}
+                            FROM REVIEW_TBL
+                            WHERE rest_no = #{restNo}
         );
     </select>
 
     <select id="restaurantViewReviews" resultType="restReviewsResponse">
-    SELECT
-        r.review_no,
-        m.member_name AS writer,
-        m.member_thumb AS writer_thumb,
-        r.rating,
-        r.review_content,
-        r.visit_date
+        SELECT
+            r.review_no,
+            m.member_name AS writer,
+            m.member_thumb AS writer_thumb,
+            r.rating,
+            r.review_content,
+            r.visit_date
 
-    FROM REVIEW_TBL r
-             INNER JOIN MEMBER_TBL m
-                        ON r.member_id = m.member_id
-    WHERE rest_no = #{restNo}
-      AND review_status = 0
-    ORDER BY r.visit_date DESC
+        FROM REVIEW_TBL r
+                 INNER JOIN MEMBER_TBL m
+                            ON r.member_id = m.member_id
+        WHERE rest_no = #{restNo}
+          AND review_status = 0
+        ORDER BY r.visit_date DESC
 
-        LIMIT #{size} OFFSET #{offset}
-</select>
+            LIMIT #{size} OFFSET #{offset}
+    </select>
 
     <select id="getMenusByReviewNo" resultType="String">
         SELECT menu_name
@@ -249,7 +249,7 @@
             rating_avg DESC,
             r.review_total_count DESC
 
-        LIMIT 10
+            LIMIT 10
     </select>
 
     <select id="getLike" resultType="recommand">
@@ -271,42 +271,42 @@
 
     <select id="getRegion" resultType="recommand">
         SELECT
-        r.rest_no,
-        r.rest_name,
-        r.rest_thumb,
-        r.rest_addr,
-        r.category,
-        r.review_total_count,
-        ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
+            r.rest_no,
+            r.rest_name,
+            r.rest_thumb,
+            r.rest_addr,
+            r.category,
+            r.review_total_count,
+            ROUND(r.rating_sum * 1.0 / NULLIF(r.review_total_count, 0), 1) AS rating_avg,
 
-        EXISTS (
-        SELECT 1
-        FROM REST_LIKE_TBL rl
-        WHERE rl.rest_no = r.rest_no
-        AND rl.member_id = #{memberId}
-        ) AS is_like,
+            EXISTS (
+                SELECT 1
+                FROM REST_LIKE_TBL rl
+                WHERE rl.rest_no = r.rest_no
+                  AND rl.member_id = #{memberId}
+            ) AS is_like,
 
-        (
-        6371 * ACOS(
-        COS(RADIANS(#{coords.lat}))
-        * COS(RADIANS(lat))
-        * COS(RADIANS(lng) - RADIANS(#{coords.lng}))
-        + SIN(RADIANS(#{coords.lat}))
-        * SIN(RADIANS(lat))
-        )
-        ) AS distance_km
+            (
+                6371 * ACOS(
+                        COS(RADIANS(#{coords.lat}))
+                            * COS(RADIANS(lat))
+                            * COS(RADIANS(lng) - RADIANS(#{coords.lng}))
+                            + SIN(RADIANS(#{coords.lat}))
+                            * SIN(RADIANS(lat))
+                       )
+                ) AS distance_km
 
         FROM RESTAURANT_TBL r
         <![CDATA[
         WHERE (
-        6371 * ACOS(
-        COS(RADIANS(#{coords.lat}))
-        * COS(RADIANS(r.lat))
-        * COS(RADIANS(r.lng) - RADIANS(#{coords.lng}))
-        + SIN(RADIANS(#{coords.lat}))
-        * SIN(RADIANS(r.lat))
-        )
-        ) <= 10
+                  6371 * ACOS(
+                          COS(RADIANS(#{coords.lat}))
+                              * COS(RADIANS(r.lat))
+                              * COS(RADIANS(r.lng) - RADIANS(#{coords.lng}))
+                              + SIN(RADIANS(#{coords.lat}))
+                              * SIN(RADIANS(r.lat))
+                         )
+                  ) <= 10
         ]]>
 
         ORDER BY distance_km ASC
@@ -491,14 +491,14 @@
         FROM RESTAURANT_TBL r
         WHERE r.rest_name = #{storeName}
           AND (
-                6371 * ACOS(
-                COS(RADIANS(#{lat}))
-                * COS(RADIANS(r.lat))
-                * COS(RADIANS(r.lng) - RADIANS(#{lng}))
-                + SIN(RADIANS(#{lat}))
-                * SIN(RADIANS(r.lat))
-                )
-          ) <![CDATA[ <= 0.1 ]]>
+                  6371 * ACOS(
+                          COS(RADIANS(#{lat}))
+                              * COS(RADIANS(r.lat))
+                              * COS(RADIANS(r.lng) - RADIANS(#{lng}))
+                              + SIN(RADIANS(#{lat}))
+                              * SIN(RADIANS(r.lat))
+                         )
+                  ) <![CDATA[ <= 0.1 ]]>
     </select>
 
     <update id="increaseRatingAvg">
@@ -634,5 +634,18 @@
         DELETE FROM RESTAURANT_TBL
         WHERE rest_no = #{restNo}
     </delete>
+
+    <select id="findUrlByReviewNo" resultType="String">
+        SELECT image_url FROM review_images_tbl
+        WHERE review_no = #{reviewNo}
+    </select>
+
+    <select id="findUrlByRestNo" resultType="String">
+        SELECT image_url
+        FROM review_images_tbl
+        WHERE review_no IN (SELECT review_no
+                            FROM review_tbl
+                            WHERE rest_no = #{restNo})
+    </select>
 
 </mapper>

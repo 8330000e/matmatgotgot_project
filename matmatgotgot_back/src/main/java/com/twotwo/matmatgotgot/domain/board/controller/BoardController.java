@@ -5,20 +5,18 @@ import com.twotwo.matmatgotgot.domain.board.entity.BoardComment;
 import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
 import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
 import com.twotwo.matmatgotgot.domain.board.service.BoardService;
+import com.twotwo.matmatgotgot.global.util.S3FileUtil;
 
-import com.twotwo.matmatgotgot.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +27,7 @@ import java.util.Map;
 public class BoardController {
 
     private final BoardService boardService;
-    private final FileUtil fileUtil;
-
-    @Value("${file.root}")
-    private String root;
+    private final S3FileUtil s3FileUtil;
 
     // 게시글 목록 조회
     @GetMapping
@@ -64,19 +59,12 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-    // 이미지 업로드 (원래 코드 유지)
+    // 이미지 업로드
     @PostMapping("/image-upload")
     public ResponseEntity<?> imageUpload(
             @ModelAttribute MultipartFile image
     ) {
-        String savePath = root + "editor/";
-        File dir = new File(savePath);
-
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        String filePath = fileUtil.upload(savePath, image);
+        String filePath = s3FileUtil.upload("editor", image);
         return ResponseEntity.ok(filePath);
     }
 
@@ -249,8 +237,8 @@ public class BoardController {
             @RequestBody Map<String, Object> reportData,
 
 
-        // 로그인 구현 완료 시 사용할 코드
-        @RequestHeader("Authorization") String token
+            // 로그인 구현 완료 시 사용할 코드
+            @RequestHeader("Authorization") String token
 
 
             // 로그인 구현 전 테스트용 코드
@@ -371,8 +359,8 @@ public class BoardController {
             @PathVariable Integer boardCommentNo,
             @RequestBody Map<String, Object> reportData,
 
-        // 로그인 구현 완료 시 사용할 코드
-        @RequestHeader("Authorization") String token
+            // 로그인 구현 완료 시 사용할 코드
+            @RequestHeader("Authorization") String token
 
 
             // 로그인 구현 전 테스트용 코드
@@ -394,8 +382,8 @@ public class BoardController {
             @PathVariable Integer boardCommentNo,
 
 
-        // 로그인 구현 완료 시 사용할 코드
-        @RequestHeader("Authorization") String token
+            // 로그인 구현 완료 시 사용할 코드
+            @RequestHeader("Authorization") String token
 
 
             // 로그인 구현 전 테스트용 코드
@@ -412,8 +400,8 @@ public class BoardController {
             @PathVariable Integer boardCommentNo,
 
 
-        // 로그인 구현 완료 시 사용할 코드
-        @RequestHeader("Authorization") String token
+            // 로그인 구현 완료 시 사용할 코드
+            @RequestHeader("Authorization") String token
 
 
             // 로그인 구현 전 테스트용 코드

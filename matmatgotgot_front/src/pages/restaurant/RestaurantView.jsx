@@ -81,8 +81,8 @@ const RestaurantView = () => {
     }
   };
 
-  // 리뷰 삭제
-  const deleteReview = () => {
+  // 맛집 삭제
+  const deleteRest = () => {
     Swal.fire({
       title: "삭제하시겠습니까?",
       text: "삭제 후 복구할 수 없습니다",
@@ -90,8 +90,25 @@ const RestaurantView = () => {
       showCancelButton: true,
       confirmButtonText: "삭제",
       cancelButtonText: "취소",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
+        // 본문 이미지 URL 추출 후 S3에서 먼저 삭제
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(
+          restView?.restContent ?? "",
+          "text/html",
+        );
+        const imageUrls = [...doc.querySelectorAll("img")].map(
+          (img) => img.src,
+        );
+
+        if (imageUrls.length > 0) {
+          await axios.delete(
+            `${import.meta.env.VITE_BACKSERVER}/restaurants/images`,
+            { data: imageUrls },
+          );
+        }
+
         axios
           .delete(
             `${import.meta.env.VITE_BACKSERVER}/restaurants/rest/${restNo}`,
@@ -126,7 +143,7 @@ const RestaurantView = () => {
             >
               수정
             </button>
-            <button type="button" onClick={deleteReview}>
+            <button type="button" onClick={deleteRest}>
               삭제
             </button>
           </div>
