@@ -3,7 +3,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import {Link, useLocation, useParams} from "react-router-dom";
 import defaultImg from "../../assets/img/defaultImg.svg";
 import changeImg from "../../assets/img/changeImg.svg";
-import native from "../../assets/img/native.svg";
+import nativeicon from "../../assets/img/native.svg";
 import nativeIcon from "../../assets/img/nativeIcon.svg";
 import navigate from "../../assets/img/navigate.svg";
 import google from "../../assets/logo/google.svg";
@@ -148,6 +148,18 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             detailRef.current.focus();
         },
     });
+    const openPostcode = useKakaoPostcode({
+        onComplete: (data) => {
+            // 주소 선택이 완료되면 실행되는 블록
+            setMemberInfo((prev) => ({ ...prev, memberAddress: data.roadAddress }));
+
+            // 🌟 여기서 바로 비교 로직을 타는 것이 가장 안전합니다.
+            // (setState는 비동기라 memberInfo.memberAddress를 바로 비교하면 이전 값이 찍힐 수 있으므로 data.roadAddress와 직접 비교합니다.)
+            if (data.roadAddress === currentAddr) {
+                setNative(true);
+            }
+        } // 👈 onComplete 끝
+    }); // 👈 useKakaoPostcode 훅 설정 끝 (괄호 누락 해결!)
     const updateModeChange = () => {
         setUpdateMode((prev) => !prev);
     };
@@ -170,6 +182,34 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             .catch((err) => {
                 console.log(err);
             });
+    };
+    const [nativeMember,setNativeMember]=useState([]);
+    useEffect(() => {
+        // 🌟 [안전장치] memberId가 없거나 'undefined' 문자열이면 아예 요청을 안 보냄!
+        if (!memberId || memberId === 'undefined') {
+            console.warn("memberId가 준비되지 않아 요청을 보낼 수 없습니다.");
+            return;
+        }
+
+        // 값이 존재할 때만 서버에 요청
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives`, {
+                  params: {
+                    memberId: memberId
+                  }
+                })
+            .then(response => {
+                // 성공 시 처리할 로직 (예: setMemberData)
+                console.log("성공 데이터:", response.data);
+            })
+            .catch(error => {
+                console.error("서버 에러:", error);
+            });
+
+    }, [memberId]);
+    const [native,setNative]=useState(false);
+    const nativeCheck = () => {
+        // 카카오 우편번호 팝업창을 띄웁니다.
+        openPostcode();
     };
 
     if (!memberInfo) {
@@ -206,7 +246,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 <div>
                     <div>
                         <div className={styles.info_nick}>{updateMode ? <Input type="text" name="memberNickname" id="memberNickname" value={memberInfo.memberNickname} onChange={(e)=>setMemberInfo((prev)=>({...prev, [e.target.name]:e.target.value}))} /> : `${memberInfo.memberNickname}`}</div>
-                        <div><img src={native} alt="인증" /></div>
+                        <div><img src={nativeicon} alt="인증" /></div>
                     </div>
                     <ul className={styles.info_member}>
                         <li>
@@ -215,7 +255,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
-                            {updateMode? <><div>현지인 인증됨</div> <button className={styles.native_submit}>재인증</button></> : <div>현지인 인증됨</div>}
+                            {updateMode? <><div>현지인 인증됨</div> <button className={styles.native_submit} onClick={nativeCheck}>인증</button></> : <div>현지인 인증됨</div>}
                         </li>
                         <li>
                             2026.06.04 ~ 2026.12.04
