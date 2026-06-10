@@ -215,7 +215,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
-                            {updateMode? <><button className={styles.native_submit}>현지인 재인증</button></> : <div>현지인 인증됨</div>}
+                            {updateMode? <><div>현지인 인증됨</div> <button className={styles.native_submit}>재인증</button></> : <div>현지인 인증됨</div>}
                         </li>
                         <li>
                             2026.06.04 ~ 2026.12.04
