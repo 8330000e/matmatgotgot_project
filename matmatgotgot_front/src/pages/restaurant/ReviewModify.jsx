@@ -61,17 +61,17 @@ const ReviewModify = () => {
       });
   }, [reviewNo]);
 
-  // 새 이미지 추가
+  // ── 새 이미지 추가 ───────────────────────────────────────
   const addFiles = (fileList) => {
     setFiles([...files, ...fileList]);
   };
 
-  // 새 이미지 삭제
+  // ── 새 이미지 삭제 ───────────────────────────────────────
   const deleteFile = (targetFile) => {
     setFiles(files.filter((f) => f !== targetFile));
   };
 
-  // 기존 서버 파일 삭제 표시
+  // ── 기존 서버 파일 삭제 표시 ────────────────────────────
   // 실제 삭제는 수정 요청 시 deleteFileList를 서버에 전달
   const deleteServerFile = (fileName) => {
     console.log(fileName);
@@ -83,12 +83,12 @@ const ReviewModify = () => {
     }));
   };
 
-  // 입력 공통 핸들러
+  // ── 입력 공통 핸들러 ────────────────────────────────────
   const inputReview = (e) => {
     setReview({ ...review, [e.target.name]: e.target.value });
   };
 
-  // 태그 체크박스 핸들러
+  // ── 태그 체크박스 핸들러 ────────────────────────────────
   const handleTagChange = (e) => {
     const { value, checked } = e.target;
     if (checked) {
@@ -98,7 +98,7 @@ const ReviewModify = () => {
     }
   };
 
-  // 리뷰 수정 요청
+  // ── 리뷰 수정 요청 ──────────────────────────────────────
   const modifyReview = () => {
     // 필수 항목 검증
     if (
@@ -228,7 +228,7 @@ const ReviewModify = () => {
             />
           </div>
 
-          {/* 별점 — MUI Rating */}
+          {/* ── 별점 — MUI Rating ── */}
           <div className={styles.star_rating}>
             <div className={styles.field_label}>별점*</div>
             <Rating
@@ -244,7 +244,7 @@ const ReviewModify = () => {
             />
           </div>
 
-          {/* 태그 선택 */}
+          {/* ── 태그 선택 ── */}
           <div className={styles.tag_wrap}>
             <div className={styles.field_label}>태그 선택</div>
             <div className={styles.tag}>
@@ -263,7 +263,7 @@ const ReviewModify = () => {
           </div>
         </div>
 
-        {/* 오른쪽: 사진 + 리뷰 내용 */}
+        {/* ======= 오른쪽: 사진 + 리뷰 내용 ======= */}
         <div className={styles.main_right}>
           {/* ── 사진 등록 ── */}
           <div className={styles.field_group}>
@@ -287,7 +287,10 @@ const ReviewModify = () => {
                 {/* 기존 서버 파일 — X 버튼으로 삭제 표시 */}
                 {review.fileList.map((file, index) => (
                   <div key={`server-${index}`} className={styles.preview_item}>
-                    <img src={`${file}`} alt={`기존 이미지 ${index + 1}`} />
+                    <img
+                      src={`${import.meta.env.VITE_BACKSERVER}/restaurants/${file}`}
+                      alt={`기존 이미지 ${index + 1}`}
+                    />
                     <button
                       type="button"
                       className={styles.preview_delete}

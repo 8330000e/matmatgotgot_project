@@ -28,7 +28,7 @@ public class Restaurant {
     private Integer localReviewCount;
     private String restContent;
     private String aiReview;
-    private String restStatus;  // NORMAL, HIDDEN
+    private RestStatus restStatus;  // NORMAL, HIDDEN
     private String restThumb;
     private String createdAt;
 }
