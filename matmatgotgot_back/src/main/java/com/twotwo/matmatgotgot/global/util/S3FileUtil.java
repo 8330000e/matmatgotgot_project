@@ -49,7 +49,7 @@ public class S3FileUtil {
         }
 
         // UUID 기반 고유 파일명 생성 → S3 오브젝트 키 (폴더/파일명)
-        String s3Key = folder + "/" + UUID.randomUUID() + extension;
+        String s3Key = "ready" + folder + "/" + UUID.randomUUID() + extension;
 
         try {
             // S3 업로드 요청 객체 생성
