@@ -1,54 +1,32 @@
 version: "3.8"
 
 services:
-  # ===== MySQL =====
-  db:
-    image: mysql:8.0
-    container_name: matgotdb
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: matgotdb
-      MYSQL_CHARACTER_SET_SERVER: utf8mb4
-      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --init-connect=SET NAMES utf8mb4
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - board-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
   # ===== Spring Boot Backend =====
-  matmatgotgot_back: # 💡 들여쓰기 위치 정렬 완료
+  matmatgotgot_back:
     build:
       context: ./matmatgotgot_back
       dockerfile: Dockerfile
     container_name: matgot-backend
     restart: always
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      S3_BUCKET: ${S3_BUCKET}
-      AWS_REGION: ${AWS_REGION}
-      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
-      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      JWT_EXPIRATION: 3600000
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT_URI: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT_URI}
+      NAVER_CLIENT_ID_K: ${VITE_NAVER_CLIENT_ID}
+      NAVER_CLIENT_SECRET_K: ${VITE_NAVER_CLIENT_SECRET}
+      CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${AWS_SECRET_KEY}
+      CLOUD_AWS_REGION_STATIC: ${AWS_REGION}
+      CLOUD_AWS_S3_BUCKET: ${S3_BUCKET}
     ports:
-      - "8080:8080"
+      - "9999:9999"
     networks:
       - board-network
 
@@ -62,14 +40,9 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - matmatgotgot_back # 💡 'backend'에서 실제 이름인 'matmatgotgot_back'으로 수정
+      - matmatgotgot_back
     networks:
       - board-network
-
-# ===== 볼륨 =====
-volumes: # 💡 DB 데이터 보존을 위해 주석 해제
-  mysql-data:
-    name: board-mysql-data
 
 # ===== 네트워크 =====
 networks:
