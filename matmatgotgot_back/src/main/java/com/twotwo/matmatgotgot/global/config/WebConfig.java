@@ -16,11 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
         public void addCorsMappings(CorsRegistry registry) {
-                // allowCredentials(true)를 사용할 때는 allowedOrigins("*")를 사용할 수 없습니다.
-                // 브라우저는 자격 증명 포함 응답에서 Access-Control-Allow-Origin을 '*'로 설정하는 것을 허용하지 않습니다.
-                // 따라서 명시적 origin 목록이나 allowedOriginPatterns를 사용해야 합니다.
-                registry.addMapping("**")
-                .allowedOrigins("https://d2lg74d5mqmhqe.cloudfront.net", "http://ec2-15-165-96-13.ap-northeast-2.compute.amazonaws.com")
+        registry.addMapping("/**")
                 .allowedOriginPatterns(
                         "https://d2lg74d5mqmhqe.cloudfront.net",
                         "http://ec2-15-165-96-13.ap-northeast-2.compute.amazonaws.com",
