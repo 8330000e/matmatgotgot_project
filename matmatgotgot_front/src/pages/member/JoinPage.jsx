@@ -36,7 +36,7 @@ const Join = () => {
     // 1. 형식 검사를 서버 요청 전에 먼저 수행하는 것이 효율적입니다.
     const idReg = /^[a-zA-Z0-9]{6,20}$/;
     if (!idReg.test(member.memberId)) {
-      setCheckId(0); // 예: 형식 불일치
+      setCheckId(3); // 예: 형식 불일치
       return;
     }
 
@@ -53,7 +53,7 @@ const Join = () => {
         } else if (res.data.memberId === member.memberId) {
           setCheckId(2); // 이미 존재하는 ID
         } else {
-          setCheckId(3); // 기타 오류
+          setCheckId(0); // 기타 오류
         }
       })
       .catch((err) => {
@@ -390,24 +390,18 @@ const Join = () => {
               onBlur={idDupCheck}
               required
             />
-            {checkId === 0 ? (
-              <div className={styles.idcheckf}>
-                아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.
-              </div>
-            ) : checkId === 1 ? (
+            {checkId === 0 ? null : checkId === 1 ? (
               <div className={styles.idcheckt}>사용 가능한 아이디입니다.</div>
             ) : checkId === 2 ? (
               <div className={styles.idcheckf}>
                 이미 사용 중인 아이디입니다.
               </div>
-            ) : checkId === 3 ? (
-              <div className={styles.idcheckf}>
-                아이디 중복확인에 실패했습니다. 다시 시도해주세요.
-              </div>
             ) : (
-              <div className={styles.idcheckf}>
-                아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.
-              </div>
+              checkId === 3 && (
+                <div className={styles.idcheckf}>
+                  아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.
+                </div>
+              )
             )}
           </div>
           <div>
