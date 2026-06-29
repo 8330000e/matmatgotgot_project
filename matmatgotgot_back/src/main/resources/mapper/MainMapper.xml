@@ -12,8 +12,8 @@
             b.BOARD_TITLE AS boardTitle,
             b.BOARD_THUMB AS boardThumb,
             COUNT(l.BOARD_NO) AS likeCount
-        FROM BOARD_TBL b
-                 LEFT JOIN BOARD_LIKE_TBL l ON b.BOARD_NO = l.BOARD_NO
+        FROM board_tbl b
+                 LEFT JOIN board_like_tbl l ON b.BOARD_NO = l.BOARD_NO
         WHERE b.BOARD_CATEGORY = 1   AND b.BOARD_STATUS = 1     GROUP BY b.BOARD_NO
         ORDER BY likeCount DESC, b.BOARD_DATE DESC
             LIMIT 6
@@ -31,8 +31,8 @@
             /* 💡 첫 번째 날, 첫 번째 순서 식당의 가장 첫 번째 메뉴 이미지를 가져오는 서브쿼리 */
             (
                 SELECT m.MENU_IMG
-                FROM TRAVEL_SCHEDULE_TBL s
-                         JOIN MENU_TBL m ON s.rest_no = m.REST_NO
+                FROM travel_schedule_tbl s
+                         JOIN menu_tbl m ON s.rest_no = m.REST_NO
                 WHERE s.tplan_no = t.tplan_no
                   AND s.tsche_day_no = 1
                   AND s.tsche_order_no = 1
@@ -40,7 +40,7 @@
                 LIMIT 1
             ) AS menuImg
 
-        FROM TRAVEL_PLAN_TBL t
+        FROM travel_plan_tbl t
         WHERE t.tplan_status = 1       ORDER BY t.tplan_like DESC, t.created_at DESC
             LIMIT 6
     </select>

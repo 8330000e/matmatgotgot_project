@@ -7,7 +7,7 @@
 
     <select id="selectMemberCount" parameterType="adminListItem" resultType="int">
         SELECT COUNT(*)
-        FROM MEMBER_TBL M
+        FROM member_tbl M
         LEFT JOIN NATIVES_TBL N ON M.MEMBER_ID = N.MEMBER_ID
         <where>
             <if test="keyword != null and keyword != ''">
@@ -32,8 +32,8 @@
         M.ADMIN AS admin,
         DATE_FORMAT(M.ENROLL_DATE, '%Y-%m-%d') AS enrollDate,
         N.REGION AS region
-        FROM MEMBER_TBL M
-        LEFT JOIN NATIVES_TBL N ON M.MEMBER_ID = N.MEMBER_ID
+        FROM member_tbl M
+        LEFT JOIN natives_tbl N ON M.MEMBER_ID = N.MEMBER_ID
         <where>
             <if test="keyword != null and keyword != ''">
                 M.MEMBER_ID LIKE CONCAT('%', #{keyword}, '%')
@@ -85,9 +85,9 @@
 
     <select id="selectBoardReportCount" parameterType="adminListItem" resultType="int">
         SELECT COUNT(*)
-        FROM BOARD_REPORT_TBL BR
-        JOIN BOARD_TBL B ON BR.BOARD_NO = B.BOARD_NO
-        JOIN MEMBER_TBL M ON BR.MEMBER_NO = M.MEMBER_NO
+        FROM board_report_tbl BR
+        JOIN board_tbl B ON BR.BOARD_NO = B.BOARD_NO
+        JOIN member_tbl M ON BR.MEMBER_NO = M.MEMBER_NO
         <include refid="boardReportWhere"/>
     </select>
 
@@ -106,13 +106,13 @@
         W.MEMBER_ID AS writer,
         (
         SELECT COUNT(*)
-        FROM BOARD_REPORT_TBL BR2
+        FROM board_report_tbl BR2
         WHERE BR2.BOARD_NO = BR.BOARD_NO
         ) AS reportCount
-        FROM BOARD_REPORT_TBL BR
-        JOIN BOARD_TBL B ON BR.BOARD_NO = B.BOARD_NO
-        JOIN MEMBER_TBL R ON BR.MEMBER_NO = R.MEMBER_NO
-        JOIN MEMBER_TBL W ON B.MEMBER_NO = W.MEMBER_NO
+        FROM board_report_tbl BR
+        JOIN board_tbl B ON BR.BOARD_NO = B.BOARD_NO
+        JOIN member_tbl R ON BR.MEMBER_NO = R.MEMBER_NO
+        JOIN member_tbl W ON B.MEMBER_NO = W.MEMBER_NO
         <include refid="boardReportWhere"/>
 
         <choose>
@@ -159,11 +159,11 @@
 
     <select id="selectBoardCommentReportCount" parameterType="adminListItem" resultType="int">
         SELECT COUNT(*)
-        FROM BOARD_COMMENT_REPORT_TBL BCR
-        JOIN BOARD_COMMENT_TBL BC ON BCR.BOARD_COMMENT_NO = BC.BOARD_COMMENT_NO
-        JOIN BOARD_TBL B ON BC.BOARD_NO = B.BOARD_NO
-        JOIN MEMBER_TBL R ON BCR.MEMBER_NO = R.MEMBER_NO
-        JOIN MEMBER_TBL W ON BC.MEMBER_NO = W.MEMBER_NO
+        FROM board_comment_report_tbl BCR
+        JOIN board_comment_tbl BC ON BCR.BOARD_COMMENT_NO = BC.BOARD_COMMENT_NO
+        JOIN board_tbl B ON BC.BOARD_NO = B.BOARD_NO
+        JOIN member_tbl R ON BCR.MEMBER_NO = R.MEMBER_NO
+        JOIN member_tbl W ON BC.MEMBER_NO = W.MEMBER_NO
         <include refid="boardCommentReportWhere"/>
     </select>
 
@@ -182,14 +182,14 @@
         W.MEMBER_ID AS writer,
         (
         SELECT COUNT(*)
-        FROM BOARD_COMMENT_REPORT_TBL BCR2
+        FROM board_comment_report_tbl BCR2
         WHERE BCR2.BOARD_COMMENT_NO = BCR.BOARD_COMMENT_NO
         ) AS reportCount
-        FROM BOARD_COMMENT_REPORT_TBL BCR
-        JOIN BOARD_COMMENT_TBL BC ON BCR.BOARD_COMMENT_NO = BC.BOARD_COMMENT_NO
-        JOIN BOARD_TBL B ON BC.BOARD_NO = B.BOARD_NO
-        JOIN MEMBER_TBL R ON BCR.MEMBER_NO = R.MEMBER_NO
-        JOIN MEMBER_TBL W ON BC.MEMBER_NO = W.MEMBER_NO
+        FROM board_comment_report_tbl BCR
+        JOIN board_comment_tbl BC ON BCR.BOARD_COMMENT_NO = BC.BOARD_COMMENT_NO
+        JOIN board_tbl B ON BC.BOARD_NO = B.BOARD_NO
+        JOIN member_tbl R ON BCR.MEMBER_NO = R.MEMBER_NO
+        JOIN member_tbl W ON BC.MEMBER_NO = W.MEMBER_NO
         <include refid="boardCommentReportWhere"/>
 
         <choose>
@@ -228,9 +228,9 @@
 
     <select id="selectRestReportCount" parameterType="adminListItem" resultType="int">
         SELECT COUNT(*)
-        FROM REST_REPORT_TBL RR
-        JOIN RESTAURANT_TBL R ON RR.REST_NO = R.REST_NO
-        JOIN MEMBER_TBL M ON RR.MEMBER_ID = M.MEMBER_ID
+        FROM rest_report_tbl RR
+        JOIN restaurant_tbl R ON RR.REST_NO = R.REST_NO
+        JOIN member_tbl M ON RR.MEMBER_ID = M.MEMBER_ID
         <include refid="restReportWhere"/>
     </select>
 
@@ -248,13 +248,13 @@
         R.MEMBER_ID AS writer,
         (
         SELECT COUNT(*)
-        FROM REST_REPORT_TBL RR2
+        FROM rest_report_tbl RR2
         WHERE RR2.REST_NO = RR.REST_NO
         ) AS reportCount
-        FROM REST_REPORT_TBL RR
-        JOIN RESTAURANT_TBL R ON RR.REST_NO = R.REST_NO
-        JOIN MEMBER_TBL RM ON RR.MEMBER_ID = RM.MEMBER_ID
-        JOIN MEMBER_TBL WM ON R.MEMBER_ID = WM.MEMBER_ID
+        FROM rest_report_tbl RR
+        JOIN restaurant_tbl R ON RR.REST_NO = R.REST_NO
+        JOIN member_tbl RM ON RR.MEMBER_ID = RM.MEMBER_ID
+        JOIN member_tbl WM ON R.MEMBER_ID = WM.MEMBER_ID
         <include refid="restReportWhere"/>
 
         <choose>
@@ -293,10 +293,10 @@
 
     <select id="selectReviewReportCount" parameterType="adminListItem" resultType="int">
         SELECT COUNT(*)
-        FROM REVIEW_REPORT_TBL RRP
-        JOIN REVIEW_TBL RV ON RRP.REVIEW_NO = RV.REVIEW_NO
-        JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL M ON RRP.MEMBER_ID = M.MEMBER_ID
+        FROM review_report_tbl RRP
+        JOIN review_tbl RV ON RRP.REVIEW_NO = RV.REVIEW_NO
+        JOIN restaurant_tbl RT ON RV.REST_NO = RT.REST_NO
+        JOIN member_tbl M ON RRP.MEMBER_ID = M.MEMBER_ID
         <include refid="reviewReportWhere"/>
     </select>
 
@@ -316,14 +316,14 @@
         RV.MEMBER_ID AS writer,
         (
         SELECT COUNT(*)
-        FROM REVIEW_REPORT_TBL RRP2
+        FROM review_report_tbl RRP2
         WHERE RRP2.REVIEW_NO = RRP.REVIEW_NO
         ) AS reportCount
-        FROM REVIEW_REPORT_TBL RRP
-        JOIN REVIEW_TBL RV ON RRP.REVIEW_NO = RV.REVIEW_NO
-        JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL RM ON RRP.MEMBER_ID = RM.MEMBER_ID
-        JOIN MEMBER_TBL WM ON RV.MEMBER_ID = WM.MEMBER_ID
+        FROM review_report_tbl RRP
+        JOIN review_tbl RV ON RRP.REVIEW_NO = RV.REVIEW_NO
+        JOIN restaurant_tbl RT ON RV.REST_NO = RT.REST_NO
+        JOIN member_tbl RM ON RRP.MEMBER_ID = RM.MEMBER_ID
+        JOIN member_tbl WM ON RV.MEMBER_ID = WM.MEMBER_ID
         <include refid="reviewReportWhere"/>
 
         <choose>
@@ -362,11 +362,11 @@
 
     <select id="selectReviewCommentReportCount" parameterType="adminListItem" resultType="int">
         SELECT COUNT(*)
-        FROM REVIEW_COMMENT_REPORT_TBL RCR
-        JOIN REVIEW_COMMENT_TBL RC ON RCR.COMMENT_NO = RC.COMMENT_NO
-        JOIN REVIEW_TBL RV ON RC.REVIEW_NO = RV.REVIEW_NO
-        JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL M ON RCR.MEMBER_ID = M.MEMBER_ID
+        FROM review_comment_report_tbl RCR
+        JOIN review_comment_tbl RC ON RCR.COMMENT_NO = RC.COMMENT_NO
+        JOIN review_tbl RV ON RC.REVIEW_NO = RV.REVIEW_NO
+        JOIN restaurant_tbl RT ON RV.REST_NO = RT.REST_NO
+        JOIN member_tbl M ON RCR.MEMBER_ID = M.MEMBER_ID
         <include refid="reviewCommentReportWhere"/>
     </select>
 
@@ -385,15 +385,15 @@
         RC.MEMBER_ID AS writer,
         (
         SELECT COUNT(*)
-        FROM REVIEW_COMMENT_REPORT_TBL RCR2
+        FROM review_comment_report_tbl RCR2
         WHERE RCR2.COMMENT_NO = RCR.COMMENT_NO
         ) AS reportCount
-        FROM REVIEW_COMMENT_REPORT_TBL RCR
-        JOIN REVIEW_COMMENT_TBL RC ON RCR.COMMENT_NO = RC.COMMENT_NO
-        JOIN REVIEW_TBL RV ON RC.REVIEW_NO = RV.REVIEW_NO
-        JOIN RESTAURANT_TBL RT ON RV.REST_NO = RT.REST_NO
-        JOIN MEMBER_TBL RM ON RCR.MEMBER_ID = RM.MEMBER_ID
-        JOIN MEMBER_TBL WM ON RC.MEMBER_ID = WM.MEMBER_ID
+        FROM review_comment_report_tbl RCR
+        JOIN review_comment_tbl RC ON RCR.COMMENT_NO = RC.COMMENT_NO
+        JOIN review_tbl RV ON RC.REVIEW_NO = RV.REVIEW_NO
+        JOIN restaurant_tbl RT ON RV.REST_NO = RT.REST_NO
+        JOIN member_tbl RM ON RCR.MEMBER_ID = RM.MEMBER_ID
+        JOIN member_tbl WM ON RC.MEMBER_ID = WM.MEMBER_ID
         <include refid="reviewCommentReportWhere"/>
 
         <choose>
@@ -412,73 +412,73 @@
     </select>
 
     <update id="updateBoardContentStatus">
-        UPDATE BOARD_TBL
+        UPDATE board_tbl
         SET BOARD_STATUS = #{status}
         WHERE BOARD_NO = #{contentNo}
     </update>
 
     <update id="updateBoardCommentContentStatus">
-        UPDATE BOARD_COMMENT_TBL
+        UPDATE board_comment_tbl
         SET BOARD_COMMENT_STATUS = #{status}
         WHERE BOARD_COMMENT_NO = #{contentNo}
     </update>
 
     <update id="updateRestContentStatus">
-        UPDATE RESTAURANT_TBL
+        UPDATE restaurant_tbl
         SET REST_STATUS = #{status}
         WHERE REST_NO = #{contentNo}
     </update>
 
     <update id="updateReviewContentStatus">
-        UPDATE REVIEW_TBL
+        UPDATE review_tbl
         SET REVIEW_STATUS = #{status}
         WHERE REVIEW_NO = #{contentNo}
     </update>
 
     <update id="updateReviewCommentContentStatus">
-        UPDATE REVIEW_COMMENT_TBL
+        UPDATE review_comment_tbl
         SET COM_STATUS = #{status}
         WHERE COMMENT_NO = #{contentNo}
     </update>
 
     <update id="updateBoardReportStatus">
-        UPDATE BOARD_REPORT_TBL
+        UPDATE board_report_tbl
         SET REPORT_STATUS = #{reportStatus}
         WHERE BOARD_REPORT_NO = #{reportNo}
     </update>
 
     <update id="updateBoardCommentReportStatus">
-        UPDATE BOARD_COMMENT_REPORT_TBL
+        UPDATE board_comment_report_tbl
         SET REPORT_STATUS = #{reportStatus}
         WHERE COMMENT_REPORT_NO = #{reportNo}
     </update>
 
     <update id="updateRestReportStatus">
-        UPDATE REST_REPORT_TBL
+        UPDATE restaurant_report_tbl
         SET REPORT_STATUS = #{reportStatus}
         WHERE REST_RP_NO = #{reportNo}
     </update>
 
     <update id="updateReviewReportStatus">
-        UPDATE REVIEW_REPORT_TBL
+        UPDATE review_report_tbl
         SET REPORT_STATUS = #{reportStatus}
         WHERE REVIEW_RP_NO = #{reportNo}
     </update>
 
     <update id="updateReviewCommentReportStatus">
-        UPDATE REVIEW_COMMENT_REPORT_TBL
+        UPDATE review_comment_report_tbl
         SET REPORT_STATUS = #{reportStatus}
         WHERE REVIEW_COM_RP_NO = #{reportNo}
     </update>
 
     <update id="updateMemberStatus">
-        UPDATE MEMBER_TBL
+        UPDATE member_tbl
         SET MEMBER_STATUS = #{memberStatus}
         WHERE MEMBER_NO = #{memberNo}
     </update>
 
     <update id="updateMemberAdmin">
-        UPDATE MEMBER_TBL
+        UPDATE member_tbl
         SET ADMIN = #{admin}
         WHERE MEMBER_NO = #{memberNo}
     </update>
