@@ -69,7 +69,7 @@ public class MemberController {
 	@PostMapping(value = "/exists")
 	public ResponseEntity<?> dupCheckId(@RequestParam String memberId) {
 		Member m = memberService.selectOneMember(memberId);
-		return ResponseEntity.ok(m==null);
+		return ResponseEntity.ok(m);
 	}
 
 	@PatchMapping(value="/{memberId}/thumbnail")

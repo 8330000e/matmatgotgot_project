@@ -32,30 +32,32 @@ const Join = () => {
   const [mailAuthInput, setMailAuthInput] = useState("");
   const idDupCheck = () => {
     console.log(member);
+
+    // 1. 형식 검사를 서버 요청 전에 먼저 수행하는 것이 효율적입니다.
+    const idReg = /^[a-zA-Z0-9]{6,20}$/;
+    if (!idReg.test(member.memberId)) {
+      setCheckId(0); // 예: 형식 불일치
+      return;
+    }
+
     axios
       .post(
         `${import.meta.env.VITE_BACKSERVER}/members/exists?memberId=${member.memberId}`,
       )
       .then((res) => {
         console.log(res);
-        if (res.data.length === 0) {
-          setCheckId(0);
-        }
-        if (res.data) {
-          if (member.memberId === "" || member.memberId == "") {
-            return setCheckId(0);
-          }
-          setCheckId(3);
+
+        // 2. 서버 응답 로직 정리
+        if (!res.data || res.data.length === 0) {
+          setCheckId(1); // 사용 가능한 ID
+        } else if (res.data.memberId === member.memberId) {
+          setCheckId(2); // 이미 존재하는 ID
         } else {
-          setCheckId(2);
-        }
-        const idReg = /^[a-zA-Z0-9]{6,20}$/;
-        if (idReg.test(member.memberId)) {
-          setCheckId(1);
+          setCheckId(3); // 기타 오류
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
   const pwDupCheck = () => {
@@ -388,25 +390,25 @@ const Join = () => {
               onBlur={idDupCheck}
               required
             />
-            {checkId > 0 ? (
-              checkId === 1 ? (
-                checkId === 2 ? (
-                  checkId === 3 && (
-                    <div className={styles.idcheckf}>
-                      이미 사용 중인 아이디입니다.
-                    </div>
-                  )
-                ) : (
-                  <div className={styles.idcheckt}>
-                    사용 가능한 아이디입니다.
-                  </div>
-                )
-              ) : (
-                <div className={styles.idcheckf}>
-                  아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.
-                </div>
-              )
-            ) : null}
+            {checkId === 0 ? (
+              <div className={styles.idcheckf}>
+                아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.
+              </div>
+            ) : checkId === 1 ? (
+              <div className={styles.idcheckt}>사용 가능한 아이디입니다.</div>
+            ) : checkId === 2 ? (
+              <div className={styles.idcheckf}>
+                이미 사용 중인 아이디입니다.
+              </div>
+            ) : checkId === 3 ? (
+              <div className={styles.idcheckf}>
+                아이디 중복확인에 실패했습니다. 다시 시도해주세요.
+              </div>
+            ) : (
+              <div className={styles.idcheckf}>
+                아이디는 최소 6자 이상 영문과 숫자를 혼합하여주십시오.
+              </div>
+            )}
           </div>
           <div>
             <div className={styles.inputLabel}>
