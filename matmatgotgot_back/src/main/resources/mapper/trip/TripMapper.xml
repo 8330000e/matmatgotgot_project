@@ -118,9 +118,9 @@
 
     <insert id="insertTravelPlan" parameterType="map">
         <selectKey keyProperty="tplan_no" resultType="long" order="AFTER">
-            SELECT LAST_INSERT_ID()
+            SELECT LAST_INSERT ID()
         </selectKey>
-        INSERT INTO TRAVEL_PLAN_TBL (
+        INSERT INTO travel_plan_tbl (
         member_no, tplan_title, tplan_desc, tplan_region, tplan_days, tplan_total_price
         ) VALUES (
         #{memberNo}, #{tplanTitle}, #{tplanDesc}, #{tplanRegion}, #{tplanDays}, #{tplanTotalPrice}
