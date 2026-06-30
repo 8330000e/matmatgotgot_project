@@ -97,9 +97,9 @@ jobs:
             --build-arg VITE_TMAP_APP_KEY=${{ secrets.VITE_TMAP_APP_KEY }} \
             --build-arg VITE_ODSAY_API_KEY=${{ secrets.VITE_ODSAY_API_KEY }} \
             -t $ECR_FRONTEND:${{ github.sha }} ./matmatgotgot_front
-            -t $ECR_FRONTEND:${{ github.sha }} $ECR_FRONTEND:latest
-            -t $ECR_FRONTEND:${{ github.sha }}
-            -t $ECR_FRONTEND:latest
+            docker tag $ECR_FRONTEND:${{ github.sha }} $ECR_FRONTEND:latest
+            docker push $ECR_FRONTEND:${{ github.sha }}
+            docker push $ECR_FRONTEND:latest
 
   # =============================================
   # Job 2: EC2에 배포
