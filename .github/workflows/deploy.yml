@@ -72,8 +72,8 @@ jobs:
           #   형태: 계정ID.dkr.ecr.리전.amazonaws.com
           #   AWS_ACCOUNT_ID Secret 없이도 ECR URI를 자동으로 가져올 수 있음
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          ECR_BACKEND=$ECR_REGISTRY/board-app-github-actions-backend
-          ECR_FRONTEND=$ECR_REGISTRY/board-app-github-actions-frontend
+          ECR_BACKEND=$ECR_REGISTRY/matmatgotgot-github-actions-backend
+          ECR_FRONTEND=$ECR_REGISTRY/matmatgotgot-github-actions-frontend
 
           # backend 이미지 빌드 & ECR push
           docker build -t $ECR_BACKEND:${{ github.sha }} ./backend
