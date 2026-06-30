@@ -1,11 +1,8 @@
 version: "3.8"
 
 services:
-  # ===== Spring Boot Backend =====
   matmatgotgot_back:
-    build:
-      context: ./matmatgotgot_back
-      dockerfile: Dockerfile
+    image: ${ECR_REGISTRY}/matmatgotgot-github-actions-backend:latest
     container_name: matgot-backend
     restart: always
     environment:
@@ -31,11 +28,8 @@ services:
     networks:
       - board-network
 
-  # ===== React Frontend (Nginx) =====
   matmatgotgot_front:
-    build:
-      context: ./matmatgotgot_front
-      dockerfile: Dockerfile
+    image: ${ECR_REGISTRY}/matmatgotgot-github-actions-frontend:latest
     container_name: matgot-frontend
     restart: always
     ports:
@@ -45,7 +39,6 @@ services:
     networks:
       - board-network
 
-# ===== 네트워크 =====
 networks:
   board-network:
     name: matgot-network

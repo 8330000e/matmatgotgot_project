@@ -91,29 +91,18 @@ jobs:
   # Job 2: EC2에 배포
   # =============================================
   deploy:
-    # needs: 지정한 job이 성공해야만 이 job 실행
-    # build-and-push가 실패하면 이 job은 실행되지 않음
-    # 즉 빌드 실패한 코드가 서버에 배포되는 사고를 방지
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
-      # ⑤ SSH로 EC2에 접속해서 배포 명령어 실행
-      #    uses: appleboy/ssh-action → SSH 접속을 쉽게 처리해주는 외부 action
-      #    with으로 SSH 접속 정보와 실행할 명령어(script)를 전달
       - name: EC2에 SSH 접속하여 배포
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }} # EC2 탄력적 IP
-          username: ${{ secrets.EC2_USERNAME }} # ubuntu
-          key: ${{ secrets.EC2_KEY }} # .pem 파일 내용
-
-          # script: SSH로 접속한 EC2 서버 안에서 실행할 명령어들
-          # 여기서부터는 GitHub 가상머신이 아닌 실제 EC2 서버에서 실행됨
-          # deploy job은 build-and-push job과 별도 가상머신에서 실행되므로
-          # steps.login-ecr.outputs.registry 참조 불가 → AWS_ACCOUNT_ID Secret 사용
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
           script: |
-            cd ~/matamtgotgot_project
+            cd /home/ubuntu/matmatgotgot_project
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com
             docker compose pull
             docker compose up -d
             docker image prune -f
