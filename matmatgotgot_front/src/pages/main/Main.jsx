@@ -63,9 +63,7 @@ const Main = () => {
               <div className={styles.titleEmoji}>
                 <RestaurantIcon />
               </div>
-              <div className={styles.titleText}>
-                스마트tmakxm스마트 맛집 탐방
-              </div>
+              <div className={styles.titleText}>스마트스마트 맛집 탐방</div>
             </div>
             <div className={styles.descContent}>
               <h4>유저들이 검증한 진짜 맛집 목록</h4>
