@@ -81,6 +81,34 @@ public class MemberService {
         return -1;
     }
 
+    @Transactional
+    public int insertMemberK(Member newMember) {
+        String memberPw = newMember.getMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        newMember.setMemberPw(encPw);
+        int result = memberMapper.insertMember(newMember);
+        if(result > 0) {
+            int socialResult = memberMapper.kakaoInsertMember(newMember);
+            memberMapper.loginLog(newMember.getMemberNo());
+            return socialResult;
+        }
+        return -1;
+    }
+    
+    @Transactional
+    public int insertMemberN(Member newMember) {
+        String memberPw = newMember.getMemberPw();
+        String encPw = bcrypt.encode(memberPw);
+        newMember.setMemberPw(encPw);
+        int result = memberMapper.insertMember(newMember);
+        if(result > 0) {
+            int socialResult = memberMapper.naverInsertMember(newMember);
+            memberMapper.loginLog(newMember.getMemberNo());
+            return socialResult;
+        }
+        return -1;
+    }
+
     public Member findMember(String memberId) {
         Member member = memberMapper.selectOneMember(memberId);
         return member;
@@ -98,37 +126,10 @@ public class MemberService {
     }
 
     @Transactional
-    public int insertMemberK(Member newMember) {
-        String memberPw = newMember.getMemberPw();
-        String encPw = bcrypt.encode(memberPw);
-        newMember.setMemberPw(encPw);
-        int result = memberMapper.insertMember(newMember);
-        if(result > 0) {
-            int socialResult = memberMapper.kakaoInsertMember(newMember);
-            memberMapper.loginLog(newMember.getMemberNo());
-            return socialResult;
-        }
-        return -1;
-    }
-
-    @Transactional
     public int updateLocation(String memberId, Coords coords) {
         return memberMapper.updateLocation(memberId, coords);
     }//
 
-    @Transactional
-    public int insertMemberN(Member newMember) {
-        String memberPw = newMember.getMemberPw();
-        String encPw = bcrypt.encode(memberPw);
-        newMember.setMemberPw(encPw);
-        int result = memberMapper.insertMember(newMember);
-        if(result > 0) {
-            int socialResult = memberMapper.naverInsertMember(newMember);
-            memberMapper.loginLog(newMember.getMemberNo());
-            return socialResult;
-        }
-        return -1;
-    }
 
 
     public String joinEmail(String authCode) {

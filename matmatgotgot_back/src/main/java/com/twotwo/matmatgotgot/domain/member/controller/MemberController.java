@@ -82,24 +82,34 @@ public class MemberController {
 		int result = memberService.updateThumbnail(m);
 		return ResponseEntity.ok(memberThumb);
 	}
-
-
-
+	
+	@PostMapping("/logout/{currentId}")
+	public ResponseEntity<?> logout(@PathVariable("currentId") String memberId) {
+		
+		boolean isSuccess = memberService.logout(memberId);
+		
+		if(isSuccess) {
+			return ResponseEntity.ok("로그아웃 성공");
+		} else {
+			return ResponseEntity.status(404).body("존재하지 않는 회원입니다.");
+		}
+	}
+	
 	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody MemberLoginDto dto) {
 		Member loginInput = new Member();
 		loginInput.setMemberId(dto.getMemberId());
 		loginInput.setMemberPw(dto.getMemberPw());
-
+		
 		LoginMember loginLog = memberService.login(loginInput);
-
+		
 		if (loginLog == null) {
 			return ResponseEntity.status(401).body("로그인 정보가 올바르지 않습니다.");
 		}
-
+		
 		Member member = memberService.findMember(dto.getMemberId());
 		LoginMember loginMember = jwtTokenProvider.createToken(member.getMemberId(), member.getMemberNickname(),   member.getAdmin());//false);지연
-
+		
 		LoginResponseDto response = new LoginResponseDto();
 		//response.setMemberNo(loginMember.getMemberNo());
 		response.setMemberNo(member.getMemberNo()); //임시 DB에서 memberNo 가져옴
@@ -112,35 +122,14 @@ public class MemberController {
 		response.setToken(loginMember.getToken());
 		response.setLat(member.getLat());
 		response.setLng(member.getLng());
-
+		
 		long validityMilli = loginMember.getValidity().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		response.setValidity(validityMilli);
-
+		
 		return ResponseEntity.ok(response);
 	}
-
-	// @PostMapping(value="/login")
-	// public ResponseEntity<?> login(@RequestBody Member member) {
-	// 	LoginMember loginMember = memberService.login(member);
-	// 	if(loginMember == null) {
-	// 		return ResponseEntity.status(404).build();
-	// 	}else{
-	// 		return ResponseEntity.ok(loginMember);
-	// 	}
-	// }
-
-	@PostMapping("/logout/{currentId}")
-	public ResponseEntity<?> logout(@PathVariable("currentId") String memberId) {
-		
-		boolean isSuccess = memberService.logout(memberId);
-		
-		if(isSuccess) {
-			return ResponseEntity.ok("로그아웃 성공");
-		} else {
-			return ResponseEntity.status(404).body("존재하지 않는 회원입니다.");
-		}
-	}
-
+	
+	
 	@PostMapping("/login/google")
 	public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> request) {
 		String code = request.get("code");
@@ -148,7 +137,7 @@ public class MemberController {
 		if (code == null || code.isEmpty()) {
 			return ResponseEntity.badRequest().body("인가 코드가 없습니다.");
 		}
-
+		
 		// STEP 1: 인가 코드로 구글 Access Token 받아오기
 		String accessToken = googleOAuthService.getGoogleAccessToken(code);
 		
