@@ -82,10 +82,24 @@ jobs:
           docker push $ECR_BACKEND:latest
 
           # frontend 이미지 빌드 & ECR push
-          docker build -t $ECR_FRONTEND:${{ github.sha }} ./matmatgotgot_front
-          docker tag $ECR_FRONTEND:${{ github.sha }} $ECR_FRONTEND:latest
-          docker push $ECR_FRONTEND:${{ github.sha }}
-          docker push $ECR_FRONTEND:latest
+          # frontend 이미지 빌드 & ECR push
+          docker build \
+            --build-arg VITE_BACKSERVER=${{ secrets.VITE_BACKSERVER }} \
+            --build-arg VITE_NAVER_MAP_KEY=${{ secrets.VITE_NAVER_MAP_KEY }} \
+            --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }} \
+            --build-arg VITE_KAKAO_JAVASCRIPT_KEY=${{ secrets.VITE_KAKAO_JAVASCRIPT_KEY }} \
+            --build-arg VITE_KAKAO_REST_API_KEY=${{ secrets.VITE_KAKAO_REST_API_KEY }} \
+            --build-arg VITE_KAKAO_REDIRECT_URI=${{ secrets.VITE_KAKAO_REDIRECT_URI }} \
+            --build-arg VITE_KAKAO_CLIENT_SECRET=${{ secrets.VITE_KAKAO_CLIENT_SECRET }} \
+            --build-arg VITE_NAVER_CLIENT_ID=${{ secrets.VITE_NAVER_CLIENT_ID }} \
+            --build-arg VITE_NAVER_CLIENT_SECRET=${{ secrets.VITE_NAVER_CLIENT_SECRET }} \
+            --build-arg VITE_IMG_SERVER=${{ secrets.VITE_IMG_SERVER }} \
+            --build-arg VITE_TMAP_APP_KEY=${{ secrets.VITE_TMAP_APP_KEY }} \
+            --build-arg VITE_ODSAY_API_KEY=${{ secrets.VITE_ODSAY_API_KEY }} \
+            -t $ECR_FRONTEND:${{ github.sha }} ./matmatgotgot_front
+            -t $ECR_FRONTEND:${{ github.sha }} $ECR_FRONTEND:latest
+            -t $ECR_FRONTEND:${{ github.sha }}
+            -t $ECR_FRONTEND:latest
 
   # =============================================
   # Job 2: EC2에 배포
