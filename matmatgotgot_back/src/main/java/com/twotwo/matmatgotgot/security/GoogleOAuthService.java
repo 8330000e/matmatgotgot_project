@@ -35,7 +35,7 @@ public class GoogleOAuthService {
         body.add("code", code);
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
-        body.add("redirect_uri", "http://localhost:5173");
+        body.add("redirect_uri", "https://d2lg74d5mqmhqe.cloudfront.net/login/oauth2/code/google");
         body.add("grant_type", "authorization_code");
 
         // 3. Header와 Body를 하나의 Request 객체로 묶기
