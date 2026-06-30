@@ -77,12 +77,12 @@ jobs:
 
           # backend 이미지 빌드 & ECR push
           docker build -t $ECR_BACKEND:${{ github.sha }} ./matmatgotgot_back
-          docker build -t $ECR_FRONTEND:${{ github.sha }} ./matmatgotgot_front
+          docker tag $ECR_BACKEND:${{ github.sha }} $ECR_BACKEND:latest
           docker push $ECR_BACKEND:${{ github.sha }}
           docker push $ECR_BACKEND:latest
 
           # frontend 이미지 빌드 & ECR push
-          docker build -t $ECR_FRONTEND:${{ github.sha }} ./frontend
+          docker build -t $ECR_FRONTEND:${{ github.sha }} ./matmatgotgot_front
           docker tag $ECR_FRONTEND:${{ github.sha }} $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:${{ github.sha }}
           docker push $ECR_FRONTEND:latest
