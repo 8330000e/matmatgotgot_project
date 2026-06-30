@@ -252,7 +252,7 @@ const Login = () => {
   const naverLogin = async () => {
     const CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const REDIRECT_URI = encodeURIComponent(
-      "http://localhost:5173/login/oauth2/code/naver",
+      `${window.location.origin}/login/oauth2/code/naver`,
     );
 
     try {

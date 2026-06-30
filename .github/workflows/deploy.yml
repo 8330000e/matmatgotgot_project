@@ -93,6 +93,7 @@ jobs:
             --build-arg VITE_KAKAO_CLIENT_SECRET=${{ secrets.VITE_KAKAO_CLIENT_SECRET }} \
             --build-arg VITE_NAVER_CLIENT_ID=${{ secrets.VITE_NAVER_CLIENT_ID }} \
             --build-arg VITE_NAVER_CLIENT_SECRET=${{ secrets.VITE_NAVER_CLIENT_SECRET }} \
+            --build-arg VITE_NAVER_REDIRECT_URI=${{ secrets.VITE_NAVER_REDIRECT_URI }} \
             --build-arg VITE_IMG_SERVER=${{ secrets.VITE_IMG_SERVER }} \
             --build-arg VITE_TMAP_APP_KEY=${{ secrets.VITE_TMAP_APP_KEY }} \
             --build-arg VITE_ODSAY_API_KEY=${{ secrets.VITE_ODSAY_API_KEY }} \
