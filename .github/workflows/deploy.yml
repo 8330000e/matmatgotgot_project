@@ -24,6 +24,10 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
 
           script: |
+            pwd
+            whoami
+            ls -la /home/
+            ls -la /home/ubuntu/ || echo "ubuntu 폴더 없음"
             cd /home/ubuntu/matmatgotgot_project
             git pull origin main
             docker compose down
