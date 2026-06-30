@@ -1,0 +1,32 @@
+name: Deploy to EC2 # GitHub Actions 탭에서 표시되는 workflow 이름
+
+on:
+  push:
+    branches:
+      [main] # main 브랜치에 push될 때마다 자동 실행
+      # 다른 브랜치 push에서는 실행 안 됨
+
+jobs:
+  deploy:
+    runs-on:
+      ubuntu-latest # GitHub가 제공하는 Ubuntu 가상머신에서 실행
+      # 이 가상머신이 EC2에 SSH 접속해서 명령어를 실행함
+
+    steps:
+      - name: SSH로 EC2에 접속하여 배포
+        uses:
+          appleboy/ssh-action@master # 외부 Action 사용
+          # SSH 접속을 쉽게 처리해주는 커뮤니티 라이브러리
+          # 덕분에 복잡한 SSH 설정 없이 바로 접속 가능
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+
+          script: |
+            cd ~/matmatgotgot_project
+            git pull origin main
+            docker compose down
+            docker compose build --no-cache
+            docker compose up -d
+            docker image prune -f
