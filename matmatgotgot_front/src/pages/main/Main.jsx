@@ -38,7 +38,7 @@ const Main = () => {
         <img src={mainFoodImg} alt="메인 음식 이미지" />
         <div className={styles.mainFoodImgCover}></div>
         <div className={styles.foodTitleWrapper}>
-          <h1>맛있는!! 여행의 시작, 맛맛곳곳</h1>
+          <h1>맛있는 여행의 시작, 맛맛곳곳</h1>
           <p>금강산도 식후경, 완벽한 여행은 한 끼의 미식으로부터</p>
           <div className={styles.scrollNotice}>
             <span>아래로 스크롤하여 코스 짜기</span>
