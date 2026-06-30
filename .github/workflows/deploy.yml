@@ -122,16 +122,28 @@ jobs:
             docker compose up -d
             docker image prune -f
 
-      # ⑥ if: 조건이 맞을 때만 이 step을 실행
-      #    success(): 이 job의 이전 step들이 전부 성공했을 때
-      #    Actions 탭 로그에서 확인 가능
       - name: 배포 성공 알림
         if: success()
         run: |
           echo "배포 성공! 커밋: ${{ github.sha }}"
 
-      # ⑦ failure(): 이 job의 step 중 하나라도 실패했을 때
       - name: 배포 실패 알림
         if: failure()
         run: |
           echo "배포 실패! GitHub Actions 로그를 확인하세요."
+
+      # ⑧ CloudFront 캐시 무효화 (배포 성공 시에만 실행)
+      - name: AWS 자격증명 설정
+        if: success()
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: CloudFront 캐시 무효화
+        if: success()
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
