@@ -38,7 +38,7 @@ public class RestaurantController {
     private String root;
 
     private final RestaurantService restaurantService;
-    private final FileUtil fileUtil;
+    private final S3FileUtil fileUtil;
 
     // 맛집 등록
     @PostMapping
