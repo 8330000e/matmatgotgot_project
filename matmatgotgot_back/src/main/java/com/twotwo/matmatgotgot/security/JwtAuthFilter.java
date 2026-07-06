@@ -28,6 +28,8 @@ public class JwtAuthFilter extends GenericFilter {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    log.info("Request URI = {}", httpServletRequest.getRequestURI());
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

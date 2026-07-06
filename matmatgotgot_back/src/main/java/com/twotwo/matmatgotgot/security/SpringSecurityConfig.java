@@ -37,8 +37,6 @@ public class SpringSecurityConfig {
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
                     // static 리소스나 에러 페이지 허용
