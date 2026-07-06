@@ -157,10 +157,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             });
         }
     }, [memberInfo]);
-    const [updateNickAddr, setupdateNickAddr] = useState({
-        memberNickname: '', // 키값을 input name과 동일하게 맞춤
-        memberAddress: ''
-    });
+    
     const { open } = useKakaoPostcode({
         onComplete: (data) => {
             setMemberInfo((prev) => ({ ...prev, ["memberAddress"]: data.roadAddress }));
