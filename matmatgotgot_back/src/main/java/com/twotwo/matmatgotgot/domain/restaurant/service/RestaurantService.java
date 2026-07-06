@@ -9,7 +9,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Recommand;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Restaurant;
 import com.twotwo.matmatgotgot.domain.restaurant.mapper.RestaurantMapper;
-import com.twotwo.matmatgotgot.global.util.FileUtil;
+import com.twotwo.matmatgotgot.global.util.S3FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     private final RestaurantMapper restaurantMapper;
-    private final FileUtil fileUtil;
+    private final S3FileUtil fileUtil;
 
     @Value("${file.root}")
     private String root;

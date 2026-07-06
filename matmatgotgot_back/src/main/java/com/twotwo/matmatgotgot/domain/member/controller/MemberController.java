@@ -12,7 +12,7 @@ import com.twotwo.matmatgotgot.domain.member.service.MemberService;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.global.response.ApiResponse;
 import com.twotwo.matmatgotgot.global.util.EmailSender;
-import com.twotwo.matmatgotgot.global.util.FileUtil;
+import com.twotwo.matmatgotgot.global.util.S3FileUtil;
 import com.twotwo.matmatgotgot.security.GoogleOAuthService;
 import com.twotwo.matmatgotgot.security.GoogleUserProfile;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
@@ -44,7 +44,7 @@ public class MemberController {
     private final MemberService memberService;
 	private final GoogleOAuthService googleOAuthService;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final FileUtil fileUtil;
+	private final S3FileUtil fileUtil;
 
 	@Value("${file.root}")
 	private String root;
