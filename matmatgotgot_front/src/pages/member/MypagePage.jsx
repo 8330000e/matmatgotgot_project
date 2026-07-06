@@ -197,9 +197,14 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     memberId: memberId
                   }
                 })
-            .then(response => {
+            .then(res => {
                 // 성공 시 처리할 로직 (예: setMemberData)
-                console.log("성공 데이터:", response.data);
+                console.log("성공 데이터:", res.data);
+                if(res.data == null || res.data === 'undefined') {
+                    console.log("조회된 결과가 없습니다.")
+                } else {
+                    console.log("조회된 결과: ", res.data);
+                }
             })
             .catch(error => {
                 console.error("서버 에러:", error);

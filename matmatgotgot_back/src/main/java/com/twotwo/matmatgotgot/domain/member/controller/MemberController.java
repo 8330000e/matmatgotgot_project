@@ -441,9 +441,6 @@ public class MemberController {
 
 	@GetMapping(value = "natives")
 	public ResponseEntity<?> getNative(@RequestParam("natives") String memberId) {
-		System.out.println("=================================================");
-		System.out.println("👉 [백엔드] natives 컨트롤러 진입 성공! 들어온 ID: " + memberId);
-		System.out.println("=================================================");
 
 		Natives nativeInfo = memberService.getNative(memberId);
 		System.out.println("👉 [백엔드] 서비스에서 조회한 데이터 결과: " + nativeInfo);
