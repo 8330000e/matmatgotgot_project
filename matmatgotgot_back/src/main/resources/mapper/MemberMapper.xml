@@ -28,6 +28,9 @@
 	<update id="updateThumbnail">
 		update member_tbl set member_thumb = #{memberThumb} where member_id = #{memberId}
 	</update>
+	<update id="updateNickAddr">
+		update member_tbl set member_nickname = #{memberNickname}, member_address = #{memberAddress} where member_id = #{memberId}
+	</update>
 	<update id="updateMemberPw">
 		update member_tbl set member_pw = #{encPw} where member_id = #{memberId}
 	</update>

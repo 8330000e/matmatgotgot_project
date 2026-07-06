@@ -428,6 +428,16 @@ public class MemberController {
 			return ResponseEntity.status(500).body("백엔드 에러 발생: " + e.getMessage());
 		}
 	}	
+
+	@PutMapping(value = "/updateMem")
+	public ResponseEntity<?> updateNickAddr(@RequestParam String memberId, @RequestParam String nick, @RequestParam String addr) {
+		Member member = new Member();
+		member.setMemberId(memberId);
+		member.setMemberNickname(nick);
+		member.setMemberAddress(addr);
+		Integer result = memberService.updateNickAddr(member);
+		return ResponseEntity.ok(result);
+	}
 	
 	@PostMapping(value = "/pwMember")
 	public ResponseEntity<?> updateMemberPw(@RequestBody Member member) {

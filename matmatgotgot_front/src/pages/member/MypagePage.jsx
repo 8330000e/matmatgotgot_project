@@ -139,9 +139,10 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     const detailRef = useRef();
     const { memberId, memberThumb } = useAuthStore();
     const [updateMode, setUpdateMode] = useState(false);
-    const profileImgSrc = (memberThumb && memberThumb !== defaultImg)
-        ? `${import.meta.env.VITE_BACKSERVER}/upload/${memberThumb}`
-        : defaultImg;
+    const [updateNickAddr, setupdateNickAddr] = useState({
+        newMemberNickname: memberInfo.memberNickname,
+        newMemberAddress: memberInfo.memberAddress
+    });
     const { open } = useKakaoPostcode({
         onComplete: (data) => {
             setMemberInfo((prev) => ({ ...prev, ["memberAddress"]: data.roadAddress }));
@@ -160,8 +161,14 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             }
         } // 👈 onComplete 끝
     }); // 👈 useKakaoPostcode 훅 설정 끝 (괄호 누락 해결!)
-    const updateModeChange = () => {
+    const updateModeChange = (updateNickAddr) => {
         setUpdateMode((prev) => !prev);
+        if (updateNickAddr.memberNickname != memberInfo.memberNickname || updateNickAddr.memberAddress != memberInfo.memberAddress) {
+            axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem?memberId=${memberId}&nick=${updateNickAddr.memberNickname}&addr=${updateNickAddr.memberAddress}`)
+            .then((res)=>{(res.data);})
+            .catch((err)=>{(err.data);}
+        );
+        }
     };
     const changeThumb = () => {
         const file = inputRef.current.files && inputRef.current.files[0];
@@ -250,13 +257,13 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 </div>
                 <div>
                     <div>
-                        <div className={styles.info_nick}>{updateMode ? <Input type="text" name="memberNickname" id="memberNickname" value={memberInfo.memberNickname} onChange={(e)=>setMemberInfo((prev)=>({...prev, [e.target.name]:e.target.value}))} /> : `${memberInfo.memberNickname}`}</div>
+                        <div className={styles.info_nick}>{updateMode ? <Input type="text" name="memberNickname" id="memberNickname" value={updateNickAddr.memberNickname} onChange={(e)=>setupdateNickAddr((prev)=>({...prev, [e.target.name]:e.target.value}))} /> : `${memberInfo.memberNickname}`}</div>
                         <div><img src={nativeicon} alt="인증" /></div>
                     </div>
                     <ul className={styles.info_member}>
                         <li>
                             <img src={navigate} alt=""/>
-                            <div className={styles.info_profile_addr}>{updateMode ? <> <Input ref={detailRef} type="text" name="memberAddress" id="memberAddress" value={memberInfo.memberAddress} onChange={(e)=>setMemberInfo((prev)=>({...prev, [e.target.name]:e.target.value}))} /> <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>
+                            <div className={styles.info_profile_addr}>{updateMode ? <> <Input ref={detailRef} type="text" name="memberAddress" id="memberAddress" value={updateNickAddr.memberAddress} onChange={(e)=>setupdateNickAddr((prev)=>({...prev, [e.target.name]:e.target.value}))} /> <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
@@ -268,7 +275,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     </ul>
                 </div>
                 <div className={styles.profile_submit}>
-                    <button type="submit" className={styles.submit} onClick={updateModeChange}>{updateMode?"프로필 수정 완료" : "프로필 수정"}</button>
+                    <button type="submit" className={styles.submit} onClick={updateModeChange(updateNickAddr)}>{updateMode?"프로필 수정 완료" : "프로필 수정"}</button>
                 </div>
             </div>
             <div className={styles.info_2line}>

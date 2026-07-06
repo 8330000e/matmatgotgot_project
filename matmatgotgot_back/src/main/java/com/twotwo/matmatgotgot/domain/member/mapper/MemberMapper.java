@@ -34,6 +34,8 @@ public interface MemberMapper {
 
     Member searchId(String memberId);
 
+    Integer updateNickAddr(Member member);
+
     Integer updateMemberPw(@Param("memberId") String memberId, @Param("encPw") String encPw);
 
     int updateThumbnail(Member m);

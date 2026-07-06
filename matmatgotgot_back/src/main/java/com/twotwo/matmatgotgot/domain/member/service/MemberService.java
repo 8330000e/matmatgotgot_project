@@ -166,6 +166,12 @@ public class MemberService {
     }
 
     @Transactional
+    public Integer updateNickAddr(Member member) {
+        Integer result = updateNickAddr(member);
+        return result;
+    }
+
+    @Transactional
     public Integer updateMemberPw(Member member) {
         String memberPw = member.getNewMemberPw();
         String encPw = bcrypt.encode(memberPw);
