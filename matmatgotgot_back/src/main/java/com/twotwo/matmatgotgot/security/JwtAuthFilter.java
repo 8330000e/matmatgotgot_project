@@ -28,7 +28,6 @@ public class JwtAuthFilter extends GenericFilter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    log.info("Request URI = {}", httpServletRequest.getRequestURI());
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -36,6 +35,9 @@ public class JwtAuthFilter extends GenericFilter {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+
+        log.info("Request URI = {}", httpServletRequest.getRequestURI());
+
         String token = parseBearerToken(httpServletRequest);
         if (token == null) {
             chain.doFilter(request, response);
