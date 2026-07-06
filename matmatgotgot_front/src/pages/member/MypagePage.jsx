@@ -177,24 +177,29 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         } // 👈 onComplete 끝
     }); // 👈 useKakaoPostcode 훅 설정 끝 (괄호 누락 해결!)
     const updateModeChange = () => {
-        setUpdateMode((prev) => !prev);
-        
-        // 만약 updateMode를 끄는(저장하는) 시점이라면:
+        // 1. 저장(저장 버튼 누른 시점)
         if (updateMode) {
             axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, null, {
                 params: {
                     memberId: memberId,
-                    nick: updateNickAddr.memberNickname,
-                    addr: updateNickAddr.memberAddress
+                    // 백엔드 컨트롤러(@RequestParam)가 기대하는 변수명으로 수정해야 합니다.
+                    // 만약 백엔드가 nick, addr을 받는다면 그대로 두시고, 
+                    // 아니라면 memberNickname, memberAddress로 바꿔보세요.
+                    nick: updateNickAddr.newMemberNickname, 
+                    addr: updateNickAddr.newMemberAddress
                 }
             })
-            .then((res) => { /* 성공 처리 */ })
+            .then((res) => {
+                setUpdateMode(false); // 저장 성공 시 모드 종료
+                alert("수정 완료");
+            })
             .catch((err) => {
                 console.error("서버 업데이트 실패:", err);
-                // 여기서 상태를 강제로 원복하거나 사용자에게 알림을 띄우세요.
                 alert("정보 수정 중 오류가 발생했습니다.");
-                setUpdateMode(false); // 무한 루프 방지를 위해 모드 해제
             });
+        } else {
+            // 2. 수정 모드 진입
+            setUpdateMode(true);
         }
     };
     const changeThumb = () => {
@@ -284,11 +289,14 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 </div>
                 <div>
                     <div>
-                        <div className={styles.info_nick}>{updateMode ? <Input 
-                            type="text" 
-                            name="memberNickname" // state의 키와 일치
-                            value={updateNickAddr.memberNickname} 
-                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))} 
+                        <div className={styles.info_nick}>
+                        {updateMode ? 
+                        <Input 
+                            type="text"
+                            name="memberNickname" // 👈 오류!
+                            id="memberAddress"
+                            value={updateNickAddr.newMemberAddress} // 👈 값 연결
+                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, newMemberAddress: e.target.value}))}
                         /> : `${memberInfo.memberNickname}`}</div>
                         <div><img src={nativeicon} alt="인증" /></div>
                     </div>
@@ -316,7 +324,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     </ul>
                 </div>
                 <div className={styles.profile_submit}>
-                    <button type="submit" className={styles.submit} onClick={updateModeChange(updateNickAddr)}>{updateMode?"프로필 수정 완료" : "프로필 수정"}</button>
+                    <button type="submit" className={styles.submit} onClick={updateModeChange}>{updateMode?"프로필 수정 완료" : "프로필 수정"}</button>
                 </div>
             </div>
             <div className={styles.info_2line}>
