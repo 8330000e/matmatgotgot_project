@@ -148,7 +148,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         newMemberAddress: ''
     });
 
-    // memberInfo가 변경될 때마다 state를 동기화
+    // memberInfo가 변경될 때마다 state를 동기화??
     useEffect(() => {
         if (memberInfo) {
             setupdateNickAddr({
