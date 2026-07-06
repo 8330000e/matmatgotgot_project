@@ -149,14 +149,14 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     });
 
     // memberInfo가 변경될 때마다 state를 동기화??
-    useEffect(() => {
-        if (memberInfo) {
-            setupdateNickAddr({
-                newMemberNickname: memberInfo.memberNickname,
-                newMemberAddress: memberInfo.memberAddress
-            });
-        }
-    }, [memberInfo]);
+    // useEffect(() => {
+    //     if (memberInfo) {
+    //         setupdateNickAddr({
+    //             newMemberNickname: memberInfo.memberNickname,
+    //             newMemberAddress: memberInfo.memberAddress
+    //         });
+    //     }
+    // }, [memberInfo]);
     
     const { open } = useKakaoPostcode({
         onComplete: (data) => {
@@ -295,10 +295,10 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                             type="text"
                             name="memberNickname" // 👈 오류!
                             id="memberNickname"
-                            value={updateNickAddr.memberNickname} // 👈 값 연결
-                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, memberNickname: e.target.value}))}
+                            value={memberInfo.memberNickname} // 👈 값 연결
+                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))}
                         /> : `${memberInfo.memberNickname}`}</div>
-                        <div><img src={nativeicon} alt="인증" /></div>
+                        <div><img src={nativeicon} alt="현지인인증뱃지" /></div>
                     </div>
                     <ul className={styles.info_member}>
                         <li>
@@ -309,7 +309,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                                 ref={detailRef}
                                 name="memberAddress" // state의 키와 일치
                                 id="memberAddress"
-                                value={updateNickAddr.memberAddress} 
+                                value={memberInfo.memberAddress} 
                                 onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))} 
                             />
                             <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>
