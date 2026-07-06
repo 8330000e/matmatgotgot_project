@@ -167,7 +167,7 @@ public class MemberService {
 
     @Transactional
     public Integer updateNickAddr(Member member) {
-        Integer result = memberService.updateNickAddr(member);
+        Integer result = memberMapper.updateNickAddr(member);
         return result;
     }
 
