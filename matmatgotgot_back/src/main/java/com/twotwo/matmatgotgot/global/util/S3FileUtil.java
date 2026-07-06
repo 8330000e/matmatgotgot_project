@@ -26,6 +26,9 @@ public class S3FileUtil {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    @Value("${cloud.aws.cloudfront.domain}")
+    private String cloudFrontDomain;
+
     /**
      * [수정] 이미지를 AWS S3에 업로드하고 퍼블릭 URL을 반환
      *
@@ -70,7 +73,7 @@ public class S3FileUtil {
 
         // S3 퍼블릭 접근 URL 조합 후 반환
         // 형식: https://{bucketName}.s3.{region}.amazonaws.com/{s3Key}
-        return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + s3Key;
+        return "https://" + cloudFrontDomain + "/" + s3Key;
     }
 
     /**
@@ -91,7 +94,7 @@ public class S3FileUtil {
         // S3 URL에서 오브젝트 키만 추출
         // URL 예시: "https://bucket.s3.region.amazonaws.com/restaurant/abc123.jpg"
         // 추출 결과: "restaurant/abc123.jpg"
-        String baseUrl = "https://" + bucketName + ".s3." + region + ".amazonaws.com/";
+        String baseUrl = "https://" + cloudFrontDomain + "/" + s3Key;
         String s3Key = fileUrl.replace(baseUrl, "");
 
         // S3 삭제 요청
