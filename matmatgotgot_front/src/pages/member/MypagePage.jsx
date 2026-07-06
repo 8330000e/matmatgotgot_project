@@ -135,13 +135,31 @@ export const MypagePage = () => {
 };
 
 export const Myinfo = ({ memberInfo, setMemberInfo }) => {
+    // 데이터 로딩 중이라면 로딩 메시지를 보여주거나 아무것도 렌더링하지 않음
+    if (!memberInfo) {
+        return <div>로딩 중...</div>; 
+    }
     const inputRef = useRef(null);
     const detailRef = useRef();
     const { memberId, memberThumb } = useAuthStore();
     const [updateMode, setUpdateMode] = useState(false);
     const [updateNickAddr, setupdateNickAddr] = useState({
-        newMemberNickname: memberInfo.memberNickname,
-        newMemberAddress: memberInfo.memberAddress
+        newMemberNickname: '',
+        newMemberAddress: ''
+    });
+
+    // memberInfo가 변경될 때마다 state를 동기화
+    useEffect(() => {
+        if (memberInfo) {
+            setupdateNickAddr({
+                newMemberNickname: memberInfo.memberNickname,
+                newMemberAddress: memberInfo.memberAddress
+            });
+        }
+    }, [memberInfo]);
+    const [updateNickAddr, setupdateNickAddr] = useState({
+        memberNickname: '', // 키값을 input name과 동일하게 맞춤
+        memberAddress: ''
     });
     const { open } = useKakaoPostcode({
         onComplete: (data) => {
@@ -161,13 +179,20 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             }
         } // 👈 onComplete 끝
     }); // 👈 useKakaoPostcode 훅 설정 끝 (괄호 누락 해결!)
-    const updateModeChange = (updateNickAddr) => {
+    const updateModeChange = () => {
         setUpdateMode((prev) => !prev);
-        if (updateNickAddr.memberNickname != memberInfo.memberNickname || updateNickAddr.memberAddress != memberInfo.memberAddress) {
-            axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem?memberId=${memberId}&nick=${updateNickAddr.memberNickname}&addr=${updateNickAddr.memberAddress}`)
-            .then((res)=>{(res.data);})
-            .catch((err)=>{(err.data);}
-        );
+        
+        // 만약 updateMode를 끄는(저장하는) 시점이라면:
+        if (updateMode) {
+            axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, null, {
+                params: {
+                    memberId: memberId,
+                    nick: updateNickAddr.memberNickname,
+                    addr: updateNickAddr.memberAddress
+                }
+            })
+            .then((res) => { /* 성공 처리 */ })
+            .catch((err) => { console.error(err); });
         }
     };
     const changeThumb = () => {
@@ -257,13 +282,27 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 </div>
                 <div>
                     <div>
-                        <div className={styles.info_nick}>{updateMode ? <Input type="text" name="memberNickname" id="memberNickname" value={updateNickAddr.memberNickname} onChange={(e)=>setupdateNickAddr((prev)=>({...prev, [e.target.name]:e.target.value}))} /> : `${memberInfo.memberNickname}`}</div>
+                        <div className={styles.info_nick}>{updateMode ? <Input 
+                            type="text" 
+                            name="memberNickname" // state의 키와 일치
+                            value={updateNickAddr.memberNickname} 
+                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))} 
+                        /> : `${memberInfo.memberNickname}`}</div>
                         <div><img src={nativeicon} alt="인증" /></div>
                     </div>
                     <ul className={styles.info_member}>
                         <li>
                             <img src={navigate} alt=""/>
-                            <div className={styles.info_profile_addr}>{updateMode ? <> <Input ref={detailRef} type="text" name="memberAddress" id="memberAddress" value={updateNickAddr.memberAddress} onChange={(e)=>setupdateNickAddr((prev)=>({...prev, [e.target.name]:e.target.value}))} /> <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>
+                            <div className={styles.info_profile_addr}>{updateMode ? <> 
+                            <Input 
+                                type="text"
+                                ref={detailRef}
+                                name="memberNickname" // state의 키와 일치
+                                id="memberAddress"
+                                value={updateNickAddr.memberNickname} 
+                                onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))} 
+                            />
+                            <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
