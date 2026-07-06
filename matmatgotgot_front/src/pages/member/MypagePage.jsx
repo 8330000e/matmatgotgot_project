@@ -189,7 +189,12 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 }
             })
             .then((res) => { /* 성공 처리 */ })
-            .catch((err) => { console.error(err); });
+            .catch((err) => {
+                console.error("서버 업데이트 실패:", err);
+                // 여기서 상태를 강제로 원복하거나 사용자에게 알림을 띄우세요.
+                alert("정보 수정 중 오류가 발생했습니다.");
+                setUpdateMode(false); // 무한 루프 방지를 위해 모드 해제
+            });
         }
     };
     const changeThumb = () => {
