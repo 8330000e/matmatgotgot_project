@@ -88,16 +88,13 @@ public class S3FileUtil {
      */
     public void deleteFile(String fileUrl) {
         if (fileUrl == null || fileUrl.isBlank()) {
-            return; // URL 없으면 삭제 건너뜀
+            return;
         }
 
-        // S3 URL에서 오브젝트 키만 추출
-        // URL 예시: "https://bucket.s3.region.amazonaws.com/restaurant/abc123.jpg"
-        // 추출 결과: "restaurant/abc123.jpg"
-        String baseUrl = "https://" + cloudFrontDomain + "/" + s3Key;
+        // CloudFront URL 기준으로 baseUrl 구성
+        String baseUrl = "https://" + cloudFrontDomain + "/";
         String s3Key = fileUrl.replace(baseUrl, "");
 
-        // S3 삭제 요청
         DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(s3Key)
