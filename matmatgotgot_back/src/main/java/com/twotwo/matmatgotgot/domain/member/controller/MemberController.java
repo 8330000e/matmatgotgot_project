@@ -75,7 +75,7 @@ public class MemberController {
 	@PatchMapping(value="/{memberId}/thumbnail")
 	public ResponseEntity<?> updateThumbnail(@PathVariable String memberId, @ModelAttribute MultipartFile file) {
 		String savepath = root + "member/";
-		String memberThumb = FileUtil.upload(savepath, file);
+		String memberThumb = S3FileUtil.upload(savepath, file);
 		Member m = new Member();
 		m.setMemberThumb(memberThumb);
 		m.setMemberId(memberId);
