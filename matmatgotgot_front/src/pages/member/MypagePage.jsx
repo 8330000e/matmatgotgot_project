@@ -294,9 +294,9 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                         <Input 
                             type="text"
                             name="memberNickname" // 👈 오류!
-                            id="memberAddress"
-                            value={updateNickAddr.newMemberAddress} // 👈 값 연결
-                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, newMemberAddress: e.target.value}))}
+                            id="memberNickname"
+                            value={updateNickAddr.memberNickname} // 👈 값 연결
+                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, memberNickname: e.target.value}))}
                         /> : `${memberInfo.memberNickname}`}</div>
                         <div><img src={nativeicon} alt="인증" /></div>
                     </div>
@@ -307,9 +307,9 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                             <Input 
                                 type="text"
                                 ref={detailRef}
-                                name="memberNickname" // state의 키와 일치
+                                name="memberAddress" // state의 키와 일치
                                 id="memberAddress"
-                                value={updateNickAddr.memberNickname} 
+                                value={updateNickAddr.memberAddress} 
                                 onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))} 
                             />
                             <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>

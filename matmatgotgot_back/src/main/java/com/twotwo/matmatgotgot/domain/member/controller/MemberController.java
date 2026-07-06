@@ -430,7 +430,11 @@ public class MemberController {
 	}	
 
 	@PutMapping(value = "/updateMem")
-	public ResponseEntity<?> updateNickAddr(@RequestParam String memberId, @RequestParam String nick, @RequestParam String addr) {
+	public ResponseEntity<?> updateNickAddr(
+		@RequestParam("memberId") String memberId, // 프론트와 일치하게 수정
+		@RequestParam("nick") String nick, 
+		@RequestParam("addr") String addr
+	) {
 		Member member = new Member();
 		member.setMemberId(memberId);
 		member.setMemberNickname(nick);
