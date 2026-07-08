@@ -143,20 +143,6 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     const detailRef = useRef();
     const { memberId, memberThumb } = useAuthStore();
     const [updateMode, setUpdateMode] = useState(false);
-    const [updateNickAddr, setupdateNickAddr] = useState({
-        newMemberNickname: '',
-        newMemberAddress: ''
-    });
-
-    // memberInfo가 변경될 때마다 state를 동기화??
-    // useEffect(() => {
-    //     if (memberInfo) {
-    //         setupdateNickAddr({
-    //             newMemberNickname: memberInfo.memberNickname,
-    //             newMemberAddress: memberInfo.memberAddress
-    //         });
-    //     }
-    // }, [memberInfo]);
     
     const { open } = useKakaoPostcode({
         onComplete: (data) => {
@@ -182,20 +168,16 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, null, {
                 params: {
                     memberId: memberId,
-                    // 백엔드 컨트롤러(@RequestParam)가 기대하는 변수명으로 수정해야 합니다.
-                    // 만약 백엔드가 nick, addr을 받는다면 그대로 두시고, 
-                    // 아니라면 memberNickname, memberAddress로 바꿔보세요.
-                    nick: updateNickAddr.newMemberNickname, 
-                    addr: updateNickAddr.newMemberAddress
+                    nick: memberInfo.memberNickname,
+                    addr: memberInfo.memberAddress
                 }
             })
             .then((res) => {
+                console.log(res);
                 setUpdateMode(false); // 저장 성공 시 모드 종료
-                alert("수정 완료");
             })
             .catch((err) => {
                 console.error("서버 업데이트 실패:", err);
-                alert("정보 수정 중 오류가 발생했습니다.");
             });
         } else {
             // 2. 수정 모드 진입
@@ -293,10 +275,10 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                         {updateMode ? 
                         <Input 
                             type="text"
-                            name="memberNickname" // 👈 오류!
+                            name="memberNickname"
                             id="memberNickname"
-                            value={memberInfo.memberNickname} // 👈 값 연결
-                            onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))}
+                            value={memberInfo.memberNickname}
+                            onChange={(e) => setMemberInfo((prev) => ({...prev, [e.target.name]: e.target.value}))}
                         /> : `${memberInfo.memberNickname}`}</div>
                         <div><img src={nativeicon} alt="현지인인증뱃지" /></div>
                     </div>
@@ -310,7 +292,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                                 name="memberAddress" // state의 키와 일치
                                 id="memberAddress"
                                 value={memberInfo.memberAddress} 
-                                onChange={(e) => setupdateNickAddr((prev) => ({...prev, [e.target.name]: e.target.value}))} 
+                                onChange={(e) => setMemberInfo((prev) => ({...prev, [e.target.name]: e.target.value}))} 
                             />
                             <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress}`}</div>
                         </li>
