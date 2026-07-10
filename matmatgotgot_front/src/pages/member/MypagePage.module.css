@@ -702,10 +702,10 @@
     width: 10%;
 }
 .report > div:nth-child(2) {
-    width: 40%;
+    width: 60%;
 }
 .report > div:nth-child(3) {
-    width: 30%;
+    display: none;
 }
 .report > div:nth-child(3) > ul {
     display: flex;
