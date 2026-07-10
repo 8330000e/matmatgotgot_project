@@ -653,7 +653,7 @@
     width: 10%;
 }
 .mypost > div:nth-child(2) {
-    width: 30%;
+    width: 60%;
 }
 .mypost > div:nth-child(3) > ul {
     width: 30%;
