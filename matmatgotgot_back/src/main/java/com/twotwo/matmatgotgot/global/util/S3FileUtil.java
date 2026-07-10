@@ -51,7 +51,7 @@ public class S3FileUtil {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
 
-        // UUID 기반 고유 파일명 생성 → S3 오브젝트 키 (폴더/파일명)
+        // UUID 기반 고유 파일명 생성 → S3 오브젝트 키 (폴더/파일명)!
         String s3Key = "app/upload/web/matgot/" + folder + "/" + UUID.randomUUID() + extension;
 
         try {
