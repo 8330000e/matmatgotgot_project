@@ -672,6 +672,30 @@ export const Reportposts = ({memberInfo}) => {
     </>);};
 
 export const Myask = ({memberInfo}) => {
+    const { memberId, memberNo } = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
+    const [order, setOrder] = useState(0);
+    const [myboard, setMyboard] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/myask`,{
+            params: {
+                page,
+                size,
+                order
+            },
+        })
+            .then((res)=>{
+                console.log(res.data);
+                setMyboard(res.data.items);
+                setTotalPage(res.data.totalPage);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    },[page, order]);
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_likepost_wrap}`}>
             <div className={styles.posts_bar}>
@@ -701,7 +725,11 @@ export const Myask = ({memberInfo}) => {
                 {/*더미데이터*/}
             </div>
             <div>
-                <Pagination/>
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPage={totalPage}
+                    naviSize={5}/>
             </div>
         </div>
     </>);};
