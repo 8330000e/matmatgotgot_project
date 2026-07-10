@@ -67,26 +67,27 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 💡 리액트(5173 포트) 연동 및 credential 허용을 위한 CORS 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         
-        config.setAllowedOrigins(List.of(
-            "http://localhost:5173",
-            "https://d2lg74d5mqmhqe.cloudfront.net",
-            "http://ec2-15-165-96-13.ap-northeast-2.compute.amazonaws.com"
+        // 1. allowedOrigins 대신 allowedOriginPatterns 사용 (권장)
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                "https://d2lg74d5mqmhqe.cloudfront.net",
+                "http://ec2-15-165-96-13.ap-northeast-2.compute.amazonaws.com"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")); // OPTIONS 포함 필수
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 👈 핵심: axios의 withCredentials와 맞물리는 설정!
-
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
-
-        config.setAllowCredentials(true);
+        
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        
+        // 2. AllowedHeaders를 하나로 통일
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+        
+        // 3. allowCredentials는 한 번만 설정
+        config.setAllowCredentials(true); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // 모든 URL 경로에 위의 CORS 설정 적용
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }

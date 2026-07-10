@@ -519,7 +519,7 @@ export const Likeposts = ({memberInfo}) => {
             },
         })
             .then((res)=>{
-                console.log(res.data);
+                console.log(res);
                 setMyboard(res.data.items);
                 setTotalPage(res.data.totalPage);
             })
