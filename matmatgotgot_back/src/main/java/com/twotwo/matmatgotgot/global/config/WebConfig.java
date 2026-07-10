@@ -14,20 +14,20 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${file.root}")
     private String root;
 
-    @Override
-        public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOriginPatterns(
-                        "https://d2lg74d5mqmhqe.cloudfront.net",
-                        "http://ec2-15-165-96-13.ap-northeast-2.compute.amazonaws.com",
-                        "http://localhost:5173", "http://127.0.0.1:5173",
-                        "http://localhost:3000", "http://127.0.0.1:3000",
-                        "http://localhost:9999"
-                )
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-        }
+//     @Override
+//         public void addCorsMappings(CorsRegistry registry) {
+//         registry.addMapping("/**")
+//                 .allowedOriginPatterns(
+//                         "https://d2lg74d5mqmhqe.cloudfront.net",
+//                         "http://ec2-15-165-96-13.ap-northeast-2.compute.amazonaws.com",
+//                         "http://localhost:5173", "http://127.0.0.1:5173",
+//                         "http://localhost:3000", "http://127.0.0.1:3000",
+//                         "http://localhost:9999"
+//                 )
+//                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+//                 .allowedHeaders("*")
+//                 .allowCredentials(true);
+//         }
 
 
     @Override
