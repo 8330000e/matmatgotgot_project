@@ -603,7 +603,7 @@
     width: 10%;
 }
 .likepost > div:nth-child(2) {
-    width: 30%;
+    width: 60%;
 }
 .likepost > div:nth-child(3) > ul {
     width: 30%;
