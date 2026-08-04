@@ -8,7 +8,7 @@
     <select id="selectMemberCount" parameterType="adminListItem" resultType="int">
         SELECT COUNT(*)
         FROM member_tbl M
-        LEFT JOIN NATIVES_TBL N ON M.MEMBER_ID = N.MEMBER_ID
+        LEFT JOIN natives_tbl N ON M.MEMBER_ID = N.MEMBER_ID
         <where>
             <if test="keyword != null and keyword != ''">
                 M.MEMBER_ID LIKE CONCAT('%', #{keyword}, '%')

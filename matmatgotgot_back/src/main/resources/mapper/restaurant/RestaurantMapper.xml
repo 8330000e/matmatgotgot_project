@@ -316,7 +316,7 @@
     <select id="selectMyWishList" resultType="restaurant">
         SELECT r.*
         FROM restaurant_tbl r
-                 INNER JOIN REST_LIKE_TBL l ON r.rest_no = l.rest_no
+                 INNER JOIN rest_like_tbl l ON r.rest_no = l.rest_no
         WHERE l.member_id = #{memberId}
           AND r.rest_status = 'NORMAL'
         ORDER BY r.created_at DESC
@@ -325,7 +325,7 @@
     <select id="selectPopularList" resultType="restaurant">
         SELECT r.*, COUNT(l.member_id) AS like_count
         FROM restaurant_tbl r
-                 LEFT JOIN REST_LIKE_TBL l ON r.rest_no = l.rest_no
+                 LEFT JOIN rest_like_tbl l ON r.rest_no = l.rest_no
         WHERE r.rest_status = 'NORMAL'
         GROUP BY r.rest_no
         ORDER BY like_count DESC, r.rating_sum DESC, r.rest_no DESC
