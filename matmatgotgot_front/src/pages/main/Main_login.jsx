@@ -47,7 +47,7 @@ const Main_login = () => {
 
     const fetchMainData = async () => {
       try {
-        const BACK_URL = import.meta.env.VITE_S3;
+        const BACK_URL = import.meta.env.VITE_BACKSERVER;
 
         if (memberId) {
           const wishRes = await axios.get(`${BACK_URL}/restaurants/my-wish`, {
