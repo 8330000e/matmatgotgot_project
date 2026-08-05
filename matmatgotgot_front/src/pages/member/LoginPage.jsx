@@ -2,7 +2,6 @@ import axios from "axios";
 import styles from "./LoginPage.module.css";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useGoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from "../../store/useAuthStore";
 import googlelogo from "../../assets/logo/google.svg";
 import kakaologo from "../../assets/logo/kakao.svg";
@@ -12,17 +11,18 @@ import Swal from "sweetalert2";
 
 const Login = () => {
   const navigate = useNavigate();
-  // const location = useLocation();
   const [members, setMembers] = useState({ memberId: "", memberPw: "" });
+  
   const inputMember = (e) => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
 
-  // 일반로그인
+  // 일반로그인 상태
   const login = useAuthStore((state) => state.login);
   const memberId = useAuthStore((state) => state.memberId);
   const token = useAuthStore((state) => state.token);
 
+  // 일반 로그인 핸들러
   const handleLogin = async () => {
     try {
       const response = await axios.post(
@@ -30,14 +30,12 @@ const Login = () => {
         {
           memberId: members.memberId,
           memberPw: members.memberPw,
-        },
+        }
       );
 
       console.log("백엔드가 보내준 로그인 응답 데이터:", response.data);
 
-      // 백엔드에서 준 응답 데이터(memberId, token, memberNickname 등)
       if (response.data) {
-        // 🔥 여기서 스토어의 login을 실행해야 localStorage에 "auth-key"가 생성됩니다!
         login(response.data);
         Swal.mixin({
           toast: true,
@@ -83,71 +81,56 @@ const Login = () => {
     }
   };
 
-  // 구글 로그인
-  const handleGoogleLogin = () => {
+  // 구글 로그인 시작
+  const googleLogin = () => {
     const clientId = "648568970946-ifvq25nvtsg8np7c1984euvl65937a42.apps.googleusercontent.com"; 
-    // 백엔드나 프론트엔드에서 코드를 받을 수 있도록 구글 콘솔에 등록된 Redirect URI와 정확히 일치해야 합니다.
     const redirectUri = "https://d2lg74d5mqmhqe.cloudfront.net/login/oauth2/code/google"; 
-
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=email profile`;
 
-    // 팝업을 띄우지 않고 현재 창을 구글 로그인 페이지로 이동시킵니다.
     window.location.href = googleAuthUrl;
   };
+
+  // 구글 로그인 콜백 처리
+  const sendCodeToBackend = async (code) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKSERVER}/members/login/google`,
+        { code: code },
+        { withCredentials: true }
+      );
+
+      console.log("로그인 성공:", res.data);
+      const googleUser = res.data;
+
+      useAuthStore.getState().login({
+        memberId: googleUser.memberId,         
+        memberNickname: googleUser.memberNickname, 
+        memberThumb: googleUser.memberThumb, 
+        admin: googleUser.admin ?? false, 
+        token: googleUser.token,              
+        endTime: googleUser.validity || (new Date().getTime() + 3600000), 
+      });
+
+      navigate("/");
+    } catch (err) {
+      console.error("백엔드 전송 실패:", err);
+      navigate("/login");
+    }
+  };
+
+  // 구글 코드 감지 useEffect
   useEffect(() => {
-      // 1. URL 쿼리 파라미터에서 'code' 추출
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
 
-      if (code) {
-        console.log("구글 인가 코드 획득:", code);
-        sendCodeToBackend(code);
-      } else {
-        console.error("인가 코드가 없습니다.");
-        navigate("/login"); // 실패 시 로그인 페이지로 복귀
-      }
-    }, []);
+    // 현재 경로가 구글 콜백 경로이거나 code가 있을 때만 동작하도록 분기 처리가 안전합니다.
+    if (code && window.location.pathname.includes("google")) {
+      console.log("구글 인가 코드 획득:", code);
+      sendCodeToBackend(code);
+    }
+  }, []);
 
-    // 2. 백엔드로 인가 코드 전송 및 로그인 처리
-    const sendCodeToBackend = async (code) => {
-      try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_BACKSERVER}/members/login/google`,
-          { code: code },
-          { withCredentials: true }
-        );
-
-        console.log("로그인 성공:", res.data);
-        const googleUser = res.data;
-
-        // Zustand 등 전파 스토어 상태 업데이트
-        useAuthStore.getState().login({
-          memberId: googleUser.memberId,         // 백엔드 응답 구조에 맞게 수정 (id -> memberId 등)
-          memberNickname: googleUser.memberNickname, 
-          memberThumb: googleUser.memberThumb, 
-          admin: googleUser.admin ?? false, 
-          token: googleUser.token,               // 백엔드가 준 실제 JWT 토큰
-          endTime: googleUser.validity || (new Date().getTime() + 3600000), 
-        });
-
-        // 성공 시 메인 화면으로 이동
-        navigate("/");
-
-      } catch (err) {
-        console.error("백엔드 전송 실패:", err);
-        navigate("/login");
-      }
-    };
-
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h2>구글 로그인 처리 중입니다... 잠시만 기다려주세요.</h2>
-      </div>
-    );
-  }
-  
-
-  // 카카오톡 로그인
+  // 카카오 로그인 시작
   const KakaoLogin = () => {
     const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
     const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
@@ -156,16 +139,9 @@ const Login = () => {
       throw new Error(".env 파일에서 환경변수를 불러오지 못했습니다.");
     }
 
-    // 카카오 인증 페이지 URL
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
-
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
     window.location.href = kakaoAuthUrl;
   };
-
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
-
-  const isCallbackMode = Boolean(code);
 
   const getKakaoUserInfo = async (accessToken) => {
     try {
@@ -176,30 +152,19 @@ const Login = () => {
         },
       });
 
-      console.log("🎉 카카오 사용자 정보 획득:", response.data);
-
       const kakaoEmail = response.data.kakao_account?.email;
       const kakaoNickname = response.data.properties?.nickname;
       const kakaoThumb = response.data.properties?.thumbnail_image;
 
       if (kakaoEmail) {
-        console.log("사용자 이메일:", kakaoEmail);
-        console.log("사용자 닉네임:", kakaoNickname);
-        console.log("사용자 프로필:", kakaoThumb);
-
-        console.log("🚀 백엔드로 보낼 준비 완료!");
-
-        // 우리 스프링 백엔드 서버로 POST 요청
         const res = await axios.post(
           `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
           {
             memberEmail: kakaoEmail,
             memberNickname: kakaoNickname,
             memberThumb: kakaoThumb,
-          },
+          }
         );
-
-        console.log("✅ 백엔드 응답 성공:", res.data);
 
         useAuthStore.getState().login({
           memberId: res.data.memberId,
@@ -207,30 +172,21 @@ const Login = () => {
           memberThumb: res.data.memberThumb || null,
           admin: false,
           token: res.data.token,
-          endTime: new Date().getTime() + 3600000, // 1시간 타이머
+          endTime: new Date().getTime() + 3600000,
         });
 
-        // 백엔드 데이터베이스 저장까지 정상 완료된 것을 확인하고 메인 홈으로 이동!
         navigate("/");
       } else {
-        console.log(
-          "이메일 정보가 없습니다. (카카오 로그인 시 이메일 동의 안 함)",
-        );
         alert("이메일 제공 동의가 필요합니다.");
       }
     } catch (error) {
-      console.error(
-        "사용자 정보 요청 또는 백엔드 전송 실패:",
-        error.response ? error.response.data : error.message,
-      );
+      console.error("사용자 정보 요청 또는 백엔드 전송 실패:", error.response ? error.response.data : error.message);
       alert("로그인 처리 중 오류가 발생했습니다.");
     }
   };
 
   const getKakaoToken = async (authorizeCode) => {
     try {
-      console.log("🔑 인가 코드로 토큰 요청 시작. 코드:", authorizeCode);
-
       const body = new URLSearchParams();
       body.append("grant_type", "authorization_code");
       body.append("client_id", import.meta.env.VITE_KAKAO_REST_API_KEY);
@@ -248,32 +204,28 @@ const Login = () => {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
           },
-        },
+        }
       );
 
-      console.log("🎉 카카오 토큰 발급 성공:", response.data);
-
-      // 토큰을 정상적으로 받았으므로 다음 단계인 이메일/백엔드 전송 실행
       getKakaoUserInfo(response.data.access_token);
     } catch (error) {
-      console.error(
-        "토큰 요청 실패:",
-        error.response ? error.response.data : error.message,
-      );
+      console.error("토큰 요청 실패:", error.response ? error.response.data : error.message);
       alert("카카오 로그인 인증에 실패했습니다.");
     }
   };
 
+  // 카카오 코드 감지 useEffect
   useEffect(() => {
-    // 2. useEffect 안에서는 setState를 호출하지 않고, 오직 '외부 API 호출(Side Effect)'만 수행합니다.
-    if (code) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+
+    if (code && window.location.pathname.includes("kakao")) {
       console.log("카카오 인가 코드 획득 성공:", code);
-      getKakaoToken(code); // 토큰 요청 실행
+      getKakaoToken(code);
     }
-  }, []); // 의존성 배열을 비워두거나 [code]를 넣어 최초 1회만 실행되도록 격리
+  }, []);
 
   // 네이버 로그인
-  // 💡 1. 함수 앞에 반드시 async를 붙여줍니다!
   const naverLogin = async () => {
     const CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const REDIRECT_URI = encodeURIComponent(
@@ -281,29 +233,22 @@ const Login = () => {
     );
 
     try {
-      // 💡 2. 앞에 await을 붙이고, 뒤에 .data를 붙여서 '진짜 데이터(문자열)'만 쏙 꺼냅니다.
       const response = await axios.get(
         `${import.meta.env.VITE_BACKSERVER}/members/ranchar`,
       );
-      const STATE = response.data; // 백엔드가 준 랜덤 문자열 (예: "test")
+      const STATE = response.data; 
 
-      console.log("🎯 백엔드에서 받아온 안전한 STATE 값:", STATE);
-
-      // 3. 이제 완벽한 문자열이 된 STATE를 주소창에 조립합니다.
       const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
-
-      // 4. 주소 이동
       window.location.assign(NAVER_AUTH_URL);
     } catch (error) {
-      console.error(
-        "🚨 백엔드에서 랜덤 문자열(state)을 가져오는데 실패했습니다:",
-        error,
-      );
+      console.error("🚨 백엔드에서 랜덤 문자열(state)을 가져오는데 실패했습니다:", error);
       alert("로그인 세션 생성 실패. 다시 시도해주세요.");
     }
   };
 
-  // 애플 로그인(상황에 따라 생략 가능성 높음)
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const isCallbackMode = Boolean(code && window.location.pathname.includes("code"));
 
   console.log("아이디: ", memberId, "\n토큰: ", token);
 
@@ -311,9 +256,8 @@ const Login = () => {
     <>
       <div>
         {isCallbackMode ? (
-          // 주소창에 code가 있을 때 (토큰 요청 중인 빈 화면 상태)
           <div style={{ textAlign: "center", padding: "100px 0" }}>
-            <h3>카카오 로그인 처리 중입니다...</h3>
+            <h3>소셜 로그인 처리 중입니다...</h3>
             <p>잠시만 기다려주세요.</p>
           </div>
         ) : (
