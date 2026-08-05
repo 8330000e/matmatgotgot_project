@@ -84,6 +84,16 @@ const Login = () => {
   };
 
   // 구글 로그인
+  const handleGoogleLogin = () => {
+    const clientId = "648568970946-ifvq25nvtsg8np7c1984euvl65937a42.apps.googleusercontent.com"; 
+    // 백엔드나 프론트엔드에서 코드를 받을 수 있도록 구글 콘솔에 등록된 Redirect URI와 정확히 일치해야 합니다.
+    const redirectUri = "https://d2lg74d5mqmhqe.cloudfront.net/login/oauth2/code/google"; 
+
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=email profile`;
+
+    // 팝업을 띄우지 않고 현재 창을 구글 로그인 페이지로 이동시킵니다.
+    window.location.href = googleAuthUrl;
+  };
   useEffect(() => {
       // 1. URL 쿼리 파라미터에서 'code' 추출
       const urlParams = new URLSearchParams(window.location.search);
