@@ -52,6 +52,7 @@ const Slide = ({ text, list = [], type }) => {
       </div>
     );
   }
+  
 
   return (
     <div>
@@ -79,9 +80,10 @@ const Slide = ({ text, list = [], type }) => {
           className={styles.mySwiper}
         >
           {list.map((item) => {
+            console.log(list);
             const id = item.boardNo || item.tplanNo;
             const title = item.boardTitle || item.tplanTitle;
-            const BACK_URL = import.meta.env.VITE_BACKSERVER;
+            const BACK_URL = import.meta.env.VITE_S3;
 
             let thumb = null;
 
@@ -103,9 +105,11 @@ const Slide = ({ text, list = [], type }) => {
               }
             }
 
+            console.log("thumb =", thumb);
+
             const subText =
               type === "tour" ? item.tplanRegion : `❤️ ${item.likeCount || 0}`;
-
+            console.log(item);
             return (
               <SwiperSlide
                 key={id}
