@@ -24,7 +24,7 @@ const NaverCallbackPage = () => {
 
       // 2. 백엔드로 순수한 문자열 값을 명확하게 객체에 실어 보냅니다.
       axios
-        .post("http://d2lg74d5mqmhqe.cloudfront.net/api/members/login/naver", {
+        .post("https://d2lg74d5mqmhqe.cloudfront.net/api/members/login/naver", {
           code: code,
           state: state,
         })
