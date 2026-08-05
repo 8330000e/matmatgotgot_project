@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor // 💡 final이 붙은 필드를 모아 생성자를 자동 생성합니다.
 @RequestMapping("/main")

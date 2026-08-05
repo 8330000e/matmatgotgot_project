@@ -24,6 +24,8 @@ const Main = () => {
 
         setBestReviews(Array.isArray(reviewRes.data) ? reviewRes.data : []);
         setBestTours(Array.isArray(tourRes.data) ? tourRes.data : []);
+        console.log(reviewRes.data);
+        console.log(tourRes.data);
       } catch (error) {
         console.error("메인 슬라이드 데이터를 불러오는 중 오류 발생:", error);
       }

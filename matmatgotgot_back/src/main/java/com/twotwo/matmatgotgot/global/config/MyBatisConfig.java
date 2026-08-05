@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 // Mapper 인터페이스 자동 스캔
 // @Configuration
-@MapperScan("com.twotwo.matmatgotgot.domain")
+// @MapperScan("com.twotwo.matmatgotgot.domain")
 public class MyBatisConfig {
     
 }

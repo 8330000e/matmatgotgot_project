@@ -16,6 +16,8 @@ const Slide = ({ text, list = [], type }) => {
   const [swiperNav, setSwiperNav] = useState(false);
   const { memberId } = useAuthStore();
 
+  console.log("Slide", text, list);
+
   useEffect(() => {
     if (prevRef.current && nextRef.current) {
       setSwiperNav(true);
