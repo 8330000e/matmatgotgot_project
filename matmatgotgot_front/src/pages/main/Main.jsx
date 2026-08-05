@@ -15,7 +15,7 @@ const Main = () => {
   useEffect(() => {
     const fetchMainData = async () => {
       try {
-        const serverUrl = import.meta.env.VITE_S3;
+        const serverUrl = import.meta.env.VITE_BACKSERVER;
         console.log(serverUrl);
 
         const [reviewRes, tourRes] = await Promise.all([
