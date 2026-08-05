@@ -39,25 +39,23 @@ public class SpringSecurityConfig {
 
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
-                    // static 리소스나 에러 페이지 허용
-                    .requestMatchers("/error", "/favicon.ico").permitAll()
-                    .requestMatchers("/upload/**").permitAll()
-                    .requestMatchers("/members/**", "/login", "/members/pwMember","/members/memberno","/members/natives").permitAll()
-                .requestMatchers("/boards/**").permitAll()
-                    // 에디터 이미지 접근 허용
-                    .requestMatchers("/editor/**").permitAll()
-                    // 맛집 이미지 접근 허용
-                    .requestMatchers("/restaurants/**").permitAll()
-                    // 네이버 검색 API 허용
-                    .requestMatchers("/api/naver/**").permitAll()
-                    .requestMatchers("/admin/**").permitAll()
-                // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
-                .requestMatchers("/trips/**").permitAll()
-                .requestMatchers("/menu/**").permitAll()
-                .requestMatchers("/api/route/**").permitAll()
-                .requestMatchers("/main/**").permitAll()
-                .anyRequest().authenticated()
-            );
+            .requestMatchers("/error", "/favicon.ico").permitAll()
+            .requestMatchers("/upload/**", "/api/upload/**").permitAll()
+            
+            # ⭐ /api/ 프리픽스를 추가하여 리액트 프록시 요청과 일치시킵니다.
+            .requestMatchers("/members/**", "/api/members/**", "/login", "/api/login").permitAll()
+            .requestMatchers("/boards/**", "/api/boards/**").permitAll()
+            .requestMatchers("/editor/**", "/api/editor/**").permitAll()
+            .requestMatchers("/restaurants/**", "/api/restaurants/**").permitAll()
+            .requestMatchers("/api/naver/**").permitAll()
+            .requestMatchers("/admin/**", "/api/admin/**").permitAll()
+            .requestMatchers("/trips/**", "/api/trips/**").permitAll()
+            .requestMatchers("/menu/**", "/api/menu/**").permitAll()
+            .requestMatchers("/api/route/**").permitAll()
+            .requestMatchers("/main/**", "/api/main/**").permitAll()
+            
+            .anyRequest().authenticated()
+    );
         return http.build();
     }
 
