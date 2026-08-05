@@ -2,7 +2,7 @@ import axios from "axios";
 import styles from "./LoginPage.module.css";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from "../../store/useAuthStore";
 import googlelogo from "../../assets/logo/google.svg";
 import kakaologo from "../../assets/logo/kakao.svg";
@@ -84,43 +84,58 @@ const Login = () => {
   };
 
   // 구글 로그인
-  const googleLogin = useGoogleLogin({
-    // 구글로부터 '인가 코드(code)'를 받아오는 방식 설정
-    flow: "auth-code",
-    // ux_mode: "redirect",
-    // redirect_uri: `${import.meta.env.VITE_FRONTSERVER}/login`,
-    onSuccess: async (codeResponse) => {
-      console.log("구글 인가 코드:", codeResponse.code);
+  useEffect(() => {
+      // 1. URL 쿼리 파라미터에서 'code' 추출
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
 
-      // 백엔드 서버로 인가 코드 전송
+      if (code) {
+        console.log("구글 인가 코드 획득:", code);
+        sendCodeToBackend(code);
+      } else {
+        console.error("인가 코드가 없습니다.");
+        navigate("/login"); // 실패 시 로그인 페이지로 복귀
+      }
+    }, []);
+
+    // 2. 백엔드로 인가 코드 전송 및 로그인 처리
+    const sendCodeToBackend = async (code) => {
       try {
         const res = await axios.post(
           `${import.meta.env.VITE_BACKSERVER}/members/login/google`,
-          { code: codeResponse.code },
-          { withCredentials: true }, // 아까 설정한 쿠키 공유 옵션!
+          { code: code },
+          { withCredentials: true }
         );
 
         console.log("로그인 성공:", res.data);
         const googleUser = res.data;
 
+        // Zustand 등 전파 스토어 상태 업데이트
         useAuthStore.getState().login({
-          memberId: googleUser.id, // 구글 이메일을 아이디로 활용
-          memberNickname: googleUser.name, // '김가연'
-          memberThumb: googleUser.picture, // 구글 프로필 이미지 URL
-          admin: false, // 일반 유저
-          token: token, // 임시 세션 토큰 (백엔드 토큰 없을 시)
-          endTime: new Date().getTime() + 3600000, // 타이머용 만료 시간 (지금으로부터 1시간 뒤 예시)
+          memberId: googleUser.memberId,         // 백엔드 응답 구조에 맞게 수정 (id -> memberId 등)
+          memberNickname: googleUser.memberNickname, 
+          memberThumb: googleUser.memberThumb, 
+          admin: googleUser.admin ?? false, 
+          token: googleUser.token,               // 백엔드가 준 실제 JWT 토큰
+          endTime: googleUser.validity || (new Date().getTime() + 3600000), 
         });
 
-        if (res.status === 200) {
-          navigate("/");
-        }
+        // 성공 시 메인 화면으로 이동
+        navigate("/");
+
       } catch (err) {
         console.error("백엔드 전송 실패:", err);
+        navigate("/login");
       }
-    },
-    onError: () => console.log("구글 로그인 실패"),
-  });
+    };
+
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <h2>구글 로그인 처리 중입니다... 잠시만 기다려주세요.</h2>
+      </div>
+    );
+  }
+  
 
   // 카카오톡 로그인
   const KakaoLogin = () => {
