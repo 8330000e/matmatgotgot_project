@@ -41,14 +41,14 @@ public class SpringSecurityConfig {
                 .requestMatchers("/error", "/favicon.ico").permitAll()
                 .requestMatchers("/upload/**", "/api/upload/**").permitAll()
                 
-                // ⭐ /api/ 프리픽스를 추가하여 리액트 프록시 요청과 일치시킵니다.
+                // ⭐ 소셜 로그인 관련 콜백 및 API 경로 전체 허용 추가
+                .requestMatchers("/login/**", "/oauth2/**", "/api/login/**", "/api/oauth2/**").permitAll()
+                .requestMatchers("/login/oauth2/code/**", "/api/login/oauth2/code/**").permitAll()
+                
                 .requestMatchers("/members/**", "/api/members/**", "/login", "/api/login", "/members/pwMember", "/members/memberno", "/members/natives").permitAll()
                 .requestMatchers("/boards/**", "/api/boards/**").permitAll()
-                // 에디터 이미지 접근 허용
                 .requestMatchers("/editor/**", "/api/editor/**").permitAll()
-                // 맛집 이미지 접근 허용
                 .requestMatchers("/restaurants/**", "/api/restaurants/**").permitAll()
-                // 네이버 검색 API 허용
                 .requestMatchers("/api/naver/**").permitAll()
                 .requestMatchers("/admin/**", "/api/admin/**").permitAll()
                 .requestMatchers("/trips/**", "/api/trips/**").permitAll()
