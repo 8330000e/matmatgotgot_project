@@ -92,6 +92,7 @@ const Slide = ({ text, list = [], type }) => {
                 thumb = item.boardThumb.startsWith("http")
                   ? item.boardThumb
                   : `${BACK_URL}/editor/${item.boardThumb}`;
+                console.log(item.boardThumb);
               } else {
                 thumb = `${BACK_URL}/menu/basic.jpeg`;
               }
@@ -100,6 +101,7 @@ const Slide = ({ text, list = [], type }) => {
                 thumb = item.menuImg.startsWith("http")
                   ? item.menuImg
                   : `${BACK_URL}/menu/${item.menuImg}`;
+                console.log(item.menuImg);
               } else {
                 thumb = `${BACK_URL}/menu/basic.jpeg`;
               }
