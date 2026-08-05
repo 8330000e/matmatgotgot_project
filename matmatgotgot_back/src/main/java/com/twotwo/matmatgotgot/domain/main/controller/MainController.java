@@ -24,6 +24,7 @@ public class MainController {
 
     @GetMapping("/best-reviews")
     public ResponseEntity<List<MainBestReviewDTO>> getBestReviews() {
+        log.info("Controller 진입");
         List<MainBestReviewDTO> reviews = mainService.getBestReviews();
         return ResponseEntity.ok(reviews);
     }

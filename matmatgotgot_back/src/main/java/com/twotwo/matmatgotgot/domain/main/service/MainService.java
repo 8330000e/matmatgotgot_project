@@ -16,6 +16,7 @@ public class MainService {
     }
 
     public List<MainBestReviewDTO> getBestReviews() {
+        log.info("Service 진입");
         return mainMapper.findBestReviews();
     }
 
