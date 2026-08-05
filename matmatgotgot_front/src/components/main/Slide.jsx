@@ -83,7 +83,7 @@ const Slide = ({ text, list = [], type }) => {
             console.log(list);
             const id = item.boardNo || item.tplanNo;
             const title = item.boardTitle || item.tplanTitle;
-            const BACK_URL = import.meta.env.VITE_BACKSERVER;
+            const BACK_URL = import.meta.env.VITE_S3;
 
             let thumb = null;
 

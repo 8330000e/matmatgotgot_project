@@ -15,7 +15,8 @@ const Main = () => {
   useEffect(() => {
     const fetchMainData = async () => {
       try {
-        const serverUrl = import.meta.env.VITE_BACKSERVER;
+        const serverUrl = import.meta.env.VITE_S3;
+        console.log(serverUrl);
 
         const [reviewRes, tourRes] = await Promise.all([
           axios.get(`${serverUrl}/main/best-reviews`),
