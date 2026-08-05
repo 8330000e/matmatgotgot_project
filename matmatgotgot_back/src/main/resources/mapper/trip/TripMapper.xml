@@ -94,7 +94,7 @@
             REST_NO,
             MENU_NAME AS name,
             MENU_PRICE AS price,
-            CONCAT('http://localhost:9999/menu/', MENU_IMG) AS imagePreview
+            CONCAT('http://d2lg74d5mqmhqe.cloudfront.net9/menu/', MENU_IMG) AS imagePreview
         FROM menu_tbl
         WHERE REST_NO = #{restNo}
     </select>
@@ -154,7 +154,7 @@
     </insert>
 
     <sql id="selectThumImg">
-        (SELECT CONCAT('http://localhost:9999/menu/', r.rest_thumb)
+        (SELECT CONCAT('http://d2lg74d5mqmhqe.cloudfront.net/menu/', r.rest_thumb)
          FROM travel_schedule s
                   JOIN restaurant_tbl r ON s.rest_no = r.rest_no
          WHERE s.tplan_no = tp.tplan_no
