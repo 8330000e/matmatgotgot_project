@@ -8,12 +8,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -39,23 +37,28 @@ public class SpringSecurityConfig {
 
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/error", "/favicon.ico").permitAll()
-            .requestMatchers("/upload/**", "/api/upload/**").permitAll()
-            
-            # ⭐ /api/ 프리픽스를 추가하여 리액트 프록시 요청과 일치시킵니다.
-            .requestMatchers("/members/**", "/api/members/**", "/login", "/api/login").permitAll()
-            .requestMatchers("/boards/**", "/api/boards/**").permitAll()
-            .requestMatchers("/editor/**", "/api/editor/**").permitAll()
-            .requestMatchers("/restaurants/**", "/api/restaurants/**").permitAll()
-            .requestMatchers("/api/naver/**").permitAll()
-            .requestMatchers("/admin/**", "/api/admin/**").permitAll()
-            .requestMatchers("/trips/**", "/api/trips/**").permitAll()
-            .requestMatchers("/menu/**", "/api/menu/**").permitAll()
-            .requestMatchers("/api/route/**").permitAll()
-            .requestMatchers("/main/**", "/api/main/**").permitAll()
-            
-            .anyRequest().authenticated()
-    );
+                // static 리소스나 에러 페이지 허용
+                .requestMatchers("/error", "/favicon.ico").permitAll()
+                .requestMatchers("/upload/**", "/api/upload/**").permitAll()
+                
+                // ⭐ /api/ 프리픽스를 추가하여 리액트 프록시 요청과 일치시킵니다.
+                .requestMatchers("/members/**", "/api/members/**", "/login", "/api/login", "/members/pwMember", "/members/memberno", "/members/natives").permitAll()
+                .requestMatchers("/boards/**", "/api/boards/**").permitAll()
+                // 에디터 이미지 접근 허용
+                .requestMatchers("/editor/**", "/api/editor/**").permitAll()
+                // 맛집 이미지 접근 허용
+                .requestMatchers("/restaurants/**", "/api/restaurants/**").permitAll()
+                // 네이버 검색 API 허용
+                .requestMatchers("/api/naver/**").permitAll()
+                .requestMatchers("/admin/**", "/api/admin/**").permitAll()
+                .requestMatchers("/trips/**", "/api/trips/**").permitAll()
+                .requestMatchers("/menu/**", "/api/menu/**").permitAll()
+                .requestMatchers("/api/route/**").permitAll()
+                .requestMatchers("/main/**", "/api/main/**").permitAll()
+                
+                // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
+                .anyRequest().authenticated()
+            );
         return http.build();
     }
 
