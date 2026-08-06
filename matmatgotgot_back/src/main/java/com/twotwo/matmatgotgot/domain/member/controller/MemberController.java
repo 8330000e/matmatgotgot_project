@@ -211,9 +211,7 @@ public class MemberController {
 		if(member == null) {
 			Member newMember = new Member();
 			newMember.setMemberEmail(request.getMemberEmail());
-			newMember.setMemberNickname(request.getMemberNickname());
 			newMember.setMemberThumb(request.getMemberThumb());
-			newMember.setMemberName(request.getMemberNickname());
 			Random r = new Random();
 			StringBuffer sb1 = new StringBuffer();
 			StringBuffer sb2 = new StringBuffer();
@@ -223,8 +221,14 @@ public class MemberController {
 				sb1.append(num1);
 				sb2.append(num2);
 			}
-			newMember.setMemberId("kakao_" + sb1);
+			String randomKakaoId = "kakao_" + sb1;
+			String nickname = request.getMemberNickname();
+			String finalNickname = (nickname != null && !nickname.trim().isEmpty()) ? nickname : randomKakaoId;
+
+			newMember.setMemberId(randomKakaoId);
 			newMember.setMemberPw("kakao_" + sb2);
+			newMember.setMemberName(finalNickname);
+			newMember.setMemberNickname(finalNickname);
 			
 			int insertResult = memberService.insertMemberK(newMember);
 
