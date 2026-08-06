@@ -19,6 +19,7 @@ import com.twotwo.matmatgotgot.security.GoogleUserProfile;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ import java.time.ZoneId;
 import java.util.Map;
 import java.util.Random;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/members")
