@@ -151,13 +151,14 @@ const Login = () => {
           "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
         },
       });
-      console.log("카카오 사용자 정보 API"+response);
+      console.log("카카오 사용자 정보 API",response);
       const kakaoEmail = response.data.kakao_account?.email;
       const kakaoNickname = response.data.properties?.nickname;
       const kakaoThumb = response.data.properties?.thumbnail_image;
+      console.log("보낼 데이터:", kakaoEmail, kakaoNickname);
 
       if (kakaoEmail) {
-        console.log("보낼 데이터:", kakaoEmail, kakaoNickname);
+        
         const res = await axios.post(
           `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
           {
