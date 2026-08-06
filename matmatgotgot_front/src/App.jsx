@@ -62,10 +62,9 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<JoinPage />} />
           <Route path="/finding" element={<Finding />} />
-          <Route
-            path="/login/oauth2/code/naver"
-            element={<NaverCallbackPage />}
-          />
+          <Route path="/login/oauth2/code/naver" element={<NaverCallbackPage />} />
+          <Route path="/login/oauth2/code/google" element={<GoogleCallback />} />
+          <Route path="/login/oauth2/code/kakao" element={<KakaoCallback />} /> 
           <Route path="/rest" element={<RestaurantDetailSearch />} />
           <Route path="/finding" element={<Finding />} />
           <Route path="/rest/regist" element={<RestaurantRegist />} />
