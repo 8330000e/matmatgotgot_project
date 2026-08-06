@@ -157,6 +157,7 @@ const Login = () => {
       const kakaoThumb = response.data.properties?.thumbnail_image;
 
       if (kakaoEmail) {
+        console.log("보낼 데이터:", kakaoEmail, kakaoNickname);
         const res = await axios.post(
           `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
           {
