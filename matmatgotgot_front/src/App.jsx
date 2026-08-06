@@ -39,6 +39,7 @@ import Terms from "./pages/else/Terms.jsx";
 import Privacy from "./pages/else/Privacy.jsx";
 import LocationTerms from "./pages/else/LocationTerms.jsx";
 import GoogleCallback from "./pages/member/GoogleCallback.jsx";
+import KakaoCallback from "./pages/member/KakaoCallback.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
