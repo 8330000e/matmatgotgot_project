@@ -1,13 +1,17 @@
 package com.twotwo.matmatgotgot.domain.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class KakaoLoginRequestDto {
 
     @JsonProperty("memberEmail")
@@ -18,7 +22,4 @@ public class KakaoLoginRequestDto {
 
     @JsonProperty("memberThumb")
     private String memberThumb;
-
-    // 스프링이 JSON을 바인딩할 때 꼭 필요한 기본 생성자
-    public KakaoLoginRequestDto() {}
 }

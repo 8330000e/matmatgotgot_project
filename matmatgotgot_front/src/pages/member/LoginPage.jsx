@@ -161,16 +161,17 @@ const Login = () => {
       const kakaoThumb = properties.thumbnail_image || "";
 
       const requestData = {
-          memberEmail: kakaoEmail,       // DTO의 memberEmail과 일치해야 함
-          memberNickname: kakaoNickname, // DTO의 memberNickname과 일치해야 함
-          memberThumb: kakaoThumb        // DTO의 memberThumb과 일치해야 함
+          memberEmail: kakaoEmail,       
+          memberNickname: kakaoNickname, 
+          memberThumb: kakaoThumb        
       };
 
+      // 🛑 이 로그를 찍어서 브라우저 콘솔을 꼭 확인해 보세요!
+      console.log("백엔드로 보내는 최종 데이터:", JSON.stringify(requestData));
+
       if (kakaoEmail) {
-        
         const res = await axios.post('/api/members/login/kakao', requestData);
         
-
         useAuthStore.getState().login({
           memberId: res.data.memberId,
           memberNickname: res.data.memberNickname || "카카오유저",
