@@ -208,6 +208,7 @@ public class MemberController {
 
 	@PostMapping(value="/login/kakao")
 	public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginRequestDto request) {
+		log.info("프론트에서 받아온 DTO 내용: {}", dto);
 		System.out.println(request);
 		Member member = memberService.member(request.getMemberEmail());
 		

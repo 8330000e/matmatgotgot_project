@@ -160,18 +160,16 @@ const Login = () => {
       const kakaoNickname = properties.nickname || `사용자_${response.data.id}`;
       const kakaoThumb = properties.thumbnail_image || "";
 
-      console.log("보낼 데이터:", { kakaoEmail, kakaoNickname, kakaoThumb });
+      const requestData = {
+          memberEmail: kakaoEmail,       // DTO의 memberEmail과 일치해야 함
+          memberNickname: kakaoNickname, // DTO의 memberNickname과 일치해야 함
+          memberThumb: kakaoThumb        // DTO의 memberThumb과 일치해야 함
+      };
 
       if (kakaoEmail) {
         
-        const res = await axios.post(
-          `${import.meta.env.VITE_BACKSERVER}/members/login/kakao`,
-          {
-            memberEmail: kakaoEmail,
-            memberNickname: kakaoNickname,
-            memberThumb: kakaoThumb,
-          }
-        );
+        const res = await axios.post('/api/members/login/kakao', requestData);
+        
 
         useAuthStore.getState().login({
           memberId: res.data.memberId,
