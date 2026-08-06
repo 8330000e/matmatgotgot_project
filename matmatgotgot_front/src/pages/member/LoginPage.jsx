@@ -148,14 +148,19 @@ const Login = () => {
       const response = await axios.get("https://kapi.kakao.com/v2/user/me", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
         },
       });
-      console.log("카카오 사용자 정보 API",response);
-      const kakaoEmail = response.data.kakao_account?.email;
-      const kakaoNickname = response.data.properties?.nickname;
-      const kakaoThumb = response.data.properties?.thumbnail_image;
-      console.log("보낼 데이터:", kakaoEmail, kakaoNickname);
+      console.log("카카오 사용자 정보 API 응답:", response.data);
+      
+      const kakaoAccount = response.data.kakao_account || {};
+      const properties = response.data.properties || {};
+
+      // 이메일이 없을 경우를 대비한 안전 장치 (카카오 ID 등을 임시 이메일로 활용)
+      const kakaoEmail = kakaoAccount.email || `kakao_${response.data.id}@social.com`;
+      const kakaoNickname = properties.nickname || `사용자_${response.data.id}`;
+      const kakaoThumb = properties.thumbnail_image || "";
+
+      console.log("보낼 데이터:", { kakaoEmail, kakaoNickname, kakaoThumb });
 
       if (kakaoEmail) {
         
@@ -182,7 +187,7 @@ const Login = () => {
         alert("이메일 제공 동의가 필요합니다.");
       }
     } catch (error) {
-      console.error("사용자 정보 요청 또는 백엔드 전송 실패:", error.response ? error.response.data : error.message);
+      console.error("카카오 사용자 정보 가져오기 실패:", error);
       alert("로그인 처리 중 오류가 발생했습니다.");
     }
   };
