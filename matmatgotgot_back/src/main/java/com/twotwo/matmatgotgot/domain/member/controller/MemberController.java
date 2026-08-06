@@ -209,6 +209,10 @@ public class MemberController {
 	public ResponseEntity<?> kakaoLogin(@RequestBody LoginResponseDto request) {
 		System.out.println(request);
 		Member member = memberService.member(request.getMemberEmail());
+		
+		// 공통으로 사용할 회원 객체 선언
+		Member currentMember;
+
 		if(member == null) {
 			Member newMember = new Member();
 			newMember.setMemberEmail(request.getMemberEmail());
@@ -237,27 +241,23 @@ public class MemberController {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 처리 중 오류가 발생했습니다.");
 			}
 
-			// member = newMember;
-        	System.out.println("신규 회원 자동 가입 완료: " + newMember.getMemberEmail());
+			currentMember = newMember; // 신규 가입한 회원 객체 대입
+			System.out.println("신규 회원 자동 가입 완료: " + currentMember.getMemberEmail());
 
 		} else {
-			// LoginMember loginCheck = memberService.login(member);
-			// if (loginCheck == null) {
-			// 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 올바르지 않습니다.");
-			// }
-			System.out.println("기존 회원 로그인 처리 진행: " + newMember.getMemberEmail());
+			currentMember = member; // 기존 회원 객체 대입
+			System.out.println("기존 회원 로그인 처리 진행: " + currentMember.getMemberEmail());
 		}
 
-
-		// STEP 3: 공통 처리 - 가입 혹은 로그인된 member 기반으로 JWT 토큰 생성
-		LoginMember login = jwtTokenProvider.createToken(newMember.getMemberId(), newMember.getMemberNickname(), false);
+		// STEP 3: 공통 처리 - currentMember 기반으로 JWT 토큰 생성
+		LoginMember login = jwtTokenProvider.createToken(currentMember.getMemberId(), currentMember.getMemberNickname(), false);
 
 		// STEP 4: 응답 DTO 생성 및 값 세팅
 		LoginResponseDto response = new LoginResponseDto();
-		response.setMemberNo(newMember.getMemberNo());
-		response.setMemberId(newMember.getMemberId());
-		response.setMemberNickname(newMember.getMemberNickname());
-		response.setMemberThumb(newMember.getMemberThumb());
+		response.setMemberNo(currentMember.getMemberNo());
+		response.setMemberId(currentMember.getMemberId());
+		response.setMemberNickname(currentMember.getMemberNickname());
+		response.setMemberThumb(currentMember.getMemberThumb());
 		response.setAdmin(false);
 		response.setToken(login.getToken());
 		
