@@ -38,6 +38,7 @@ import Inquiry from "./pages/else/Inquiry.jsx";
 import Terms from "./pages/else/Terms.jsx";
 import Privacy from "./pages/else/Privacy.jsx";
 import LocationTerms from "./pages/else/LocationTerms.jsx";
+import GoogleCallback from "./pages/member/GoogleCallback.jsx";
 
 function App() {
   const token = useAuthStore((state) => state.token);
