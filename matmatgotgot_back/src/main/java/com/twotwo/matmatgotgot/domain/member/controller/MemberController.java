@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
 import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
 import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
+import com.twotwo.matmatgotgot.domain.member.dto.KakaoLoginRequestDto;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.member.entity.Natives;
@@ -206,7 +207,7 @@ public class MemberController {
 	}
 
 	@PostMapping(value="/login/kakao")
-	public ResponseEntity<?> kakaoLogin(@RequestBody LoginResponseDto request) {
+	public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginRequestDto request) {
 		System.out.println(request);
 		Member member = memberService.member(request.getMemberEmail());
 		
