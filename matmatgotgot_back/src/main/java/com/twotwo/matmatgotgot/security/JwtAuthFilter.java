@@ -28,7 +28,6 @@ public class JwtAuthFilter extends GenericFilter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -36,7 +35,14 @@ public class JwtAuthFilter extends GenericFilter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        log.info("Request URI = {}", httpServletRequest.getRequestURI());
+        String requestURI = httpServletRequest.getRequestURI();
+        log.info("Request URI = {}", requestURI);
+
+        // ★ [핵심] 로그인, 회원가입 등 토큰이 필요 없는 API 경로는 필터 검증을 건너뜁니다.
+        if (requestURI.startsWith("/members/login") || requestURI.startsWith("/members/signup")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         String token = parseBearerToken(httpServletRequest);
         if (token == null) {
@@ -63,26 +69,21 @@ public class JwtAuthFilter extends GenericFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
             log.error("JWT 검증 실패", e);
-//            httpServletResponse.setStatus(401);
             log.info("만료된 JWT 토큰입니다.");
-            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"message\":\"토큰이 만료되었습니다. 다시 로그인하거나 토큰을 재발급하세요.\"}");
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.setContentType("application/json;charset=UTF-8");
+            httpServletResponse.getWriter().write("{\"message\":\"토큰이 만료되었습니다. 다시 로그인하거나 토큰을 재발급하세요.\"}");
             return;
         }
 
         chain.doFilter(request, response);
-    }//
+    }
 
     private String parseBearerToken(HttpServletRequest request) {
-        // Authorization 헤더 값 가져오기
         String bearerToken = request.getHeader("Authorization");
-
-        // "Bearer "로 시작하는 경우에만 처리 (7글자 이후부터 실제 토큰)
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // "Bearer " (7글자) 제거
+            return bearerToken.substring(7);
         }
-
-        return null; // 토큰 없음
-    }//
+        return null;
+    }
 }
