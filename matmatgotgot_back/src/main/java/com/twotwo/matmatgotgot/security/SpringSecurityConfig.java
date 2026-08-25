@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // 👈 추가
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,26 +26,27 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // 1. CORS 설정 적용 (리액트 브라우저 접근 허용)
+            // 1. CORS 설정 적용
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
-            // 2. CSRF 비활성화 (REST API 환경이므로 꺼둡니다)
+            // 2. CSRF 비활성화
             .csrf(csrf -> csrf.disable())
             
-            // 3. 기본 세션/폼 로그인 비활성화 (JWT를 사용할 것이므로 불필요한 기본 창 해제)
+            // 3. 기본 세션/폼 로그인 비활성화
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
             // 4. URL별 접근 권한 설정
             .authorizeHttpRequests(authorize -> authorize
-                // static 리소스나 에러 페이지 허용
-                .requestMatchers("/error", "/favicon.ico").permitAll()
+                // ⭐ 루트 경로(/) 및 static/error 리소스 허용 (403 해결)
+                .requestMatchers("/", "/error", "/favicon.ico").permitAll()
                 .requestMatchers("/upload/**", "/api/upload/**").permitAll()
                 
-                // ⭐ 소셜 로그인 관련 콜백 및 API 경로 전체 허용 추가
+                // 소셜 로그인 관련
                 .requestMatchers("/login/**", "/oauth2/**", "/api/login/**", "/api/oauth2/**").permitAll()
                 .requestMatchers("/login/oauth2/code/**", "/api/login/oauth2/code/**").permitAll()
                 
+                // 도메인 API 허용
                 .requestMatchers("/members/**", "/api/members/**", "/login", "/api/login", "/members/pwMember", "/members/memberno", "/members/natives").permitAll()
                 .requestMatchers("/boards/**", "/api/boards/**").permitAll()
                 .requestMatchers("/editor/**", "/api/editor/**").permitAll()
@@ -56,13 +58,16 @@ public class SpringSecurityConfig {
                 .requestMatchers("/api/route/**").permitAll()
                 .requestMatchers("/main/**", "/api/main/**").permitAll()
                 
-                // 그 외 모든 요청은 기본적으로 인증(로그인)을 받도록 설정
+                // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
-            );
+            )
+            
+            // ⭐ JWT 인증 필터 등록 (UsernamePasswordAuthenticationFilter 앞에 배치)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
-    // 💡 비밀번호 암호화 객체 (회원가입 비즈니스 로직 시 필수)
     @Bean
     public BCryptPasswordEncoder bCrypt() {
         return new BCryptPasswordEncoder();
@@ -72,7 +77,6 @@ public class SpringSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         
-        // 1. allowedOrigins 대신 allowedOriginPatterns 사용 (권장)
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
                 "https://d2lg74d5mqmhqe.cloudfront.net",
@@ -80,11 +84,7 @@ public class SpringSecurityConfig {
         ));
         
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        
-        // 2. AllowedHeaders를 하나로 통일
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
-        
-        // 3. allowCredentials는 한 번만 설정
         config.setAllowCredentials(true); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
