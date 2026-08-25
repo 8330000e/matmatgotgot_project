@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  matmatgotgot-back:
+  matmatgotgot_back:
     image: ${ECR_REGISTRY}/matmatgotgot-github-actions-backend:latest
     container_name: matgot-backend
     restart: always
@@ -35,7 +35,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - matmatgotgot-back
+      - matmatgotgot_back
     networks:
       - board-network
 
