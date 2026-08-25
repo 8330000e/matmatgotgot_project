@@ -7,6 +7,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.http.HttpStatus;
 
 import com.twotwo.matmatgotgot.global.response.ApiResponse;
 
@@ -35,6 +37,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(ApiResponse.error(ErrorCode.INVALID_INPUT, message));
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+        public ResponseEntity<?> handleNoResourceFoundException(NoResourceFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Page Not Found");
+        }
 
     // 3. 그 외 예상치 못한 예외 (500)
     @ExceptionHandler(Exception.class)
