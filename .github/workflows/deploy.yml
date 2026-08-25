@@ -76,7 +76,7 @@ jobs:
           ECR_FRONTEND=$ECR_REGISTRY/matmatgotgot-github-actions-frontend
 
           # backend 이미지 빌드 & ECR push
-          docker build -t $ECR_BACKEND:${{ github.sha }} ./matmatgotgot_back
+          docker build -t $ECR_BACKEND:${{ github.sha }} ./matmatgotgot-back
           docker tag $ECR_BACKEND:${{ github.sha }} $ECR_BACKEND:latest
           docker push $ECR_BACKEND:${{ github.sha }}
           docker push $ECR_BACKEND:latest
