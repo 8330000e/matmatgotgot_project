@@ -1,5 +1,5 @@
 # ── Stage 1: Build ──────────────────────────────────────────────────────────
-FROM node:22-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -33,7 +33,7 @@ FROM nginx:1.31.4-alpine
 RUN rm -f /etc/nginx/conf.d/default.conf
 
 # 빌드 결과물 복사
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # 작성한 nginx 설정 파일을 default.conf 위치로 복사
 COPY nginx.conf /etc/nginx/conf.d/default.conf
