@@ -1,27 +1,81 @@
+# version: "3.8"
+
+# services:
+#   matmatgotgot-back:
+#     image: ${ECR_REGISTRY}/matmatgotgot-github-actions-backend:latest
+#     container_name: matgot_backend
+#     restart: always
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
+#       SPRING_DATASOURCE_USERNAME: ${DB_USER}
+#       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+#       JWT_SECRET: ${JWT_SECRET}
+#       JWT_EXPIRATION: 3600000
+#       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+#       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+#       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
+#       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+#       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT_URI: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT_URI}
+#       NAVER_CLIENT_ID_K: ${VITE_NAVER_CLIENT_ID}
+#       NAVER_CLIENT_SECRET_K: ${VITE_NAVER_CLIENT_SECRET}
+#       CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+#       CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${AWS_SECRET_KEY}
+#       CLOUD_AWS_REGION_STATIC: ${AWS_REGION}
+#       CLOUD_AWS_S3_BUCKET: ${S3_BUCKET}
+#       MYSQL_LOWER_CASE_TABLE_NAMES: 1
+#     ports:
+#       - "9999:9999"
+#     networks:
+#       - board-network
+
+#   matmatgotgot_front:
+#     image: ${ECR_REGISTRY}/matmatgotgot-github-actions-frontend:latest
+#     container_name: matgot-frontend
+#     restart: always
+#     ports:
+#       - "80:80"
+#     depends_on:
+#       - matmatgotgot-back
+#     networks:
+#       - board-network
+
+# networks:
+#   board-network:
+#     name: matgot-network
+#     driver: bridge
 version: "3.8"
 
 services:
   matmatgotgot-back:
     image: ${ECR_REGISTRY}/matmatgotgot-github-actions-backend:latest
-    container_name: matgot_backend
+    container_name: matgot-backend
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      
+      # JWT 설정
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: 3600000
+      
+      # 메일 설정
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      
+      # OAuth2 설정
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT_URI: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT_URI}
       NAVER_CLIENT_ID_K: ${VITE_NAVER_CLIENT_ID}
       NAVER_CLIENT_SECRET_K: ${VITE_NAVER_CLIENT_SECRET}
+      
+      # AWS S3 설정 (application.properties 의 매핑 키와 일치)
       CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${AWS_ACCESS_KEY}
       CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${AWS_SECRET_KEY}
       CLOUD_AWS_REGION_STATIC: ${AWS_REGION}
       CLOUD_AWS_S3_BUCKET: ${S3_BUCKET}
+      
       MYSQL_LOWER_CASE_TABLE_NAMES: 1
     ports:
       - "9999:9999"
