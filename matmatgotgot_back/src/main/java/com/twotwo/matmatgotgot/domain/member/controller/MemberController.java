@@ -83,7 +83,6 @@ public class MemberController {
 		m.setMemberThumb(memberThumb);
 		m.setMemberId(memberId);
 		int result = memberService.updateThumbnail(m);
-		// return ResponseEntity.ok(result);
 		return ResponseEntity.ok(memberThumb);
 	}
 	
