@@ -3,7 +3,7 @@ version: "3.8"
 services:
   matmatgotgot_back:
     image: ${ECR_REGISTRY}/matmatgotgot-github-actions-backend:latest
-    container_name: matgot-backend
+    container_name: matgot_backend
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
