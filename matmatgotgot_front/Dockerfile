@@ -26,12 +26,17 @@ ARG VITE_ODSAY_API_KEY
 RUN npm run build
 
 # ── Stage 2: Serve with Nginx ─────────────────────────────────────────────
-FROM nginx:alpine
+FROM nginx:1.31.4-alpine # 사용 중인 이미지 버전
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+# 기존 기본 설정 파일 삭제
+RUN rm /etc/nginx/conf.d/default.conf
+
+# 빌드 결과물 복사
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# 작성한 nginx 설정 파일을 default.conf 위치로 덮어쓰기
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
 
