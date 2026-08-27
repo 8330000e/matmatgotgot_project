@@ -195,7 +195,7 @@ const Login = () => {
       const properties = response.data.properties || {};
 
       // 이메일, 닉네임, 프로필 이미지 안전 추출
-      const kakaoEmail = kakaoAccount.email || `kakao_${response.data.id}@social.com`;
+      const kakaoEmail = kakaoAccount.email || '이메일을 등록해주세요';
       const kakaoNickname = kakaoProfile.nickname || properties.nickname || `사용자_${response.data.id}`;
       const kakaoThumb = kakaoProfile.thumbnail_image_url || properties.thumbnail_image || "";
 
