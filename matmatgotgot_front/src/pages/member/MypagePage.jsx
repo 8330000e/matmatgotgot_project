@@ -208,7 +208,6 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         })
         .then((res) => {
         console.log("업데이트 성공:", res);
-        alert("프로필 정보가 성공적으로 수정되었습니다.");
         setUpdateMode(false); // 수정 모드 종료
         setSelectedFile(null); // 선택 파일 초기화
         })
