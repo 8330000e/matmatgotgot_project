@@ -141,9 +141,34 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     }
     const inputRef = useRef(null);
     const detailRef = useRef();
-    const { memberId, memberThumb } = useAuthStore();
+    const { memberId, memberThumb, memberNickname } = useAuthStore();
     const [updateMode, setUpdateMode] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null); // 실제 File 객체 상태
+
+    const getProfileImageUrl = (thumb) => {
+    if (!thumb) return "/images/default_profile.png"; // 👈 기본 이미지 경로 (public 폴더 기준)
     
+    // 소셜 로그인 이미지처럼 http:// 나 https:// 로 시작하면 그대로 사용
+    if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
+        return thumb;
+    }
+    
+    // 백엔드 서버 업로드 파일 경로일 경우
+    return `/api/upload/${thumb}`; // 또는 환경에 맞는 백엔드 절대경로
+    };
+
+    const changeThumb = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        // 백엔드로 보낼 실제 File 객체 상태 저장
+        setSelectedFile(file);
+
+        // 브라우저 화면 미리보기용 URL 생성
+        const previewUrl = URL.createObjectURL(file);
+        setMemberThumb(previewUrl); // 미리보기 즉시 반영
+    }
+    };
+
     const { open } = useKakaoPostcode({
         onComplete: (data) => {
             setMemberInfo((prev) => ({ ...prev, ["memberAddress"]: data.roadAddress }));
@@ -163,47 +188,60 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         } // 👈 onComplete 끝
     }); // 👈 useKakaoPostcode 훅 설정 끝 (괄호 누락 해결!)
     const updateModeChange = () => {
-        // 1. 저장(저장 버튼 누른 시점)
         if (updateMode) {
-            axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, null, {
-                params: {
-                    memberId: memberId,
-                    nick: memberInfo.memberNickname,
-                    addr: memberInfo.memberAddress
-                }
-            })
-            .then((res) => {
-                console.log(res);
-                setUpdateMode(false); // 저장 성공 시 모드 종료
-            })
-            .catch((err) => {
-                console.error("서버 업데이트 실패:", err);
-            });
-        } else {
-            // 2. 수정 모드 진입
-            setUpdateMode(true);
-        }
-    };
-    const changeThumb = () => {
-        const file = inputRef.current.files && inputRef.current.files[0];
-        if (!file) return;
+        // 1. 저장 버튼을 누른 시점 (FormData 구성)
+        const formData = new FormData();
+        formData.append("memberId", memberId);
+        formData.append("nick", memberInfo.memberNickname);
+        formData.append("addr", memberInfo.memberAddress);
 
-        const form = new FormData();
-        form.append("file", file);
-        axios
-            .patch(
-                `${import.meta.env.VITE_BACKSERVER}/members/${memberId}/thumbnail`,
-                form,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            )
-            .then((res) => {
-                console.log(res);
-                useAuthStore.getState().setThumb(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        // 새 프로필 이미지를 선택했다면 파일 첨부
+        if (selectedFile) {
+        formData.append("profileImage", selectedFile); 
+        }
+
+        // 백엔드로 전송
+        axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data", // 👈 파일 전송 필수 헤더
+        },
+        })
+        .then((res) => {
+        console.log("업데이트 성공:", res);
+        alert("프로필 정보가 성공적으로 수정되었습니다.");
+        setUpdateMode(false); // 수정 모드 종료
+        setSelectedFile(null); // 선택 파일 초기화
+        })
+        .catch((err) => {
+        console.error("서버 업데이트 실패:", err);
+        alert("프로필 수정 중 오류가 발생했습니다.");
+        });
+
+    } else {
+        // 2. 수정 모드 진입
+        setUpdateMode(true);
+    }
     };
+    // const changeThumb = () => {
+    //     const file = inputRef.current.files && inputRef.current.files[0];
+    //     if (!file) return;
+
+    //     const form = new FormData();
+    //     form.append("file", file);
+    //     axios
+    //         .patch(
+    //             `${import.meta.env.VITE_BACKSERVER}/members/${memberId}/thumbnail`,
+    //             form,
+    //             { headers: { "Content-Type": "multipart/form-data" } }
+    //         )
+    //         .then((res) => {
+    //             console.log(res);
+    //             useAuthStore.getState().setThumb(res.data);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // };
     const [nativeMember,setNativeMember]=useState([]);
     useEffect(() => {
         // 🌟 [안전장치] memberId가 없거나 'undefined' 문자열이면 아예 요청을 안 보냄!
@@ -246,29 +284,38 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         <div className={styles.content_menu_wrap}>
             <div className={styles.info_profile}>
                 <div className={styles.image_wrap}>
-                    {/* 💡 [이미지 원형 영역] 이 div에만 overflow: hidden을 줍니다. */}
-                    <div className={styles.profile_img_circle}>
-                        <img src={memberThumb} className={styles.defaultImg} alt="프로필" />
-                    </div>
-
-                    {/* 💡 [카메라 버튼] 원형 영역 바깥(image_wrap 안)에 위치시킵니다. */}
-                    {updateMode ? (
-                        <>
-                            <img
-                                src={changeImg}
-                                alt="변경"
-                                className={styles.changeImg}
-                                onClick={() => inputRef.current.click()}
-                            />
-                            <input
-                                type="file"
-                                ref={inputRef}
-                                style={{ display: "none" }}
-                                onChange={changeThumb}
-                            />
-                        </>
-                    ) : null}
+                {/* 💡 보정 함수(getProfileImageUrl)를 사용하여 img src에 전달 */}
+                <div className={styles.profile_img_circle}>
+                    <img 
+                        src={getProfileImageUrl(memberThumb)} 
+                        className={styles.defaultImg} 
+                        alt="프로필" 
+                        onError={(e) => {
+                        // 이미지 로드 실패 시 기본 프로필 대체 안전장치
+                        e.target.src = "/images/default_profile.png"; 
+                        }}
+                    />
                 </div>
+
+                {/* 💡 [카메라 버튼] 원형 영역 바깥 */}
+                {updateMode ? (
+                    <>
+                        <img
+                            src={changeImg}
+                            alt="변경"
+                            className={styles.changeImg}
+                            onClick={() => inputRef.current && inputRef.current.click()}
+                        />
+                        <input
+                            type="file"
+                            ref={inputRef}
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            onChange={changeThumb}
+                        />
+                    </>
+                ) : null}
+            </div>
                 <div>
                     <div>
                         <div className={styles.info_nick}>

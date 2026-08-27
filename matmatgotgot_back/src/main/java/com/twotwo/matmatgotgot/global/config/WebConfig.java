@@ -29,22 +29,26 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String finalLocation = "file:" + root + "member/";
+        // file: 프로토콜 안전하게 보정 (file:/path/to/dir/ 형태)
+        String basePath = root.startsWith("file:") ? root : "file:" + root;
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
+        }
 
         // 에디터 이미지
         registry.addResourceHandler("/editor/**")
-                .addResourceLocations("file:///" + root + "editor/");
+                .addResourceLocations(basePath + "editor/");
 
         // 회원 프로필 이미지
         registry.addResourceHandler("/upload/**")
-                .addResourceLocations(finalLocation);
+                .addResourceLocations(basePath + "member/");
 
         // 맛집 이미지
         registry.addResourceHandler("/restaurants/**")
-                .addResourceLocations("file:///" + root + "restaurant/");
+                .addResourceLocations(basePath + "restaurant/");
 
-        // 메뉴 이미지
+        // 메뉴 이미지 (/api/menu/basic.jpeg -> file:${root}/menu/basic.jpeg)
         registry.addResourceHandler("/menu/**")
-                .addResourceLocations("file:///" + root + "menu/");
+                .addResourceLocations(basePath + "menu/");
     }
 }

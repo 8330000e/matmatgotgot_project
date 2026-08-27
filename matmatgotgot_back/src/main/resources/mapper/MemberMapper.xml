@@ -29,8 +29,21 @@
 	<update id="updateThumbnail">
 		update member_tbl set member_thumb = #{memberThumb} where member_id = #{memberId}
 	</update>
-	<update id="updateNickAddr">
-		update member_tbl set member_nickname = #{memberNickname}, member_address = #{memberAddress} where member_id = #{memberId}
+	<update id="updateNickAddr" parameterType="com.twotwo.matmatgotgot.domain.member.entity.Member">
+		UPDATE member_tbl
+		<set>
+			<if test="memberNickname != null">
+				member_nickname = #{memberNickname},
+			</if>
+			<if test="memberAddress != null">
+				member_address = #{memberAddress},
+			</if>
+			<!-- 💡 memberThumb가 null이 아닐 때만 DB 수정 -->
+			<if test="memberThumb != null">
+				member_thumb = #{memberThumb},
+			</if>
+		</set>
+		WHERE member_id = #{memberId}
 	</update>
 	<update id="updateMemberPw">
 		update member_tbl set member_pw = #{encPw} where member_id = #{memberId}

@@ -442,14 +442,20 @@ public class MemberController {
 
 	@PutMapping(value = "/updateMem")
 	public ResponseEntity<?> updateNickAddr(
-		@RequestParam("memberId") String memberId, // 프론트와 일치하게 수정
-		@RequestParam("nick") String nick, 
-		@RequestParam("addr") String addr
-	) {
+        @RequestParam("memberId") String memberId,
+        @RequestParam("nick") String nick,
+        @RequestParam("addr") String addr,
+        @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
 		Member member = new Member();
 		member.setMemberId(memberId);
 		member.setMemberNickname(nick);
 		member.setMemberAddress(addr);
+
+		if (profileImage != null && !profileImage.isEmpty()) {
+			String uploadedFileName = fileUtil.upload("member", profileImage);
+			member.setMemberThumb(uploadedFileName);
+		}
+		
 		Integer result = memberService.updateNickAddr(member);
 		return ResponseEntity.ok(result);
 	}
