@@ -16,7 +16,8 @@
 	<insert id="googleInsertMember">
 		insert into social_login_tbl (social_google) value (CURRENT_TIMESTAMP)
 	</insert>
-	<insert id="kakaoInsertMember">
+	<insert id="kakaoInsertMember" parameterType="com.twotwo.matmatgotgot.domain.member.entity.Member" 
+        useGeneratedKeys="true" keyProperty="memberNo">
 		insert into social_login_tbl (social_kakao) value (CURRENT_TIMESTAMP)
 	</insert>
 	<insert id="naverInsertMember">
