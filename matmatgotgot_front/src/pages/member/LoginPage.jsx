@@ -180,11 +180,47 @@ const Login = () => {
         token: res.data.token,
         endTime: new Date().getTime() + 3600000,
       });
-
-      navigate("/");
+        Swal.mixin({
+          toast: true,
+          position: "top-end",
+          topLayer: true,
+          background: "#ffd95a",
+          color: "#2b1b17",
+          fontWeight: "600",
+          iconColor: "#fff",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: "success",
+          title: "로그인 성공",
+        });
+        navigate("/");
+      
     } catch (error) {
       console.error("카카오 사용자 정보 가져오기 실패:", error);
-      alert("로그인 처리 중 오류가 발생했습니다.");
+      Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      }).fire({
+        title: "로그인 실패",
+        text: "아이디 또는 비밀번호를 확인하세요.",
+        icon: "error",
+      });
     }
   };
 
