@@ -212,9 +212,17 @@ public class MemberController {
 	public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginRequestDto request) {
 		log.info("프론트에서 받아온 DTO 내용: {}", request);
 		
+		Random r = new Random();
+		StringBuffer sb1 = new StringBuffer();
+		StringBuffer sb2 = new StringBuffer();
+		for(int i=0; i<6; i++) {
+			sb1.append(r.nextInt(10));
+			sb2.append(r.nextInt(10));
+		}
+
 		String email = request.getMemberEmail();
 		if (email == null || email.trim().isEmpty()) {
-			email = "이메일을 등록해주세요";
+			email = "kakao_" + sb1.toString() + "@social.com";
 		}
 		
 		System.out.println(request);
@@ -225,19 +233,13 @@ public class MemberController {
 			Member newMember = new Member();
 			newMember.setMemberEmail(email); // null이 아닌 확보된 이메일 사용
 			newMember.setMemberThumb(request.getMemberThumb());
-			Random r = new Random();
-			StringBuffer sb1 = new StringBuffer();
-			StringBuffer sb2 = new StringBuffer();
-			for(int i=0; i<6; i++) {
-				sb1.append(r.nextInt(10));
-				sb2.append(r.nextInt(10));
-			}
-			String randomKakaoId = "kakao_" + sb1;
+			
+			String randomKakaoId = "kakao_" + sb1.toString();
 			String nickname = request.getMemberNickname();
 			String finalNickname = (nickname != null && !nickname.trim().isEmpty()) ? nickname : randomKakaoId;
 
 			newMember.setMemberId(randomKakaoId);
-			newMember.setMemberPw("kakao_" + sb2);
+			newMember.setMemberPw("kakao_" + sb2.toString());
 			newMember.setMemberName(finalNickname);
 			newMember.setMemberNickname(finalNickname);
 			
@@ -455,7 +457,7 @@ public class MemberController {
 			String uploadedFileName = fileUtil.upload("member", profileImage);
 			member.setMemberThumb(uploadedFileName);
 		}
-
+		
 		Integer result = memberService.updateNickAddr(member);
 		return ResponseEntity.ok(result);
 	}
