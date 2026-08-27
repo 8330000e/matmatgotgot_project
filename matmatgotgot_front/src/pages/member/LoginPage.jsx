@@ -153,38 +153,35 @@ const Login = () => {
       console.log("카카오 사용자 정보 API 응답:", response.data);
       
       const kakaoAccount = response.data.kakao_account || {};
+      const kakaoProfile = kakaoAccount.profile || {};
       const properties = response.data.properties || {};
 
-      // 이메일이 없을 경우를 대비한 안전 장치 (카카오 ID 등을 임시 이메일로 활용)
+      // 이메일, 닉네임, 프로필 이미지 안전 추출
       const kakaoEmail = kakaoAccount.email || `kakao_${response.data.id}@social.com`;
-      const kakaoNickname = properties.nickname || `사용자_${response.data.id}`;
-      const kakaoThumb = properties.thumbnail_image || "";
+      const kakaoNickname = kakaoProfile.nickname || properties.nickname || `사용자_${response.data.id}`;
+      const kakaoThumb = kakaoProfile.thumbnail_image_url || properties.thumbnail_image || "";
 
       const requestData = {
-          memberEmail: kakaoEmail,       
-          memberNickname: kakaoNickname, 
-          memberThumb: kakaoThumb        
+        memberEmail: kakaoEmail,       
+        memberNickname: kakaoNickname, 
+        memberThumb: kakaoThumb        
       };
 
-      // 🛑 이 로그를 찍어서 브라우저 콘솔을 꼭 확인해 보세요!
       console.log("백엔드로 보내는 최종 데이터:", JSON.stringify(requestData));
 
-      if (kakaoEmail) {
-        const res = await axios.post('/api/members/login/kakao', requestData);
-        
-        useAuthStore.getState().login({
-          memberId: res.data.memberId,
-          memberNickname: res.data.memberNickname || "카카오유저",
-          memberThumb: res.data.memberThumb || null,
-          admin: false,
-          token: res.data.token,
-          endTime: new Date().getTime() + 3600000,
-        });
+      // 백엔드 요청
+      const res = await axios.post('/api/members/login/kakao', requestData);
+      
+      useAuthStore.getState().login({
+        memberId: res.data.memberId,
+        memberNickname: res.data.memberNickname || "카카오유저",
+        memberThumb: res.data.memberThumb || null,
+        admin: false,
+        token: res.data.token,
+        endTime: new Date().getTime() + 3600000,
+      });
 
-        navigate("/");
-      } else {
-        alert("이메일 제공 동의가 필요합니다.");
-      }
+      navigate("/");
     } catch (error) {
       console.error("카카오 사용자 정보 가져오기 실패:", error);
       alert("로그인 처리 중 오류가 발생했습니다.");
@@ -220,12 +217,16 @@ const Login = () => {
     }
   };
 
-  // 카카오 코드 감지 useEffect
+  // ⭐ useEffect 중복 실행 방지 Flag
+  const isProcessed = useRef(false);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
 
-    if (code && window.location.pathname.includes("kakao")) {
+    // 중복 실행 및 경로 체크
+    if (code && window.location.pathname.includes("kakao") && !isProcessed.current) {
+      isProcessed.current = true; // 락을 걸어서 두 번 실행 안 되도록 방지
       console.log("카카오 인가 코드 획득 성공:", code);
       getKakaoToken(code);
     }

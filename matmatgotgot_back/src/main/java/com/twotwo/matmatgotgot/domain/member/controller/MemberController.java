@@ -211,24 +211,26 @@ public class MemberController {
 	@PostMapping(value="/login/kakao")
 	public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginRequestDto request) {
 		log.info("프론트에서 받아온 DTO 내용: {}", request);
-		System.out.println(request);
-		Member member = memberService.member(request.getMemberEmail());
 		
-		// 공통으로 사용할 회원 객체 선언
-		Member currentMember;
+		String email = request.getMemberEmail();
+		if (email == null || email.trim().isEmpty()) {
+			email = "kakao_user_" + System.currentTimeMillis() + "@social.com";
+		}
+		
+		System.out.println(request);
+		Member member = memberService.member(email);
+    	Member currentMember;
 
 		if(member == null) {
 			Member newMember = new Member();
-			newMember.setMemberEmail(request.getMemberEmail());
+			newMember.setMemberEmail(email); // null이 아닌 확보된 이메일 사용
 			newMember.setMemberThumb(request.getMemberThumb());
 			Random r = new Random();
 			StringBuffer sb1 = new StringBuffer();
 			StringBuffer sb2 = new StringBuffer();
 			for(int i=0; i<6; i++) {
-				int num1 = r.nextInt(10);
-				int num2 = r.nextInt(10);
-				sb1.append(num1);
-				sb2.append(num2);
+				sb1.append(r.nextInt(10));
+				sb2.append(r.nextInt(10));
 			}
 			String randomKakaoId = "kakao_" + sb1;
 			String nickname = request.getMemberNickname();
