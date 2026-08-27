@@ -214,7 +214,7 @@ public class MemberController {
 		
 		String email = request.getMemberEmail();
 		if (email == null || email.trim().isEmpty()) {
-			email = "kakao_user_" + System.currentTimeMillis() + "@social.com";
+			email = "이메일을 등록해주세요";
 		}
 		
 		System.out.println(request);
@@ -455,7 +455,7 @@ public class MemberController {
 			String uploadedFileName = fileUtil.upload("member", profileImage);
 			member.setMemberThumb(uploadedFileName);
 		}
-		
+
 		Integer result = memberService.updateNickAddr(member);
 		return ResponseEntity.ok(result);
 	}
