@@ -6,6 +6,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import googlelogo from "../../assets/logo/google.svg";
 import kakaologo from "../../assets/logo/kakao.svg";
 import naverlogo from "../../assets/logo/naver.svg";
+import defaultImg from "../../assets/img/defaultImg.svg";
 import { Input } from "../../components/ui/Form.jsx";
 import Swal from "sweetalert2";
 

@@ -146,7 +146,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     const [selectedFile, setSelectedFile] = useState(null); // 실제 File 객체 상태
 
     const getProfileImageUrl = (thumb) => {
-    if (!thumb) return "/images/default_profile.png"; // 👈 기본 이미지 경로 (public 폴더 기준)
+    if (!thumb) return defaultImg; // 👈 기본 이미지 경로 (public 폴더 기준)
     
     // 소셜 로그인 이미지처럼 http:// 나 https:// 로 시작하면 그대로 사용
     if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
@@ -291,8 +291,8 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                         className={styles.defaultImg} 
                         alt="프로필" 
                         onError={(e) => {
-                        // 이미지 로드 실패 시 기본 프로필 대체 안전장치
-                        e.target.src = "/images/default_profile.png"; 
+                        e.target.onerror = null; // 👈 무한 루프 차단
+                        e.target.src = defaultImg; // 👈 로드 실패 시 defaultImg fallback
                         }}
                     />
                 </div>
