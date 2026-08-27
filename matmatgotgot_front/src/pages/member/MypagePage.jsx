@@ -340,7 +340,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                                 value={memberInfo.memberAddress} 
                                 onChange={(e) => setMemberInfo((prev) => ({...prev, [e.target.name]: e.target.value}))} 
                             />
-                            <button onClick={open}>변경</button> </> : `${memberInfo.memberAddress} == null ? '주소를 등록해주세요' : ${memberInfo.memberAddress}`}</div>
+                            <button onClick={open}>변경</button> </> : <div>{memberInfo.memberAddress || '주소를 등록해주세요'}</div>}</div>
                         </li>
                         <li>
                             <img src={nativeIcon} alt=""/>
