@@ -5,6 +5,8 @@ services:
     image: ${ECR_REGISTRY}/matmatgotgot-github-actions-backend:latest
     container_name: matgot-backend
     restart: always
+    volumes:
+      - /home/ubuntu/upload:/app/upload/web/matgot
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
