@@ -1,7 +1,8 @@
 import styles from './BoardList.module.css';
 import defaultImage from '../../assets/board/image.png';
 import defaultImg from '../../assets/board/user.png';
-import { useNavigate, useAuthStrore } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../store/useAuthStore";
 import { getProfileThumb } from "@/utils/imageUtil";
 
 const BoardList = ({ boardList }) => {
@@ -16,7 +17,7 @@ const BoardList = ({ boardList }) => {
 
 const BoardItem = ({ board }) => {
   const navigate = useNavigate();
-  const { memberInfo } = useAuthStrore();
+  const { memberInfo } = useAuthStore();
 
   const getCategoryName = (category) => {
     if (category === 1) return '여행후기';
