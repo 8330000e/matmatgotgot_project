@@ -3,7 +3,7 @@ import defaultImage from '../../assets/board/image.png';
 import defaultImg from '../../assets/board/user.png';
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
-import { getProfileThumb } from "../util/getProfileThumb";
+import { getProfileThumb } from "../../utils/getProfileThumb";
 
 const BoardList = ({ boardList }) => {
   return (

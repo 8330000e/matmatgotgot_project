@@ -1,4 +1,4 @@
-import defaultImg from "@/assets/img/defaultImg.svg";
+import defaultImg from "../assets/img/defaultImg.svg";
 
 export const getProfileThumb = (thumb) => {
   if (!thumb) return defaultImg;
