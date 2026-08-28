@@ -44,7 +44,8 @@ const TripMain = () => {
 
         const { myPlans, favoritePlans, top10Plans, allPlans } = response.data;
 
-        const defaultImg = "default_thumbnail.png";
+        // const defaultImg = "default_thumbnail.png";
+        const defaultImg = "https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/default_thumbnail.png";
         const mapDefaultImage = (list) =>
           list.map((item) => ({
             ...item,

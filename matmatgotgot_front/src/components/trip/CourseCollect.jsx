@@ -356,7 +356,8 @@ const CourseCollect = ({ items = [] }) => {
         ) : (
           <div className={styles.cardGridContainer}>
             {currentItems.map((item) => {
-              const defaultImg = "default_thumbnail.png";
+              // const defaultImg = "default_thumbnail.png";
+              const defaultImg = "https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/default_thumbnail.png";
               const imgSrc = item.imgName || item.tplanThumb || defaultImg;
 
               return (
