@@ -116,14 +116,18 @@
             )
     </insert>
 
-    <insert id="insertTravelPlan" parameterType="map">
-        <selectKey keyProperty="tplan_no" resultType="long" order="AFTER">
-            SELECT LAST_INSERT ID()
+    <insert id="insertTravelPlan" parameterType="com.twotwo.matmatgotgot.domain.trip.entity.TravelPlan"
+            useGeneratedKeys="true" keyProperty="tplanNo">
+        
+        <!-- 💡 selectKey를 직접 작성한 경우 구문이 정확한지 점검 -->
+        <selectKey keyProperty="tplanNo" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
         </selectKey>
+
         INSERT INTO travel_plan_tbl (
-        member_no, tplan_title, tplan_desc, tplan_region, tplan_days, tplan_total_price
+            member_no, tplan_title, tplan_desc, tplan_days, tplan_region, tplan_total_price, tplan_status
         ) VALUES (
-        #{memberNo}, #{tplanTitle}, #{tplanDesc}, #{tplanRegion}, #{tplanDays}, #{tplanTotalPrice}
+            #{memberNo}, #{title}, #{desc}, #{tplanDays}, #{tplanRegion}, #{tplanTotalPrice}, 1
         )
     </insert>
 
