@@ -102,16 +102,6 @@ const Login = () => {
 
       console.log("로그인 성공:", res.data);
       const googleUser = res.data;
-
-      useAuthStore.getState().login({
-        memberId: googleUser.memberId,         
-        memberNickname: googleUser.memberNickname, 
-        memberThumb: googleUser.memberThumb, 
-        admin: googleUser.admin ?? false, 
-        token: googleUser.token,              
-        endTime: googleUser.validity || (new Date().getTime() + 3600000), 
-      });
-
       Swal.mixin({
           toast: true,
           position: "top-end",
@@ -131,6 +121,14 @@ const Login = () => {
           icon: "success",
           title: "로그인 성공",
         });
+      useAuthStore.getState().login({
+        memberId: googleUser.memberId,         
+        memberNickname: googleUser.memberNickname, 
+        memberThumb: googleUser.memberThumb, 
+        admin: googleUser.admin ?? false, 
+        token: googleUser.token,              
+        endTime: googleUser.validity || (new Date().getTime() + 3600000), 
+      });
       navigate("/");
     } catch (err) {
       console.error("백엔드 전송 실패:", err);
@@ -209,7 +207,7 @@ const Login = () => {
 
       // 백엔드 요청
       const res = await axios.post('/api/members/login/kakao', requestData);
-      
+      if (res.data) {
       useAuthStore.getState().login({
         memberId: res.data.memberId,
         memberNickname: res.data.memberNickname || "카카오유저",
@@ -238,7 +236,7 @@ const Login = () => {
         title: "로그인 성공",
       });
       navigate("/");
-        
+    }  
       
     } catch (error) {
       console.error("카카오 사용자 정보 가져오기 실패:", error);
@@ -323,7 +321,8 @@ const Login = () => {
 
       const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
       window.location.assign(NAVER_AUTH_URL);
-      Swal.mixin({
+      if (response.data) {
+        Swal.mixin({
           toast: true,
           position: "top-end",
           topLayer: true,
@@ -342,6 +341,9 @@ const Login = () => {
           icon: "success",
           title: "로그인 성공",
         });
+        navigate("/");
+      }
+
     } catch (error) {
       console.error("🚨 백엔드에서 랜덤 문자열(state)을 가져오는데 실패했습니다:", error);
       Swal.mixin({

@@ -155,7 +155,7 @@
 
     <sql id="selectThumImg">
         (SELECT CONCAT('https://matmatgotgot-s3.s3.ap-northeast-2.amazonaws.com/app/upload/web/matgot/menu/', r.rest_thumb)
-         FROM travel_schedule_tbl_tbl s
+         FROM travel_schedule_tbl s
                   JOIN restaurant_tbl r ON s.rest_no = r.rest_no
          WHERE s.tplan_no = tp.tplan_no
          ORDER BY s.tsche_day_no ASC, s.tsche_order_no ASC
@@ -221,7 +221,7 @@
     <select id="selectRawSchedulesWithDay" resultType="rawSchedule">
         SELECT s.tsche_no as tscheNo, s.tsche_day_no as tscheDayNo, s.tsche_order_no as tscheOrderNo,
                s.rest_no as restNo, r.rest_name as restName, r.lat, r.lng
-        FROM travel_schedule_tbl_tbl s
+        FROM travel_schedule_tbl s
                  JOIN restaurant_tbl r ON s.rest_no = r.rest_no
         WHERE s.tplan_no = #{tplanNo}
         ORDER BY s.tsche_day_no ASC, s.tsche_order_no ASC
@@ -290,7 +290,7 @@
     </delete>
 
     <delete id="deleteTravelSchedules">
-        DELETE FROM travel_schedule_tbl_tbl
+        DELETE FROM travel_schedule_tbl
         WHERE tplan_no = #{tplanNo}
     </delete>
 
@@ -303,7 +303,7 @@
             P.tplan_view AS tplanView,
             P.created_at AS createdAt,
             (SELECT COUNT(*)
-             FROM travel_schedule_tbl_tbl S
+             FROM travel_schedule_tbl S
              WHERE S.tplan_no = P.tplan_no) AS restaurantCount
         FROM
             travel_plan_tbl P
