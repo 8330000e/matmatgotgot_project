@@ -31,10 +31,16 @@ const BoardItem = ({ board }) => {
         <img
           src={
             board.boardThumb
-              ? `${import.meta.env.VITE_BACKSERVER}/editor/${board.boardThumb}`
+              ? (board.boardThumb.startsWith("http")
+                  ? board.boardThumb
+                  : `${import.meta.env.VITE_BACKSERVER}/editor/${board.boardThumb}`)
               : defaultImage
           }
           alt="썸네일"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = defaultImage;
+          }}
         />
       </div>
 

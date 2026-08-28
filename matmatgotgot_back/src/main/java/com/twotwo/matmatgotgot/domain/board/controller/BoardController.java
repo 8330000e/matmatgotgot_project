@@ -66,9 +66,7 @@ public class BoardController {
 
     // 이미지 업로드 (원래 코드 유지)
     @PostMapping("/image-upload")
-    public ResponseEntity<?> imageUpload(
-            @ModelAttribute MultipartFile image
-    ) {
+    public ResponseEntity<?> imageUpload(@ModelAttribute MultipartFile image) {
         String savePath = root + "editor/";
         File dir = new File(savePath);
 
@@ -77,7 +75,10 @@ public class BoardController {
         }
 
         String filePath = fileUtil.upload(savePath, image);
-        return ResponseEntity.ok(filePath);
+        
+        // 만약 filePath에 전체 경로가 들어있다면 순수 파일명만 추출하여 반환
+        String fileName = new File(filePath).getName(); 
+        return ResponseEntity.ok(fileName);
     }
 
     // 게시글 수정
