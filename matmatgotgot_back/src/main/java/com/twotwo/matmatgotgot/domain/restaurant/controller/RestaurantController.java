@@ -260,10 +260,13 @@ public class RestaurantController {
 
     // 맛집 - 이름 검색
     @GetMapping("/search")
-    public ResponseEntity<?> restSearch(@ModelAttribute SearchRequest req, Authentication auth){
-        List<Recommand> searchList = restaurantService.getRestSearch(req, auth.getName());
+    public ResponseEntity<?> restSearch(@ModelAttribute SearchRequest req, Authentication auth) {
+        // 💡 auth가 null이면(비로그인) memberId를 null로 처리하여 방어
+        String memberId = (auth != null) ? auth.getName() : null;
 
-        int count = restaurantService.getRestSearchCount(req, auth.getName());
+        List<Recommand> searchList = restaurantService.getRestSearch(req, memberId);
+
+        int count = restaurantService.getRestSearchCount(req, memberId);
         int totalPage = (int) Math.ceil(count / (double) req.getSize());
 
         Map<String, Object> res = new HashMap<>();
@@ -271,7 +274,7 @@ public class RestaurantController {
         res.put("totalPage", totalPage);
 
         return ResponseEntity.ok(res);
-    }//
+    }
 
     // 맛집 등록 중복 확인
     @GetMapping("/isdup")

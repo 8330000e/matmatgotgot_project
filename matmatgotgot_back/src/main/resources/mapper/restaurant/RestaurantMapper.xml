@@ -469,6 +469,9 @@
             <if test="req.restName != null and req.restName != ''">
                 r.rest_name LIKE CONCAT('%', #{req.restName}, '%')
             </if>
+            <if test="memberId != null">
+                AND r.member_id = #{memberId}
+            </if>
         </where>
 
         ORDER BY r.created_at DESC
