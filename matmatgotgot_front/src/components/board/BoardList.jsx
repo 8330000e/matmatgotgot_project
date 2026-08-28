@@ -1,7 +1,8 @@
 import styles from './BoardList.module.css';
 import defaultImage from '../../assets/board/image.png';
-import userImage from '../../assets/board/user.png';
-import { useNavigate } from 'react-router-dom';
+import defaultImg from '../../assets/board/user.png';
+import { useNavigate, useAuthStrore } from 'react-router-dom';
+import { getProfileThumb } from "@/utils/imageUtil";
 
 const BoardList = ({ boardList }) => {
   return (
@@ -15,6 +16,7 @@ const BoardList = ({ boardList }) => {
 
 const BoardItem = ({ board }) => {
   const navigate = useNavigate();
+  const { memberInfo } = useAuthStrore();
 
   const getCategoryName = (category) => {
     if (category === 1) return '여행후기';
@@ -55,12 +57,12 @@ const BoardItem = ({ board }) => {
               className={board.memberThumb ? styles.member_thumb_exists : ''}
             >
               <img
-                src={
-                  board.memberThumb
-                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${board.memberThumb}`
-                    : userImage
-                }
+                src={getProfileThumb(memberInfo?.memberThumb)}
                 alt="프로필"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = defaultImg;
+                }}
               />
             </div>
 
