@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styles from './BoardViewPage.module.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import userImage from '../../assets/board/user.png';
+import defaultImg from '../../assets/img/defaultImg.svg';
 import Button from '../../components/ui/Button';
 import { useAuthStore } from '../../store/useAuthStore';
 import Swal from 'sweetalert2';
@@ -13,6 +13,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined';
 import ReportIcon from '@mui/icons-material/Report';
 import { useCallback } from 'react';
+import { getProfileThumb } from "../../utils/imageUtil";
 
 const BoardViewPage = () => {
   const navigate = useNavigate();
@@ -188,14 +189,13 @@ const BoardViewPage = () => {
                         ? styles.member_thumb_exists
                         : styles.member_thumb
                     }
-                  >
-                    <img
-                      src={
-                        board.memberThumb
-                          ? `${import.meta.env.VITE_BACKSERVER}/upload/${board.memberThumb}`
-                          : userImage
-                      }
+                  ><img
+                      src={getProfileThumb(memberInfo?.memberThumb)}
                       alt="writer"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = defaultImg;
+                      }}
                     />
                   </div>
                   <span>{board.boardWriter}</span>
@@ -698,6 +698,8 @@ const BoardComment = ({
     boardCommentNo: comment.boardCommentNo,
   });
 
+  const { memberInfo } = useAuthStore();
+
   useEffect(() => {
     if (!memberId) return;
 
@@ -838,12 +840,12 @@ const BoardComment = ({
               className={comment.memberThumb ? styles.member_thumb_exists : ''}
             >
               <img
-                src={
-                  comment.memberThumb
-                    ? `${import.meta.env.VITE_BACKSERVER}/upload/${comment.memberThumb}`
-                    : userImage
-                }
+                src={getProfileThumb(memberInfo?.memberThumb)}
                 alt="comment-writer"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = defaultImg;
+                }}
               />
             </div>
             <span>{comment.boardCommentWriter}</span>
