@@ -2,7 +2,7 @@ import styles from './BoardList.module.css';
 import defaultImage from '../../assets/board/image.png';
 import defaultImg from '../../assets/board/user.png';
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../../store/useAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import { getProfileThumb } from "@/utils/imageUtil";
 
 const BoardList = ({ boardList }) => {
