@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styles from './BoardViewPage.module.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import userImage from '../../assets/img/defaultImg.svg';
+import defaultImg from '../../assets/img/defaultImg.svg';
 import Button from '../../components/ui/Button';
 import { useAuthStore } from '../../store/useAuthStore';
 import Swal from 'sweetalert2';
@@ -13,6 +13,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ReportOutlinedIcon from '@mui/icons-material/ReportOutlined';
 import ReportIcon from '@mui/icons-material/Report';
 import { useCallback } from 'react';
+import { getProfileThumb } from "../../utils/imageUtil";
 
 const BoardViewPage = () => {
   const navigate = useNavigate();
@@ -190,12 +191,12 @@ const BoardViewPage = () => {
                     }
                   >
                     <img
-                      src={
-                        board.memberThumb
-                          ? `${import.meta.env.VITE_IMG_SERVER}/member/thumb/${board.memberThumb}`
-                          : userImage
-                      }
+                      src={getProfileThumb(board?.memberThumb)}
                       alt="writer"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = defaultImg;
+                      }}
                     />
                   </div>
                   <span>{board.boardWriter}</span>
@@ -838,12 +839,12 @@ const BoardComment = ({
               className={comment.memberThumb ? styles.member_thumb_exists : ''}
             >
               <img
-                src={
-                  comment.memberThumb
-                    ? `${import.meta.env.VITE_IMG_SERVER}/member/thumb/${comment.memberThumb}`
-                    : userImage
-                }
+                src={getProfileThumb(comment?.memberThumb)}
                 alt="comment-writer"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = defaultImg;
+                }}
               />
             </div>
             <span>{comment.boardCommentWriter}</span>
