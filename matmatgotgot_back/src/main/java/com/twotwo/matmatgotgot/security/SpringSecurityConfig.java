@@ -23,9 +23,10 @@ public class SpringSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    @Bean
+   @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // 💡 1. CORS 설정 빈 연결
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
@@ -52,6 +53,7 @@ public class SpringSecurityConfig {
                 
                 .anyRequest().authenticated()
             )
+            // 💡 2. JwtAuthFilter가 실행되기 전 CorsFilter가 먼저 처리되도록 설정
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

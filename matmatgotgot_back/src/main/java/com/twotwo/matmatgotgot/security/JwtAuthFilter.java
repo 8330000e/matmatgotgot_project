@@ -25,6 +25,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class JwtAuthFilter extends GenericFilter {
+
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -35,11 +36,21 @@ public class JwtAuthFilter extends GenericFilter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
+        // 💡 1. [CORS 핵심] Preflight (OPTIONS) 요청은 토큰 검증 없이 무조건 통과
+        if ("OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            chain.doFilter(request, response);
+            return;
+        }
+
         String requestURI = httpServletRequest.getRequestURI();
         log.info("Request URI = {}", requestURI);
 
-        // ★ [핵심] 로그인, 회원가입 등 토큰이 필요 없는 API 경로는 필터 검증을 건너뜁니다.
-        if (requestURI.startsWith("/members/login") || requestURI.startsWith("/members/signup")) {
+        // 💡 2. [/api context-path 대응] 토큰 검증이 필요 없는 공개 경로 우회
+        if (requestURI.contains("/members/login") || 
+            requestURI.contains("/members/signup") || 
+            requestURI.contains("/login/kakao") ||
+            requestURI.contains("/oauth2/")) {
             chain.doFilter(request, response);
             return;
         }
@@ -51,6 +62,7 @@ public class JwtAuthFilter extends GenericFilter {
         }
 
         SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        
         // 토큰 검증 및 claims 추출
         try {
             Claims claims = Jwts.parser()
@@ -61,18 +73,17 @@ public class JwtAuthFilter extends GenericFilter {
 
             String memberId = claims.getSubject();
 
-            // Authentication 객체 생성
             List<GrantedAuthority> authorities = new ArrayList<>();
             UserDetails userDetails = new User(memberId, "", authorities);
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "",
                     userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            
         } catch (Exception e) {
-            log.error("JWT 검증 실패", e);
-            log.info("만료된 JWT 토큰입니다.");
+            log.error("JWT 검증 실패: {}", e.getMessage());
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             httpServletResponse.setContentType("application/json;charset=UTF-8");
-            httpServletResponse.getWriter().write("{\"message\":\"토큰이 만료되었습니다. 다시 로그인하거나 토큰을 재발급하세요.\"}");
+            httpServletResponse.getWriter().write("{\"message\":\"토큰이 만료되었거나 유효하지 않습니다.\"}");
             return;
         }
 
