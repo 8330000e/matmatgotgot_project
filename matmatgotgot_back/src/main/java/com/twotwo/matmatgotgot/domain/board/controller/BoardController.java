@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/boards")
 @RequiredArgsConstructor

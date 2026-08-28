@@ -17,7 +17,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/naver")
-@CrossOrigin("*")
+// @CrossOrigin("*")
 @RequiredArgsConstructor
 public class NaverController {
 
