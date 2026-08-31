@@ -62,7 +62,7 @@ public class TripService {
             MultipartFile image
     ) throws Exception {
 
-        String savedFileName = "basic.jpeg";
+        String savedFileName = "/basic.jpeg";
 
         if (image != null && !image.isEmpty()) {
 
