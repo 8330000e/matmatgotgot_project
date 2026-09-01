@@ -75,7 +75,7 @@ const MenuBar = ({ editor }) => {
           },
         })
         .then((res) => {
-          const imageUrl = `${import.meta.env.VITE_BACKSERVER}/editor/${res.data}`;
+          const imageUrl = `${import.meta.env.VITE_IMG_SERVER}/editor/${res.data}`;
           editor.chain().focus().setImage({ src: imageUrl }).run();
         })
         .catch((err) => {

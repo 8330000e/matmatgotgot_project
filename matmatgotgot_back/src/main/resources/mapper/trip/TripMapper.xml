@@ -94,7 +94,7 @@
             REST_NO,
             MENU_NAME AS name,
             MENU_PRICE AS price,
-            CONCAT('https://matmatgotgot-s3.s3.ap-northeast-2.amazonaws.com/app/upload/web/matgot/menu/', MENU_IMG) AS imagePreview
+            CONCAT('https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/', MENU_IMG) AS imagePreview
         FROM menu_tbl
         WHERE REST_NO = #{restNo}
     </select>
@@ -154,7 +154,7 @@
     </insert>
 
     <sql id="selectThumImg">
-        (SELECT CONCAT('https://matmatgotgot-s3.s3.ap-northeast-2.amazonaws.com/app/upload/web/matgot/menu/', r.rest_thumb)
+        (SELECT CONCAT('https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/', r.rest_thumb)
          FROM travel_schedule_tbl s
                   JOIN restaurant_tbl r ON s.rest_no = r.rest_no
          WHERE s.tplan_no = tp.tplan_no
