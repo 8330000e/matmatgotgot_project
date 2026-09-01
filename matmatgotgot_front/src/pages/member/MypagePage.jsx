@@ -34,6 +34,7 @@ import Swal from "sweetalert2";
 import BoardLikeList from "../../components/member/BoardLikeList.jsx";
 import BoardReports from "../../components/member/BoardReports.jsx";
 import {useKakaoPostcode} from "@clroot/react-kakao-postcode";
+import getProfileImageUrl from "../../utils/imageUtil.js";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -143,7 +144,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   const [updateMode, setUpdateMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileThumb, setProfileThumb] = useState(
-    defaultImg || memberThumb || memberInfo?.memberThumb || null
+    getProfileImageUrl(defaultImg) || getProfileImageUrl(memberThumb) || getProfileImageUrl(memberInfo?.memberThumb) || null
   );
   const [native, setNative] = useState(false);
 
@@ -198,13 +199,13 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   }
 
   // 프로필 이미지 URL 보정
-  const getProfileImageUrl = (thumb) => {
-    if (!thumb) return defaultImg;
-    if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
-      return thumb;
-    }
-    return `/api/upload/${thumb}`;
-  };
+//   const getProfileImageUrl = (thumb) => {
+//     if (!thumb) return defaultImg;
+//     if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
+//       return thumb;
+//     }
+//     return `/api/upload/${thumb}`;
+//   };
 
   // 이미지 변경 미리보기
   const changeThumb = (e) => {
@@ -312,6 +313,27 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             });
           });
       }
+    });
+  };
+
+  const developing = () => {
+    Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        },
+    }).fire({
+        title: "개발 중",
+        text: "해당 기능은 현재 개발 중입니다..",
+        icon: "info",
     });
   };
 
@@ -487,7 +509,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               </div>
             </div>
             <div>
-              <button type="button" className={styles.submit}>
+              <button type="button" className={styles.submit} onClick={developing}>
                 알림설정 수정
               </button>
             </div>
@@ -498,15 +520,15 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           <div className={styles.info_social}>
             <p className={styles.info_title}>소셜 계정 연동</p>
             <ul>
-              <li>
+              <li onClick={developing}>
                 <img src={google} alt="google" />
                 <span>구글 계정 연동하기</span>
               </li>
-              <li>
+              <li onClick={developing}>
                 <img src={kakao} alt="kakao" />
                 <span>카카오 계정 연동하기</span>
               </li>
-              <li>
+              <li onClick={developing}>
                 <img src={naver} alt="naver" />
                 <span>네이버 계정 연동하기</span>
               </li>
