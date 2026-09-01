@@ -34,7 +34,7 @@ import Swal from "sweetalert2";
 import BoardLikeList from "../../components/member/BoardLikeList.jsx";
 import BoardReports from "../../components/member/BoardReports.jsx";
 import {useKakaoPostcode} from "@clroot/react-kakao-postcode";
-import getProfileImageUrl from "../../utils/imageUtil.js";
+import { getProfileImageUrl } from "../../utils/imageUtil.js";
 
 export const MypagePage = () => {
    const location = useLocation();

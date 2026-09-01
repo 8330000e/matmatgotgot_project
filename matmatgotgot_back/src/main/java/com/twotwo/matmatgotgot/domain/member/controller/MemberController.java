@@ -472,7 +472,7 @@ public class MemberController {
 		return ResponseEntity.ok(null);
 	}
 
-	@GetMapping(value = "natives")
+	@GetMapping(value = "/natives")
 	public ResponseEntity<?> getNative(@RequestParam("/natives") String memberId) {
 
 		Natives nativeInfo = memberService.getNative(memberId);
