@@ -322,7 +322,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           <div className={styles.image_wrap}>
             <div className={styles.profile_img_circle}>
               <img
-                src={memberThumb || profileThumb || getProfileImageUrl(memberThumb)}
+                src={profileThumb || getProfileImageUrl(memberThumb)}
                 className={styles.defaultImg}
                 alt="프로필"
                 onError={(e) => {
