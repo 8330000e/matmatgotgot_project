@@ -17,17 +17,22 @@ const RestaurantItem = ({ rest }) => {
       try {
         const response = await axios.get('/api/restaurants/main');
 
-        if (response && response.data) {
-          const formattedList = response.data.map(rest => ({
-            ...rest,
-            restThumb: rest.restThumb 
-              ? (rest.restThumb.startsWith("http") 
-                  ? rest.restThumb 
-                  : `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/${rest.restThumb}`)
-              : null
-          }));
-          setRestaurantList(formattedList);
-        } 
+        // response.data.list 가 배열인지 확인 후 map 실행
+        const rawList = Array.isArray(response.data) 
+          ? response.data 
+          : (response.data.list || []);
+
+        const formattedList = rawList.map((rest) => ({
+          ...rest,
+          restThumb: rest.restThumb
+            ? (rest.restThumb.startsWith("http")
+                ? rest.restThumb
+                : `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/${rest.restThumb}`)
+            : null,
+        }));
+
+        setRestaurantList(formattedList);
+        
       } catch (error) {
         console.error("데이터 로드 실패:", error);
         // 필요하다면 위에서 선언한 navigate를 여기서 사용
