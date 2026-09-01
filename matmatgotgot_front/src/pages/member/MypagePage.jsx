@@ -138,12 +138,12 @@ export const MypagePage = () => {
 export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   const inputRef = useRef(null);
   const detailRef = useRef();
-  const { memberId, memberThumb } = useAuthStore();
+  const { memberId, memberThumb: storeThumb } = useAuthStore();
   
   const [updateMode, setUpdateMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileThumb, setProfileThumb] = useState(
-    defaultImg || memberThumb || memberInfo?.memberThumb || null
+    defaultImg || storeThumb || memberInfo?.memberThumb || null
   );
   const [native, setNative] = useState(false);
 
@@ -199,20 +199,23 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   }
 
   // 프로필 이미지 URL 보정
-  // ⭕ S3/CloudFront 경로가 정확히 결합되도록 수정
-    const getProfileImageUrl = (thumb) => {
+  // 1. 프로필 이미지 URL 변환 헬퍼 (게시글 컴포넌트와 동일한 S3 경로 사용)
+  const getProfileImageUrl = (thumb) => {
     if (!thumb) return defaultImg;
 
-    // HTTP/HTTPS 원본 경로인 경우 (소셜 프로필 등)
+    // 소셜 로그인 등 HTTP/HTTPS 원본 경로
     if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
-        return thumb;
+      return thumb;
     }
 
-    // CloudFront S3 경로와 파일명 결합
+    // 파일명만 들어온 경우 S3 CloudFront 경로 결합
     const cleanPath = thumb.startsWith("/") ? thumb.slice(1) : thumb;
     return `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/${cleanPath}`; 
-    // 💡 본인의 프로필 저장 경로에 맞게 뒤쪽 폴더명을 확인해주세요! (예: .../profile/ 또는 .../member/)
-    };
+    // 💡 게시글 컴포넌트에서 사용하는 S3 이미지 경로 주소와 완전히 동일하게 기재해주세요!
+  };
+
+  // 2. 현재 유효한 프로필 이미지 파일명 추출 (백엔드 응답 key 확인)
+  const currentThumb = memberInfo?.memberThumb || storeThumb;
 
   // 이미지 변경 미리보기
   const changeThumb = (e) => {
@@ -241,26 +244,20 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-            console.log("업데이트 성공:", res.data);
-            
-            // 백엔드에서 반환된 최신 파일명
-            const updatedThumb = res.data.memberThumb || res.data; 
-            
-            if (updatedThumb && typeof updatedThumb === "string") {
-            // 1. memberInfo 상시 객체 업데이트
-            setMemberInfo((prev) => ({ ...prev, memberThumb: updatedThumb }));
-            
-            // 2. Zustand 전역 스토어 업데이트
-            if (useAuthStore.getState().setThumb) {
-                useAuthStore.getState().setThumb(updatedThumb);
-            }
-
-            // 3. 💡 핵심: null로 비우지 말고, 서버에서 온 실제 S3 URL로 profileThumb를 교체해줍니다.
-            setProfileThumb(getProfileImageUrl(updatedThumb));
-            }
-
+            alert("프로필 수정이 완료되었습니다.");
             setUpdateMode(false);
-            setSelectedFile(null); // 파일 객체만 초기화
+            setSelectedFile(null);
+
+            // 💡 백엔드에서 최신 회원정보 다시 조회하여 부모 state 갱신
+            axios
+            .get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
+            .then((response) => {
+                setMemberInfo(response.data);
+                if (response.data.memberThumb) {
+                // Zustand 전역 상태도 함께 업데이트
+                useAuthStore.getState().setThumb?.(response.data.memberThumb);
+                }
+            });
         })
         .catch((err) => {
             console.error("서버 업데이트 실패:", err);
@@ -366,15 +363,17 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           <div className={styles.image_wrap}>
             <div className={styles.profile_img_circle}>
               <img
+                // 💡 미리보기 파일(selectedFile)이 있으면 blob URL, 없으면 서버에서 받아온 S3 Full URL
                 src={
-                    profileThumb || 
-                    getProfileImageUrl(memberInfo?.memberThumb || memberThumb)
+                selectedFile
+                    ? URL.createObjectURL(selectedFile)
+                    : getProfileImageUrl(currentThumb)
                 }
                 className={styles.defaultImg}
                 alt="프로필"
                 onError={(e) => {
-                    e.currentTarget.onerror = null; // 무한 루프 방지
-                    e.currentTarget.src = defaultImg;
+                e.currentTarget.onerror = null; // 무한 루프 차단
+                e.currentTarget.src = defaultImg; // 로드 실패 시 fallback
                 }}
                 />
             </div>
