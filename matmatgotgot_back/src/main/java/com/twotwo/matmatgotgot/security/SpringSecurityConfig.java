@@ -26,6 +26,11 @@ public class SpringSecurityConfig {
    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .authorizeHttpRequests(auth -> auth
+                // 💡 로그아웃 엔드포인트는 인증 없이 접근할 수 있도록 permitAll 추가
+                .requestMatchers("/members/logout/**", "/api/members/logout/**").permitAll()
+                .anyRequest().authenticated()
+            )
             // 💡 1. CORS 설정 빈 연결
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())

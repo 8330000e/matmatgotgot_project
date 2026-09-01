@@ -8,11 +8,16 @@ import App from "./App.jsx";
 import axios from 'axios'
 import { useAuthStore } from './store/useAuthStore'
 
+// Axios 전역 인터셉터 설정
 axios.interceptors.request.use(
   (config) => {
-    // Zustand 스토어나 localStorage에서 토큰 가져오기
+    // 💡 로그아웃 요청에는 만료된 토큰을 첨부하지 않음 (무한 루프 방지)
+    if (config.url.includes('/members/logout')) {
+      delete config.headers.Authorization;
+      return config;
+    }
+
     const token = useAuthStore.getState().token || localStorage.getItem("token");
-    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,20 +27,24 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(
-  (response) => response, // 성공 응답은 그대로 리턴
+  (response) => response,
   (error) => {
     const originalRequest = error.config;
 
-    // 401 Unauthorized 또는 403 Forbidden 에러 감지
+    // 401/403 인증 실패 시
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       
-      // 중복 알림/리다이렉트 방지
+      // 💡 요청 URL이 이미 로그아웃 요청인 경우 재요청을 하지 않고 즉시 정리 (무한 루프 차단)
+      if (originalRequest.url.includes('/members/logout')) {
+        localStorage.clear();
+        window.location.href = "/";
+        return Promise.reject(error);
+      }
+
       if (!originalRequest._retry) {
         originalRequest._retry = true;
 
-        console.warn("JWT 토큰이 만료되었거나 유효하지 않습니다.");
-
-        // 스토어 상태 및 Storage 초기화
+        // 1. 클라이언트 인증 정보 즉시 제거 (로컬 처리)
         const logout = useAuthStore.getState().logout;
         if (logout) {
           logout();
@@ -45,7 +54,9 @@ axios.interceptors.response.use(
         }
 
         alert("세션이 만료되었습니다. 다시 로그인해 주세요.");
-        window.location.href = "/"; // 메인/로그인 페이지로 이동
+        
+        // 2. 메인 페이지로 이동 (서버 로그아웃 호출 시 URL 중복 주의)
+        window.location.href = "/";
       }
     }
 
