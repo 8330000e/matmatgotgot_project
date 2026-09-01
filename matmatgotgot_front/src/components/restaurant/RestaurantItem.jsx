@@ -3,9 +3,38 @@ import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const RestaurantItem = ({ rest }) => {
   const navigate = useNavigate();
+
+  const [restaurantList, setRestaurantList] = useState([]);
+
+  useEffect(() => {
+    // 3. async 함수 정의
+    const fetchRestaurants = async () => {
+      try {
+        const response = await axios.get('/api/restaurants/main');
+
+        const formattedList = response.data.map(rest => ({
+          ...rest,
+          restThumb: rest.restThumb 
+            ? (rest.restThumb.startsWith("http") 
+                ? rest.restThumb 
+                : `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/${rest.restThumb}`)
+            : null
+        }));
+
+        setRestaurantList(formattedList);
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+        // 필요하다면 위에서 선언한 navigate를 여기서 사용
+        // navigate('/error'); 
+      }
+    };
+
+    fetchRestaurants();
+  }, []); // useEffect 끝
 
   return (
     <div
