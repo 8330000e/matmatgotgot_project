@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import styles from "./MypagePage.module.css";
 import { useAuthStore } from '../../store/useAuthStore';
 import {Link, useLocation, useParams} from "react-router-dom";
@@ -135,15 +136,48 @@ export const MypagePage = () => {
 };
 
 export const Myinfo = ({ memberInfo, setMemberInfo }) => {
-    // 데이터 로딩 중이라면 로딩 메시지를 보여주거나 아무것도 렌더링하지 않음
-    if (!memberInfo) {
-        return <div>로딩 중...</div>; 
-    }
     const inputRef = useRef(null);
     const detailRef = useRef();
     const { memberId, memberThumb, memberNickname } = useAuthStore();
     const [updateMode, setUpdateMode] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null); // 실제 File 객체 상태
+    const [nativeMember, setNativeMember] = useState([]);
+    const [profileThumb, setProfileThumb] = useState(defaultImg || memberInfo?.memberThumb || null);
+    const [native, setNative]=useState(false);
+
+    useEffect(() => {
+        // 🌟 [안전장치] memberId가 없거나 'undefined' 문자열이면 아예 요청을 안 보냄!
+        if (!memberId || memberId === 'undefined') {
+            console.warn("memberId가 준비되지 않아 요청을 보낼 수 없습니다.");
+            return;
+        }
+
+        // 값이 존재할 때만 서버에 요청
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives`, {
+                  params: {
+                    memberId: memberId
+                  }
+                })
+            .then(res => {
+                // 성공 시 처리할 로직 (예: setMemberData)
+                console.log("성공 데이터:", res.data);
+                if(res.data == null || res.data === 'undefined') {
+                    console.log("조회된 결과가 없습니다.")
+                } else {
+                    console.log("조회된 결과: ", res.data);
+                }
+            })
+            .catch(error => {
+                console.error("서버 에러:", error);
+            });
+
+    }, [memberId]);
+
+    // 데이터 로딩 중이라면 로딩 메시지를 보여주거나 아무것도 렌더링하지 않음
+    if (!memberInfo) {
+        return <div>로딩 중...</div>; 
+    }
+       
 
     const getProfileImageUrl = (thumb) => {
     if (!thumb) return defaultImg; // 👈 기본 이미지 경로 (public 폴더 기준)
@@ -165,7 +199,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
 
         // 브라우저 화면 미리보기용 URL 생성
         const previewUrl = URL.createObjectURL(file);
-        setMemberThumb(previewUrl); // 미리보기 즉시 반영
+        setProfileThumb(previewUrl); // 미리보기 즉시 반영
     }
     };
 
@@ -182,7 +216,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
 
             // 🌟 여기서 바로 비교 로직을 타는 것이 가장 안전합니다.
             // (setState는 비동기라 memberInfo.memberAddress를 바로 비교하면 이전 값이 찍힐 수 있으므로 data.roadAddress와 직접 비교합니다.)
-            if (data.roadAddress === currentAddr) {
+            if (data.roadAddress === memberInfo.memberAddress) {
                 setNative(true);
             }
         } // 👈 onComplete 끝
@@ -241,35 +275,9 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     //             console.log(err);
     //         });
     // };
-    const [nativeMember,setNativeMember]=useState([]);
-    useEffect(() => {
-        // 🌟 [안전장치] memberId가 없거나 'undefined' 문자열이면 아예 요청을 안 보냄!
-        if (!memberId || memberId === 'undefined') {
-            console.warn("memberId가 준비되지 않아 요청을 보낼 수 없습니다.");
-            return;
-        }
-
-        // 값이 존재할 때만 서버에 요청
-        axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives`, {
-                  params: {
-                    memberId: memberId
-                  }
-                })
-            .then(res => {
-                // 성공 시 처리할 로직 (예: setMemberData)
-                console.log("성공 데이터:", res.data);
-                if(res.data == null || res.data === 'undefined') {
-                    console.log("조회된 결과가 없습니다.")
-                } else {
-                    console.log("조회된 결과: ", res.data);
-                }
-            })
-            .catch(error => {
-                console.error("서버 에러:", error);
-            });
-
-    }, [memberId]);
-    const [native,setNative]=useState(false);
+    
+    
+    
     const nativeCheck = () => {
         // 카카오 우편번호 팝업창을 띄웁니다.
         openPostcode();
