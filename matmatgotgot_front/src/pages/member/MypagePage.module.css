@@ -163,8 +163,13 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+.info__wrap {
+    display: flex;
+    flex-direction: column;
     gap: 5px;
 }
+
 .info_profile > div:nth-child(2) {
     padding-left: 20px;
 }

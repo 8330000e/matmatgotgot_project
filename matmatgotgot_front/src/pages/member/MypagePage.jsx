@@ -433,7 +433,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               </>
             )}
           </div>
-          <div>
+          <div className={styles.info__wrap}>
             <div>
               <div className={styles.info_nick}>
                 {updateMode ? (
