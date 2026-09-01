@@ -34,7 +34,7 @@ import Swal from "sweetalert2";
 import BoardLikeList from "../../components/member/BoardLikeList.jsx";
 import BoardReports from "../../components/member/BoardReports.jsx";
 import {useKakaoPostcode} from "@clroot/react-kakao-postcode";
-import { getProfileImageUrl } from "../../utils/imageUtil.js";
+matmatgotgot_front\src\utils\imageUtil.js
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -144,7 +144,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   const [updateMode, setUpdateMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileThumb, setProfileThumb] = useState(
-    getProfileImageUrl(defaultImg) || getProfileImageUrl(memberThumb) || getProfileImageUrl(memberInfo?.memberThumb) || null
+    defaultImg || memberThumb || memberInfo?.memberThumb || null
   );
   const [native, setNative] = useState(false);
 
@@ -199,13 +199,13 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   }
 
   // 프로필 이미지 URL 보정
-//   const getProfileImageUrl = (thumb) => {
-//     if (!thumb) return defaultImg;
-//     if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
-//       return thumb;
-//     }
-//     return `/api/upload/${thumb}`;
-//   };
+  const getProfileImageUrl = (thumb) => {
+    if (!thumb) return defaultImg;
+    if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
+      return thumb;
+    }
+    return `/api/upload/${thumb}`;
+  };
 
   // 이미지 변경 미리보기
   const changeThumb = (e) => {
