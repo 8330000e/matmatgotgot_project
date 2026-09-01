@@ -198,13 +198,20 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   }
 
   // 프로필 이미지 URL 보정
-  const getProfileImageUrl = (thumb) => {
+  // ⭕ S3/CloudFront 경로가 정확히 결합되도록 수정
+    const getProfileImageUrl = (thumb) => {
     if (!thumb) return defaultImg;
+
+    // HTTP/HTTPS 원본 경로인 경우 (소셜 프로필 등)
     if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
-      return thumb;
+        return thumb;
     }
-    return `/api/upload/${thumb}`;
-  };
+
+    // CloudFront S3 경로와 파일명 결합
+    const cleanPath = thumb.startsWith("/") ? thumb.slice(1) : thumb;
+    return `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/${cleanPath}`; 
+    // 💡 본인의 프로필 저장 경로에 맞게 뒤쪽 폴더명을 확인해주세요! (예: .../profile/ 또는 .../member/)
+    };
 
   // 이미지 변경 미리보기
   const changeThumb = (e) => {
@@ -218,35 +225,43 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
 
   // 프로필 수정 / 완료 버튼 클릭
   const updateModeChange = () => {
-    if (updateMode) {
-      const formData = new FormData();
-      formData.append("memberId", memberId);
-      formData.append("nick", memberInfo.memberNickname || "");
-      formData.append("addr", memberInfo.memberAddress || "");
+  if (updateMode) {
+    const formData = new FormData();
+    formData.append("memberId", memberId);
+    formData.append("nick", memberInfo.memberNickname || "");
+    formData.append("addr", memberInfo.memberAddress || "");
 
-      if (selectedFile) {
-        formData.append("profileImage", selectedFile);
-      }
-
-      axios
-        .put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          console.log("업데이트 성공:", res);
-          setUpdateMode(false);
-          setSelectedFile(null);
-        })
-        .catch((err) => {
-          console.error("서버 업데이트 실패:", err);
-          alert("프로필 수정 중 오류가 발생했습니다.");
-        });
-    } else {
-      setUpdateMode(true);
+    if (selectedFile) {
+      formData.append("profileImage", selectedFile);
     }
-  };
+
+    axios
+      .put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
+        console.log("업데이트 성공:", res.data);
+        
+        // 💡 1. 백엔드에서 변경된 memberThumb 파일명을 응답으로 받았다면 state/store에 즉시 반영
+        const updatedThumb = res.data.memberThumb || res.data; // 백엔드 응답 구조에 맞게 설정
+        
+        if (updatedThumb && typeof updatedThumb === "string") {
+          setMemberInfo((prev) => ({ ...prev, memberThumb: updatedThumb }));
+          useAuthStore.getState().setThumb?.(updatedThumb); // AuthStore에 setThumb가 있다면 호출
+        }
+
+        setUpdateMode(false);
+        setSelectedFile(null);
+        setProfileThumb(null); // 💡 임시 blob URL 제거하여 원본 S3 URL을 바라보게 함
+      })
+      .catch((err) => {
+        console.error("서버 업데이트 실패:", err);
+        alert("프로필 수정 중 오류가 발생했습니다.");
+      });
+  } else {
+    setUpdateMode(true);
+  }
+};
 
   const nativeCheck = () => {
     openPostcode();
@@ -343,14 +358,17 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           <div className={styles.image_wrap}>
             <div className={styles.profile_img_circle}>
               <img
-                src={profileThumb || getProfileImageUrl(memberThumb)}
+                src={
+                    profileThumb || 
+                    getProfileImageUrl(memberInfo?.memberThumb || memberThumb)
+                }
                 className={styles.defaultImg}
                 alt="프로필"
                 onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = defaultImg;
+                    e.currentTarget.onerror = null; // 무한 루프 방지
+                    e.currentTarget.src = defaultImg;
                 }}
-              />
+                />
             </div>
 
             {updateMode && (
