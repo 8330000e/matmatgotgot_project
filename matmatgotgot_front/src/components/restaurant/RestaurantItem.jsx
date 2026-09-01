@@ -15,26 +15,19 @@ const RestaurantItem = ({ rest }) => {
     // 3. async 함수 정의
     const fetchRestaurants = async () => {
       try {
-        const CLOUDFRONT_URL = "https://d2lg74d5mqmhqe.cloudfront.net";
-        const S3_PATH_PREFIX = "app/upload/web/matgot/menu"; // 👈 S3 실제 경로
+        const response = await axios.get('/api/restaurants/main');
 
-        // API 응답 데이터를 받아서 state에 저장할 때
-        const formattedList = response.data.map((item) => {
-          let imgUrl = item.imgName || item.tplanThumb || item.restThumb;
-
-          if (!imgUrl) {
-            imgUrl = null; // 이미지 없을 경우
-          } else if (!imgUrl.startsWith("http")) {
-            // 순수 파일명(basic.jpeg 등)만 있는 경우 CloudFront Full URL로 변환
-            const cleanPath = imgUrl.startsWith("/") ? imgUrl.slice(1) : imgUrl;
-            imgUrl = `${CLOUDFRONT_URL}/${S3_PATH_PREFIX}/${cleanPath}`;
-          }
-
-          return {
-            ...item,
-            restThumb: imgUrl,
-          };
-        });
+        if (response && response.data) {
+          const formattedList = response.data.map(rest => ({
+            ...rest,
+            restThumb: rest.restThumb 
+              ? (rest.restThumb.startsWith("http") 
+                  ? rest.restThumb 
+                  : `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/${rest.restThumb}`)
+              : null
+          }));
+          setRestaurantList(formattedList);
+        } 
       } catch (error) {
         console.error("데이터 로드 실패:", error);
         // 필요하다면 위에서 선언한 navigate를 여기서 사용
