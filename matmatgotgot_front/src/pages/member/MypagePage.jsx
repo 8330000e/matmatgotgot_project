@@ -244,7 +244,24 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-            alert("프로필 수정이 완료되었습니다.");
+            Swal.mixin({
+            toast: true,
+            color: "#2b1b17",
+            borderRadius: "15px",
+            fontWeight: "800",
+            padding: "20px 10px",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        }).fire({
+            title: "프로필 수정완료",
+            text: "프로필 수정이 성공적으로 완료되었습니다.",
+            icon: "success",
+        });
             setUpdateMode(false);
             setSelectedFile(null);
 
@@ -261,7 +278,24 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         })
         .catch((err) => {
             console.error("서버 업데이트 실패:", err);
-            alert("프로필 수정 중 오류가 발생했습니다.");
+            Swal.mixin({
+                toast: true,
+                color: "#2b1b17",
+                borderRadius: "15px",
+                fontWeight: "800",
+                padding: "20px 10px",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            }).fire({
+                title: "프로필 수정 실패",
+                text: "프로필 수정 중 오류가 발생했습니다. 다시 시도해주세요.",
+                icon: "error",
+            });
         });
     } else {
         setUpdateMode(true);
@@ -341,7 +375,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         color: "#2b1b17",
         borderRadius: "15px",
         fontWeight: "800",
-        padding: "20px 10px",
+        padding: "20px 30px",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -350,7 +384,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             toast.onmouseleave = Swal.resumeTimer;
         },
     }).fire({
-        title: "개발 중",
+        title: "개발 중...",
         text: "해당 기능은 현재 개발 중입니다..",
         icon: "info",
     });
