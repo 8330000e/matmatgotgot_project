@@ -43,4 +43,6 @@ public interface MemberMapper {
     int updateEmail(Member member);
 
     Natives getNative(String memberId);
+
+    int deleteMember(String memberId);
 }

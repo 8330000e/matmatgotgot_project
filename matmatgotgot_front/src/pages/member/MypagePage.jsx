@@ -136,293 +136,376 @@ export const MypagePage = () => {
 };
 
 export const Myinfo = ({ memberInfo, setMemberInfo }) => {
-    const inputRef = useRef(null);
-    const detailRef = useRef();
-    const { memberId, memberThumb, memberNickname } = useAuthStore();
-    const [updateMode, setUpdateMode] = useState(false);
-    const [selectedFile, setSelectedFile] = useState(null); // 실제 File 객체 상태
-    const [nativeMember, setNativeMember] = useState([]);
-    const [profileThumb, setProfileThumb] = useState(defaultImg || memberInfo?.memberThumb || null);
-    const [native, setNative]=useState(false);
+  const inputRef = useRef(null);
+  const detailRef = useRef();
+  const { memberId, memberThumb } = useAuthStore();
+  
+  const [updateMode, setUpdateMode] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [profileThumb, setProfileThumb] = useState(
+    defaultImg || memberInfo?.memberThumb || null
+  );
+  const [native, setNative] = useState(false);
 
-    useEffect(() => {
-        // 🌟 [안전장치] memberId가 없거나 'undefined' 문자열이면 아예 요청을 안 보냄!
-        if (!memberId || memberId === 'undefined') {
-            console.warn("memberId가 준비되지 않아 요청을 보낼 수 없습니다.");
-            return;
+  // ⭕ 1. 모든 React Hook (useKakaoPostcode 포함)은 조건문/Early Return "전"에 선언합니다.
+  const { open: openPostcode } = useKakaoPostcode({
+    onComplete: (data) => {
+      // 주소 입력 업데이트
+      setMemberInfo((prev) => ({ ...prev, memberAddress: data.roadAddress }));
+
+      // 현지인 인증 비교 (기존 주소와 일치하는지 확인)
+      if (memberInfo?.memberAddress && data.roadAddress === memberInfo.memberAddress) {
+        setNative(true);
+      }
+
+      // 커서 포커스 이동
+      if (detailRef.current) {
+        detailRef.current.focus();
+      }
+    },
+  });
+
+  // ⭕ 2. useEffect도 최상단에 배치
+  useEffect(() => {
+    if (!memberId || memberId === "undefined" || memberId === "null") {
+      console.warn("memberId가 준비되지 않아 요청을 보낼 수 없습니다.");
+      return;
+    }
+
+    axios
+      .get(`${import.meta.env.VITE_BACKSERVER}/members/natives`, {
+        params: { memberId },
+      })
+      .then((res) => {
+        if (!res.data || res.data === "undefined") {
+          console.log("조회된 결과가 없습니다.");
+        } else {
+          console.log("조회된 결과: ", res.data);
         }
+      })
+      .catch((error) => {
+        console.error("서버 에러:", error);
+      });
+  }, [memberId]);
 
-        // 값이 존재할 때만 서버에 요청
-        axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives`, {
-                  params: {
-                    memberId: memberId
-                  }
-                })
-            .then(res => {
-                // 성공 시 처리할 로직 (예: setMemberData)
-                console.log("성공 데이터:", res.data);
-                if(res.data == null || res.data === 'undefined') {
-                    console.log("조회된 결과가 없습니다.")
-                } else {
-                    console.log("조회된 결과: ", res.data);
-                }
-            })
-            .catch(error => {
-                console.error("서버 에러:", error);
-            });
+  // ⭕ 3. 모든 Hook 선언이 완료된 "후"에 Early Return(로딩 체크)을 수행합니다.
+  if (!memberInfo) {
+    return (
+      <div style={{ padding: "50px", textAlign: "center" }}>
+        회원 정보를 불러오는 중입니다...
+      </div>
+    );
+  }
 
-    }, [memberId]);
-
-    // 데이터 로딩 중이라면 로딩 메시지를 보여주거나 아무것도 렌더링하지 않음
-    if (!memberInfo) {
-        return <div>로딩 중...</div>; 
-    }
-       
-
-    const getProfileImageUrl = (thumb) => {
-    if (!thumb) return defaultImg; // 👈 기본 이미지 경로 (public 폴더 기준)
-    
-    // 소셜 로그인 이미지처럼 http:// 나 https:// 로 시작하면 그대로 사용
+  // 프로필 이미지 URL 보정
+  const getProfileImageUrl = (thumb) => {
+    if (!thumb) return defaultImg;
     if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
-        return thumb;
+      return thumb;
     }
-    
-    // 백엔드 서버 업로드 파일 경로일 경우
-    return `/api/upload/${thumb}`; // 또는 환경에 맞는 백엔드 절대경로
-    };
+    return `/api/upload/${thumb}`;
+  };
 
-    const changeThumb = (e) => {
+  // 이미지 변경 미리보기
+  const changeThumb = (e) => {
     const file = e.target.files[0];
     if (file) {
-        // 백엔드로 보낼 실제 File 객체 상태 저장
-        setSelectedFile(file);
-
-        // 브라우저 화면 미리보기용 URL 생성
-        const previewUrl = URL.createObjectURL(file);
-        setProfileThumb(previewUrl); // 미리보기 즉시 반영
+      setSelectedFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setProfileThumb(previewUrl);
     }
-    };
+  };
 
-    const { open } = useKakaoPostcode({
-        onComplete: (data) => {
-            setMemberInfo((prev) => ({ ...prev, ["memberAddress"]: data.roadAddress }));
-            detailRef.current.focus();
-        },
-    });
-    const openPostcode = useKakaoPostcode({
-        onComplete: (data) => {
-            // 주소 선택이 완료되면 실행되는 블록
-            setMemberInfo((prev) => ({ ...prev, memberAddress: data.roadAddress }));
+  // 프로필 수정 / 완료 버튼 클릭
+  const updateModeChange = () => {
+    if (updateMode) {
+      const formData = new FormData();
+      formData.append("memberId", memberId);
+      formData.append("nick", memberInfo.memberNickname || "");
+      formData.append("addr", memberInfo.memberAddress || "");
 
-            // 🌟 여기서 바로 비교 로직을 타는 것이 가장 안전합니다.
-            // (setState는 비동기라 memberInfo.memberAddress를 바로 비교하면 이전 값이 찍힐 수 있으므로 data.roadAddress와 직접 비교합니다.)
-            if (data.roadAddress === memberInfo.memberAddress) {
-                setNative(true);
-            }
-        } // 👈 onComplete 끝
-    }); // 👈 useKakaoPostcode 훅 설정 끝 (괄호 누락 해결!)
-    const updateModeChange = () => {
-        if (updateMode) {
-        // 1. 저장 버튼을 누른 시점 (FormData 구성)
-        const formData = new FormData();
-        formData.append("memberId", memberId);
-        formData.append("nick", memberInfo.memberNickname);
-        formData.append("addr", memberInfo.memberAddress);
+      if (selectedFile) {
+        formData.append("profileImage", selectedFile);
+      }
 
-        // 새 프로필 이미지를 선택했다면 파일 첨부
-        if (selectedFile) {
-        formData.append("profileImage", selectedFile); 
-        }
-
-        // 백엔드로 전송
-        axios.put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data", // 👈 파일 전송 필수 헤더
-        },
+      axios
+        .put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         })
         .then((res) => {
-        console.log("업데이트 성공:", res);
-        setUpdateMode(false); // 수정 모드 종료
-        setSelectedFile(null); // 선택 파일 초기화
+          console.log("업데이트 성공:", res);
+          setUpdateMode(false);
+          setSelectedFile(null);
         })
         .catch((err) => {
-        console.error("서버 업데이트 실패:", err);
-        alert("프로필 수정 중 오류가 발생했습니다.");
+          console.error("서버 업데이트 실패:", err);
+          alert("프로필 수정 중 오류가 발생했습니다.");
         });
-
     } else {
-        // 2. 수정 모드 진입
-        setUpdateMode(true);
+      setUpdateMode(true);
     }
-    };
-    // const changeThumb = () => {
-    //     const file = inputRef.current.files && inputRef.current.files[0];
-    //     if (!file) return;
+  };
 
-    //     const form = new FormData();
-    //     form.append("file", file);
-    //     axios
-    //         .patch(
-    //             `${import.meta.env.VITE_BACKSERVER}/members/${memberId}/thumbnail`,
-    //             form,
-    //             { headers: { "Content-Type": "multipart/form-data" } }
-    //         )
-    //         .then((res) => {
-    //             console.log(res);
-    //             useAuthStore.getState().setThumb(res.data);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // };
-    
-    
-    
-    const nativeCheck = () => {
-        // 카카오 우편번호 팝업창을 띄웁니다.
-        openPostcode();
-    };
+  const nativeCheck = () => {
+    openPostcode();
+  };
 
-    if (!memberInfo) {
-        return <div style={{ padding: "50px", textAlign: "center" }}>회원 정보를 불러오는 중입니다...</div>;
-    }
+  const handleDeleteAccount = () => {
+    Swal.fire({
+      title: "정말로 회원 탈퇴를 진행하시겠습니까?",
+      text: "탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "탈퇴 진행",
+      cancelButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
+          .then((res) => {
+            console.log("회원 탈퇴 성공:", res);
+            Swal.fire(
+              "탈퇴 완료",
+              "회원 탈퇴가 정상적으로 처리되었습니다.",
+              "success"
+            ).then(() => {
+              useAuthStore.getState().logout();
+              window.location.href = "/";
+            });
+          })
+          .catch((err) => {
+            console.error("회원 탈퇴 실패:", err);
+            Swal.fire(
+              "오류 발생",
+              "회원 탈퇴 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+              "error"
+            );
+          });
+      }
+    });
+  };
 
-    return (<>
-        <div className={styles.content_menu_wrap}>
-            <div className={styles.info_profile}>
-                <div className={styles.image_wrap}>
-                {/* 💡 보정 함수(getProfileImageUrl)를 사용하여 img src에 전달 */}
-                <div className={styles.profile_img_circle}>
-                    <img 
-                        src={getProfileImageUrl(memberThumb)} 
-                        className={styles.defaultImg} 
-                        alt="프로필" 
-                        onError={(e) => {
-                        e.target.onerror = null; // 👈 무한 루프 차단
-                        e.target.src = defaultImg; // 👈 로드 실패 시 defaultImg fallback
-                        }}
-                    />
-                </div>
+  return (
+    <>
+      <div className={styles.content_menu_wrap}>
+        <div className={styles.info_profile}>
+          <div className={styles.image_wrap}>
+            <div className={styles.profile_img_circle}>
+              <img
+                src={profileThumb || getProfileImageUrl(memberThumb)}
+                className={styles.defaultImg}
+                alt="프로필"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = defaultImg;
+                }}
+              />
+            </div>
 
-                {/* 💡 [카메라 버튼] 원형 영역 바깥 */}
+            {updateMode && (
+              <>
+                <img
+                  src={changeImg}
+                  alt="변경"
+                  className={styles.changeImg}
+                  onClick={() => inputRef.current && inputRef.current.click()}
+                />
+                <input
+                  type="file"
+                  ref={inputRef}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={changeThumb}
+                />
+              </>
+            )}
+          </div>
+          <div>
+            <div>
+              <div className={styles.info_nick}>
                 {updateMode ? (
+                  <Input
+                    type="text"
+                    name="memberNickname"
+                    id="memberNickname"
+                    value={memberInfo.memberNickname || ""}
+                    onChange={(e) =>
+                      setMemberInfo((prev) => ({
+                        ...prev,
+                        [e.target.name]: e.target.value,
+                      }))
+                    }
+                  />
+                ) : (
+                  `${memberInfo.memberNickname || ""}`
+                )}
+              </div>
+              <div>
+                <img src={nativeicon} alt="현지인인증뱃지" />
+              </div>
+            </div>
+            <ul className={styles.info_member}>
+              <li>
+                <img src={navigate} alt="" />
+                <div className={styles.info_profile_addr}>
+                  {updateMode ? (
                     <>
-                        <img
-                            src={changeImg}
-                            alt="변경"
-                            className={styles.changeImg}
-                            onClick={() => inputRef.current && inputRef.current.click()}
-                        />
-                        <input
-                            type="file"
-                            ref={inputRef}
-                            accept="image/*"
-                            style={{ display: "none" }}
-                            onChange={changeThumb}
-                        />
+                      <Input
+                        type="text"
+                        ref={detailRef}
+                        name="memberAddress"
+                        id="memberAddress"
+                        value={memberInfo.memberAddress || ""}
+                        onChange={(e) =>
+                          setMemberInfo((prev) => ({
+                            ...prev,
+                            [e.target.name]: e.target.value,
+                          }))
+                        }
+                      />
+                      <button type="button" onClick={openPostcode}>
+                        변경
+                      </button>
                     </>
-                ) : null}
-            </div>
-                <div>
+                  ) : (
                     <div>
-                        <div className={styles.info_nick}>
-                        {updateMode ? 
-                        <Input 
-                            type="text"
-                            name="memberNickname"
-                            id="memberNickname"
-                            value={memberInfo.memberNickname}
-                            onChange={(e) => setMemberInfo((prev) => ({...prev, [e.target.name]: e.target.value}))}
-                        /> : `${memberInfo.memberNickname}`}</div>
-                        <div><img src={nativeicon} alt="현지인인증뱃지" /></div>
+                      {memberInfo.memberAddress || "주소를 등록해주세요"}
                     </div>
-                    <ul className={styles.info_member}>
-                        <li>
-                            <img src={navigate} alt=""/>
-                            <div className={styles.info_profile_addr}>{updateMode ? <> 
-                            <Input 
-                                type="text"
-                                ref={detailRef}
-                                name="memberAddress" // state의 키와 일치
-                                id="memberAddress"
-                                value={memberInfo.memberAddress} 
-                                onChange={(e) => setMemberInfo((prev) => ({...prev, [e.target.name]: e.target.value}))} 
-                            />
-                            <button onClick={open}>변경</button> </> : <div>{memberInfo.memberAddress || '주소를 등록해주세요'}</div>}</div>
-                        </li>
-                        <li>
-                            <img src={nativeIcon} alt=""/>
-                            {updateMode? <><div>현지인 인증됨</div> <button className={styles.native_submit} onClick={nativeCheck}>인증</button></> : <div>현지인 인증됨</div>}
-                        </li>
-                        <li>
-                            2026.06.04 ~ 2026.12.04
-                        </li>
-                    </ul>
+                  )}
                 </div>
-                <div className={styles.profile_submit}>
-                    <button type="submit" className={styles.submit} onClick={updateModeChange}>{updateMode?"프로필 수정 완료" : "프로필 수정"}</button>
-                </div>
-            </div>
-            <div className={styles.info_2line}>
-                <div>
-                    <div className={styles.info_email}>
-                        <div>
-                            <p className={styles.info_title}>이메일</p>
-                            <p>{memberInfo.memberEmail}</p>
-                        </div>
-                        <div>
-                            <button type="submit" className={styles.submit} onClick={()=>window.location.href="/mypage/myinfo/changeEmail"}>이메일 변경</button>
-                        </div>
-                    </div>
-                    <div className={styles.info_pwchange}>
-                        <p className={styles.info_title}>비밀번호 변경</p>
-                        <button type="submit" className={styles.submit} onClick={()=>window.location.href="/mypage/myinfo/changePw"}>비밀번호 변경</button>
-                    </div>
-                </div>
-                <div className={styles.info_alarm}>
-                    <p className={styles.info_title}>알림설정</p>
-                    <div>
-                        <ul>
-                            <li>앱 푸시 알람 수신 동의</li>
-                            <li>이메일 알림 수신 동의</li>
-                            <li>마케팅 정보 수신 동의</li>
-                        </ul>
-                        <div>
-                            <label htmlFor="appPush"><img src={checked} /></label>
-                            <label htmlFor="emailAlarm"><img src={check} /></label>
-                            <label htmlFor="emailAlarm"><img src={check} /></label>
-                            <input type="checkbox" name="appPush" id="appPush" className={styles.inputHidden}/>
-                            <input type="checkbox" name="emailAlarm" id="emailAlarm" className={styles.inputHidden}/>
-                            <input type="checkbox" name="marketing" id="marketing" className={styles.inputHidden}/>
-                        </div>
-                    </div>
-                    <div>
-                        <button type="submit" className={styles.submit}>알림설정 수정</button>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.info_3line}>
-                <div className={styles.info_social}>
-                    <p className={styles.info_title}>소셜 계정 연동</p>
-                    <ul>
-                        <li><img src={google} /><span>구글 계정 연동하기</span></li>
-                        <li><img src={kakao} /><span>카카오 계정 연동하기</span></li>
-                        <li><img src={naver} /><span>네이버 계정 연동하기</span></li>
-                    </ul>
-                </div>
-                <div className={styles.info_delete}>
-                    <p className={styles.info_title}>회원탈퇴</p>
-                    <div>
-                        <p>맛맛곳곳에 저장된 기록들이 전부 삭제되며 해당 계정으로 다시 로그인 할 수 없습니다.</p>
-                        <p>동의하십니까?</p>
-                    </div>
-                    <div>
-                        <button type="submit" className={styles.submit_d}>회원 탈퇴</button>
-                    </div>
-                </div>
-            </div>
+              </li>
+              <li>
+                <img src={nativeIcon} alt="" />
+                {updateMode ? (
+                  <>
+                    <div>현지인 인증됨</div>
+                    <button
+                      type="button"
+                      className={styles.native_submit}
+                      onClick={nativeCheck}
+                    >
+                      인증
+                    </button>
+                  </>
+                ) : (
+                  <div>현지인 인증됨</div>
+                )}
+              </li>
+              <li>2026.06.04 ~ 2026.12.04</li>
+            </ul>
+          </div>
+          <div className={styles.profile_submit}>
+            <button
+              type="button"
+              className={styles.submit}
+              onClick={updateModeChange}
+            >
+              {updateMode ? "프로필 수정 완료" : "프로필 수정"}
+            </button>
+          </div>
         </div>
-    </>);
+
+        <div className={styles.info_2line}>
+          <div>
+            <div className={styles.info_email}>
+              <div>
+                <p className={styles.info_title}>이메일</p>
+                <p>{memberInfo.memberEmail}</p>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  className={styles.submit}
+                  onClick={() => (window.location.href = "/mypage/myinfo/changeEmail")}
+                >
+                  이메일 변경
+                </button>
+              </div>
+            </div>
+            <div className={styles.info_pwchange}>
+              <p className={styles.info_title}>비밀번호 변경</p>
+              <button
+                type="button"
+                className={styles.submit}
+                onClick={() => (window.location.href = "/mypage/myinfo/changePw")}
+              >
+                비밀번호 변경
+              </button>
+            </div>
+          </div>
+          <div className={styles.info_alarm}>
+            <p className={styles.info_title}>알림설정</p>
+            <div>
+              <ul>
+                <li>앱 푸시 알람 수신 동의</li>
+                <li>이메일 알림 수신 동의</li>
+                <li>마케팅 정보 수신 동의</li>
+              </ul>
+              <div>
+                <label htmlFor="appPush">
+                  <img src={checked} alt="checked" />
+                </label>
+                <label htmlFor="emailAlarm">
+                  <img src={check} alt="check" />
+                </label>
+                <label htmlFor="marketing">
+                  <img src={check} alt="check" />
+                </label>
+                <input type="checkbox" name="appPush" id="appPush" className={styles.inputHidden} />
+                <input type="checkbox" name="emailAlarm" id="emailAlarm" className={styles.inputHidden} />
+                <input type="checkbox" name="marketing" id="marketing" className={styles.inputHidden} />
+              </div>
+            </div>
+            <div>
+              <button type="button" className={styles.submit}>
+                알림설정 수정
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.info_3line}>
+          <div className={styles.info_social}>
+            <p className={styles.info_title}>소셜 계정 연동</p>
+            <ul>
+              <li>
+                <img src={google} alt="google" />
+                <span>구글 계정 연동하기</span>
+              </li>
+              <li>
+                <img src={kakao} alt="kakao" />
+                <span>카카오 계정 연동하기</span>
+              </li>
+              <li>
+                <img src={naver} alt="naver" />
+                <span>네이버 계정 연동하기</span>
+              </li>
+            </ul>
+          </div>
+          <div className={styles.info_delete}>
+            <p className={styles.info_title}>회원탈퇴</p>
+            <div>
+              <p>맛맛곳곳에 저장된 기록들이 전부 삭제되며 해당 계정으로 다시 로그인 할 수 없습니다.</p>
+              <p>동의하십니까?</p>
+            </div>
+            <div>
+              <button
+                type="button"
+                className={styles.submit_d}
+                onClick={handleDeleteAccount}
+              >
+                회원 탈퇴
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export const Myreview = ({memberInfo}) => {

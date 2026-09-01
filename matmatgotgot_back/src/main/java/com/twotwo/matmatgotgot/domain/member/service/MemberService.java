@@ -203,4 +203,9 @@ public class MemberService {
         Natives nativeInfo = memberMapper.getNative(memberId);
         return null;
     }
+
+    public int deleteMember(String memberId) {
+        int result = memberMapper.deleteMember(memberId);
+        return result;
+    }
 }
