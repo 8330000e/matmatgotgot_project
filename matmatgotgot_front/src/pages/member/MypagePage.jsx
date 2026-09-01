@@ -490,7 +490,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 <img src={nativeIcon} alt="" />
                 {updateMode ? (
                   <>
-                    <div>현지인 인증됨</div>
+                    {native && <div>현지인 인증됨</div>}
                     <button
                       type="button"
                       className={styles.native_submit}
