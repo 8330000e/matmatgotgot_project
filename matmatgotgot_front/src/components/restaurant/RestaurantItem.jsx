@@ -16,14 +16,14 @@ const RestaurantItem = ({ rest }) => {
       try {
         const response = await axios.get('/api/restaurants/main');
 
-        const formattedList = response.data.map(rest => ({
-          ...rest,
-          restThumb: rest.restThumb 
-            ? (rest.restThumb.startsWith("http") 
-                ? rest.restThumb 
-                : `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/${rest.restThumb}`)
-            : null
-        }));
+        const formattedList = response.data.map(item => ({
+        ...item,
+        restThumb: item.restThumb 
+          ? (item.restThumb.startsWith("http") 
+              ? item.restThumb 
+              : `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/${item.restThumb}`)
+          : null
+      }));
 
         setRestaurantList(formattedList);
       } catch (error) {
