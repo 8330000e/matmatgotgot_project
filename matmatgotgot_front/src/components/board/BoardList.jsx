@@ -1,4 +1,5 @@
 import styles from './BoardList.module.css';
+import basicImage from '../../assets/board/image.png';
 import defaultImage from '../../assets/board/image.png';
 import defaultImg from '../../assets/board/user.png';
 import { useNavigate } from "react-router-dom";
@@ -37,12 +38,12 @@ const BoardItem = ({ board }) => {
               ? (board.boardThumb.startsWith("http")
                   ? board.boardThumb
                   : `${import.meta.env.VITE_BACKSERVER}/editor/${board.boardThumb}`)
-              : defaultImage
+              : basicImage
           }
           alt="썸네일"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = defaultImage;
+            e.target.src = basicImage;
           }}
         />
       </div>
