@@ -181,6 +181,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           console.log("조회된 결과가 없습니다.");
         } else {
           console.log("조회된 결과: ", res.data);
+          setNative(res.data ? true : false); // 데이터가 존재하면 true, 없으면 false
         }
       })
       .catch((error) => {
@@ -225,43 +226,50 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
 
   // 프로필 수정 / 완료 버튼 클릭
   const updateModeChange = () => {
-  if (updateMode) {
-    const formData = new FormData();
-    formData.append("memberId", memberId);
-    formData.append("nick", memberInfo.memberNickname || "");
-    formData.append("addr", memberInfo.memberAddress || "");
+    if (updateMode) {
+        const formData = new FormData();
+        formData.append("memberId", memberId);
+        formData.append("nick", memberInfo.memberNickname || "");
+        formData.append("addr", memberInfo.memberAddress || "");
 
-    if (selectedFile) {
-      formData.append("profileImage", selectedFile);
-    }
-
-    axios
-      .put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((res) => {
-        console.log("업데이트 성공:", res.data);
-        
-        // 💡 1. 백엔드에서 변경된 memberThumb 파일명을 응답으로 받았다면 state/store에 즉시 반영
-        const updatedThumb = res.data.memberThumb || res.data; // 백엔드 응답 구조에 맞게 설정
-        
-        if (updatedThumb && typeof updatedThumb === "string") {
-          setMemberInfo((prev) => ({ ...prev, memberThumb: updatedThumb }));
-          useAuthStore.getState().setThumb?.(updatedThumb); // AuthStore에 setThumb가 있다면 호출
+        if (selectedFile) {
+        formData.append("profileImage", selectedFile);
         }
 
-        setUpdateMode(false);
-        setSelectedFile(null);
-        setProfileThumb(null); // 💡 임시 blob URL 제거하여 원본 S3 URL을 바라보게 함
-      })
-      .catch((err) => {
-        console.error("서버 업데이트 실패:", err);
-        alert("프로필 수정 중 오류가 발생했습니다.");
-      });
-  } else {
-    setUpdateMode(true);
-  }
-};
+        axios
+        .put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) => {
+            console.log("업데이트 성공:", res.data);
+            
+            // 백엔드에서 반환된 최신 파일명
+            const updatedThumb = res.data.memberThumb || res.data; 
+            
+            if (updatedThumb && typeof updatedThumb === "string") {
+            // 1. memberInfo 상시 객체 업데이트
+            setMemberInfo((prev) => ({ ...prev, memberThumb: updatedThumb }));
+            
+            // 2. Zustand 전역 스토어 업데이트
+            if (useAuthStore.getState().setThumb) {
+                useAuthStore.getState().setThumb(updatedThumb);
+            }
+
+            // 3. 💡 핵심: null로 비우지 말고, 서버에서 온 실제 S3 URL로 profileThumb를 교체해줍니다.
+            setProfileThumb(getProfileImageUrl(updatedThumb));
+            }
+
+            setUpdateMode(false);
+            setSelectedFile(null); // 파일 객체만 초기화
+        })
+        .catch((err) => {
+            console.error("서버 업데이트 실패:", err);
+            alert("프로필 수정 중 오류가 발생했습니다.");
+        });
+    } else {
+        setUpdateMode(true);
+    }
+    };
 
   const nativeCheck = () => {
     openPostcode();
@@ -410,7 +418,9 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 )}
               </div>
               <div>
-                <img src={nativeicon} alt="현지인인증뱃지" />
+                {memberInfo.memberNickname && native && (
+                  <img src={nativeicon} alt="현지인인증뱃지" />
+                )}
               </div>
             </div>
             <ul className={styles.info_member}>
@@ -457,10 +467,9 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     </button>
                   </>
                 ) : (
-                  <div>현지인 인증됨</div>
+                  native ? <div>현지인 인증됨</div> : <div>현지인 인증하기</div>
                 )}
               </li>
-              <li>2026.06.04 ~ 2026.12.04</li>
             </ul>
           </div>
           <div className={styles.profile_submit}>
