@@ -143,7 +143,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   const [updateMode, setUpdateMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileThumb, setProfileThumb] = useState(
-    defaultImg || memberInfo?.memberThumb || null
+    defaultImg || memberThumb || memberInfo?.memberThumb || null
   );
   const [native, setNative] = useState(false);
 
@@ -253,13 +253,13 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   };
 
   const handleDeleteAccount = () => {
-    Swal.fire({
+    Swal.mixin({
       title: "정말로 회원 탈퇴를 진행하시겠습니까?",
       text: "탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#4797e1",
       confirmButtonText: "탈퇴 진행",
       cancelButtonText: "취소",
     }).then((result) => {
@@ -268,22 +268,48 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           .delete(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
           .then((res) => {
             console.log("회원 탈퇴 성공:", res);
-            Swal.fire(
-              "탈퇴 완료",
-              "회원 탈퇴가 정상적으로 처리되었습니다.",
-              "success"
-            ).then(() => {
+            Swal.mixin({
+                toast: true,
+                color: "#2b1b17",
+                borderRadius: "15px",
+                fontWeight: "800",
+                padding: "20px 10px",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            }).fire({
+            title: "탈퇴 완료",
+            text: "회원 탈퇴가 정상적으로 처리되었습니다.",
+            icon: "success",
+            }).then(() => {
               useAuthStore.getState().logout();
               window.location.href = "/";
             });
           })
           .catch((err) => {
             console.error("회원 탈퇴 실패:", err);
-            Swal.fire(
-              "오류 발생",
-              "회원 탈퇴 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-              "error"
-            );
+            Swal.mixin({
+                toast: true,
+                color: "#2b1b17",
+                borderRadius: "15px",
+                fontWeight: "800",
+                padding: "20px 10px",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            }).fire({
+                title: "탈퇴 실패",
+                text: "회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.",
+                icon: "error",
+            });
           });
       }
     });
@@ -296,7 +322,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           <div className={styles.image_wrap}>
             <div className={styles.profile_img_circle}>
               <img
-                src={profileThumb || getProfileImageUrl(memberThumb)}
+                src={memberThumb || profileThumb || getProfileImageUrl(memberThumb)}
                 className={styles.defaultImg}
                 alt="프로필"
                 onError={(e) => {
