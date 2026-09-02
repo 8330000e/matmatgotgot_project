@@ -503,7 +503,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     </button>
                   </>
                 ) : (
-                  native ? <div>현지인 인증됨</div> : <div>현지인 인증하기</div>
+                  native ? <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>
                 )}
               </li>
             </ul>
