@@ -259,6 +259,8 @@
     border-radius: 10px;
     padding: 10px 15px;
     display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 .info_email > div:first-child > p:last-child {
     padding-left: 15px;

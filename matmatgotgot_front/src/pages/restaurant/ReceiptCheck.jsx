@@ -84,7 +84,7 @@ const ReceiptCheck = () => {
     formData.append("image", file);
 
     axios
-      .post(`${import.meta.env.VITE_BACKSERVER}/api/ocr/receipt`, formData, {
+      .post(`${import.meta.env.VITE_BACKSERVER}/ocr/receipt`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
