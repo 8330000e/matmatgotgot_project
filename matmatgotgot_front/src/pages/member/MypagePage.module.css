@@ -272,6 +272,7 @@
 }
 .info_email > div:last-child > button {
     float: right;
+    margin-bottom: 10px;
 }
 .info_pwchange {
     display: flex;
