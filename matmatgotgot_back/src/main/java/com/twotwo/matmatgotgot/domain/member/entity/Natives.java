@@ -17,5 +17,6 @@ public class Natives {
     private Integer nativeNo;
     private Integer memberNo;
     private String region;
+    private Date nativeRegisteredAt;
     private Date nativeDeadline;
 }

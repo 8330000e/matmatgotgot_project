@@ -503,9 +503,14 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     </button>
                   </>
                 ) : (
-                  native != null ? <div><p>현지인 인증됨</p><p>{native.native_registered_at} ~ {native.native_deadline}</p></div> : <div>현지인 인증 안됨</div>
+                  native != null ? <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>
                 )}
               </li>
+              {native != null&& (
+                <li>
+                  <p>{native.nativeRegisteredAt} ~ {native.nativeDeadline}</p>
+                </li>
+              )}
             </ul>
           </div>
           <div className={styles.profile_submit}>
