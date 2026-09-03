@@ -508,7 +508,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               </li>
               {native != null&& (
                 <li>
-                  <p>{native.nativeRegisteredAt} ~ {native.nativeDeadline}</p>
+                  <p>{native.nativeRegisteredAt?.slice(0, 10)} ~ {native.nativeDeadline.slice(0, 10)}</p>
                 </li>
               )}
             </ul>
