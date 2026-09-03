@@ -181,7 +181,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           console.log("조회된 결과가 없습니다.");
         } else {
           console.log("조회된 결과: ", res.data);
-          setNative(res.data ? true : false); // 데이터가 존재하면 true, 없으면 false
+          setNative(res.data ? res.data : false);
         }
       })
       .catch((error) => {
@@ -454,7 +454,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 )}
               </div>
               <div>
-                {memberInfo.memberNickname && native && (
+                {memberInfo.memberNickname && native != null && (
                   <img src={nativeicon} alt="현지인인증뱃지" />
                 )}
               </div>
@@ -493,7 +493,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 <img src={nativeIcon} alt="" />
                 {updateMode ? (
                   <>
-                    {native && <div>현지인 인증됨</div>}
+                    {native != null && <div>현지인 인증됨</div>}
                     <button
                       type="button"
                       className={styles.native_submit}
@@ -503,7 +503,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     </button>
                   </>
                 ) : (
-                  native ? <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>
+                  native != null ? <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>
                 )}
               </li>
             </ul>
