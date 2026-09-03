@@ -499,7 +499,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                       className={styles.native_submit}
                       onClick={nativeCheck}
                     >
-                      인증
+                      {native != null ? "재인증" : "인증"}
                     </button>
                   </>
                 ) : (
