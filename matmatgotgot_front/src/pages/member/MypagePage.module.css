@@ -248,19 +248,16 @@
 }
 .info_2line > div:last-child {
     width: 45%;
-    height: 150px;
     display: flex;
     flex-direction: column
 }
 .info_email {
     width: 100%;
-    height: calc(250px/2.8);
     border: 1px solid var(--text1);
     border-radius: 10px;
-    padding: 10px 15px 10px 0;
+    padding: 10px 15px 10px 15px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
 }
 .info_email > div:first-child > p:last-child {
     padding-left: 15px;
@@ -310,6 +307,8 @@
     display: flex;
     align-self: end;
     padding: 6px 0;
+    display: flex;
+    align-items: flex-end;
 }
 .inputHidden {
     display: none;
@@ -379,6 +378,7 @@
     font-size: 15px;
     font-weight: 800;
 }
+
 .submit {
     background-color: var(--text1);
     color: #fff;
@@ -390,6 +390,7 @@
     text-decoration: none;
     border-radius: 18px;
     cursor: pointer;
+
 }
 .submit_d {
     background-color: #E52121;
