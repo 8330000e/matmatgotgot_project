@@ -201,6 +201,8 @@ public class MemberService {
 
     public Natives getNative(String memberId) {
         Natives nativeInfo = memberMapper.getNative(memberId);
+        Natives nativeDate = memberMapper.getNativeDate(memberId);
+        nativeInfo.setNativeStatus(nativeDate.getNativeStatus());
         return nativeInfo;
     }
 

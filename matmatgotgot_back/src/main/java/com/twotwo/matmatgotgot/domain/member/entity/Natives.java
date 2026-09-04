@@ -19,4 +19,5 @@ public class Natives {
     private String region;
     private Date nativeRegisteredAt;
     private Date nativeDeadline;
+    private Integer nativeStatus;
 }

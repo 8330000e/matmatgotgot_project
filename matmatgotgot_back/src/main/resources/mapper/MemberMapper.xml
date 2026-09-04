@@ -59,6 +59,9 @@
 	<select id="getNative" resultType="natives">
 		select * from natives_tbl where member_id = #{memberId}
 	</select>
+	<select id="getNativeDate" resultType="natives">
+		select * from natives_view where member_id = #{memberId}
+	</select>
 	<delete id="deleteMember">
 		delete from member_tbl where member_id = #{memberId}
 	</delete>
