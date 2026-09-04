@@ -203,7 +203,7 @@ public class MemberService {
         Natives nativeInfo = memberMapper.getNative(memberId);
         Natives nativeDate = memberMapper.getNativeDate(memberId);
         if (nativeDate == null) {
-            return null; // 또는 null 응답 객체 처리
+            return nativeInfo;
         }else {
             nativeInfo.setNativeStatus(nativeDate.getNativeStatus());
         }
