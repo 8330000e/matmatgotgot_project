@@ -400,17 +400,16 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
           <div className={styles.image_wrap}>
             <div className={styles.profile_img_circle}>
               <img
-                // 💡 미리보기 파일(selectedFile)이 있으면 blob URL, 없으면 서버에서 받아온 S3 Full URL
                 src={
-                selectedFile
+                    selectedFile
                     ? URL.createObjectURL(selectedFile)
-                    : getProfileImageUrl(currentThumb)
+                    : getProfileImageUrl(memberInfo?.memberThumb || memberThumb, defaultImg)
                 }
                 className={styles.defaultImg}
                 alt="프로필"
                 onError={(e) => {
-                e.currentTarget.onerror = null; // 무한 루프 차단
-                e.currentTarget.src = defaultImg; // 로드 실패 시 fallback
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = defaultImg;
                 }}
                 />
             </div>
