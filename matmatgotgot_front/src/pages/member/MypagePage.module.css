@@ -184,7 +184,6 @@
     justify-content: center;
 }
 .info_nick > input {
-    width: 100px;
     height: 25px;
     font-size: 13px;
     font-weight: 500;
@@ -219,7 +218,7 @@
     background-color: var(--text1);
     color: #fff;
     border: none;
-    padding: 3px 14px;
+    padding: 3px 8px;
     font-size: 12px;
     font-weight: 500;;
     outline: none;
@@ -229,7 +228,6 @@
 }
 .native_expired {
     color: #e82222;
-    font-weight: 800;
 }
 .profile_submit {
     position: absolute;

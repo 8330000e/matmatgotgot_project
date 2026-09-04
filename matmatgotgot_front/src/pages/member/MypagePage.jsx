@@ -493,7 +493,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 <img src={nativeIcon} alt="" />
                 {updateMode ? (
                   <>
-                    {native != null && <div>현지인 인증됨</div>}
+                    {native != null ? native.nativeStatus === 1 ? <div className={styles.native_expired}>현지인 인증 만료됨</div> : <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>}
                     <button
                       type="button"
                       className={styles.native_submit}
