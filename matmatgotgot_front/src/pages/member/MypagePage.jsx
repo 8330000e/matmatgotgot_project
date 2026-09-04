@@ -503,10 +503,10 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     </button>
                   </>
                 ) : (
-                  native != null ? native.nativeStatus === 1 ? <div>현지인 인증 만료됨</div> : <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>
+                  native != null ? native.nativeStatus === 1 ? <div className={styles.native_expired}>현지인 인증 만료됨</div> : <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>
                 )}
               </li>
-              {native != null&& (
+              {native != null&& native.nativeStatus === 1 ? null : (
                 <li>
                   <p>{native.nativeRegisteredAt?.slice(0, 10)} ~ {native.nativeDeadline.slice(0, 10)}</p>
                 </li>
