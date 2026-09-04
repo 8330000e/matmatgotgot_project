@@ -454,7 +454,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 )}
               </div>
               <div>
-                {memberInfo.memberNickname && native != null && (
+                {memberInfo.memberNickname && native != null &&  native.nativeStatus === 1 ? null : (
                   <img src={nativeicon} alt="현지인인증뱃지" />
                 )}
               </div>
