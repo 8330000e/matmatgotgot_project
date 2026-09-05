@@ -282,10 +282,6 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     }
   };
 
-  const nativeCheck = () => {
-    openPostcode();
-  };
-
   const handleDeleteAccount = () => {
     Swal.fire({
       title: "정말로 회원 탈퇴를 진행하시겠습니까?",
@@ -483,7 +479,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                   <button
                     type="button"
                     className={styles.native_submit}
-                    onClick={nativeCheck}
+                    onClick={ProfilePage.handleOpenModal(memberInfo)}
                   >
                     {native && typeof native === "object" ? "재인증" : "인증"}
                   </button>
@@ -613,6 +609,46 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     </>
   );
 };
+
+const ProfilePage = ({memberInfo}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
+  // 모달 열기
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // 인증 성공 처리
+  const handleAuthSuccess = () => {
+    setIsVerified(true);
+    setIsModalOpen(false); // 인증 성공 후 모달 닫기
+  };
+
+  return (
+    <div>
+      <h2>내 동네 인증</h2>
+      
+      {/* 인증 버튼 */}
+      <button onClick={handleOpenModal}>
+        {isVerified ? '동네 인증 완료됨 (재인증)' : '동네 인증하기'}
+      </button>
+
+      {/* 모달 조건부 렌더링 (& 연산자 또는 삼항 연산자) */}
+      {isModalOpen && (
+        <NativeAuthModal 
+          onClose={handleCloseModal} 
+          onSuccess={handleAuthSuccess} 
+        />
+      )}
+    </div>
+  );
+}
 
 export const Myreview = ({memberInfo}) => {
     return (<>
@@ -1369,4 +1405,4 @@ export const ChangeEmail = ({ memberInfo }) => {
     );
 };
 
-export default { MypagePage, Myinfo, Myreview, Zzim, Matzip, Likeposts, Myposts, Reportposts, Myask, ChangePw, ChangeEmail };
+export default { MypagePage, Myinfo, ProfilePage, Myreview, Zzim, Matzip, Likeposts, Myposts, Reportposts, Myask, ChangePw, ChangeEmail };
