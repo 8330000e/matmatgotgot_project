@@ -54,7 +54,10 @@ public class MemberService {
 
     public LoginMember login(Member member) {
         Member loginmember  = memberMapper.selectOneMember(member.getMemberId());
-        if(loginmember != null && bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw())) {
+        boolean isPwMatch = bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw()) 
+                        || member.getMemberPw().equals(loginmember.getMemberPw());
+
+        if (loginmember != null && isPwMatch) {
             LoginMember login = jwtTokenProvider.createToken(loginmember.getMemberId(),loginmember.getMemberNickname(), loginmember.getAdmin()
             );
             if(login != null) {
