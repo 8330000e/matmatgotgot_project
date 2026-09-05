@@ -35,6 +35,7 @@ import BoardLikeList from "../../components/member/BoardLikeList.jsx";
 import BoardReports from "../../components/member/BoardReports.jsx";
 import {useKakaoPostcode} from "@clroot/react-kakao-postcode";
 import DaumPostcode from "react-daum-postcode";
+import BoardReviewList from "../board/BoardReviewList";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -710,7 +711,7 @@ export const Myreview = ({memberInfo}) => {
     const [totalPage, setTotalPage] = useState(5);
     const size = 10;
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/myreview`,{
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/members/${memberno}/myreview`,{
             params: {
                 page: page,
                 size: size
