@@ -53,20 +53,26 @@ public class MemberService {
     }
 
     public LoginMember login(Member member) {
-        Member loginmember  = memberMapper.selectOneMember(member.getMemberId());
-        boolean isPwMatch = bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw()) 
-                        || member.getMemberPw().equals(loginmember.getMemberPw());
+        Member loginmember = memberMapper.selectOneMember(member.getMemberId());
+        
+        if (loginmember != null) {
+            // ⭕ BCrypt 암호문 비교 + 평문(equals) 비교 둘 다 통과 가능하게 처리
+            boolean isPasswordMatch = bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw()) 
+                                || member.getMemberPw().equals(loginmember.getMemberPw());
 
-        if (loginmember != null && isPwMatch) {
-            LoginMember login = jwtTokenProvider.createToken(loginmember.getMemberId(),loginmember.getMemberNickname(), loginmember.getAdmin()
-            );
-            if(login != null) {
-                int result = memberMapper.loginLog(loginmember.getMemberNo());
-                if(result > 0) {
-                    return login;
+            if (isPasswordMatch) {
+                LoginMember login = jwtTokenProvider.createToken(
+                    loginmember.getMemberId(),
+                    loginmember.getMemberNickname(), 
+                    loginmember.getAdmin()
+                );
+                
+                if (login != null) {
+                    int result = memberMapper.loginLog(loginmember.getMemberNo());
+                    if (result > 0) {
+                        return login;
+                    }
                 }
-            } else {
-                return null;
             }
         }
         return null;
