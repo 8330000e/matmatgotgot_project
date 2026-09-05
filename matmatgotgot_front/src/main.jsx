@@ -8,27 +8,21 @@ import App from "./App.jsx";
 import axios from 'axios'
 import { useAuthStore } from './store/useAuthStore'
 
-axios.interceptors.request.use(
-  (config) => {
-    // Zustand 스토어나 localStorage에서 토큰 가져오기
-    const token = useAuthStore.getState().token || localStorage.getItem("token");
-    
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 axios.interceptors.response.use(
   (response) => response, // 성공 응답은 그대로 리턴
   (error) => {
     const originalRequest = error.config;
+    const requestUrl = originalRequest?.url || "";
+
+    // ⭕ 로그인, 회원가입 관련 요청에서 난 401/403은 세션만료 처리 제외
+    const isAuthRequest = requestUrl.includes("/members/login") || requestUrl.includes("/members/join");
 
     // 401 Unauthorized 또는 403 Forbidden 에러 감지
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      
+    if (
+      error.response && 
+      (error.response.status === 401 || error.response.status === 403) &&
+      !isAuthRequest // ⭕ 일반 API 요청일 때만 동작
+    ) {
       // 중복 알림/리다이렉트 방지
       if (!originalRequest._retry) {
         originalRequest._retry = true;

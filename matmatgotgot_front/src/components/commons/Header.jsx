@@ -97,15 +97,14 @@ export default function Header() {
                 </Link>
               )}
 
-              <Link to={"/logout"}>
-                <button
-                  aria-label="설정"
-                  className={styles.iconBtn}
-                  onClick={handleLogout}
-                >
-                  <FiSettings />
-                </button>
-              </Link>
+              <button
+                type="button"
+                aria-label="로그아웃"
+                className={styles.iconBtn}
+                onClick={handleLogout}
+              >
+                <FiSettings />
+              </button>
             </div>
           ) : (
             <div className={styles.authMenu}>

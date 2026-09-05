@@ -26,10 +26,17 @@ axiosInstance.interceptors.response.use(
   (response) => response, // 성공 응답은 그대로 반환
   async (error) => {
     const originalRequest = error.config;
+    const requestUrl = originalRequest?.url || "";
 
-    // 401(Unauthorized) 또는 403(Forbidden - 만료/권한없음) 에러 감지
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      
+    // ⭕ 로그인, 회원가입 관련 요청은 제외
+    const isAuthRequest = requestUrl.includes("/members/login") || requestUrl.includes("/members/join");
+
+    // 401(Unauthorized) 또는 403(Forbidden) 에러 감지
+    if (
+      error.response && 
+      (error.response.status === 401 || error.response.status === 403) &&
+      !isAuthRequest // ⭕ 로그인 요청 중일 땐 세션 만료 처리 실행 안 함
+    ) {
       // 무한 리다이렉트 방지 플래그
       if (!originalRequest._retry) {
         originalRequest._retry = true;
@@ -39,7 +46,7 @@ axiosInstance.interceptors.response.use(
         // ① Zustand 인증 상태 및 저장소 정리
         const { logout } = useAuthStore.getState();
         if (logout) {
-          logout(); // 스토어 내부에서 localStorage.removeItem("token") 등 수행
+          logout();
         } else {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
@@ -47,7 +54,7 @@ axiosInstance.interceptors.response.use(
 
         // ② 알림 표시 및 로그인/메인 페이지로 이동
         alert("세션이 만료되었습니다. 다시 로그인해 주세요.");
-        window.location.href = "/"; // 메인/로그인 페이지로 강제 리다이렉트
+        window.location.href = "/";
       }
     }
 
