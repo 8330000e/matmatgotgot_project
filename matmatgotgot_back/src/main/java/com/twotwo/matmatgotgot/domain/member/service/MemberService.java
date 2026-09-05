@@ -53,36 +53,18 @@ public class MemberService {
     }
 
     public LoginMember login(Member member) {
-        Member loginmember = memberMapper.selectOneMember(member.getMemberId());
-        
-        // 💡 로그로 직접 눈으로 확인해보기
-        if (loginmember != null) {
-            System.out.println("=== 로그인 검증 로그 ===");
-            System.out.println("입력한 비밀번호(평문): " + member.getMemberPw());
-            System.out.println("DB에 저장된 비밀번호: " + loginmember.getMemberPw());
-            
-            boolean isBcryptMatch = bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw());
-            boolean isPlainMatch = member.getMemberPw().equals(loginmember.getMemberPw());
-            
-            System.out.println("BCrypt 비교 결과: " + isBcryptMatch);
-            System.out.println("평문 비교 결과: " + isPlainMatch);
-            System.out.println("=======================");
-
-            if (isBcryptMatch || isPlainMatch) {
-                LoginMember login = jwtTokenProvider.createToken(
-                    loginmember.getMemberId(),
-                    loginmember.getMemberNickname(), 
-                    loginmember.getAdmin()
-                );
-                if (login != null) {
-                    int result = memberMapper.loginLog(loginmember.getMemberNo());
-                    if (result > 0) {
-                        return login;
-                    }
+        Member loginmember  = memberMapper.selectOneMember(member.getMemberId());
+        if(loginmember != null && bcrypt.matches(member.getMemberPw(), loginmember.getMemberPw())) {
+            LoginMember login = jwtTokenProvider.createToken(loginmember.getMemberId(),loginmember.getMemberNickname(), loginmember.getAdmin()
+            );
+            if(login != null) {
+                int result = memberMapper.loginLog(loginmember.getMemberNo());
+                if(result > 0) {
+                    return login;
                 }
+            } else {
+                return null;
             }
-        } else {
-            System.out.println("❌ DB에서 해당 memberId를 찾을 수 없음: " + member.getMemberId());
         }
         return null;
     }

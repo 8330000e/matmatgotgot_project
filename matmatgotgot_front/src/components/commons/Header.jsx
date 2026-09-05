@@ -3,34 +3,11 @@ import { FiBell, FiMail, FiUser, FiSettings } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 import logo from "../../assets/logo/black_only.png";
-import axios from "axios";
 
 export default function Header() {
   const location = useLocation();
-  const { memberId, admin, logout} = useAuthStore();
-
-  // 로그아웃 처리 함수 예시
-  const handleLogout = () => {
-  console.log("👉 [체크] 로그아웃 요청을 보낼 ID:", memberId);
-
-  // memberId가 없거나 비어있으면 서버 요청 없이 스토어만 정리 후 이동
-  if (!memberId || memberId === "null" || memberId === "undefined") {
-    logout();
-    window.location.href = "/";
-    return;
-  }
-
-  // 서버에 로그아웃 알림 후 스토어 정리
-  axios
-    .post(`${import.meta.env.VITE_BACKSERVER}/members/logout`, { memberId })
-    .catch((err) => {
-      console.error("서버 로그아웃 처리 중 에러:", err);
-    })
-    .finally(() => {
-      logout();
-      window.location.href = "/";
-    });
-};
+  const { memberId, admin } = useAuthStore();
+  const logout = useAuthStore((state) => state.logout);
 
   return (
     <header className={styles.header}>
@@ -97,14 +74,15 @@ export default function Header() {
                 </Link>
               )}
 
-              <button
-                type="button"
-                aria-label="로그아웃"
-                className={styles.iconBtn}
-                onClick={handleLogout}
-              >
-                <FiSettings />
-              </button>
+              <Link to={"/logout"}>
+                <button
+                  aria-label="설정"
+                  className={styles.iconBtn}
+                  onClick={logout}
+                >
+                  <FiSettings />
+                </button>
+              </Link>
             </div>
           ) : (
             <div className={styles.authMenu}>

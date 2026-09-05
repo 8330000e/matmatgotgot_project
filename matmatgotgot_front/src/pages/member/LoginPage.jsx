@@ -18,61 +18,49 @@ const Login = () => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
 
+  // 일반로그인 상태
+  const login = useAuthStore((state) => state.login);
+  const memberId = useAuthStore((state) => state.memberId);
+  const token = useAuthStore((state) => state.token);
+
   // 일반 로그인 핸들러
   const handleLogin = async () => {
-  // 전송 전 데이터 확인 로그
-  console.log("👉 로그인 요청 데이터:", {
-    memberId: members.memberId,
-    memberPw: members.memberPw,
-  });
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKSERVER}/members/login`,
+        {
+          memberId: members.memberId,
+          memberPw: members.memberPw,
+        }
+      );
 
-  try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACKSERVER}/members/login`,
-      {
-        memberId: members.memberId,
-        memberPw: members.memberPw,
-      },
-      {
-        headers: { "Content-Type": "application/json" }
+      console.log("백엔드가 보내준 로그인 응답 데이터:", response.data);
+
+      if (response.data) {
+        login(response.data);
+        Swal.mixin({
+          toast: true,
+          position: "top-end",
+          topLayer: true,
+          background: "#ffd95a",
+          color: "#2b1b17",
+          fontWeight: "600",
+          iconColor: "#fff",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          icon: "success",
+          title: "로그인 성공",
+        });
+        navigate("/");
       }
-    );
-
-    console.log("백엔드 로그인 응답:", response.data);
-
-    if (response.data && response.data.token) {
-      const memberData = response.data.member || response.data;
-      const accessToken = response.data.token;
-
-      useAuthStore.getState().login({
-        memberId: memberData.memberId || members.memberId,
-        memberNickname: memberData.memberNickname || "",
-        memberThumb: memberData.memberThumb || null,
-        admin: memberData.admin ?? false,
-        token: accessToken,
-      });
-
-      Swal.mixin({
-        toast: true,
-        position: "top-end",
-        topLayer: true,
-        background: "#ffd95a",
-        color: "#2b1b17",
-        fontWeight: "600",
-        iconColor: "#fff",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      }).fire({
-        icon: "success",
-        title: "로그인 성공",
-      });
-
-      navigate("/");
-    }
-  } catch (error) {
-    console.error("로그인 에러 상세:", error.response);
-    if (error.response && error.response.status === 401) {
+    } catch (error) {
+      console.error("로그인 실패:", error);
       Swal.mixin({
         toast: true,
         color: "#2b1b17",
@@ -82,14 +70,17 @@ const Login = () => {
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
       }).fire({
         title: "로그인 실패",
         text: "아이디 또는 비밀번호를 확인하세요.",
         icon: "error",
       });
     }
-  }
-};
+  };
 
   // 구글 로그인 시작
   const googleLogin = () => {
@@ -215,7 +206,7 @@ const Login = () => {
       console.log("백엔드로 보내는 최종 데이터:", JSON.stringify(requestData));
 
       // 백엔드 요청
-      const res = await axios.post('/members/login/kakao', requestData);
+      const res = await axios.post('/api/members/login/kakao', requestData);
       if (res.data) {
       useAuthStore.getState().login({
         memberId: res.data.memberId,
@@ -316,55 +307,21 @@ const Login = () => {
   }, []);
 
   // 네이버 로그인
-  // 1️⃣ 네이버 로그인 창으로 이동시키는 함수 (단순 이동만 수행)
   const naverLogin = async () => {
     const CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const REDIRECT_URI = encodeURIComponent(
-      import.meta.env.VITE_NAVER_REDIRECT_URI
+      import.meta.env.VITE_NAVER_REDIRECT_URI,
     );
 
     try {
-      // 백엔드에서 state 값 가져오기
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKSERVER}/members/ranchar`
+        `${import.meta.env.VITE_BACKSERVER}/members/ranchar`,
       );
-      const STATE = response.data;
+      const STATE = response.data; 
 
-      // 네이버 인증 URL 생성 후 이동
       const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
       window.location.assign(NAVER_AUTH_URL);
-    } catch (error) {
-      console.error("🚨 백엔드에서 state를 가져오는데 실패했습니다:", error);
-      Swal.mixin({
-        toast: true,
-        color: "#2b1b17",
-        borderRadius: "15px",
-        fontWeight: "800",
-        padding: "20px 10px",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-      }).fire({
-        title: "로그인 실패",
-        text: "네이버 로그인 연결에 실패했습니다.",
-        icon: "error",
-      });
-    }
-  };
-
-  // 2️⃣ 네이버 로그인 완료 후 백엔드로 code/state 전달하는 콜백 함수
-  const sendNaverCodeToBackend = async (code, state) => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKSERVER}/members/login/naver`,
-        { code, state }
-      );
-
-      if (res.data) {
-        // Zustand 스토어에 로그인 정보 저장
-        useAuthStore.getState().login(res.data.member, res.data.token);
-
-        // ⭕ 네이버 인증 완료 시점에서 성공 토스트 띄우기
+      if (response.data) {
         Swal.mixin({
           toast: true,
           position: "top-end",
@@ -376,16 +333,19 @@ const Login = () => {
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
         }).fire({
           icon: "success",
           title: "로그인 성공",
         });
-
-        // ⭕ 성공 후 메인 페이지로 이동
         navigate("/");
       }
-    } catch (err) {
-      console.error("네이버 백엔드 처리 실패:", err);
+
+    } catch (error) {
+      console.error("🚨 백엔드에서 랜덤 문자열(state)을 가져오는데 실패했습니다:", error);
       Swal.mixin({
         toast: true,
         color: "#2b1b17",
@@ -395,32 +355,23 @@ const Login = () => {
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
       }).fire({
         title: "로그인 실패",
-        text: "네이버 로그인 처리 중 오류가 발생했습니다.",
+        text: "아이디 또는 비밀번호를 확인하세요.",
         icon: "error",
       });
-      navigate("/login");
     }
   };
-
-  // 3️⃣ URL의 네이버 인가 코드 감지용 useEffect (구글/카카오 감지 근처에 배치)
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-    const state = urlParams.get("state");
-
-    // URL 주소에 naver가 포함되어 있고 code가 존재할 때 백엔드로 전달
-    if (code && state && window.location.pathname.includes("naver")) {
-      sendNaverCodeToBackend(code, state);
-    }
-  }, []);
 
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
   const isCallbackMode = Boolean(code && window.location.pathname.includes("code"));
 
-  console.log("아이디: ", members.memberId, "\n토큰: ", members.token);
+  console.log("아이디: ", memberId, "\n토큰: ", token);
 
   return (
     <>
