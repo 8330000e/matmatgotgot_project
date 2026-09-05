@@ -403,7 +403,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 src={
                     selectedFile
                     ? URL.createObjectURL(selectedFile)
-                    : getProfileImageUrl(memberInfo?.memberThumb, defaultImg) // ⭕ memberThumb 단독 참조 제거
+                    : getProfileImageUrl(memberInfo?.memberThumb, defaultImg)
                 }
                 className={styles.defaultImg}
                 alt="프로필"
@@ -412,7 +412,6 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     e.currentTarget.src = defaultImg;
                 }}
                 />
-            </div>
 
             {updateMode && (
               <>
