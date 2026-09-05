@@ -8,6 +8,8 @@ import com.twotwo.matmatgotgot.domain.member.mapper.MemberMapper;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -217,6 +219,11 @@ public class MemberService {
 
     public int deleteMember(String memberId) {
         int result = memberMapper.deleteMember(memberId);
+        return result;
+    }
+
+    public @Nullable Object getMyReview(int memberNo) {
+        int result = memberMapper.getMyReview(memberNo);
         return result;
     }
 }

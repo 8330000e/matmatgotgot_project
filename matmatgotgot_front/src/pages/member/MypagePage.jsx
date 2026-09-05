@@ -482,7 +482,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                   <button
                     type="button"
                     className={styles.native_submit}
-                    onClick={openPostcode} // ⭕ 핵심 수정: ProfilePage.handleOpenModal 대신 openPostcode 연결
+                    onClick={openPostcode}
                   >
                     {native && typeof native === "object" ? "재인증" : "인증"}
                   </button>
@@ -702,6 +702,29 @@ const ProfilePage = ({memberInfo}) => {
 }
 
 export const Myreview = ({memberInfo}) => {
+    const { memberId, memberNo} = useAuthStore();
+    const memberno = memberInfo?.memberNo || memberNo;
+    const [order, setOrder] = useState(0);
+    const [myReviews, setMyReviews] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(5);
+    const size = 10;
+    useEffect(() => {
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberno}/myreview`,{
+            params: {
+                page: page,
+                size: size
+            }
+        })
+        .then((response) => {
+            setMyReviews(response.data.content);
+            setTotalPage(response.data.totalPages);
+        })
+        .catch((error) => {
+            console.error("Error fetching my reviews:", error);
+        });
+    }, [page, size, memberno]);
+
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_myreview_wrap}`}>
             <div className={styles.posts_bar}>
@@ -711,34 +734,21 @@ export const Myreview = ({memberInfo}) => {
                 </div>
                 <div>
                     <ul>
-                        <li>작성순</li>
-                        <li>좋아요순</li>
-                        <li>별점순</li>
+                        <li onClick={()=>setOrder(1)}>작성순</li>
+                        <li onClick={()=>setOrder(2)}>좋아요순</li>
+                        <li onClick={()=>setOrder(3)}>별점순</li>
                     </ul>
                 </div>
             </div>
             <div className={styles.posts}>
-                {/*더미데이터*/}
-                <div className={styles.post}>
-                <div>
-                    <div>
-                        <p>맛집상호명</p>
-                        <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
-                    </div>
-                    <div>2026.05.08</div>
-                </div>
-                <div>리뷰 내용 중 일부 텍스트 한줄 출력</div>
-                <div>
-                    <div>
-                        <p><img src={heart} /> 12</p>
-                        <p><img src={view} /> 321</p>
-                    </div>
-                </div>
-                </div>
-                {/*더미데이터*/}
+                <BoardReviewList myboard={myReviews} />
             </div>
             <div>
-                <Pagination />
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPage={totalPage}
+                    naviSize={5}/>
             </div>
         </div>
     </>);};

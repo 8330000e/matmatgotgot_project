@@ -2,16 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.twotwo.matmatgotgot.domain.member.mapper.MemberMapper">
 	<select id="selectAll" resultType="member">
-		select * from member_tbl
+		select member_id,member_name,member_email,member_nickname,member_address,ad_content from member_tbl
 	</select>
 	<select id="selectOneMember" resultType="member">
-		select * from member_tbl where member_id = #{memberId}
+		select member_id,member_name,member_email,member_nickname,member_address,ad_content from member_tbl where member_id = #{memberId}
 	</select>
 	<insert id="insertMember">
 		insert into member_tbl (member_id,member_pw,member_name,member_email,member_nickname,member_address,ad_content) value (#{memberId},#{memberPw},#{memberName},#{memberEmail},#{memberNickname},#{memberAddress},#{adContent})
 	</insert>
 	<select id="selectOneMemberByEmail" resultType="member">
-		select * from member_tbl where member_email = #{email}
+		select member_id,member_name,member_email,member_nickname,member_address,ad_content from member_tbl where member_email = #{email}
 	</select>
 	<insert id="googleInsertMember">
 		insert into social_login_tbl (social_google) value (CURRENT_TIMESTAMP)
@@ -65,4 +65,13 @@
 	<delete id="deleteMember">
 		delete from member_tbl where member_id = #{memberId}
 	</delete>
+	<select id="getMyReview" resultType="review">
+		SELECT
+		review_tbl.*,
+		restaurant_tbl.rest_name AS rest_name
+		FROM review_tbl
+		JOIN restaurant_tbl
+			ON review_tbl.rest_no = restaurant_tbl.rest_no
+		WHERE review_tbl.member_id = #{memberId};
+	</select>
 </mapper>

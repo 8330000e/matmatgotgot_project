@@ -47,4 +47,6 @@ public interface MemberMapper {
     int deleteMember(String memberId);
 
     Natives getNativeDate(String memberId);
+
+    int getMyReview(int memberNo);
 }
