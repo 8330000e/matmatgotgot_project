@@ -34,6 +34,7 @@ import Swal from "sweetalert2";
 import BoardLikeList from "../../components/member/BoardLikeList.jsx";
 import BoardReports from "../../components/member/BoardReports.jsx";
 import {useKakaoPostcode} from "@clroot/react-kakao-postcode";
+import DaumPostcode from "react-daum-postcode";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -142,28 +143,39 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   
   const [updateMode, setUpdateMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [profileThumb, setProfileThumb] = useState(
-    defaultImg || storeThumb || memberInfo?.memberThumb || null
-  );
-  const [native, setNative] = useState(null); // ⭕ 초기값을 null로 설정
+  const [native, setNative] = useState(null);
+  const [isPostcodeOpen, setIsPostcodeOpen] = useState(false); // ⭕ 주소 검색 모달 열림 상태
 
-  const { open: openPostcode } = useKakaoPostcode({
-    onComplete: (data) => {
-      setMemberInfo((prev) => ({ ...prev, memberAddress: data.roadAddress }));
-      if (memberInfo?.memberAddress && data.roadAddress === memberInfo.memberAddress) {
-        setNative(true);
+  // ⭕ 주소 선택 완료 핸들러
+  const handleCompletePostcode = (data) => {
+    let fullAddress = data.address;
+    let extraAddress = "";
+
+    if (data.addressType === "R") {
+      if (data.bname !== "") {
+        extraAddress += data.bname;
       }
-      if (detailRef.current) {
-        detailRef.current.focus();
+      if (data.buildingName !== "") {
+        extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
       }
-    },
-  });
+      fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+    }
+
+    setMemberInfo((prev) => ({ ...prev, memberAddress: fullAddress }));
+    setIsPostcodeOpen(false); // 모달 닫기
+
+    if (detailRef.current) {
+      detailRef.current.focus();
+    }
+  };
+
+  // ⭕ 버튼 클릭 시 모달 열기
+  const openPostcode = () => {
+    setIsPostcodeOpen(true);
+  };
 
   useEffect(() => {
-    if (!memberId || memberId === "undefined" || memberId === "null") {
-      console.warn("memberId가 준비되지 않아 요청을 보낼 수 없습니다.");
-      return;
-    }
+    if (!memberId || memberId === "undefined" || memberId === "null") return;
 
     axios
       .get(`${import.meta.env.VITE_BACKSERVER}/members/natives`, {
@@ -171,10 +183,8 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
       })
       .then((res) => {
         if (!res.data || res.data === "undefined") {
-          console.log("조회된 결과가 없습니다.");
-          setNative(null); // ⭕ 결과가 없으면 null 저장
+          setNative(null);
         } else {
-          console.log("조회된 결과: ", res.data);
           setNative(res.data);
         }
       })
@@ -192,14 +202,9 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     );
   }
 
-  // ⭕ 1. 프로필 이미지 안전 처리 함수 (string 검증)
   const getProfileImageUrl = (thumb) => {
     if (!thumb || typeof thumb !== "string") return defaultImg;
-
-    if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
-      return thumb;
-    }
-
+    if (thumb.startsWith("http://") || thumb.startsWith("https://")) return thumb;
     const cleanPath = thumb.startsWith("/") ? thumb.slice(1) : thumb;
     return `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/${cleanPath}`;
   };
@@ -434,35 +439,33 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               </div>
             </div>
             <ul className={styles.info_member}>
-              <li>
+            <li>
                 <img src={navigate} alt="" />
                 <div className={styles.info_profile_addr}>
-                  {updateMode ? (
+                {updateMode ? (
                     <>
-                      <Input
+                    <Input
                         type="text"
                         ref={detailRef}
                         name="memberAddress"
                         id="memberAddress"
                         value={memberInfo.memberAddress || ""}
                         onChange={(e) =>
-                          setMemberInfo((prev) => ({
+                        setMemberInfo((prev) => ({
                             ...prev,
                             [e.target.name]: e.target.value,
-                          }))
+                        }))
                         }
-                      />
-                      <button type="button" onClick={openPostcode}>
+                    />
+                    <button type="button" onClick={openPostcode}>
                         변경
-                      </button>
+                    </button>
                     </>
-                  ) : (
-                    <div>
-                      {memberInfo.memberAddress || "주소를 등록해주세요"}
-                    </div>
-                  )}
+                ) : (
+                    <div>{memberInfo.memberAddress || "주소를 등록해주세요"}</div>
+                )}
                 </div>
-              </li>
+            </li>
               <li>
                 <img src={nativeIcon} alt="" />
                 {/* ⭕ native 삼항 연산자 조건 완벽 처리 */}
@@ -479,7 +482,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                   <button
                     type="button"
                     className={styles.native_submit}
-                    onClick={ProfilePage.handleOpenModal(memberInfo)}
+                    onClick={() => ProfilePage.handleOpenModal(memberInfo)}
                   >
                     {native && typeof native === "object" ? "재인증" : "인증"}
                   </button>
@@ -500,6 +503,53 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               ) : null}
             </ul>
           </div>
+          {isPostcodeOpen && (
+            <div
+            style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9999,
+            }}
+            onClick={() => setIsPostcodeOpen(false)}
+            >
+            <div
+                style={{
+                width: "500px",
+                height: "600px",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                overflow: "hidden",
+                position: "relative",
+                }}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button
+                type="button"
+                style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    zIndex: 10,
+                    border: "none",
+                    background: "none",
+                    fontSize: "18px",
+                    cursor: "pointer",
+                }}
+                onClick={() => setIsPostcodeOpen(false)}
+                >
+                ✕
+                </button>
+                <DaumPostcode onComplete={handleCompletePostcode} style={{ height: "100%" }} />
+            </div>
+            </div>
+        )}
           <div className={styles.profile_submit}>
             <button
               type="button"
