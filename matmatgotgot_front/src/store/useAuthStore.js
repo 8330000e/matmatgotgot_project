@@ -66,7 +66,7 @@ const useAuthStore = create(
         if (currentId) {
           try {
             const res = await axios.post(
-              `${import.meta.env.VITE_BACKSERVER}/members/logout/${currentId}`,
+              `${import.meta.env.VITE_BACKSERVER}/api/members/logout/${currentId}`,
             );
             console.log("✅ 백엔드 응답 성공:", res.data);
           } catch (err) {

@@ -1,17 +1,13 @@
-export const getProfileImageUrl = (thumb, defaultImg) => {
-  // ⭕ thumb가 null, undefined, 비어있는 문자열, 혹은 string 타입이 아닌 경우 기본 이미지 반환
-  if (!thumb || typeof thumb !== "string") {
-    return defaultImg || null;
-  }
+import defaultImg from "../assets/img/defaultImg.svg";
 
-  // ⭕ 카카오/네이버 등 외부 HTTP/HTTPS 프로필 URL인 경우 그대로 반환
-  if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
+export const getProfileThumb = (thumb) => {
+  if (!thumb) return defaultImg;
+
+  // 이미 http:// 또는 https:// 또는 blob: 로 시작하면 그대로 반환
+  if (thumb.startsWith("http://") || thumb.startsWith("https://") || thumb.startsWith("blob:")) {
     return thumb;
   }
 
-  // ⭕ 안전하게 슬래시(/) 제거 후 CloudFront S3 경로 결합
-  const cleanPath = thumb.startsWith("/") ? thumb.slice(1) : thumb;
-  return `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/${cleanPath}`;
+  // 순수 파일명만 남은 경우 백엔드 정적 파일 경로 결합
+  return `${import.meta.env.VITE_BACKSERVER}/upload/${thumb}`;
 };
-
-export const getProfileThumb = getProfileImageUrl;
