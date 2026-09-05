@@ -236,7 +236,8 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         formData.append("addr", memberInfo.memberAddress || "");
 
         if (selectedFile) {
-        formData.append("profileImage", selectedFile);
+        // 💡 백엔드 Controller의 @RequestPart / @RequestParam 매개변수명이 'profileImage'가 맞는지 확인!
+        formData.append("profileImage", selectedFile); 
         }
 
         axios
@@ -245,35 +246,31 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         })
         .then((res) => {
             Swal.mixin({
-            toast: true,
-            color: "#2b1b17",
-            borderRadius: "15px",
-            fontWeight: "800",
-            padding: "20px 10px",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            },
-        }).fire({
-            title: "프로필 수정완료",
-            text: "프로필 수정이 성공적으로 완료되었습니다.",
-            icon: "success",
-        });
+                toast: true,
+                color: "#2b1b17",
+                borderRadius: "15px",
+                fontWeight: "800",
+                padding: "20px 10px",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            }).fire({
+                title: "프로필 수정완료",
+                text: "프로필 수정이 성공적으로 완료되었습니다.",
+                icon: "success",
+            });
             setUpdateMode(false);
             setSelectedFile(null);
 
-            // 💡 백엔드에서 최신 회원정보 다시 조회하여 부모 state 갱신
+            // 💡 수정 후 최신 회원 정보 다시 불러오기
             axios
             .get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
             .then((response) => {
                 setMemberInfo(response.data);
-                if (response.data.memberThumb) {
-                // Zustand 전역 상태도 함께 업데이트
-                useAuthStore.getState().setThumb?.(response.data.memberThumb);
-                }
             });
         })
         .catch((err) => {

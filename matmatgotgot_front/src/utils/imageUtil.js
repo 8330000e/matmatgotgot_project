@@ -1,12 +1,10 @@
-// src/utils/imageUtil.js
-
 export const getProfileImageUrl = (thumb, defaultImg) => {
-  // ⭕ 1. thumb가 null, undefined, 빈 문자열("")이거나 string 타입이 아닌 경우 기본 이미지 반환
+  // ⭕ 1. thumb가 null, undefined, 빈 문자열("")이거나 string 타입이 아닌 경우 즉시 defaultImg 반환
   if (!thumb || typeof thumb !== "string") {
     return defaultImg || null;
   }
 
-  // ⭕ 2. 카카오/네이버 등 외부 HTTP/HTTPS 프로필 이미지인 경우 그대로 반환
+  // ⭕ 2. 카카오/네이버 등 외부 HTTP/HTTPS 프로필 URL인 경우 그대로 반환
   if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
     return thumb;
   }
