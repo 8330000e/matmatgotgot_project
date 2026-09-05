@@ -145,27 +145,20 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
   const [profileThumb, setProfileThumb] = useState(
     defaultImg || storeThumb || memberInfo?.memberThumb || null
   );
-  const [native, setNative] = useState(false);
+  const [native, setNative] = useState(null); // ⭕ 초기값을 null로 설정
 
-  // ⭕ 1. 모든 React Hook (useKakaoPostcode 포함)은 조건문/Early Return "전"에 선언합니다.
   const { open: openPostcode } = useKakaoPostcode({
     onComplete: (data) => {
-      // 주소 입력 업데이트
       setMemberInfo((prev) => ({ ...prev, memberAddress: data.roadAddress }));
-
-      // 현지인 인증 비교 (기존 주소와 일치하는지 확인)
       if (memberInfo?.memberAddress && data.roadAddress === memberInfo.memberAddress) {
         setNative(true);
       }
-
-      // 커서 포커스 이동
       if (detailRef.current) {
         detailRef.current.focus();
       }
     },
   });
 
-  // ⭕ 2. useEffect도 최상단에 배치
   useEffect(() => {
     if (!memberId || memberId === "undefined" || memberId === "null") {
       console.warn("memberId가 준비되지 않아 요청을 보낼 수 없습니다.");
@@ -179,17 +172,18 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
       .then((res) => {
         if (!res.data || res.data === "undefined") {
           console.log("조회된 결과가 없습니다.");
+          setNative(null); // ⭕ 결과가 없으면 null 저장
         } else {
           console.log("조회된 결과: ", res.data);
-          setNative(res.data ? res.data : false);
+          setNative(res.data);
         }
       })
       .catch((error) => {
         console.error("서버 에러:", error);
+        setNative(null);
       });
   }, [memberId]);
 
-  // ⭕ 3. 모든 Hook 선언이 완료된 "후"에 Early Return(로딩 체크)을 수행합니다.
   if (!memberInfo) {
     return (
       <div style={{ padding: "50px", textAlign: "center" }}>
@@ -198,26 +192,18 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     );
   }
 
-  // 프로필 이미지 URL 보정
-  // 1. 프로필 이미지 URL 변환 헬퍼 (게시글 컴포넌트와 동일한 S3 경로 사용)
+  // ⭕ 1. 프로필 이미지 안전 처리 함수 (string 검증)
   const getProfileImageUrl = (thumb) => {
-    if (!thumb) return defaultImg;
+    if (!thumb || typeof thumb !== "string") return defaultImg;
 
-    // 소셜 로그인 등 HTTP/HTTPS 원본 경로
     if (thumb.startsWith("http://") || thumb.startsWith("https://")) {
       return thumb;
     }
 
-    // 파일명만 들어온 경우 S3 CloudFront 경로 결합
     const cleanPath = thumb.startsWith("/") ? thumb.slice(1) : thumb;
-    return `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/${cleanPath}`; 
-    // 💡 게시글 컴포넌트에서 사용하는 S3 이미지 경로 주소와 완전히 동일하게 기재해주세요!
+    return `https://d2lg74d5mqmhqe.cloudfront.net/app/upload/web/matgot/menu/${cleanPath}`;
   };
 
-  // 2. 현재 유효한 프로필 이미지 파일명 추출 (백엔드 응답 key 확인)
-  const currentThumb = memberInfo?.memberThumb || storeThumb;
-
-  // 이미지 변경 미리보기
   const changeThumb = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -227,77 +213,74 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     }
   };
 
-  // 프로필 수정 / 완료 버튼 클릭
   const updateModeChange = () => {
     if (updateMode) {
-        const formData = new FormData();
-        formData.append("memberId", memberId);
-        formData.append("nick", memberInfo.memberNickname || "");
-        formData.append("addr", memberInfo.memberAddress || "");
+      const formData = new FormData();
+      formData.append("memberId", memberId);
+      formData.append("nick", memberInfo.memberNickname || "");
+      formData.append("addr", memberInfo.memberAddress || "");
 
-        if (selectedFile) {
-        // 💡 백엔드 Controller의 @RequestPart / @RequestParam 매개변수명이 'profileImage'가 맞는지 확인!
+      if (selectedFile) {
         formData.append("profileImage", selectedFile); 
-        }
+      }
 
-        axios
+      axios
         .put(`${import.meta.env.VITE_BACKSERVER}/members/updateMem`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-            Swal.mixin({
-                toast: true,
-                color: "#2b1b17",
-                borderRadius: "15px",
-                fontWeight: "800",
-                padding: "20px 10px",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-            }).fire({
-                title: "프로필 수정완료",
-                text: "프로필 수정이 성공적으로 완료되었습니다.",
-                icon: "success",
-            });
-            setUpdateMode(false);
-            setSelectedFile(null);
+          Swal.mixin({
+            toast: true,
+            color: "#2b1b17",
+            borderRadius: "15px",
+            fontWeight: "800",
+            padding: "20px 10px",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          }).fire({
+            title: "프로필 수정완료",
+            text: "프로필 수정이 성공적으로 완료되었습니다.",
+            icon: "success",
+          });
+          setUpdateMode(false);
+          setSelectedFile(null);
 
-            // 💡 수정 후 최신 회원 정보 다시 불러오기
-            axios
+          axios
             .get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
             .then((response) => {
-                setMemberInfo(response.data);
+              setMemberInfo(response.data);
             });
         })
         .catch((err) => {
-            console.error("서버 업데이트 실패:", err);
-            Swal.mixin({
-                toast: true,
-                color: "#2b1b17",
-                borderRadius: "15px",
-                fontWeight: "800",
-                padding: "20px 10px",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-            }).fire({
-                title: "프로필 수정 실패",
-                text: "프로필 수정 중 오류가 발생했습니다. 다시 시도해주세요.",
-                icon: "error",
-            });
+          console.error("서버 업데이트 실패:", err);
+          Swal.mixin({
+            toast: true,
+            color: "#2b1b17",
+            borderRadius: "15px",
+            fontWeight: "800",
+            padding: "20px 10px",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          }).fire({
+            title: "프로필 수정 실패",
+            text: "프로필 수정 중 오류가 발생했습니다. 다시 시도해주세요.",
+            icon: "error",
+          });
         });
     } else {
-        setUpdateMode(true);
+      setUpdateMode(true);
     }
-    };
+  };
 
   const nativeCheck = () => {
     openPostcode();
@@ -305,88 +288,86 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
 
   const handleDeleteAccount = () => {
     Swal.fire({
-        title: "정말로 회원 탈퇴를 진행하시겠습니까?",
-        text: "탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#4797e1",
-        confirmButtonText: "탈퇴 진행",
-        cancelButtonText: "취소",
+      title: "정말로 회원 탈퇴를 진행하시겠습니까?",
+      text: "탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#4797e1",
+      confirmButtonText: "탈퇴 진행",
+      cancelButtonText: "취소",
     }).then((result) => {
-        if (result.isConfirmed) {
+      if (result.isConfirmed) {
         axios
-            .delete(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
-            .then((res) => {
-            console.log("회원 탈퇴 성공:", res);
+          .delete(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}`)
+          .then((res) => {
             const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end", // 토스트 위치 지정 (필요 시)
-                color: "#2b1b17",
-                padding: "20px 10px",
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
+              toast: true,
+              position: "top-end",
+              color: "#2b1b17",
+              padding: "20px 10px",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
-                },
+              },
             });
 
             Toast.fire({
-                icon: "success",
-                title: "탈퇴 완료",
-                text: "회원 탈퇴가 정상적으로 처리되었습니다.",
+              icon: "success",
+              title: "탈퇴 완료",
+              text: "회원 탈퇴가 정상적으로 처리되었습니다.",
             }).then(() => {
-                useAuthStore.getState().logout();
-                window.location.href = "/";
+              useAuthStore.getState().logout();
+              window.location.href = "/";
             });
-            })
-            .catch((err) => {
+          })
+          .catch((err) => {
             console.error("회원 탈퇴 실패:", err);
-
             const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                color: "#2b1b17",
-                padding: "20px 10px",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
+              toast: true,
+              position: "top-end",
+              color: "#2b1b17",
+              padding: "20px 10px",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
-                },
+              },
             });
 
             Toast.fire({
-                icon: "error",
-                title: "탈퇴 실패",
-                text: "회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.",
+              icon: "error",
+              title: "탈퇴 실패",
+              text: "회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.",
             });
-            });
-        }
+          });
+      }
     });
-    };
+  };
 
   const developing = () => {
     Swal.mixin({
-        toast: true,
-        color: "#2b1b17",
-        borderRadius: "15px",
-        fontWeight: "800",
-        padding: "20px 30px",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-        },
+      toast: true,
+      color: "#2b1b17",
+      borderRadius: "15px",
+      fontWeight: "800",
+      padding: "20px 30px",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
     }).fire({
-        title: "개발 중...",
-        text: "해당 기능은 현재 개발 중입니다..",
-        icon: "info",
+      title: "개발 중...",
+      text: "해당 기능은 현재 개발 중입니다..",
+      icon: "info",
     });
   };
 
@@ -398,17 +379,17 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             <div className={styles.profile_img_circle}>
               <img
                 src={
-                    selectedFile
+                  selectedFile
                     ? URL.createObjectURL(selectedFile)
-                    : getProfileImageUrl(memberInfo?.memberThumb, defaultImg)
+                    : getProfileImageUrl(memberInfo?.memberThumb)
                 }
                 className={styles.defaultImg}
                 alt="프로필"
                 onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = defaultImg;
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = defaultImg;
                 }}
-                />
+              />
             </div>
 
             {updateMode && (
@@ -450,9 +431,10 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 )}
               </div>
               <div>
-                {memberInfo.memberNickname && native != null &&  native.nativeStatus === 1 ? null : (
+                {/* ⭕ native 객체 방어 검사 */}
+                {memberInfo.memberNickname && native && typeof native === "object" && native.nativeStatus === 1 ? (
                   <img src={nativeicon} alt="현지인인증뱃지" />
-                )}
+                ) : null}
               </div>
             </div>
             <ul className={styles.info_member}>
@@ -487,26 +469,39 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               </li>
               <li>
                 <img src={nativeIcon} alt="" />
-                {updateMode ? (
-                  <>
-                    {native != null ? native.nativeStatus === 1 ? <div className={styles.native_expired}>현지인 인증 만료됨</div> : <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>}
-                    <button
-                      type="button"
-                      className={styles.native_submit}
-                      onClick={nativeCheck}
-                    >
-                      {native != null ? "재인증" : "인증"}
-                    </button>
-                  </>
+                {/* ⭕ native 삼항 연산자 조건 완벽 처리 */}
+                {native && typeof native === "object" ? (
+                  native.nativeStatus === 1 ? (
+                    <div className={styles.native_expired}>현지인 인증 만료됨</div>
+                  ) : (
+                    <div>현지인 인증됨</div>
+                  )
                 ) : (
-                  native != null ? native.nativeStatus === 1 ? <div className={styles.native_expired}>현지인 인증 만료됨</div> : <div>현지인 인증됨</div> : <div>현지인 인증 안됨</div>
+                  <div>현지인 인증 안됨</div>
+                )}
+                {updateMode && (
+                  <button
+                    type="button"
+                    className={styles.native_submit}
+                    onClick={nativeCheck}
+                  >
+                    {native && typeof native === "object" ? "재인증" : "인증"}
+                  </button>
                 )}
               </li>
-              {native != null&& native.nativeStatus === 1 ? null : (
+
+              {/* ⭕ 핵심 수정 포인트: native, nativeRegisteredAt, nativeDeadline 객체 및 옵셔널 체이닝 방어 */}
+              {native &&
+              typeof native === "object" &&
+              native.nativeRegisteredAt &&
+              native.nativeDeadline ? (
                 <li>
-                  <p>{native.nativeRegisteredAt?.slice(0, 10)} ~ {native.nativeDeadline.slice(0, 10)}</p>
+                  <p>
+                    {String(native.nativeRegisteredAt).slice(0, 10)} ~{" "}
+                    {String(native.nativeDeadline).slice(0, 10)}
+                  </p>
                 </li>
-              )}
+              ) : null}
             </ul>
           </div>
           <div className={styles.profile_submit}>
