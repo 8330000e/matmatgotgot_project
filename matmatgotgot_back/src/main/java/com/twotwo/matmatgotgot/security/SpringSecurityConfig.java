@@ -7,14 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -64,8 +61,8 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public org.springframework.security.crypto.password.PasswordEncoder bCrypt() {
-        return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
+    public BCryptPasswordEncoder bCrypt() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
