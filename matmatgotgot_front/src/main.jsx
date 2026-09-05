@@ -28,7 +28,7 @@ axios.interceptors.response.use(
 
     // 401 Unauthorized 또는 403 Forbidden 에러 감지
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      
+      !originalRequest.url.includes("/members/login");
       // 중복 알림/리다이렉트 방지
       if (!originalRequest._retry) {
         originalRequest._retry = true;
