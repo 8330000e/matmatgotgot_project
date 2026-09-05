@@ -222,8 +222,8 @@ public class MemberService {
         return result;
     }
 
-    public @Nullable Object getMyReview(int memberNo) {
-        int result = memberMapper.getMyReview(memberNo);
+    public @Nullable Object getMyReview(String memberId) {
+        int result = memberMapper.getMyReview(memberId);
         return result;
     }
 }

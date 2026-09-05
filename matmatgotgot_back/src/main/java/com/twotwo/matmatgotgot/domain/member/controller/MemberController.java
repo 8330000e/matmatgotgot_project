@@ -567,9 +567,9 @@ public class MemberController {
 		return ResponseEntity.ok(result);
 	}
 
-	@GetMapping(value = "/{memberno}/myreview")
-	public ResponseEntity<?> getMyReview(@PathVariable("memberno") int memberNo) {
-		return ResponseEntity.ok(memberService.getMyReview(memberNo));
+	@GetMapping(value = "/{memberId}/myreview")
+	public ResponseEntity<?> getMyReview(@PathVariable("memberId") String memberId) {
+		return ResponseEntity.ok(memberService.getMyReview(memberId));
 	}
 
 }
