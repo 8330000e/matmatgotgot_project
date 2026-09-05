@@ -412,6 +412,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     e.currentTarget.src = defaultImg;
                 }}
                 />
+            </div>
 
             {updateMode && (
               <>
