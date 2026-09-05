@@ -39,10 +39,20 @@ const Login = () => {
 
       console.log("백엔드가 보내준 로그인 응답 데이터:", response.data);
 
-      if (response.data.token) {
-        // Zustand 스토어에 로그인 정보 저장
-        useAuthStore.getState().login(response.data.member, response.data.token);
-        
+      if (response.data && response.data.token) {
+        // 백엔드 응답에서 member(객체)와 token(문자열)을 안전하게 수신
+        const memberData = response.data.member || response.data;
+        const accessToken = response.data.token;
+
+        // Zustand 스토어 업데이트
+        useAuthStore.getState().login({
+          memberId: memberData.memberId || members.memberId,
+          memberNickname: memberData.memberNickname || "",
+          memberThumb: memberData.memberThumb || null,
+          admin: memberData.admin ?? false,
+          token: accessToken,
+        });
+
         Swal.mixin({
           toast: true,
           position: "top-end",
@@ -52,12 +62,8 @@ const Login = () => {
           fontWeight: "600",
           iconColor: "#fff",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
           timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
         }).fire({
           icon: "success",
           title: "로그인 성공",
@@ -76,10 +82,6 @@ const Login = () => {
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
         }).fire({
           title: "로그인 실패",
           text: "아이디 또는 비밀번호를 확인하세요.",
