@@ -18,7 +18,7 @@ const BoardReviewList = ({ myboard }) => {
 
 const BoardItem = ({ board, no }) => {
     const navigate = useNavigate();
-    return (
+    return (<>
             <div className={styles.post}>
             <div>
                 <div>
