@@ -1,4 +1,4 @@
-import styles from "./BoardLikeList.module.css";
+import styles from "./BoardReviewList.module.css";
 import {useNavigate} from "react-router-dom";
 import comment from "../../assets/img/comment.svg";
 import heart from "../../assets/img/heart.svg";
