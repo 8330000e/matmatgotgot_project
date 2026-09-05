@@ -711,7 +711,7 @@ export const Myreview = ({memberInfo}) => {
     const [totalPage, setTotalPage] = useState(5);
     const size = 10;
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKSERVER}/members/${memberno}/myreview`,{
+        axios.get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}/myreview`,{
             params: {
                 page: page,
                 size: size
