@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "openai": "^6.45.0",
+    "react-daum-postcode": "^4.0.0"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-musl": "^1.33.0"
+  }
+}
