@@ -35,6 +35,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/", "/error", "/favicon.ico").permitAll()
                 .requestMatchers("/upload/**", "/api/upload/**").permitAll()
                 
+                .requestMatchers("/api/members/login", "/api/members/join", "/api/members/check-id").permitAll()
                 // 소셜 로그인 관련
                 .requestMatchers("/login/**", "/oauth2/**", "/api/login/**", "/api/oauth2/**").permitAll()
                 .requestMatchers("/login/oauth2/code/**", "/api/login/oauth2/code/**").permitAll()
