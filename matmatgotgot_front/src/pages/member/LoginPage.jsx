@@ -420,7 +420,7 @@ const Login = () => {
   const code = params.get("code");
   const isCallbackMode = Boolean(code && window.location.pathname.includes("code"));
 
-  console.log("아이디: ", memberId, "\n토큰: ", token);
+  console.log("아이디: ", members.memberId, "\n토큰: ", members.token);
 
   return (
     <>
