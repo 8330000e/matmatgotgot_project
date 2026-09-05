@@ -18,78 +18,78 @@ const Login = () => {
     setMembers({ ...members, [e.target.name]: e.target.value });
   };
 
-  // 일반로그인 상태
-  const login = useAuthStore((state) => state.login);
-  const memberId = useAuthStore((state) => state.memberId);
-  const token = useAuthStore((state) => state.token);
-
   // 일반 로그인 핸들러
   const handleLogin = async () => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKSERVER}/members/login`,
-        {
-          memberId: members.memberId,
-          memberPw: members.memberPw,
-        },
-        {
-          headers: { "Content-Type": "application/json" }
-        }
-      );
+  // 전송 전 데이터 확인 로그
+  console.log("👉 로그인 요청 데이터:", {
+    memberId: members.memberId,
+    memberPw: members.memberPw,
+  });
 
-      console.log("백엔드가 보내준 로그인 응답 데이터:", response.data);
-
-      if (response.data && response.data.token) {
-        // 백엔드 응답에서 member(객체)와 token(문자열)을 안전하게 수신
-        const memberData = response.data.member || response.data;
-        const accessToken = response.data.token;
-
-        // Zustand 스토어 업데이트
-        useAuthStore.getState().login({
-          memberId: memberData.memberId || members.memberId,
-          memberNickname: memberData.memberNickname || "",
-          memberThumb: memberData.memberThumb || null,
-          admin: memberData.admin ?? false,
-          token: accessToken,
-        });
-
-        Swal.mixin({
-          toast: true,
-          position: "top-end",
-          topLayer: true,
-          background: "#ffd95a",
-          color: "#2b1b17",
-          fontWeight: "600",
-          iconColor: "#fff",
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
-        }).fire({
-          icon: "success",
-          title: "로그인 성공",
-        });
-
-        navigate("/");
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKSERVER}/members/login`,
+      {
+        memberId: members.memberId,
+        memberPw: members.memberPw,
+      },
+      {
+        headers: { "Content-Type": "application/json" }
       }
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        Swal.mixin({
-          toast: true,
-          color: "#2b1b17",
-          borderRadius: "15px",
-          fontWeight: "800",
-          padding: "20px 10px",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-        }).fire({
-          title: "로그인 실패",
-          text: "아이디 또는 비밀번호를 확인하세요.",
-          icon: "error",
-        });
-      }
+    );
+
+    console.log("백엔드 로그인 응답:", response.data);
+
+    if (response.data && response.data.token) {
+      const memberData = response.data.member || response.data;
+      const accessToken = response.data.token;
+
+      useAuthStore.getState().login({
+        memberId: memberData.memberId || members.memberId,
+        memberNickname: memberData.memberNickname || "",
+        memberThumb: memberData.memberThumb || null,
+        admin: memberData.admin ?? false,
+        token: accessToken,
+      });
+
+      Swal.mixin({
+        toast: true,
+        position: "top-end",
+        topLayer: true,
+        background: "#ffd95a",
+        color: "#2b1b17",
+        fontWeight: "600",
+        iconColor: "#fff",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      }).fire({
+        icon: "success",
+        title: "로그인 성공",
+      });
+
+      navigate("/");
     }
-  };
+  } catch (error) {
+    console.error("로그인 에러 상세:", error.response);
+    if (error.response && error.response.status === 401) {
+      Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      }).fire({
+        title: "로그인 실패",
+        text: "아이디 또는 비밀번호를 확인하세요.",
+        icon: "error",
+      });
+    }
+  }
+};
 
   // 구글 로그인 시작
   const googleLogin = () => {
