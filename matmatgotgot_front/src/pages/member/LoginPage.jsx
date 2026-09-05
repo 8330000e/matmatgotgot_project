@@ -26,18 +26,23 @@ const Login = () => {
   // 일반 로그인 핸들러
   const handleLogin = async () => {
     try {
+      // ⭕ 토큰 없는 일반 인스턴스 또는 헤더 초기화 후 요청
       const response = await axios.post(
         `${import.meta.env.VITE_BACKSERVER}/members/login`,
         {
-          memberId: members.memberId,
+          memberId: memberId,
           memberPw: members.memberPw,
+        },
+        {
+          headers: { "Content-Type": "application/json" } // Authorization 헤더 제외
         }
       );
 
       console.log("백엔드가 보내준 로그인 응답 데이터:", response.data);
 
-      if (response.data) {
-        login(response.data);
+      if (response.data.token) {
+        // Zustand 스토어 및 로컬스토리지에 저장
+        useAuthStore.getState().login(response.data.member, response.data.token);
         Swal.mixin({
           toast: true,
           position: "top-end",
@@ -59,26 +64,28 @@ const Login = () => {
         });
         navigate("/");
       }
-    } catch (error) {
-      console.error("로그인 실패:", error);
-      Swal.mixin({
-        toast: true,
-        color: "#2b1b17",
-        borderRadius: "15px",
-        fontWeight: "800",
-        padding: "20px 10px",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        },
-      }).fire({
-        title: "로그인 실패",
-        text: "아이디 또는 비밀번호를 확인하세요.",
-        icon: "error",
-      });
+
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Swal.mixin({
+            toast: true,
+            color: "#2b1b17",
+            borderRadius: "15px",
+            fontWeight: "800",
+            padding: "20px 10px",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          }).fire({
+            title: "로그인 실패",
+            text: "아이디 또는 비밀번호를 확인하세요.",
+            icon: "error",
+        })
+      }
     }
   };
 
