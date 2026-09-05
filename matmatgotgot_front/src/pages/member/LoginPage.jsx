@@ -215,7 +215,7 @@ const Login = () => {
       console.log("백엔드로 보내는 최종 데이터:", JSON.stringify(requestData));
 
       // 백엔드 요청
-      const res = await axios.post('/api/members/login/kakao', requestData);
+      const res = await axios.post('/members/login/kakao', requestData);
       if (res.data) {
       useAuthStore.getState().login({
         memberId: res.data.memberId,
