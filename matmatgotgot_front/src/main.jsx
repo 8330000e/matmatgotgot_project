@@ -28,10 +28,10 @@ axios.interceptors.response.use(
     
 
     // 401 Unauthorized 또는 403 Forbidden 에러 감지
-    if (error.response && (error.response.status === 401 || error.response.status === 403) && !originalRequest.url.includes("/members/login")) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       
       // 중복 알림/리다이렉트 방지
-      if (!originalRequest._retry) {
+      if (!originalRequest._retry && !originalRequest.url.includes("/members/login")) {
         originalRequest._retry = true;
 
         console.warn("JWT 토큰이 만료되었거나 유효하지 않습니다.");
