@@ -8,6 +8,8 @@ import App from "./App.jsx";
 import axios from 'axios'
 import { useAuthStore } from './store/useAuthStore'
 
+console.log("아이디: ", useAuthStore.getState().memberId, "\n토큰: ", useAuthStore.getState().token);
+
 axios.interceptors.request.use(
   (config) => {
     // Zustand 스토어나 localStorage에서 토큰 가져오기
@@ -25,13 +27,13 @@ axios.interceptors.response.use(
   (response) => response, // 성공 응답은 그대로 리턴
   (error) => {
     const originalRequest = error.config;
-    
 
     // 401 Unauthorized 또는 403 Forbidden 에러 감지
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      
+      console.log("아이디: ", useAuthStore.getState().memberId, "\n토큰: ", useAuthStore.getState().token);
       // 중복 알림/리다이렉트 방지
-      if (!originalRequest._retry && !originalRequest.url.includes("/members/login")) {
+      if (!originalRequest._retry) {
+        !originalRequest.url.includes("/members/login");
         originalRequest._retry = true;
 
         console.warn("JWT 토큰이 만료되었거나 유효하지 않습니다.");
