@@ -25,10 +25,10 @@ axios.interceptors.response.use(
   (response) => response, // 성공 응답은 그대로 리턴
   (error) => {
     const originalRequest = error.config;
-    !originalRequest.url.includes("/members/login");
+    
 
     // 401 Unauthorized 또는 403 Forbidden 에러 감지
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403) && !originalRequest.url.includes("/members/login")) {
       
       // 중복 알림/리다이렉트 방지
       if (!originalRequest._retry) {
