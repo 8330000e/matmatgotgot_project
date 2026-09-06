@@ -10,36 +10,33 @@ import { useAuthStore } from './store/useAuthStore'
 
 console.log("아이디: ", useAuthStore.getState().memberId, "\n토큰: ", useAuthStore.getState().token);
 
-axios.interceptors.request.use(
-  (config) => {
-    // Zustand 스토어나 localStorage에서 토큰 가져오기
-    const token = useAuthStore.getState().token || localStorage.getItem("token");
-    
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 axios.interceptors.response.use(
-  (response) => response, // 성공 응답은 그대로 리턴
+  (response) => response,
   (error) => {
     const originalRequest = error.config;
 
-    // 401 Unauthorized 또는 403 Forbidden 에러 감지
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      console.log("아이디: ", useAuthStore.getState().memberId, "\n토큰: ", useAuthStore.getState().token);
+    // 401 / 403 에러 처리
+    // 단, 로그인 요청은 제외
+    if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403) &&
+      !originalRequest.url.includes("/members/login")
+    ) {
+      console.log(
+        "아이디: ",
+        useAuthStore.getState().memberId,
+        "\n토큰: ",
+        useAuthStore.getState().token
+      );
+
       // 중복 알림/리다이렉트 방지
       if (!originalRequest._retry) {
-        !originalRequest.url.includes("/members/login");
         originalRequest._retry = true;
 
         console.warn("JWT 토큰이 만료되었거나 유효하지 않습니다.");
 
-        // 스토어 상태 및 Storage 초기화
         const logout = useAuthStore.getState().logout;
+
         if (logout) {
           logout();
         } else {
@@ -48,7 +45,7 @@ axios.interceptors.response.use(
         }
 
         alert("세션이 만료되었습니다. 다시 로그인해 주세요.");
-        window.location.href = "/"; // 메인/로그인 페이지로 이동
+        window.location.href = "/";
       }
     }
 
