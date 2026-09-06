@@ -32,6 +32,7 @@ public class SpringSecurityConfig {
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/api/members/login", "/api/members/join", "/api/members/check-id").permitAll()
                 .requestMatchers("/", "/error", "/favicon.ico").permitAll()
                 .requestMatchers("/upload/**", "/api/upload/**").permitAll()
                 
