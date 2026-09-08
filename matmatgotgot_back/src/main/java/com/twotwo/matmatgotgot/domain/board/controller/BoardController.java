@@ -43,6 +43,13 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
+    //내 리뷰 목록 조회
+    @GetMapping(value = "/{memberId}/myreview")
+	public ResponseEntity<?> getMyReview(@ModelAttribute ListItem request, @PathVariable("memberId") String memberId) {
+		ListResponse response = boardService.getMyReview(request, memberId);
+		return ResponseEntity.ok(response);
+	}
+
     // 내 게시글 목록 조회
     @GetMapping(value = "/{memberNo}/my")
     public ResponseEntity<?> selectMyBoardList(@ModelAttribute ListItem request, @PathVariable("memberNo") String memberNo) {

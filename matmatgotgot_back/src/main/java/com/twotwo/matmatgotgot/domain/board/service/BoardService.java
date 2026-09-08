@@ -450,4 +450,30 @@ public class BoardService {
     }
 
 
+    public ListResponse getMyReview(ListItem request, String memberId) {
+        if (request.getPage() == null || request.getPage() < 0) {
+            request.setPage(0);
+        }
+
+        if (request.getSize() == null || request.getSize() < 1) {
+            request.setSize(10);
+        }
+
+        request.setOffset(
+                request.getPage() * request.getSize()
+        );
+
+        Integer totalCount =
+                boardMapper.selectMyReviewCount(request);
+
+        int totalPage =
+                (int)Math.ceil(totalCount / (double)request.getSize());
+
+        List<Board> list =
+                boardMapper.selectMyReviewList(request, memberId);
+
+        return new ListResponse(list, totalPage);
+    }
+
+
 }

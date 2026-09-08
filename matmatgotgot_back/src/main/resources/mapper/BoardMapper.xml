@@ -114,6 +114,73 @@
 
     </select>
 
+
+    <!-- 내 리뷰 개수 조회 -->
+    <select id="selectMyReviewCount"
+            parameterType="listItem"
+            resultType="int">
+
+        SELECT COUNT(*)
+        FROM review_tbl B
+        <where>
+            B.MEMBER_ID = #{request.memberId}
+        </where>
+
+    </select>
+
+    <!-- 내 리뷰 목록 조회 -->
+    <select id="selectMyReviewList" 
+            parameterType="listItem"
+            resultType="review">
+
+        SELECT
+            B.REVIEW_NO,
+            B.REST_NO,
+            B.REVIEW_CONTENT,
+            B.RATING,
+            B.VISIT_DATE,
+            B.IS_LOCAL_REVIEW,
+            B.REVIEW_STATUS,
+            COUNT(L.MEMBER_ID) AS BOARD_LIKE,
+            B.CREATED_AT
+        FROM review_tbl B
+        JOIN member_tbl M 
+        ON B.MEMBER_ID = M.MEMBER_ID
+        LEFT JOIN review_like_tbl L 
+        ON B.REVIEW_NO = L.REVIEW_NO
+        <where>
+            B.MEMBER_ID = #{request.memberId}
+        </where>
+
+        GROUP BY 
+            B.REVIEW_NO,
+            B.REST_NO,
+            B.REVIEW_CONTENT,
+            B.RATING,
+            B.VISIT_DATE,
+            B.IS_LOCAL_REVIEW,
+            B.REVIEW_STATUS,
+            B.CREATED_AT
+
+        <choose>
+            <when test="request.order == 1">
+                ORDER BY B.CREATED_AT DESC
+            </when>
+            <when test="request.order == 2">
+                ORDER BY BOARD_LIKE DESC
+            </when>
+            <when test="request.order == 3">
+                ORDER BY B.RATING DESC
+            </when>
+            <otherwise>
+                ORDER BY B.CREATED_AT DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{request.offset}, #{request.size}
+
+    </select>
+
     <!-- 내 게시물 목록 -->
     <select id="selectMyBoardList" resultType="board">
         SELECT

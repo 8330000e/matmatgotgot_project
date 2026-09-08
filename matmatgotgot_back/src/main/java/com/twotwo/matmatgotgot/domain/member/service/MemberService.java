@@ -221,9 +221,4 @@ public class MemberService {
         int result = memberMapper.deleteMember(memberId);
         return result;
     }
-
-    public Natives getMyReview(String memberId) {
-        Natives result = memberMapper.getMyReview(memberId);
-        return result;
-    }
 }

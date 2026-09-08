@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
 import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
 import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
+import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
+import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
 import com.twotwo.matmatgotgot.domain.member.dto.KakaoLoginRequestDto;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
@@ -565,11 +567,6 @@ public class MemberController {
 	public ResponseEntity<?> deleteMember(@PathVariable String memberId) {
 		int result = memberService.deleteMember(memberId);
 		return ResponseEntity.ok(result);
-	}
-
-	@GetMapping(value = "/{memberId}/myreview")
-	public ResponseEntity<?> getMyReview(@PathVariable("memberId") String memberId) {
-		return ResponseEntity.ok(memberService.getMyReview(memberId));
 	}
 
 }

@@ -80,4 +80,8 @@ public interface BoardMapper {
     List<Board> selectMyBoardLikeList(ListItem request, String memberNo);
 
     List<Board> selectMyBoardReportList(ListItem request, String memberNo);
+
+    List<Board> selectMyReviewList(ListItem request, String memberId);
+
+    Integer selectMyReviewCount(ListItem request);
 }

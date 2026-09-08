@@ -713,18 +713,19 @@ export const Myreview = ({memberInfo}) => {
     useEffect(() => {
         axios.get(`${import.meta.env.VITE_BACKSERVER}/members/${memberId}/myreview`,{
             params: {
-                page: page,
-                size: size
+                page,
+                size,
+                order
             }
         })
         .then((response) => {
-            setMyReviews(response.data.content);
+            setMyReviews(response.data.items);
             setTotalPage(response.data.totalPages);
         })
         .catch((error) => {
             console.error("Error fetching my reviews:", error);
         });
-    }, [page, size, memberno]);
+    }, [page, size, memberId]);
 
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_myreview_wrap}`}>
