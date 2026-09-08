@@ -123,7 +123,7 @@
         SELECT COUNT(*)
         FROM review_tbl B
         <where>
-            B.MEMBER_ID = #{request.memberId}
+            B.MEMBER_ID = #{memberId}
         </where>
 
     </select>
