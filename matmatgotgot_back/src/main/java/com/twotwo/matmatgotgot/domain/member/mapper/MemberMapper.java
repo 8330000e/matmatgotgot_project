@@ -48,5 +48,5 @@ public interface MemberMapper {
 
     Natives getNativeDate(String memberId);
 
-    int getMyReview(String memberId);
+    Natives getMyReview(String memberId);
 }
