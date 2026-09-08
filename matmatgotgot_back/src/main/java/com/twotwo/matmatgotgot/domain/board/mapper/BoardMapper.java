@@ -87,4 +87,6 @@ public interface BoardMapper {
     List<Review> selectMyReviewList(@Param("item") ListItem item, @Param("memberId") String memberId);
 
     int selectMyReviewCount(@Param("item") ListItem item);
+
+    Integer selectMyReviewCount(ListItem request, String memberId);
 }
