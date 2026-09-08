@@ -3,7 +3,10 @@ package com.twotwo.matmatgotgot.domain.board.mapper;
 import com.twotwo.matmatgotgot.domain.board.entity.Board;
 import com.twotwo.matmatgotgot.domain.board.entity.BoardComment;
 import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
+import com.twotwo.matmatgotgot.domain.board.entity.Review;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -81,7 +84,7 @@ public interface BoardMapper {
 
     List<Board> selectMyBoardReportList(ListItem request, String memberNo);
 
-    List<Board> selectMyReviewList(ListItem request, String memberId);
+    List<Review> selectMyReviewList(@Param("item") ListItem item, @Param("memberId") String memberId);
 
-    Integer selectMyReviewCount(ListItem request);
+    int selectMyReviewCount(@Param("item") ListItem item);
 }

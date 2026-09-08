@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Alias("review")
-public class review {
+public class Review {
     private Integer reviewNo;
     private String memberId;
     private Integer restNo;

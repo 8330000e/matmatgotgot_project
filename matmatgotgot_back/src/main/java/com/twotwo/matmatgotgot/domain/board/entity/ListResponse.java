@@ -10,6 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class ListResponse {
+    public ListResponse(List<Review> list, int totalPage2) {
+        //TODO Auto-generated constructor stub
+    }
     private List<Board> items;
     private Integer totalPage;
 }

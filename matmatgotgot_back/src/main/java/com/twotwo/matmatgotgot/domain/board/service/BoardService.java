@@ -5,6 +5,7 @@ import com.twotwo.matmatgotgot.domain.board.entity.BoardComment;
 import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
 import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
 import com.twotwo.matmatgotgot.domain.board.mapper.BoardMapper;
+import com.twotwo.matmatgotgot.domain.board.entity.Review;
 
 import lombok.RequiredArgsConstructor;
 
@@ -469,7 +470,7 @@ public class BoardService {
         int totalPage =
                 (int)Math.ceil(totalCount / (double)request.getSize());
 
-        List<Board> list =
+        List<Review> list =
                 boardMapper.selectMyReviewList(request, memberId);
 
         return new ListResponse(list, totalPage);
