@@ -149,7 +149,7 @@
         LEFT JOIN review_like_tbl L 
         ON B.REVIEW_NO = L.REVIEW_NO
         <where>
-            B.MEMBER_ID = #{request.memberId}
+            B.MEMBER_ID = #{memberId}
         </where>
 
         GROUP BY 
@@ -163,13 +163,13 @@
             B.CREATED_AT
 
         <choose>
-            <when test="request.order == 1">
+            <when test="order == 1">
                 ORDER BY B.CREATED_AT DESC
             </when>
-            <when test="request.order == 2">
+            <when test="order == 2">
                 ORDER BY BOARD_LIKE DESC
             </when>
-            <when test="request.order == 3">
+            <when test="order == 3">
                 ORDER BY B.RATING DESC
             </when>
             <otherwise>
@@ -177,7 +177,7 @@
             </otherwise>
         </choose>
 
-        LIMIT #{request.offset}, #{request.size}
+        LIMIT #{offset}, #{size}
 
     </select>
 
