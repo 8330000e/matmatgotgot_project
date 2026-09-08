@@ -465,9 +465,9 @@ public class BoardService {
         );
 
         Integer totalCount =
-                boardMapper.selectMyReviewCount(request);
+                boardMapper.selectMyReviewCount(request, memberId);
 
-        int totalPage =
+        Integer totalPage =
                 (int)Math.ceil(totalCount / (double)request.getSize());
 
         List<Review> list =
