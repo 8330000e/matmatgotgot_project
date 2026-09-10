@@ -37,23 +37,19 @@ const BoardItem = ({ board, no }) => {
     return (
         <>
             <div className={styles.post}>
-                <div className={styles.number}>{no}</div>
-                <div>
+                <div className={styles.number}>{no}.</div>
+                <div className={styles.posts}>
                     <a href={`https://d2lg74d5mqmhqe.cloudfront.net/rest/review/view/${board.restNo}`}>
                         <div>
-                            <div>
-                                <p>{board.restName}</p>
-                                <p>{rating()}</p>
-                                {/* <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p> */}
-                            </div>
+                            <p>{board.restName}</p>
+                            <p>{rating()}</p>
+                            {/* <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p> */}
                         </div>
                         <div>{board.createdAt && board.createdAt.slice(0, 10)}</div>
                         <div>{board.reviewContent && board.reviewContent.slice(0, 52)}...</div>
                     </a>
                     <div>
-                        <div>
-                            <p><img src={heart} /> {board.boardLike}</p>
-                        </div>
+                        <p><img src={heart} /> {board.boardLike}</p>
                     </div>
                 </div>
             </div>
