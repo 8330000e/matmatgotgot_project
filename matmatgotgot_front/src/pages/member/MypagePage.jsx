@@ -744,7 +744,7 @@ export const Myreview = ({memberInfo}) => {
                 </div>
             </div>
             <div className={styles.posts}>
-                {totalPage === 0 ? <div>작성한 리뷰가 없습니다.</div> : <BoardReviewList myboard={myReviews} />}
+                {totalPage === 0 ? <div className={styles.nothing}>작성한 리뷰가 없습니다.</div> : <BoardReviewList myboard={myReviews} />}
             </div>
             <div>
                 <Pagination
