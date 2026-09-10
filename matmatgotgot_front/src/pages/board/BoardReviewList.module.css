@@ -47,7 +47,10 @@
     font-size: 12px;
 }
 .posts > div:last-child > p {
-    width: 18px;
+    display: flex;
+    justify-content: end;
+    gap: 1px;
+    padding: 0 10px;
 }
 .post > div:last-child > p > img {
     display: flex;
