@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ModalPortal from './ModalPortal';
 import ReactDOM from 'react-dom';
 import styles from 'NativeAuthSection.module.css';
 
