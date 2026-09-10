@@ -7,52 +7,47 @@
 .post {
     display: flex;
     gqp: 5px;
-    padding: 15px;
+    padding: 10px;
     border: 1px solid var(--text1);
     border-radius: 10px;
     cursor: pointer;
 }
 .number {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    width: 10%
+    width: 5%
 }
 .posts {
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
     gap: 5px;
 }
-.posts > a {
+.posts > div:first-child {
     display: flex;
     justify-content: space-between;
-}
-.posts > a > div:first-child {
-    display: flex;
     gap: 10px;
 }
-.posts > a > div:first-child > p:first-child {
+.posts > div:first-child > p:first-child {
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 800;
 }
-.posts > a > div:first-child > p > img {
+.posts > div:first-child > p:last-child > img {
     width: 15px;
     padding-top: 4px;
 }
-.posts > a > div:nth-child(2) {
+.posts > div:nth-child(2) {
     color: #5e5e5e;
 }
-.posts > a > div:nth-child(3) {
-    padding: 5px;
-}
-.posts > div:nth-child(2) {
+.posts > div:nth-child(3) {
     display: flex;
     justify-content: end;
 }
-.posts > div:nth-child(2) > p {
+.posts > div:nth-child(3) > p {
     align-items: center;
     font-size: 12px;
 }
-.posts > div:nth-child(2) > p > img {
+.posts > div:nth-child(3) > p > img {
     width: 18px;
     margin: 0 1px;
 }
