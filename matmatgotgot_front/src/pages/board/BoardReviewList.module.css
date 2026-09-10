@@ -46,10 +46,10 @@
     align-items: center;
     font-size: 12px;
 }
-.posts > div:nth-child(3) > p > img {
+.posts > div:last-child > p {
     width: 18px;
 }
-.post > div:last-child > p {
+.post > div:last-child > p > img {
     display: flex;
     justify-content: end;
     padding: 0 12px;
