@@ -40,7 +40,7 @@
 }
 .posts > div:nth-child(3) {
     display: flex;
-    justify-content: end;
+   justify-content: flex-start;
 }
 .posts > div:nth-child(3) > p {
     align-items: center;
@@ -48,8 +48,12 @@
 }
 .posts > div:nth-child(3) > p > img {
     width: 18px;
-    margin: 2px 0 1px 0;
+}
+.post > div:last-child > p {
+    display: flex;
+    justify-content: end;
+    padding: 0 12px;
 }
 .likeCount {
-
+    margin: 2px 0 0 0;
 }
