@@ -522,7 +522,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               top: 0,
               left: 0,
               width: "100vw",
-              height: "100vh",
+              height: "90vh",
               backgroundColor: "rgba(0, 0, 0, 0.5)",
               display: "flex",
               justifyContent: "center",
