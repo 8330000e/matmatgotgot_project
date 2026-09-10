@@ -726,7 +726,7 @@ export const Myreview = ({memberInfo}) => {
         .catch((error) => {
             console.error("Error fetching my reviews:", error);
         });
-    }, [page, size, memberId]);
+    }, [page, size, memberId, order]);
 
     return (<>
         <div className={`${styles.content_menu_wrap} ${styles.content_myreview_wrap}`}>

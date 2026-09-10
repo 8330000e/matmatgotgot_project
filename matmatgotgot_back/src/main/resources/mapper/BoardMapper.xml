@@ -126,12 +126,9 @@
         ON B.MEMBER_ID = M.MEMBER_ID
 
         <where>
-
-            B.REVIEW_STATUS = 1
-
-            
+            B.MEMBER_ID = #{memberId}
+            AND B.REVIEW_STATUS = 1
         </where>
-
 
     </select>
 
