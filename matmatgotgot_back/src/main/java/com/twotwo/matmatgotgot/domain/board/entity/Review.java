@@ -45,4 +45,7 @@ public class Review {
 
     private Integer reviewTagsNo;
     private String tagName;
+
+    private Integer boardLike;
+    private Integer boardView;
 }

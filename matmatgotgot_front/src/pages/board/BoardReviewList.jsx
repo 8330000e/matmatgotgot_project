@@ -26,7 +26,7 @@ const BoardItem = ({ board, no }) => {
                         <p>{board.restName}</p>
                         <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
                     </div>
-                    <div>{board.createDate && board.createDate.slice(0, 10)}</div>
+                    <div>{board.createAt && board.createDate.slice(0, 10)}</div>
                 </div>
                 <div>{board.reviewContent && board.reviewContent.slice(0, 52)}...</div>
             </a>
@@ -41,4 +41,4 @@ const BoardItem = ({ board, no }) => {
     );
 };
 
-export default{ BoardReviewList, BoardItem};
+export default BoardReviewList;
