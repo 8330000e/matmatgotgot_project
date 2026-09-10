@@ -36,6 +36,7 @@ import BoardReports from "../../components/member/BoardReports.jsx";
 import {useKakaoPostcode} from "@clroot/react-kakao-postcode";
 import DaumPostcode from "react-daum-postcode";
 import BoardReviewList from "../board/BoardReviewList";
+import NativeAuthSection from "../../components/member/NativeAuthSection.jsx";
 
 export const MypagePage = () => {
    const location = useLocation();
@@ -483,7 +484,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                   <button
                     type="button"
                     className={styles.native_submit}
-                    onClick={<ProfilePage />}
+                    onClick={<NativeAuthSection/>}
                   >
                     {native && typeof native === "object" ? "재인증" : "인증"}
                   </button>
