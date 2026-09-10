@@ -355,6 +355,10 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     });
   };
 
+  const NativeAuthSection = () => {
+    return (<NativeAuthSection/>);
+  };
+
   const developing = () => {
     Swal.mixin({
       toast: true,
