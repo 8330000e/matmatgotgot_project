@@ -118,7 +118,7 @@
     <!-- 내 리뷰 개수 조회 -->
     <select id="selectMyReviewCount"
             parameterType="listItem"
-            resultType="int">
+            resultType="Integer">
 
         SELECT COUNT(*)
         FROM review_tbl B
