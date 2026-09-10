@@ -23,6 +23,10 @@
     display: flex;
     gap: 10px;
 }
+.post > a > div:first-child > div:first-child > p:first-child {
+    font-size: 15px;
+    font-weight: 600;
+}
 .post > a > div:first-child > div:first-child > p > img {
     width: 15px;
     padding-top: 4px;
