@@ -122,9 +122,31 @@
 
         SELECT COUNT(*)
         FROM review_tbl B
+        JOIN member_tbl M
+        ON B.MEMBER_NO = M.MEMBER_NO
+
         <where>
-            B.MEMBER_ID = #{memberId}
+
+            B.REVIEW_STATUS = 1
+
+            <if test="searchKeyword != null and searchKeyword != ''">
+
+                <choose>
+
+                    <when test="searchType == 1">
+                        AND B.BOARD_TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+
+                    <when test="searchType == 2">
+                        AND M.MEMBER_NICKNAME LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+
+                </choose>
+
+            </if>
+
         </where>
+
 
     </select>
 

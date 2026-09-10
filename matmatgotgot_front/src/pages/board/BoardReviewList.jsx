@@ -20,12 +20,12 @@ const BoardItem = ({ board, no }) => {
     const navigate = useNavigate();
     const items = [];
     const rating = () => {
-        for (var i = 0; i < board.rating.length; i++) {
+        for (var i = 0; i < (board.rating).length; i++) {
             items.push(
                     <img src={starFill} alt="starFill" key={`${board.boardNo}-starFill-${i}`} />
             );
         }
-        for (var j = 5-board.rating; j > 0; j--) {
+        for (var j = 5-(board.rating).length; j > 0; j--) {
             items.push(
                     <img src={star} alt="star" key={`${board.boardNo}-star-${i}`} />
             );

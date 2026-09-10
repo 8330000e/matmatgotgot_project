@@ -1,10 +1,8 @@
 .board_list_wrap > ul {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 5px;
     cursor: pointer;
-}
-.board_list_wrap > ul > .post {
-    margin-bottom: 5px;
 }
 .posts {
     display: flex;
