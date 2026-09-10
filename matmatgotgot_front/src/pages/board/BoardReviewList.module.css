@@ -1,4 +1,4 @@
-.board_list_wrap > ul {
+.board_list_wrap {
     display: flex;
     flex-direction: column;
     gap: 5px;
