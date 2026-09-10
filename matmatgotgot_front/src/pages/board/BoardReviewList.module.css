@@ -1,11 +1,12 @@
 .board_list_wrap {
     display: flex;
+    flex-direction: column;
     gap: 5px;
     cursor: pointer;
 }
 .post {
     display: flex;
-    flex-direction: column;
+    gqp: 5px;
     padding: 15px;
     border: 1px solid var(--text1);
     border-radius: 10px;
