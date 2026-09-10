@@ -355,10 +355,6 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     });
   };
 
-  const NativeAuthSection = () => {
-    return (<NativeAuthSection/>);
-  };
-
   const developing = () => {
     Swal.mixin({
       toast: true,
@@ -488,9 +484,8 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                   <button
                     type="button"
                     className={styles.native_submit}
-                    onClick={NativeAuthSection}
                   >
-                    {native && typeof native === "object" ? "재인증" : "인증"}
+                    {native && typeof native === "object" ? "재인증" : <div>인증<NativeAuthSection/></div>}
                   </button>
                 )}
               </li>
