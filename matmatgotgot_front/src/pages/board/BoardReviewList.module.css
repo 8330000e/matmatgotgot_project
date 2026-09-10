@@ -4,67 +4,50 @@
     gap: 5px;
     cursor: pointer;
 }
-.posts {
+.post {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-}
-.post {
-    padding: 10px 15px;
+    padding: 15px;
     border: 1px solid var(--text1);
     border-radius: 10px;
     cursor: pointer;
 }
-.post > a > div:first-child {
+.number {
+    font-size: 16px;
+    font-weight: 600;
+    width: 10%
+}
+.posts > a {
     display: flex;
     justify-content: space-between;
 }
-.post > a > div:first-child > div:first-child {
+.posts > a > div:first-child {
     display: flex;
     gap: 10px;
 }
-.post > a > div:first-child > div:first-child > p:first-child {
+.posts > a > div:first-child > p:first-child {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
 }
-.post > a > div:first-child > div:first-child > p > img {
+.posts > a > div:first-child > p > img {
     width: 15px;
     padding-top: 4px;
 }
-.post > a > div:nth-child(2) {
+.posts > a > div:nth-child(2) {
+    color: #5e5e5e;
+}
+.posts > a > div:nth-child(3) {
     padding: 5px;
 }
-.post > a > div:nth-child(3) {
-    padding: 5px;
-}
-.post > div:nth-child(2) > div {
+.posts > div:nth-child(2) {
     display: flex;
     justify-content: end;
-    gap: 8px;
 }
-.post > div:nth-child(2) > div > p {
-    display: flex;
-    justify-content: end;
+.posts > div:nth-child(2) > p {
     align-items: center;
     font-size: 12px;
 }
-.post > div:nth-child(2) > div > p > img {
+.posts > div:nth-child(2) > p > img {
     width: 18px;
     margin: 0 1px;
-}
-.content_myreview_wrap > div:last-child {
-    margin: 0 auto;
-}
-.posts_bar_search {
-    display: flex;
-    gap: 5px;
-}
-.posts_bar_search > input {
-    width: 100px;
-    height: 10px;
-}
-.posts_bar_search > p {
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
