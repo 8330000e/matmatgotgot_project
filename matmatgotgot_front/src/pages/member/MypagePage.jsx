@@ -522,7 +522,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
               top: 0,
               left: 0,
               width: "100vw",
-              height: "90vh",
+              height: "100vh",
               backgroundColor: "rgba(0, 0, 0, 0.5)",
               display: "flex",
               justifyContent: "center",
@@ -534,7 +534,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
             <div
               style={{
                 width: "500px",
-                height: "600px",
+                height: "400px",
                 backgroundColor: "#fff",
                 borderRadius: "10px",
                 overflow: "hidden",
