@@ -163,13 +163,13 @@
             B.CREATED_AT
 
         <choose>
-            <when test="order == 1">
+            <when test="item.order == 1">
                 ORDER BY B.CREATED_AT DESC
             </when>
-            <when test="order == 2">
+            <when test="item.order == 2">
                 ORDER BY BOARD_LIKE DESC
             </when>
-            <when test="order == 3">
+            <when test="item.order == 3">
                 ORDER BY B.RATING DESC
             </when>
             <otherwise>
@@ -177,7 +177,7 @@
             </otherwise>
         </choose>
 
-        LIMIT #{request.offset}, #{request.size}
+        LIMIT #{item.offset}, #{item.size}
 
     </select>
 
