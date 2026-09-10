@@ -719,6 +719,7 @@ export const Myreview = ({memberInfo}) => {
             }
         })
         .then((response) => {
+            console.log(response);
             setMyReviews(response.data.items);
             setTotalPage(response.data.totalPages);
         })

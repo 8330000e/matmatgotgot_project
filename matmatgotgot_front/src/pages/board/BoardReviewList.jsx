@@ -20,14 +20,16 @@ const BoardItem = ({ board, no }) => {
     const navigate = useNavigate();
     return (<>
             <div className={styles.post}>
-            <div>
+            <a href={`${import.meta.env.BACKSERVER}/rest/review/view/${board.restNo}`}>
                 <div>
-                    <p>{board.rest_name}</p>
-                    <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                    <div>
+                        <p>{board.restName}</p>
+                        <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                    </div>
+                    <div>{board.createDate && board.createDate.slice(0, 10)}</div>
                 </div>
-                <div>{board.createDate && board.createDate.slice(0, 10)}</div>
-            </div>
-            <div>{board.reviewContent && board.reviewContent.slice(0, 52)}...</div>
+                <div>{board.reviewContent && board.reviewContent.slice(0, 52)}...</div>
+            </a>
             <div>
                 <div>
                     <p><img src={heart} /> {board.boardLike}</p>
@@ -39,4 +41,4 @@ const BoardItem = ({ board, no }) => {
     );
 };
 
-export default BoardReviewList;
+export default{ BoardReviewList, BoardItem};
