@@ -3,7 +3,7 @@
     gap: 10px;
     cursor: pointer;
 }
-.board_list_wrap > ul > div {
+.board_list_wrap > ul > .post {
     margin-bottom: 5px;
 }
 .posts {

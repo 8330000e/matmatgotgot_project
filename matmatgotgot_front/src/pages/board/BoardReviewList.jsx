@@ -18,15 +18,33 @@ const BoardReviewList = ({ myboard }) => {
 
 const BoardItem = ({ board, no }) => {
     const navigate = useNavigate();
-    return (<>
+    const items = [];
+    const rating = () => {
+        for (var i = 0; i < board.rating.length; i++) {
+            items.push(
+                    <img src={starFill} alt="starFill" key={`${board.boardNo}-starFill-${i}`} />
+            );
+        }
+        for (var j = 5-board.rating; j > 0; j--) {
+            items.push(
+                    <img src={star} alt="star" key={`${board.boardNo}-star-${i}`} />
+            );
+        }
+
+        return items;
+    };
+
+    return (
+        <>
             <div className={styles.post}>
-            <a href={`${import.meta.env.BACKSERVER}/rest/review/view/${board.restNo}`}>
+            <a href={`https://d2lg74d5mqmhqe.cloudfront.net/rest/review/view/${board.restNo}`}>
                 <div>
                     <div>
                         <p>{board.restName}</p>
-                        <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p>
+                        {rating()}
+                        {/* <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p> */}
                     </div>
-                    <div>{board.createAt && board.createDate.slice(0, 10)}</div>
+                    <div>{board.createAt && board.createAt.slice(0, 10)}</div>
                 </div>
                 <div>{board.reviewContent && board.reviewContent.slice(0, 52)}...</div>
             </a>
