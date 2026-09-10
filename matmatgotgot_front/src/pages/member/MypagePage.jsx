@@ -483,7 +483,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                   <button
                     type="button"
                     className={styles.native_submit}
-                    onClick={openPostcode}
+                    onClick={ProfilePage}
                   >
                     {native && typeof native === "object" ? "재인증" : "인증"}
                   </button>
@@ -516,44 +516,14 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
 
         {/* 주소 검색 모달 */}
         {isPostcodeOpen && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 9999,
-            }}
+          <div className={styles.postback}
             onClick={() => setIsPostcodeOpen(false)}
           >
-            <div
-              style={{
-                width: "500px",
-                height: "400px",
-                backgroundColor: "#fff",
-                borderRadius: "10px",
-                overflow: "hidden",
-                position: "relative",
-              }}
+            <div className={styles.postopen}
               onClick={(e) => e.stopPropagation()}
             >
-              <button
+              <button className={styles.postclose}
                 type="button"
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  zIndex: 10,
-                  border: "none",
-                  background: "none",
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
                 onClick={() => setIsPostcodeOpen(false)}
               >
                 ✕
