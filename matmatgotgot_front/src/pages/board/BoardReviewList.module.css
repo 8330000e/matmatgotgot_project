@@ -17,6 +17,11 @@
     font-weight: 600;
     width: 10%
 }
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 .posts > a {
     display: flex;
     justify-content: space-between;
