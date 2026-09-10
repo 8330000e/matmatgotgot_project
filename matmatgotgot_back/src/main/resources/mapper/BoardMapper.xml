@@ -177,7 +177,7 @@
             </otherwise>
         </choose>
 
-        LIMIT #{offset}, #{size}
+        LIMIT #{request.offset}, #{request.size}
 
     </select>
 
