@@ -721,7 +721,7 @@ export const Myreview = ({memberInfo}) => {
         .then((response) => {
             console.log(response);
             setMyReviews(response.data.items);
-            setTotalPage(response.data.totalPages);
+            setTotalPage(response.data.totalPage);
         })
         .catch((error) => {
             console.error("Error fetching my reviews:", error);

@@ -44,8 +44,8 @@ const BoardItem = ({ board, no }) => {
                         <p>{rating()}</p>
                         {/* <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p> */}
                     </div>
-                    <div>{board.createdAt && board.createdAt.slice(0, 10)}</div>
                 </div>
+                <div>{board.createdAt && board.createdAt.slice(0, 10)}</div>
                 <div>{board.reviewContent && board.reviewContent.slice(0, 52)}...</div>
             </a>
             <div>
