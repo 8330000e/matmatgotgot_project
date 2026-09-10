@@ -41,7 +41,7 @@ const BoardItem = ({ board, no }) => {
                 <div>
                     <div>
                         <p>{board.restName}</p>
-                        {rating()}
+                        <p>{rating()}</p>
                         {/* <p><img src={starFill} /><img src={starFill} /><img src={starFill} /><img src={star} /><img src={star} /></p> */}
                     </div>
                     <div>{board.createAt && board.createAt.slice(0, 10)}</div>
