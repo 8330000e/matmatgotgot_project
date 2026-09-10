@@ -141,11 +141,14 @@
             B.VISIT_DATE,
             B.IS_LOCAL_REVIEW,
             B.REVIEW_STATUS,
+            R.REST_NAME,
             COUNT(L.MEMBER_ID) AS BOARD_LIKE,
             B.CREATED_AT
         FROM review_tbl B
         JOIN member_tbl M 
         ON B.MEMBER_ID = M.MEMBER_ID
+        LEFT JOIN restaurant_tbl R
+        ON B.REST_NO = R.REST_NO
         LEFT JOIN review_like_tbl L 
         ON B.REVIEW_NO = L.REVIEW_NO
         <where>
@@ -160,7 +163,8 @@
             B.VISIT_DATE,
             B.IS_LOCAL_REVIEW,
             B.REVIEW_STATUS,
-            B.CREATED_AT
+            B.CREATED_AT,
+            R.REST_NAME
 
         <choose>
             <when test="item.order == 1">

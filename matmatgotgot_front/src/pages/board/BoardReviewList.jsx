@@ -33,7 +33,6 @@ const BoardItem = ({ board, no }) => {
             <div>
                 <div>
                     <p><img src={heart} /> {board.boardLike}</p>
-                    <p><img src={view} /> {board.boardView}</p>
                 </div>
             </div>
             </div>

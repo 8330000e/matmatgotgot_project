@@ -709,7 +709,7 @@ export const Myreview = ({memberInfo}) => {
     const [myReviews, setMyReviews] = useState([]);
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(5);
-    const size = 10;
+    const size = 6;
     useEffect(() => {
         axios.get(`${import.meta.env.VITE_BACKSERVER}/boards/${memberId}/myreview`,{
             params: {

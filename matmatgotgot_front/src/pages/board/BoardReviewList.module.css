@@ -3,6 +3,9 @@
     gap: 10px;
     cursor: pointer;
 }
+.board_list_wrap > ul > div {
+    margin-bottom: 5px;
+}
 .posts {
     display: flex;
     flex-direction: column;
