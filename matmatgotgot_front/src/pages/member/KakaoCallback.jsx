@@ -23,7 +23,7 @@ export default function GoogleCallback() {
           memberThumb: googleUser.memberThumb, 
           admin: googleUser.admin ?? false, 
           token: googleUser.token,             
-          endTime: googleUser.validity || (new Date().getTime() + 3600000), 
+          endTime: googleUser.validity || (new Date().getTime() + 10800000), 
         });
         navigate("/");
       }).catch(err => {

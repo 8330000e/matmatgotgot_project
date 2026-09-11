@@ -38,7 +38,7 @@ const NaverCallbackPage = () => {
             memberThumb: res.data.memberThumb || null,
             admin: false,
             token: res.data.token,
-            endTime: new Date().getTime() + 3600000, // 1시간 타이머
+            endTime: new Date().getTime() + 10800000, // 1시간 타이머
           });
 
           navigate("/"); // 메인 화면으로 이동

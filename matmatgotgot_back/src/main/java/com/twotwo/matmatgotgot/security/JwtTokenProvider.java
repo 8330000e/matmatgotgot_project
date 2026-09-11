@@ -22,7 +22,7 @@ public class JwtTokenProvider {
     private String secretKeyString;
 
     @Value("${jwt.expiration}")
-    private long expiration; // 밀리초 단위 (예: 3600000 = 1시간)
+    private long expiration; // 밀리초 단위 (예: 10800000 = 1시간)
 
     private SecretKey secretKey;
 

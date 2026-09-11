@@ -127,7 +127,7 @@ const Login = () => {
         memberThumb: googleUser.memberThumb, 
         admin: googleUser.admin ?? false, 
         token: googleUser.token,              
-        endTime: googleUser.validity || (new Date().getTime() + 3600000), 
+        endTime: googleUser.validity || (new Date().getTime() + 10800000), 
       });
       navigate("/");
     } catch (err) {
@@ -214,7 +214,7 @@ const Login = () => {
         memberThumb: res.data.memberThumb || null,
         admin: false,
         token: res.data.token,
-        endTime: new Date().getTime() + 3600000,
+        endTime: new Date().getTime() + 10800000,
       });
       Swal.mixin({
         toast: true,
