@@ -4,7 +4,7 @@ import styles from './NativeAuthSection.module.css';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Input } from '../ui/Form';
 
-function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
+function NativeAuthSection({check, memberInfo, native, setMemberInfo, openPostcode}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -35,7 +35,7 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                   }))
                 } />
               <div>
-                <button className={`${styles.native_submit} ${styles.native_addr_submit}`}>찾기</button>
+                <button className={`${styles.native_submit} ${styles.native_addr_submit}`} onClick={openPostcode}>찾기</button>
               </div>
             </div>
           </div>
