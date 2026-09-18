@@ -35,7 +35,7 @@
     padding: 25px;
     border-radius: 8px;
     min-width: 400px;
-    height: 600ps;
+    height: 600px;
     position: relative;
 }
 .xbutton {
@@ -55,10 +55,14 @@
     font-weight: 800;
 }
 .modal_content > div > div > input {
-    height: 25px;
+    height: 30px;
     font-size: 13px;
     font-weight: 500;
     padding: 0 15px;
+}
+.modal_content > div {
+    display: flex;
+    flex-direction: column;
 }
 .modal_content > div > div:nth-child(2) {
     display: flex;
@@ -71,7 +75,7 @@
     border-radius: 18px;
 }
 .modal_content > div > div {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 .native_certified_submit {
     text-align: center;
@@ -80,4 +84,9 @@
     border-radius: 30px;
     padding: 10px 18px;
     font-size: 14px;
+}
+.modal_content > button:nth-child(2) {
+    text-align: center;
+    display: flex;
+    justify-content: center;
 }

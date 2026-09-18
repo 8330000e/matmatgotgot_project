@@ -27,7 +27,7 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                 type="text"
                 name="memberAddress"
                 id="memberAddress"
-                value="memberAddress"
+                value=""
                 onChange={(e) =>
                   setMemberInfo((prev) => ({
                     ...prev,
