@@ -5,6 +5,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 function NativeAuthSection({check, memberInfo, native}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log(memberInfo, native);
 
   return (
     <div>
@@ -14,7 +15,7 @@ function NativeAuthSection({check, memberInfo, native}) {
       <div className={styles.modal_overlay}>
         <div className={styles.modal_content}>
             <h2>현지인 인증</h2>
-            <button className={styles.xbutton} onClick={() => setIsModalOpen(false)}><CloseOutlinedIcon/></button>
+            <button onClick={() => setIsModalOpen(false)}><CloseOutlinedIcon/></button>
           <div>
             <div>
               <p>현재주소</p>
