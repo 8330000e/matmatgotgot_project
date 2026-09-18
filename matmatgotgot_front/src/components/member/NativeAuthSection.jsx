@@ -4,8 +4,9 @@ import styles from './NativeAuthSection.module.css';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Input } from '../ui/Form';
 
-function NativeAuthSection({check, memberInfo, native, setMemberInfo, openPostcode}) {
+function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [address, setAddress] = useState("");
 
   return (
     <div>
@@ -23,19 +24,17 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo, openPostco
             </div>
             <div>
               <p>현지인 인증주소</p>
-              <Input
-                type="text"
-                name="memberAddress"
-                id="memberAddress"
-                value=""
-                onChange={(e) =>
-                  setMemberInfo((prev) => ({
-                    ...prev,
-                    [e.target.name]: e.target.value,
-                  }))
-                } />
               <div>
-                <button className={`${styles.native_submit} ${styles.native_addr_submit}`} onClick={openPostcode}>찾기</button>
+                <Input
+                  type="text"
+                    name="address"
+                    id="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)
+                  } />
+                <div>
+                  <button className={`${styles.native_submit} ${styles.native_addr_submit}`} onClick={openPostcode}>찾기</button>
+                </div>
               </div>
             </div>
           </div>
