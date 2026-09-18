@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import styles from './NativeAuthSection.module.css';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
-function NativeAuthSection({check}) {
+function NativeAuthSection({check, memberInfo, native}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -16,9 +16,19 @@ function NativeAuthSection({check}) {
             <h2>현지인 인증</h2>
             <button className={styles.xbutton} onClick={() => setIsModalOpen(false)}><CloseOutlinedIcon/></button>
           <div>
-            <p>현재 위치 정보를 기반으로 인증을 진행합니다.</p>
+            <div>
+              <p>현재주소</p>
+              <p>{memberInfo.memberAddress}</p>
+            </div>
+            <div>
+              <p>현지인 인증주소</p>
+              <div>
+                <input type="text" />
+                <button>찾기</button>
+              </div>
+            </div>
           </div>
-          <button>인증하기</button>
+          <button className={`${styles.native_submit}` `${styles.native_certified_submit}`}>인증하기</button>
         </div>
       </div>,
       document.body // 2. 타겟을 document.body로 지정!
