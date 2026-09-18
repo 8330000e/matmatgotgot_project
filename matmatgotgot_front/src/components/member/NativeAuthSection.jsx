@@ -33,7 +33,7 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                     onChange={(e) => setAddress(e.target.value)
                   } />
                 <div>
-                  <button className={`${styles.native_submit} ${styles.native_addr_submit}`} onClick={openPostcode}>찾기</button>
+                  <button className={`${styles.native_submit} ${styles.native_addr_submit}`}>찾기</button>
                 </div>
               </div>
             </div>
