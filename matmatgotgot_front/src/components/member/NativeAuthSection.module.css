@@ -43,16 +43,21 @@
     right: 20px;
     top: 20px;
     background-color: transparent;
+    cursor: pointer;
 }
 .modal_content > div:first-child > h2 {
     display: flex;
     justify-content: center;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+}
+.modal_content > div > div > p:first-child {
+    font-weight: 600;
 }
 .native_certified_submit {
     display: flex;
     justify-content: center;
     border-radius: 20px;
+    padding: 18px;
     font-size: 14px;
 }
