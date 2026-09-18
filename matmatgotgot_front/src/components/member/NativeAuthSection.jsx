@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './NativeAuthSection.module.css';
 
-function NativeAuthSection(check) {
+function NativeAuthSection({check}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
