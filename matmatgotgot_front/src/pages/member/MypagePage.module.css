@@ -234,6 +234,7 @@
     text-decoration: none;
     border-radius: 18px;
     cursor: none;
+    margin: 3px 0 0 3px;
 }
 .native_expired {
     color: #e82222;
