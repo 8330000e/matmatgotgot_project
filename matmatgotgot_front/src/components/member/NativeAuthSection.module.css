@@ -1,5 +1,4 @@
 .native_submit {
-    border: none;
     display: flex;
     justify-content: right;
     align-self: flex-end;
@@ -13,6 +12,11 @@
     text-decoration: none;
     border-radius: 18px;
     cursor: pointer;
+}
+.xbutton {
+    border: none;
+    outline: none;
+    text-decoration: none;
 }
 .modal_overlay {
     position: fixed;
@@ -31,4 +35,13 @@
     padding: 20px;
     border-radius: 8px;
     min-width: 300px;
+    position: relative;
+}
+.xbutton {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+.modal_content > div:first-child > h2 {
+    text-align: center;
 }
