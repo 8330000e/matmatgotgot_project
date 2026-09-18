@@ -485,7 +485,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                     type="button"
                     className={styles.native_submit}
                   >
-                    {native && typeof native === "object" ? "재인증" : <div><NativeAuthSection check={"인증"} /></div>}
+                    {native && typeof native === "object" ? <div><NativeAuthSection check={"재인증"} /></div> : <div><NativeAuthSection check={"인증"} /></div>}
                   </button>
                 )}
               </li>

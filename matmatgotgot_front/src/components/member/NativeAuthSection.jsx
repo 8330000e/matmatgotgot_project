@@ -6,7 +6,7 @@ function NativeAuthSection({check}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div>
+    <div className={styles.native_submit}>
       <button onClick={() => setIsModalOpen(true)}>{check}</button>
 
       {isModalOpen && ReactDOM.createPortal(
