@@ -39,8 +39,9 @@
 }
 .xbutton {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 20px;
+    top: 20px;
+    background-color: transparent;
 }
 .modal_content > div:first-child > h2 {
     text-align: center;
