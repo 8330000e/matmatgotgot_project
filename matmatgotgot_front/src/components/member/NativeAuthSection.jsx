@@ -13,10 +13,8 @@ function NativeAuthSection({check}) {
       {isModalOpen && ReactDOM.createPortal(
       <div className={styles.modal_overlay}>
         <div className={styles.modal_content}>
-          <div>
             <h2>현지인 인증</h2>
             <button className={styles.xbutton} onClick={() => setIsModalOpen(false)}>{CloseOutlinedIcon}</button>
-          </div>
           <div>
             <p>현재 위치 정보를 기반으로 인증을 진행합니다.</p>
           </div>
