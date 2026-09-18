@@ -45,19 +45,19 @@
     background-color: transparent;
     cursor: pointer;
 }
-.modal_content > div:first-child > h2 {
+.modal_content > h2 {
     display: flex;
     justify-content: center;
     text-align: center;
     margin-bottom: 20px;
 }
 .modal_content > div > div > p:first-child {
-    font-weight: 600;
+    font-weight: 800;
 }
 .native_certified_submit {
     display: flex;
     justify-content: center;
-    border-radius: 20px;
-    padding: 18px;
+    border-radius: 30px;
+    padding: 10px 18px;
     font-size: 14px;
 }
