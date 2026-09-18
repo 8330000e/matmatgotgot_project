@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './NativeAuthSection.module.css';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import { Input } from '../ui/Form';
 
-function NativeAuthSection({check, memberInfo, native}) {
+function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -23,8 +24,18 @@ function NativeAuthSection({check, memberInfo, native}) {
             <div>
               <p>현지인 인증주소</p>
               <div>
-                <input type="text" />
-                <button>찾기</button>
+                <Input
+                  type="text"
+                  name="memberAddress"
+                  id="memberAddress"
+                  value={memberInfo.memberAddress || ""}
+                  onChange={(e) =>
+                    setMemberInfo((prev) => ({
+                      ...prev,
+                      [e.target.name]: e.target.value,
+                    }))
+                  } />
+                <button className={styles.native_submit}>찾기</button>
               </div>
             </div>
           </div>
