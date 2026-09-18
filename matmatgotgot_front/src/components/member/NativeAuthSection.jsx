@@ -23,19 +23,19 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
             </div>
             <div>
               <p>현지인 인증주소</p>
+              <Input
+                type="text"
+                name="memberAddress"
+                id="memberAddress"
+                value="memberAddress"
+                onChange={(e) =>
+                  setMemberInfo((prev) => ({
+                    ...prev,
+                    [e.target.name]: e.target.value,
+                  }))
+                } />
               <div>
-                <Input
-                  type="text"
-                  name="memberAddress"
-                  id="memberAddress"
-                  value={memberInfo.memberAddress || ""}
-                  onChange={(e) =>
-                    setMemberInfo((prev) => ({
-                      ...prev,
-                      [e.target.name]: e.target.value,
-                    }))
-                  } />
-                <button className={styles.native_submit}>찾기</button>
+                <button className={`${styles.native_submit} ${styles.native_addr_submit}`}>찾기</button>
               </div>
             </div>
           </div>
