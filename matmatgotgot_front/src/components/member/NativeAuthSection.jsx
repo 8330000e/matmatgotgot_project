@@ -3,9 +3,17 @@ import ReactDOM from 'react-dom';
 import styles from './NativeAuthSection.module.css';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
-function NativeAuthSection({check, memberInfo, native}) {
+function NativeAuthSection({check, memberInfo, native, setNative}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   console.log(memberInfo, native);
+  try {
+    if (native && typeof native === "object") {
+          setNative(null);
+        }
+  } catch {
+    console.error("에러");
+    setNative(null);
+  }
 
   return (
     <div>
