@@ -49,4 +49,6 @@ public interface MemberMapper {
     Natives getNativeDate(String memberId);
 
     Natives getMyReview(String memberId);
+
+    Integer countReview(String memberId);
 }

@@ -483,6 +483,12 @@ public class MemberController {
 		return ResponseEntity.ok(nativeInfo);
     }
 
+	@GetMapping(value = "/natives/count")
+	public ResponseEntity<?> countReview(@RequestParam("memberId") String memberId) {
+		Integer count = memberService.countReview(memberId);
+		return ResponseEntity.ok(count);
+	}
+
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member, Model model) throws MessagingException {
 		String emailTitle = "[맛맛곳곳] 회원가입 인증 메일입니다.";

@@ -221,4 +221,9 @@ public class MemberService {
         int result = memberMapper.deleteMember(memberId);
         return result;
     }
+
+    public Integer countReview(String memberId) {
+        Integer count = memberMapper.countReview(memberId);
+        return count;
+    }
 }

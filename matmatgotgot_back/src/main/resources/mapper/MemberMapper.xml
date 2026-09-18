@@ -74,4 +74,10 @@
 			ON review_tbl.rest_no = restaurant_tbl.rest_no
 		WHERE review_tbl.member_id = #{memberId};
 	</select>
+	<select id="countReview" resultType="Integer">
+		SELECT
+		COUNT(member_id)
+		FROM review_tbl
+		WHERE member_id = #{memberId};
+	</select>
 </mapper>
