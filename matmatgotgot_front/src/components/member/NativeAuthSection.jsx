@@ -7,7 +7,7 @@ function NativeAuthSection({check, memberInfo, native, setNative}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   console.log(memberInfo, native);
   try {
-    if (native && typeof native === "object") {
+    if (!native && typeof native === "object") {
           setNative(null);
         }
   } catch {
