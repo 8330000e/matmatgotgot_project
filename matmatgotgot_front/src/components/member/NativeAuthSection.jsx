@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './NativeAuthSection.module.css';
 
-function NativeAuthSection() {
+function NativeAuthSection(check) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div>
-      <button onClick={() => setIsModalOpen(true)}>동네 인증하기</button>
+      <button onClick={() => setIsModalOpen(true)}>{check}</button>
 
       {isModalOpen && ReactDOM.createPortal(
       <div className={styles.modal_overlay}>
