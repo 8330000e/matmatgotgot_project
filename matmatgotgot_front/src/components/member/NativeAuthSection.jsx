@@ -59,8 +59,28 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                 </div>
               </div>
             </div>
+            <div>
+              <p>내 ㅇㅇ구 맛집 리뷰목록</p>
+              <div>
+                {/* <ul>목록출력컴포넌트</ul> */}
+                <ul>
+                  <li>NO</li>
+                  <li>지역</li>
+                  <li>인증 기간</li>
+                  <li>만료여부</li>
+                </ul>
+                {/* <ul>목록출력컴포넌트</ul> */}
+                <ul>
+                  <li>1</li>
+                  <li>종로구</li>
+                  <li>2026.10.30 ~ 2027.04.30</li>
+                  <li>유효</li>
+                </ul>
+                <p>총 리뷰수는 1개로 인증이 불가합니다.</p>
+              </div>
+            </div>
           </div>
-          <button className={styles.native_certified_submit}>인증하기</button>
+          <button className={styles.native_certified_submit}>인증하기{/*인증가능or인증불가*/}</button>
         </div>
       </div>,
       document.body // 2. 타겟을 document.body로 지정!
