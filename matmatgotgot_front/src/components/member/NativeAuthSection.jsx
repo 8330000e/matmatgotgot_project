@@ -69,56 +69,58 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                   <li>리뷰내용</li>
                   <li>작성일</li>
                 </ul>
+                <div>
                 {/* <ul>목록출력컴포넌트</ul> */}
-                <ul className={styles.ullist}>
-                  <li>1</li>
-                  <li>강서구</li>
-                  <li>우주떡집</li>
-                  <li>떡이 너무 맛...</li>
-                  <li>26.10.30</li>
-                </ul>
-                <ul className={styles.ullist}>
-                  <li>2</li>
-                  <li>강서구</li>
-                  <li>모퉁이김밥</li>
-                  <li>김밥은 무조건...</li>
-                  <li>26.12.11</li>
-                </ul>
-                <ul className={styles.ullist}>
-                  <li>2</li>
-                  <li>강서구</li>
-                  <li>모퉁이김밥</li>
-                  <li>김밥은 무조건...</li>
-                  <li>26.12.11</li>
-                </ul>
-                <ul className={styles.ullist}>
-                  <li>3</li>
-                  <li>강서구</li>
-                  <li>옆집떡볶이</li>
-                  <li>떡볶이의 대가...</li>
-                  <li>27.02.26</li>
-                </ul>
-                <ul className={styles.ullist}>
-                  <li>4</li>
-                  <li>강서구</li>
-                  <li>된장찌개짱</li>
-                  <li>제가 또 된장...</li>
-                  <li>27.03.22</li>
-                </ul>
-                <ul className={styles.ullist}>
-                  <li>5</li>
-                  <li>강서구</li>
-                  <li>빵지순례</li>
-                  <li>미쳤습니다요즘...</li>
-                  <li>27.03.31</li>
-                </ul>
-                <ul className={styles.ullist}>
-                  <li>6</li>
-                  <li>강서구</li>
-                  <li>동양찻집</li>
-                  <li>마음의 치유를...</li>
-                  <li>27.04.02</li>
-                </ul>
+                  <ul className={styles.ullist}>
+                    <li>1</li>
+                    <li>강서구</li>
+                    <li>우주떡집</li>
+                    <li>떡이 너무 맛...</li>
+                    <li>26.10.30</li>
+                  </ul>
+                  <ul className={styles.ullist}>
+                    <li>2</li>
+                    <li>강서구</li>
+                    <li>모퉁이김밥</li>
+                    <li>김밥은 무조건...</li>
+                    <li>26.12.11</li>
+                  </ul>
+                  <ul className={styles.ullist}>
+                    <li>2</li>
+                    <li>강서구</li>
+                    <li>모퉁이김밥</li>
+                    <li>김밥은 무조건...</li>
+                    <li>26.12.11</li>
+                  </ul>
+                  <ul className={styles.ullist}>
+                    <li>3</li>
+                    <li>강서구</li>
+                    <li>옆집떡볶이</li>
+                    <li>떡볶이의 대가...</li>
+                    <li>27.02.26</li>
+                  </ul>
+                  <ul className={styles.ullist}>
+                    <li>4</li>
+                    <li>강서구</li>
+                    <li>된장찌개짱</li>
+                    <li>제가 또 된장...</li>
+                    <li>27.03.22</li>
+                  </ul>
+                  <ul className={styles.ullist}>
+                    <li>5</li>
+                    <li>강서구</li>
+                    <li>빵지순례</li>
+                    <li>미쳤습니다요즘...</li>
+                    <li>27.03.31</li>
+                  </ul>
+                  <ul className={styles.ullist}>
+                    <li>6</li>
+                    <li>강서구</li>
+                    <li>동양찻집</li>
+                    <li>마음의 치유를...</li>
+                    <li>27.04.02</li>
+                  </ul>
+                </div>
                 {/* <ul>목록출력컴포넌트</ul> */}
               </div>
               <p>총 리뷰수가 5개 이하로 인증이 불가합니다.</p>

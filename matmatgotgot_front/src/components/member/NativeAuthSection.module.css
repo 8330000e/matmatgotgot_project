@@ -151,6 +151,10 @@
     font-size: 14px;
     padding: 0 5px;
 }
+.modal_content > div > div:nth-child(3) > div {
+    height: 155.887px;
+    overflow-y: hidden;
+}
 .native_certified_submit {
     text-align: center;
     flex-grow: 1;
