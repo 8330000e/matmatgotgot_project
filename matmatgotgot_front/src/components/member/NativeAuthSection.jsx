@@ -77,7 +77,7 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                 </ul>
                 {/* <ul>목록출력컴포넌트</ul> */}
               </div>
-              <p>총 리뷰수는 1개로 인증이 불가합니다.</p>
+              <p>총 리뷰수가 5개 이하로 인증이 불가합니다.</p>
             </div>
           </div>
           <button className={styles.native_certified_submit}>인증하기{/*인증가능or인증불가*/}</button>
