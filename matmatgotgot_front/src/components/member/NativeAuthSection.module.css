@@ -90,7 +90,7 @@
 }
 .modal_content > div > div:last-child > div {
     border: 1px solid var(--text1);
-    border-radius: 20px;
+    border-radius: 18px;
     margin-bottom: 10px;
 }
 .ulfirst {
@@ -103,23 +103,19 @@
     font-size: 14px;
     font-weight: 500;
     padding: 5px 10px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
-.ulfirst {
+.ullist {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
-.ulfirst > li:first-child {
-    border-top-left-radius: 20px;
-}
-.ulfirst > li:last-child {
-    border-top-left-radius: 20px;
+    margin-top: 1px solid var(--text1);
 }
 .ullist > li {
     text-align: center;
     font-size: 12px;
     padding: 4px 8px;
-    border-bottom: 1px solid var(--text1);
 }
 .native_certified_submit {
     text-align: center;
