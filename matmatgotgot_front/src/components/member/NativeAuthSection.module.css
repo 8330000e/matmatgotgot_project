@@ -28,7 +28,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 999999;
 }
 .modal_content {
     display: flex;
@@ -91,6 +91,7 @@
 .modal_content > div > div:last-child > div {
     border: 1px solid var(--text1);
     border-radius: 20px;
+    margin-bottom: 10px;
 }
 .ulfirst {
     display: flex;
@@ -99,24 +100,26 @@
     text-align: center;
     background-color: var(--text1);
     color: #fff;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px 10px;
+}
+.ulfirst {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.ulfirst > li:first-child {
+    border-top-left-radius: 20px;
+}
+.ulfirst > li:last-child {
+    border-top-left-radius: 20px;
 }
 .ullist > li {
     text-align: center;
+    font-size: 12px;
     padding: 4px 8px;
     border-bottom: 1px solid var(--text1);
-}
-.modal_content > div > div:last-child > div > ul > li:nth-child(1) {
-    width: 5%;
-}
-.modal_content > div > div:last-child > div > ul > li:nth-child(2) {
-    width: 20%;
-}
-.modal_content > div > div:last-child > div > ul > li:nth-child(3) {
-    width: 55%;
-}
-.modal_content > div > div:last-child > div > ul > li:nth-child(4) {
-    width: 20%;
 }
 .native_certified_submit {
     text-align: center;
