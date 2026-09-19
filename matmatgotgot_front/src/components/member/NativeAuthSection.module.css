@@ -51,6 +51,7 @@
     justify-content: center;
     text-align: center;
     margin-bottom: 20px;
+    font-weight: 800;
 }
 .modal_content > div {
     display: flex;
@@ -152,7 +153,7 @@
     padding: 0 5px;
 }
 .modal_content > div > div:nth-child(3) > div {
-    height: 25.981px;
+    min-height: 155.887px;
     overflow-y: auto;
 }
 .native_certified_submit {
