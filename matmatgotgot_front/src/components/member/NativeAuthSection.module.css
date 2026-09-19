@@ -92,7 +92,7 @@
     border: 1px solid var(--text1);
     border-radius: 20px;
 }
-.modal_content > div > div:last-child > div > .ulfirst {
+.ulfirst {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -101,7 +101,7 @@
     color: #fff;
     font-weight: 600;
 }
-.modal_content > div > div:last-child > div > ul > li {
+.ullist > li {
     text-align: center;
     padding: 4px 8px;
     border-bottom: 1px solid var(--text1);
