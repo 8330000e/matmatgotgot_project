@@ -65,15 +65,24 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                 <ul className={styles.ulfirst}>
                   <li>NO</li>
                   <li>지역</li>
-                  <li>인증 기간</li>
-                  <li>만료여부</li>
+                  <li>맛집명</li>
+                  <li>리뷰내용</li>
+                  <li>작성일</li>
                 </ul>
                 {/* <ul>목록출력컴포넌트</ul> */}
                 <ul className={styles.ullist}>
                   <li>1</li>
                   <li>종로구</li>
-                  <li>2026.10.30 ~ 2027.04.30</li>
-                  <li>유효</li>
+                  <li>우주떡집</li>
+                  <li>떡이 너무 맛...</li>
+                  <li>2026.10.30</li>
+                </ul>
+                <ul className={styles.ullist}>
+                  <li>2</li>
+                  <li>부평구</li>
+                  <li>모퉁이김밥</li>
+                  <li>김밥은 무조건...</li>
+                  <li>2026.12.11</li>
                 </ul>
                 {/* <ul>목록출력컴포넌트</ul> */}
               </div>
