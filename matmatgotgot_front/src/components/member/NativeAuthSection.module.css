@@ -106,11 +106,20 @@
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
 }
+.ulfirst > li:nth-child(1) {
+    width: 10%;
+}
 .ulfirst > li:nth-child(2) {
-    width: 15%;
+    width: 24%;
 }
 .ulfirst > li:nth-child(3) {
-    width: 40%;
+    width: 30%;
+}
+.ulfirst > li:nth-child(4) {
+    width: 50%;
+}
+.ulfirst > li:nth-child(5) {
+    width: 20%;
 }
 .ullist {
     display: flex;
@@ -127,10 +136,10 @@
     width: 20%;
 }
 .ullist > li:nth-child(2) {
-    width: 18%;
+    width: 30%;
 }
 .ullist > li:nth-child(3) {
-    width: 55%;
+    width: 48%;
 }
 .ullist > li:nth-child(4) {
     width: 28%;

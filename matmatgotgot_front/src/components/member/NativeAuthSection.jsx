@@ -75,14 +75,14 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                   <li>종로구</li>
                   <li>우주떡집</li>
                   <li>떡이 너무 맛...</li>
-                  <li>2026.10.30</li>
+                  <li>26.10.30</li>
                 </ul>
                 <ul className={styles.ullist}>
                   <li>2</li>
                   <li>부평구</li>
                   <li>모퉁이김밥</li>
                   <li>김밥은 무조건...</li>
-                  <li>2026.12.11</li>
+                  <li>26.12.11</li>
                 </ul>
                 {/* <ul>목록출력컴포넌트</ul> */}
               </div>
