@@ -69,7 +69,6 @@
     display: flex;
     flex-direction: row;
     gap: 4px;
-    margin-bottom: 20px;
 }
 .modal_content > div > div > div > input {
     height: 30px;
@@ -85,6 +84,39 @@
     border-radius: 13px;
     flex: 1;
     line-height: 1.4;
+}
+.modal_content > div > div:last-child {
+    margin-bottom: 20px;
+}
+.modal_content > div > div:last-child > div {
+    border: 1px solid var(--text1);
+    border-radius: 20px;
+}
+.modal_content > div > div:last-child > div > .ulfirst {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    background-color: var(--text1);
+    color: #fff;
+    font-weight: 600;
+}
+.modal_content > div > div:last-child > div > ul > li {
+    text-align: center;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--text1);
+}
+.modal_content > div > div:last-child > div > ul > li:nth-child(1) {
+    width: 5%;
+}
+.modal_content > div > div:last-child > div > ul > li:nth-child(2) {
+    width: 20%;
+}
+.modal_content > div > div:last-child > div > ul > li:nth-child(3) {
+    width: 55%;
+}
+.modal_content > div > div:last-child > div > ul > li:nth-child(4) {
+    width: 20%;
 }
 .native_certified_submit {
     text-align: center;
