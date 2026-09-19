@@ -154,6 +154,7 @@
 }
 .modal_content > div > div:nth-child(3) > div {
     min-height: 155.887px;
+    max-height: 155.887px;
     overflow-y: auto;
 }
 .native_certified_submit {
