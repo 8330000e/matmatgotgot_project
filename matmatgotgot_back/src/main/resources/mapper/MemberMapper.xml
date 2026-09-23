@@ -74,35 +74,28 @@
 			ON review_tbl.rest_no = restaurant_tbl.rest_no
 		WHERE review_tbl.member_id = #{memberId}
 	</select>
-	
-	<select id="myReview" resultType="reviewSdto">
+	<select id="myReview" resultType="getreview">
 		SELECT 
-			COUNT(T.member_id) AS reviewCnt,
-			T.guGunSi
-			FROM (
+			COUNT(T.member_id) AS reviewCnt, 
+			T.guGunSi 
+		FROM (
 			SELECT 
-				r.member_id,
-				b.rest_addr,
+				r.member_id, 
+				b.rest_addr, 
 				CASE 
-				WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 2), ' ', -1) LIKE '%시' 
-				AND SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 3), ' ', -1) LIKE '%구'
-				THEN CONCAT(
-						SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 2), ' ', -1), ' ',
+					WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 2), ' ', -1) LIKE '%시' 
+						AND SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 3), ' ', -1) LIKE '%구' 
+					THEN CONCAT(
+						SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 2), ' ', -1), ' ', 
 						SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 3), ' ', -1)
-					)
-				ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 2), ' ', -1)
-				END AS guGunSi
-			FROM review_tbl r
-			JOIN restaurant_tbl b ON r.rest_no = b.rest_no
-			WHERE r.member_id = #{memberId}
-				AND b.rest_addr LIKE CONCAT('%', '#{address}, '%')
-			) T
-
-			<if test="address != null and address != ''">
-				AND b.rest_addr LIKE CONCAT('%', #{address}, '%')
-			</if>
-
-			GROUP BY T.guGunSi;
+					) 
+					ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(b.rest_addr, ' ', 2), ' ', -1) 
+				END AS guGunSi 
+			FROM review_tbl r 
+			JOIN restaurant_tbl b ON r.rest_no = b.rest_no 
+			WHERE r.member_id = #{memberId} 
+			AND b.rest_addr LIKE CONCAT('%', #{address}, '%')
+		GROUP BY T.guGunSi
 	</select>
 	<insert id="insertNative">
 		INSERT INTO natives_tbl (
