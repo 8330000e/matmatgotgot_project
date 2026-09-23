@@ -32,7 +32,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
 
     const fetchNatives = async () => {
       try {
-        const response = await apiClient.get('/api/members/review/natives', {
+        const response = await apiClient.get('/members/review/natives', {
           params: {
             memberId: memberId,
             address: address
@@ -86,6 +86,48 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                       </ul>
                       <ul className={styles.ullist}>
                         <li>2</li>
+                        <li>강서구</li>
+                        <li>모퉁이김밥</li>
+                        <li>김밥은 무조건...</li>
+                        <li>26.12.11</li>
+                      </ul>
+                      <ul className={styles.ullist}>
+                        <li>3</li>
+                        <li>강서구</li>
+                        <li>우주떡집</li>
+                        <li>떡이 너무 맛...</li>
+                        <li>26.10.30</li>
+                      </ul>
+                      <ul className={styles.ullist}>
+                        <li>4</li>
+                        <li>강서구</li>
+                        <li>모퉁이김밥</li>
+                        <li>김밥은 무조건...</li>
+                        <li>26.12.11</li>
+                      </ul>
+                      <ul className={styles.ullist}>
+                        <li>5</li>
+                        <li>강서구</li>
+                        <li>우주떡집</li>
+                        <li>떡이 너무 맛...</li>
+                        <li>26.10.30</li>
+                      </ul>
+                      <ul className={styles.ullist}>
+                        <li>6</li>
+                        <li>강서구</li>
+                        <li>모퉁이김밥</li>
+                        <li>김밥은 무조건...</li>
+                        <li>26.12.11</li>
+                      </ul>
+                      <ul className={styles.ullist}>
+                        <li>7</li>
+                        <li>강서구</li>
+                        <li>우주떡집</li>
+                        <li>떡이 너무 맛...</li>
+                        <li>26.10.30</li>
+                      </ul>
+                      <ul className={styles.ullist}>
+                        <li>8</li>
                         <li>강서구</li>
                         <li>모퉁이김밥</li>
                         <li>김밥은 무조건...</li>
