@@ -41,26 +41,15 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
           }
         });
         console.log(response);
-        setMyreview(response.data);
+        setReviewList(response.data);
       } catch (error) {
         console.error("서버 에러:", error);
+      setReviewList(null);
       }
     };
 
     fetchNatives();
   }, [memberId, address]);
-
-  useEffect(()=>{
-    axios.get(`${import.meta.env.VITE_BACKSERVER}/members/review`, {
-      params: memberId
-    }).then((res)=>{
-      console.log(res);
-      setReviewList(res.data);
-    }).catch((err)=>{
-      console.log(err, ": 에러");
-      setReviewList(null);
-    });
-  },[memberId]);
 
   const certified = () => {
     axios.post(`${import.meta.env.VITE_BACKSERVER}/members/native/certified`, {

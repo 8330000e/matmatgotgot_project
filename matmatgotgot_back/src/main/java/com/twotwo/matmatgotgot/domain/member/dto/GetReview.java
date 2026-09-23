@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.dto;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.apache.ibatis.type.Alias;
@@ -14,16 +15,18 @@ import lombok.ToString;
 @Alias(value = "getreview")
 public class GetReview {
     private String memberId;
+    private Integer reviewNo;
     private Long restNo;
     private String restName;
     private String restAddr;
     private String category;
     private String aiReview;
     private String restContent;
-    private Double lat;
-    private Double lng;
+    private String reviewContent;
+    private Integer reviewState;
     private String phone;
     private String hours;
+    private Integer rating;
     private Integer ratingSum;
     private Integer reviewTotalCount;
     private Double ratingAvg;
@@ -35,4 +38,7 @@ public class GetReview {
     private RestStatus restStatus;  // NORMAL, HIDDEN
     private String restThumb;
     private String createdAt;
+    private Date visitDate;
+    private Integer isLocalReview;
+
 }

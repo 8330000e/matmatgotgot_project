@@ -50,8 +50,6 @@ public interface MemberMapper {
 
     Natives getNativeDate(String memberId);
 
-    List<GetReview> getmyReview(@Param("memberId") String memberId);
-
     List<GetReview> myReview(String memberId, String address);
 
     int insertNative(String memberId);

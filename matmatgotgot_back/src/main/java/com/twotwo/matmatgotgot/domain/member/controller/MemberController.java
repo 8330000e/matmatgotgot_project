@@ -492,12 +492,6 @@ public class MemberController {
 		return ResponseEntity.ok(myreview);
 	}
 
-	@GetMapping(value = "/review")
-	public ResponseEntity<?> getMyReview(@RequestParam("memberId") String memberId) {
-		List<GetReview> getmyReview = memberService.getmyReview(memberId);
-		return ResponseEntity.ok(getmyReview);
-	}
-
 	@PostMapping(value = "/native/certified")
 	public ResponseEntity<?> insertNative(@RequestParam("memberId") String memberId) {
 		int result = memberService.insertNative(memberId);

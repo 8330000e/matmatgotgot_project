@@ -229,10 +229,6 @@ public class MemberService {
         return myreview;
     }
 
-    public List<GetReview> getmyReview(String memberId) {
-        return memberMapper.getmyReview(memberId);
-    }
-
     @Transactional 
     public int insertNative(String memberId) {
         int result = memberMapper.insertNative(memberId);
