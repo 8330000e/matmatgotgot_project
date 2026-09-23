@@ -65,7 +65,7 @@
 	<delete id="deleteMember">
 		delete from member_tbl where member_id = #{memberId}
 	</delete>
-	<select id="getMyReview" resultType="getreivew">
+	<select id="getmyReview" resultType="getreivew">
 		SELECT
 		review_tbl.*,
 		restaurant_tbl.rest_name AS rest_name
