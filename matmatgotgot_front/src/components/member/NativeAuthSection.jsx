@@ -155,8 +155,8 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
               </div>
             </div>
             <button 
-              className={`${styles.native_certified_submit} ${reviewList.length > 4 ? styles.certified : styles.certifiedfalse}`} 
-              onClick={reviewList.length > 4 ? certified : undefined}
+              className={`${styles.native_certified_submit} ${(reviewList?.length || 0) > 4 ? styles.certified : styles.certifiedfalse}`} 
+              onClick={(reviewList?.length || 0) > 4 ? certified : undefined}
             >
               인증하기
             </button>

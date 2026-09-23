@@ -52,7 +52,7 @@ public interface MemberMapper {
 
     List<GetReview> getmyReview(@Param("memberId") String memberId);
 
-    MemberReviewSummaryDTO myReview(String memberId, String address);
+    List<GetReview> myReview(String memberId, String address);
 
     int insertNative(String memberId);
 }

@@ -224,8 +224,8 @@ public class MemberService {
         return result;
     }
 
-    public MemberReviewSummaryDTO myReview(String memberId, String address) {
-        MemberReviewSummaryDTO myreview = memberMapper.myReview(memberId, address);
+    public List<GetReview> myReview(String memberId, String address) {
+        List<GetReview> myreview = memberMapper.myReview(memberId, address);
         return myreview;
     }
 
