@@ -111,6 +111,6 @@
 			DATE_ADD(CURRENT_DATE, INTERVAL 6 MONTH)         
 		FROM member_tbl
 		WHERE member_id = #{memberId}
-		AND member_address IS NOT NULL;
+		AND member_address IS NOT NULL
 	</insert>
 </mapper>
