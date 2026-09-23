@@ -95,7 +95,7 @@
 			FROM review_tbl r
 			JOIN restaurant_tbl b ON r.rest_no = b.rest_no
 			WHERE r.member_id = #{memberId}
-				AND b.rest_addr LIKE CONCAT('%', '#{memberAddress}, '%')
+				AND b.rest_addr LIKE CONCAT('%', '#{address}, '%')
 			) T
 			GROUP BY T.guGunSi;
 	</select>

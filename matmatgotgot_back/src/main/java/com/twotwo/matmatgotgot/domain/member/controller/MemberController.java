@@ -485,8 +485,8 @@ public class MemberController {
     }
 
 	@GetMapping(value = "/review/natives")
-	public ResponseEntity<?> myReview(@RequestParam("memberId") String memberId, @RequestParam("memberAddress") String memberAddress) {
-		MemberReviewSummaryDTO myreview = memberService.myReview(memberId, memberAddress);
+	public ResponseEntity<?> myReview(@RequestParam("memberId") String memberId, @RequestParam("address") String address) {
+		MemberReviewSummaryDTO myreview = memberService.myReview(memberId, address);
 		return ResponseEntity.ok(myreview);
 	}
 

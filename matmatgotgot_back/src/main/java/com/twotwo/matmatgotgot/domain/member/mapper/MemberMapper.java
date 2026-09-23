@@ -51,5 +51,5 @@ public interface MemberMapper {
 
     Natives getMyReview(String memberId);
 
-    MemberReviewSummaryDTO myReview(String memberId, String memberAddress);
+    MemberReviewSummaryDTO myReview(String memberId, String address);
 }

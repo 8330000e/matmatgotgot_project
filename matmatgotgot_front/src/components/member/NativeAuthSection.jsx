@@ -9,13 +9,12 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [address, setAddress] = useState("");
   const memberId = memberInfo.memberId;
-  const [memberAddress, setMemberaddress] = useState(memberInfo.memberAddress);
-  const [myReview, setMyreview] = useState(0);
+  const [myReview, setMyreview] = useState(0,"");
 
   useEffect(()=>{
     axios
      .get(`${import.meta.env.VITE_BACKSERVER}/members/review/natives`, {
-        params: { memberId, memberAddress },
+        params: { memberId, address },
       })
       .then((res) => {
         console.log(res);
@@ -29,7 +28,7 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
         console.error("서버 에러:", error);
         setMyreview(null);
       });
-  },[memberId]);
+  },[memberId, address]);
 
   const getGuGunSi = (addr) => {
     // 시, 구, 군으로 끝나는 모든 단어 추출
@@ -38,9 +37,9 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
 
     // 첫 번째 단어가 '서울특별시', '경기도' 등 도/특별시/광역시인 경우 제외
     // (필요에 따라 인덱스 조정)
-    setMemberaddress(matches.length > 1 ? matches.slice(1).join(' ') : matches[0])
+    setAddress(matches.length > 1 ? matches.slice(1).join(' ') : matches[0])
   
-    return memberAddress;
+    return address;
   }
 
   return (
