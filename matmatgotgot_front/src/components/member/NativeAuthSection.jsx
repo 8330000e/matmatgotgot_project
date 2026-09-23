@@ -9,26 +9,39 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [address, setAddress] = useState("");
   const memberId = memberInfo.memberId;
-  const [count, setCount] = useState(0);
+  const [memberAddress, setMemberaddress] = useState(memberInfo.memberAddress);
+  const [myReview, setMyreview] = useState(0);
 
   useEffect(()=>{
     axios
-     .get(`${import.meta.env.VITE_BACKSERVER}/members/natives/count`, {
-        params: { memberId },
+     .get(`${import.meta.env.VITE_BACKSERVER}/members/review/natives`, {
+        params: { memberId, memberAddress },
       })
       .then((res) => {
         console.log(res);
-        if(res.data>0) {
-          setCount(res.data);
+        if(res.data != null) {
+          setMyreview(res.data);
         } else {
-          setCount(null);
+          setMyreview(null);
         }
       })
       .catch((error) => {
         console.error("서버 에러:", error);
-        setCount(null);
+        setMyreview(null);
       });
   },[memberId]);
+
+  const getGuGunSi = (addr) => {
+    // 시, 구, 군으로 끝나는 모든 단어 추출
+    const matches = addr.match(/[가-힣]+(?:시|구|군)/g);
+    if (!matches) return '';
+
+    // 첫 번째 단어가 '서울특별시', '경기도' 등 도/특별시/광역시인 경우 제외
+    // (필요에 따라 인덱스 조정)
+    setMemberaddress(matches.length > 1 ? matches.slice(1).join(' ') : matches[0])
+  
+    return memberAddress;
+  }
 
   return (
     <div>
@@ -45,7 +58,7 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
               <p>{memberInfo.memberAddress}</p>
             </div>
             <div>
-              <p>현지인 인증주소</p>
+              {/* <p>현지인 인증주소</p>
               <div>
                 <Input
                   type="text"
@@ -57,10 +70,10 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                 <div>
                   <button className={`${styles.native_submit} ${styles.native_addr_submit}`}>찾기</button>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div>
-              <p>내 ㅇㅇ구 맛집 리뷰목록</p>
+              <p>내 {getGuGunSi(memberInfo.memberAddress)} 맛집 리뷰목록</p>
               <div>
                 <ul className={styles.ulfirst}>
                   <li>NO</li>
@@ -70,6 +83,7 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                   <li>작성일</li>
                 </ul>
                 <div>
+                  <div className={styles.scroll_container}>
                 {/* <ul>목록출력컴포넌트</ul> */}
                   <ul className={styles.ullist}>
                     <li>1</li>
@@ -120,10 +134,11 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
                     <li>마음의 치유를...</li>
                     <li>27.04.02</li>
                   </ul>
+                  </div>
                 </div>
                 {/* <ul>목록출력컴포넌트</ul> */}
               </div>
-              <p>총 리뷰수가 5개 이하로 인증이 불가합니다.</p>
+              <p>{}총 리뷰수가 5개 이하로 인증이 불가합니다.</p>
             </div>
           </div>
           <button className={styles.native_certified_submit}>인증하기{/*인증가능or인증불가*/}</button>

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twotwo.matmatgotgot.domain.member.dto.LoginResponseDto;
 import com.twotwo.matmatgotgot.domain.member.dto.MemberLoginDto;
+import com.twotwo.matmatgotgot.domain.member.dto.MemberReviewSummaryDTO;
 import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
 import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
 import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
@@ -483,10 +484,10 @@ public class MemberController {
 		return ResponseEntity.ok(nativeInfo);
     }
 
-	@GetMapping(value = "/natives/count")
-	public ResponseEntity<?> countReview(@RequestParam("memberId") String memberId) {
-		Integer count = memberService.countReview(memberId);
-		return ResponseEntity.ok(count);
+	@GetMapping(value = "/review/natives")
+	public ResponseEntity<?> myReview(@RequestParam("memberId") String memberId, @RequestParam("memberAddress") String memberAddress) {
+		MemberReviewSummaryDTO myreview = memberService.myReview(memberId, memberAddress);
+		return ResponseEntity.ok(myreview);
 	}
 
 	@PostMapping(value="/email-verification")

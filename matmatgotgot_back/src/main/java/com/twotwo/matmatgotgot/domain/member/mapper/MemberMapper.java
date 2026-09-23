@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.mapper;
 
+import com.twotwo.matmatgotgot.domain.member.dto.MemberReviewSummaryDTO;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.member.entity.Natives;
 import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
@@ -50,5 +51,5 @@ public interface MemberMapper {
 
     Natives getMyReview(String memberId);
 
-    Integer countReview(String memberId);
+    MemberReviewSummaryDTO myReview(String memberId, String memberAddress);
 }

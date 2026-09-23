@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.service;
 
+import com.twotwo.matmatgotgot.domain.member.dto.MemberReviewSummaryDTO;
 import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
@@ -222,8 +223,8 @@ public class MemberService {
         return result;
     }
 
-    public Integer countReview(String memberId) {
-        Integer count = memberMapper.countReview(memberId);
-        return count;
+    public MemberReviewSummaryDTO myReview(String memberId, String memberAddress) {
+        MemberReviewSummaryDTO myreview = memberMapper.myReview(memberId, memberAddress);
+        return myreview;
     }
 }
