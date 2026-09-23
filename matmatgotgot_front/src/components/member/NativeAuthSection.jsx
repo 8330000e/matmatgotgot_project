@@ -57,7 +57,8 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
       console.log(res);
       setReviewList(res.data);
     }).catch((err)=>{
-      console.log(err);
+      console.log(err, ": 에러");
+      setReviewList(null);
     });
   },[memberId]);
 
@@ -146,7 +147,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                           <li>{review.reviewContent}</li>
                           <li>{review.createdAt? review.createdAt.slice(2, 10).replace(/-/g, '.') : ''}</li>
                         </ul>
-                      ))}                      
+                      ))}
                     </div>
                   </div>
                 </div>
