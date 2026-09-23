@@ -104,6 +104,7 @@
     font-size: 14px;
     font-weight: 500;
     padding: 3px 12px;
+    padding-right: 25px;
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
 }
@@ -140,7 +141,7 @@
     width: 35%;
 }
 .ullist > li:nth-child(3) {
-    width: 50%;
+    width: 55%;
 }
 .ullist > li:nth-child(4) {
     width: 80%;
@@ -170,6 +171,14 @@
 
 .scroll_container::-webkit-scrollbar-track {
     background: transparent;
+}
+.reviewcount {
+    font-weight: 600;;
+}
+.false {
+color: #d10909;}
+.success {
+    color: #0008ff;
 }
 .native_certified_submit {
     text-align: center;

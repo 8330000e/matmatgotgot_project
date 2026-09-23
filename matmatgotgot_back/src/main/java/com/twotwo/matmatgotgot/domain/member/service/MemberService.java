@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.service;
 
+import com.twotwo.matmatgotgot.domain.member.dto.GetReview;
 import com.twotwo.matmatgotgot.domain.member.dto.MemberReviewSummaryDTO;
 import com.twotwo.matmatgotgot.domain.member.dto.response.MemberResponse;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
@@ -226,5 +227,16 @@ public class MemberService {
     public MemberReviewSummaryDTO myReview(String memberId, String address) {
         MemberReviewSummaryDTO myreview = memberMapper.myReview(memberId, address);
         return myreview;
+    }
+
+    public GetReview getmyReview(String memberId) {
+        GetReview getmyReview = memberMapper.getmyReview(memberId);
+        return getmyReview;
+    }
+
+    @Transactional 
+    public int insertNative(String memberId) {
+        int result = memberMapper.insertNative(memberId);
+        return result;
     }
 }

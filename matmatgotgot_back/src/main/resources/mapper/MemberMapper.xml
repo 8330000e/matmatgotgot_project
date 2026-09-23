@@ -65,7 +65,7 @@
 	<delete id="deleteMember">
 		delete from member_tbl where member_id = #{memberId}
 	</delete>
-	<select id="getMyReview" resultType="natives">
+	<select id="getMyReview" resultType="getreivew">
 		SELECT
 		review_tbl.*,
 		restaurant_tbl.rest_name AS rest_name
@@ -101,7 +101,23 @@
 			<if test="address != null and address != ''">
 				AND b.rest_addr LIKE CONCAT('%', #{address}, '%')
 			</if>
-			
+
 			GROUP BY T.guGunSi;
 	</select>
+	<insert id="insertNative">
+		INSERT INTO natives_tbl (
+			member_id,
+			region,
+			native_registered_at,
+			native_deadline
+		)
+		SELECT
+			member_id,
+			REGEXP_SUBSTR(member_address, '^.*?[가-힣]+(시|군|구)(\\s+[가-힣]+(읍|면))?|^.*?(구|군|읍|면)'),
+			CURRENT_DATE,                                    
+			DATE_ADD(CURRENT_DATE, INTERVAL 6 MONTH)         
+		FROM member_tbl
+		WHERE member_id = #{memberId}
+		AND member_address IS NOT NULL;
+	</insert>
 </mapper>

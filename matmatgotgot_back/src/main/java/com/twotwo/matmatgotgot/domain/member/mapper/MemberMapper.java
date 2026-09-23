@@ -1,5 +1,6 @@
 package com.twotwo.matmatgotgot.domain.member.mapper;
 
+import com.twotwo.matmatgotgot.domain.member.dto.GetReview;
 import com.twotwo.matmatgotgot.domain.member.dto.MemberReviewSummaryDTO;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
 import com.twotwo.matmatgotgot.domain.member.entity.Natives;
@@ -49,7 +50,9 @@ public interface MemberMapper {
 
     Natives getNativeDate(String memberId);
 
-    Natives getMyReview(String memberId);
+    GetReview getMyReview(String memberId);
 
     MemberReviewSummaryDTO myReview(String memberId, String address);
+
+    int insertNative(String memberId);
 }

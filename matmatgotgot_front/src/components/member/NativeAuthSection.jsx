@@ -9,6 +9,7 @@ import apiClient from '../../api';
 function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [myReview, setMyreview] = useState(0);
+  const [reviewList, setReviewList] = useState([]);
 
   const memberId = memberInfo?.memberId;
 
@@ -48,6 +49,27 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
     fetchNatives();
   }, [memberId, address]);
 
+  useEffect(()=>{
+    axios.get(`${import.meta.env.VITE_BACKSERVER}/members/review`, {
+      params: memberId
+    }).then((res)=>{
+      console.log(res);
+      setReviewList(res.data);
+    }).catch((err)=>{
+      console.log(err);
+    });
+  },[memberId]);
+
+  const certified = () => {
+    axios.post(`${import.meta.env.VITE_BACKSERVER}/members/native/certified`, {
+      params: memberId
+    }).then((res)=>{
+      console.log(res);
+    }).catch((err)=>{
+      console.log(err);
+    })
+  };
+
   return (
     <div>
       <button className={styles.native_submit} onClick={() => setIsModalOpen(true)}>{check}</button>
@@ -77,69 +99,22 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                   </ul>
                   <div>
                     <div className={styles.scroll_container}>
-                      <ul className={styles.ullist}>
-                        <li>1</li>
-                        <li>강서구</li>
-                        <li>우주떡집</li>
-                        <li>떡이 너무 맛...</li>
-                        <li>26.10.30</li>
-                      </ul>
-                      <ul className={styles.ullist}>
-                        <li>2</li>
-                        <li>강서구</li>
-                        <li>모퉁이김밥</li>
-                        <li>김밥은 무조건...</li>
-                        <li>26.12.11</li>
-                      </ul>
-                      <ul className={styles.ullist}>
-                        <li>3</li>
-                        <li>강서구</li>
-                        <li>우주떡집</li>
-                        <li>떡이 너무 맛...</li>
-                        <li>26.10.30</li>
-                      </ul>
-                      <ul className={styles.ullist}>
-                        <li>4</li>
-                        <li>강서구</li>
-                        <li>모퉁이김밥</li>
-                        <li>김밥은 무조건...</li>
-                        <li>26.12.11</li>
-                      </ul>
-                      <ul className={styles.ullist}>
-                        <li>5</li>
-                        <li>강서구</li>
-                        <li>우주떡집</li>
-                        <li>떡이 너무 맛...</li>
-                        <li>26.10.30</li>
-                      </ul>
-                      <ul className={styles.ullist}>
-                        <li>6</li>
-                        <li>강서구</li>
-                        <li>모퉁이김밥</li>
-                        <li>김밥은 무조건...</li>
-                        <li>26.12.11</li>
-                      </ul>
-                      <ul className={styles.ullist}>
-                        <li>7</li>
-                        <li>강서구</li>
-                        <li>우주떡집</li>
-                        <li>떡이 너무 맛...</li>
-                        <li>26.10.30</li>
-                      </ul>
-                      <ul className={styles.ullist}>
-                        <li>8</li>
-                        <li>강서구</li>
-                        <li>모퉁이김밥</li>
-                        <li>김밥은 무조건...</li>
-                        <li>26.12.11</li>
-                      </ul>
+                      {reviewList.map((review,i)=>(
+                        <ul key={`myreview-${review.reviewNo}`} className={styles.ullist}>
+                          <li>{i+1}</li>
+                          <li>{address}</li>
+                          <li>{review.restName}</li>
+                          <li>{review.reviewContent}</li>
+                          <li>{review.createdAt? review.createdAt.slice(2, 10).replace(/-/g, '.') : ''}</li>
+                        </ul>
+                      ))}                      
                     </div>
                   </div>
                 </div>
-                <p>총 리뷰수가 5개 이하로 인증이 불가합니다.</p>
+                {reviewList.length > 4 ? <p className={`${styles.reviewcount} ${styles.false}`}>총 리뷰수가 5개 이하로 인증이 불가합니다.</p> : <p className={`${styles.reviewcount} ${styles.success}`}>총 리뷰수가 5개 이상으로 인증이 가능합니다.</p>}
               </div>
             </div>
-            <button className={styles.native_certified_submit}>인증하기</button>
+            <button className={`${styles.native_certified_submit} ${reviewList.length > 4 ? `${styles.certified}` : `${styles.certifiedfalse}`}`} {`${reviewList.length > 4 ? onClick={certified} : null}`}>인증하기</button>
           </div>
         </div>,
         document.body

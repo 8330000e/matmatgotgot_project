@@ -8,6 +8,7 @@ import com.twotwo.matmatgotgot.domain.member.dto.MemberReviewSummaryDTO;
 import com.twotwo.matmatgotgot.domain.member.dto.tokenDto;
 import com.twotwo.matmatgotgot.domain.board.entity.ListItem;
 import com.twotwo.matmatgotgot.domain.board.entity.ListResponse;
+import com.twotwo.matmatgotgot.domain.member.dto.GetReview;
 import com.twotwo.matmatgotgot.domain.member.dto.KakaoLoginRequestDto;
 import com.twotwo.matmatgotgot.domain.member.entity.LoginMember;
 import com.twotwo.matmatgotgot.domain.member.entity.Member;
@@ -488,6 +489,18 @@ public class MemberController {
 	public ResponseEntity<?> myReview(@RequestParam("memberId") String memberId, @RequestParam("address") String address) {
 		MemberReviewSummaryDTO myreview = memberService.myReview(memberId, address);
 		return ResponseEntity.ok(myreview);
+	}
+
+	@GetMapping(value = "/review")
+	public ResponseEntity<?> getMyReview(@RequestParam("memberId") String memberId) {
+		GetReview getmyReview = memberService.getmyReview(memberId);
+		return  ResponseEntity.ok(getmyReview);
+	}
+
+	@PostMapping(value = "/native/certified")
+	public ResponseEntity<?> insertNative(@RequestParam("memberId") String memberId) {
+		int result = memberService.insertNative(memberId);
+		return  ResponseEntity.ok(result);
 	}
 
 	@PostMapping(value="/email-verification")
