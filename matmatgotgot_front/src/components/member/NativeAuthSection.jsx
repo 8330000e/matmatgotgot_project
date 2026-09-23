@@ -139,7 +139,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                   </ul>
                   <div>
                     <div className={styles.scroll_container}>
-                      {reviewList.map((review,i)=>(
+                      {reviewList?.map((review,i)=>(
                         <ul key={`myreview-${review.reviewNo}`} className={styles.ullist}>
                           <li>{i+1}</li>
                           <li>{address}</li>
