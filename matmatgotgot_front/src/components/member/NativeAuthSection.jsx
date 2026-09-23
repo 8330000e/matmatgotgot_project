@@ -153,7 +153,12 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                 {reviewList.length > 4 ? <p className={`${styles.reviewcount} ${styles.false}`}>총 리뷰수가 5개 이하로 인증이 불가합니다.</p> : <p className={`${styles.reviewcount} ${styles.success}`}>총 리뷰수가 5개 이상으로 인증이 가능합니다.</p>}
               </div>
             </div>
-            <button className={`${styles.native_certified_submit} ${reviewList.length > 4 ? `${styles.certified}` : `${styles.certifiedfalse}`}`} {`${reviewList.length > 4 ? onClick={certified} : null}`}>인증하기</button>
+            <button 
+              className={`${styles.native_certified_submit} ${reviewList.length > 4 ? styles.certified : styles.certifiedfalse}`} 
+              onClick={reviewList.length > 4 ? certified : undefined}
+            >
+              인증하기
+            </button>
           </div>
         </div>,
         document.body
