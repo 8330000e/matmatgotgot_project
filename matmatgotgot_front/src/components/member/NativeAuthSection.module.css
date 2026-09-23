@@ -199,3 +199,7 @@ color: #d10909;}
     cursor: pointer;
     line-height: 1.4;
 }
+.certifiedfalse {
+    cursor: none;
+    background-color: #6b6b6b;
+}
