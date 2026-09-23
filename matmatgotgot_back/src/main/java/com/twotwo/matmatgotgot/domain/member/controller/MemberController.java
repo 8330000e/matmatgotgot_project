@@ -38,6 +38,7 @@ import java.lang.annotation.Native;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -493,8 +494,8 @@ public class MemberController {
 
 	@GetMapping(value = "/review")
 	public ResponseEntity<?> getMyReview(@RequestParam("memberId") String memberId) {
-		GetReview getmyReview = memberService.getmyReview(memberId);
-		return  ResponseEntity.ok(getmyReview);
+		List<GetReview> getmyReview = memberService.getmyReview(memberId);
+		return ResponseEntity.ok(getmyReview);
 	}
 
 	@PostMapping(value = "/native/certified")

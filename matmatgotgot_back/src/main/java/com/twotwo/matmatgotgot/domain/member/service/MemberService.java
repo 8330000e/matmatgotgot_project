@@ -229,9 +229,8 @@ public class MemberService {
         return myreview;
     }
 
-    public GetReview getmyReview(String memberId) {
-        GetReview getmyReview = memberMapper.getmyReview(memberId);
-        return getmyReview;
+    public List<GetReview> getmyReview(String memberId) {
+        return memberMapper.getmyReview(memberId);
     }
 
     @Transactional 

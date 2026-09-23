@@ -67,12 +67,12 @@
 	</delete>
 	<select id="getmyReview" resultType="getreview">
 		SELECT
-		review_tbl.*,
-		restaurant_tbl.rest_name AS rest_name
+			review_tbl.*,
+			restaurant_tbl.rest_name AS rest_name
 		FROM review_tbl
 		JOIN restaurant_tbl
 			ON review_tbl.rest_no = restaurant_tbl.rest_no
-		WHERE review_tbl.member_id = #{memberId};
+		WHERE review_tbl.member_id = #{memberId}
 	</select>
 	
 	<select id="myReview" resultType="reviewSdto">
