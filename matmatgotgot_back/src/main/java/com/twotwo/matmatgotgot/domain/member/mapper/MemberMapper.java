@@ -50,7 +50,7 @@ public interface MemberMapper {
 
     Natives getNativeDate(String memberId);
 
-    GetReview getMyReview(String memberId);
+    GetReview getmyReview(String memberId);
 
     MemberReviewSummaryDTO myReview(String memberId, String address);
 

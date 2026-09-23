@@ -5,6 +5,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Input } from '../ui/Form';
 import axios from 'axios';
 import apiClient from '../../api';
+import Swal from 'sweetalert2';
 
 function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,8 +66,46 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
       params: memberId
     }).then((res)=>{
       console.log(res);
+      if(res.data > 0) {
+        Swal.mixin({
+          toast: true,
+          color: "#2b1b17",
+          borderRadius: "15px",
+          fontWeight: "800",
+          padding: "20px 10px",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          title: "현지인 인증 완료",
+          text: "현지인 인증이 완료 되었습니다..",
+          icon: "success",
+        });
+      }
     }).catch((err)=>{
       console.log(err);
+      Swal.mixin({
+        toast: true,
+        color: "#2b1b17",
+        borderRadius: "15px",
+        fontWeight: "800",
+        padding: "20px 10px",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      }).fire({
+        title: "현지인 인증 실패",
+        text: "현지인 인증이 실패했습니다.",
+        icon: "error",
+      });
     })
   };
 
