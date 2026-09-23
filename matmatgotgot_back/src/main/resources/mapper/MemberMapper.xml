@@ -97,6 +97,11 @@
 			WHERE r.member_id = #{memberId}
 				AND b.rest_addr LIKE CONCAT('%', '#{address}, '%')
 			) T
+
+			<if test="address != null and address != ''">
+				AND b.rest_addr LIKE CONCAT('%', #{address}, '%')
+			</if>
+			
 			GROUP BY T.guGunSi;
 	</select>
 </mapper>

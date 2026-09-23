@@ -4,6 +4,7 @@ import styles from './NativeAuthSection.module.css';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Input } from '../ui/Form';
 import axios from 'axios';
+import apiClient from '../../api';
 
 function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,22 +13,30 @@ function NativeAuthSection({check, memberInfo, native, setMemberInfo}) {
   const [myReview, setMyreview] = useState(0,"");
 
   useEffect(()=>{
-    axios
-     .get(`${import.meta.env.VITE_BACKSERVER}/members/review/natives`, {
-        params: { memberId, address },
-      })
-      .then((res) => {
-        console.log(res);
-        if(res.data != null) {
-          setMyreview(res.data);
-        } else {
-          setMyreview(null);
-        }
-      })
-      .catch((error) => {
+    if (!memberId || !address || address.trim() === "") {
+      console.log("주소 정보가 아직 로드되지 않아 API 호출을 대기합니다.");
+      return;
+    }
+    const fetchNatives = async () => {
+      try {
+        // 주소에서 '서대문구' 또는 '성남시 분당구' 같은 구/군 정보만 추출
+        const guGunSi = address.split(" ")[1] || address;
+
+        const response = await apiClient.get('/api/members/review/natives', {
+          params: {
+            memberId: memberId,
+            address: guGunSi // 빈 값이 아님이 보장된 상태에서 요청
+          }
+        });
+        console.log(response);
+        setMyreview(response.data);
+      } catch (error) {
         console.error("서버 에러:", error);
-        setMyreview(null);
-      });
+        // 에러 시 무한 리렌더링을 일으키는 state 업데이트 함수가 없는지 확인!
+      }
+    };
+
+    fetchNatives();
   },[memberId, address]);
 
   const getGuGunSi = (addr) => {

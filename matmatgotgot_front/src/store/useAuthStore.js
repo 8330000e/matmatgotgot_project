@@ -5,6 +5,8 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useNavigate } from "react-router-dom";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import Swal from "sweetalert2";
 
 let alertTimer = null;
 let logoutTimer = null;
@@ -90,8 +92,24 @@ const useAuthStore = create(
         delete axios.defaults.headers.common["Authorization"];
         localStorage.removeItem("auth-key");
 
-        alert("로그아웃 되었습니다.");
-        window.location.href = "/";
+        Swal.mixin({
+          toast: true,
+          color: "#2b1b17",
+          borderRadius: "15px",
+          fontWeight: "800",
+          padding: "20px 10px",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).fire({
+          title: "로그아웃 성공",
+          text: "로그아웃 되었습니다.",
+          icon: "success",
+        });
       },
 
       startLoginTimer: (endTime) => {
