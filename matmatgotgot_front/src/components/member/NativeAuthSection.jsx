@@ -128,15 +128,18 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                   </ul>
                   <div>
                     <div className={styles.scroll_container}>
-                      {reviewList?.map((review,i)=>(
+                      {reviewList&&reviewList.map((review,i)=>{
+                      if (!review) return null;
+                      return (
                         <ul key={`myreview-${review.reviewNo}`} className={styles.ullist}>
                           <li>{i+1}</li>
                           <li>{address}</li>
-                          <li>{review.restName}</li>
+                          <li>{review.restName || '식당이름없음'}</li>
                           <li>{review.reviewContent}</li>
                           <li>{review.createdAt? review.createdAt.slice(2, 10).replace(/-/g, '.') : ''}</li>
                         </ul>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
