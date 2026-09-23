@@ -150,7 +150,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                     </div>
                   </div>
                 </div>
-                {reviewList.length > 4 ? <p className={`${styles.reviewcount} ${styles.false}`}>총 리뷰수가 5개 이하로 인증이 불가합니다.</p> : <p className={`${styles.reviewcount} ${styles.success}`}>총 리뷰수가 5개 이상으로 인증이 가능합니다.</p>}
+                {reviewList.length > 4 ? <p className={`${styles.reviewcount} ${styles.success}`}>총 리뷰수가 5개 이상으로 인증이 가능합니다.</p> : <p className={`${styles.reviewcount} ${styles.false}`}>총 리뷰수가 5개 이하로 인증이 불가합니다.</p>}
               </div>
             </div>
             <button 
