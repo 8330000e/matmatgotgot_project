@@ -94,6 +94,14 @@
     border-radius: 15px;
     margin-bottom: 10px;
 }
+.reviewlist {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: 600;
+    color: #6d6d6d;
+}
 .ulfirst {
     display: flex;
     flex-direction: row;

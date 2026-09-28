@@ -129,7 +129,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                   <div>
                     <div className={styles.scroll_container}>
                       {reviewList&&reviewList.map((review,i)=>{
-                      if (!review) return null;
+                      if (!review) return (<div className={styles.reviewlist}>리뷰목록을 불러오지 못 했습니다</div>);
                       return (
                         <ul key={`myreview-${review.reviewNo}`} className={styles.ullist}>
                           <li>{i+1}</li>
@@ -143,12 +143,12 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                     </div>
                   </div>
                 </div>
-                {reviewList.length > 4 ? <p className={`${styles.reviewcount} ${styles.success}`}>총 리뷰수가 5개 이상으로 인증이 가능합니다.</p> : <p className={`${styles.reviewcount} ${styles.false}`}>총 리뷰수가 5개 이하로 인증이 불가합니다.</p>}
+                {reviewList.length > 5 ? <p className={`${styles.reviewcount} ${styles.success}`}>총 리뷰수가 5개 이상으로 인증이 가능합니다.</p> : <p className={`${styles.reviewcount} ${styles.false}`}>총 리뷰수가 5개 이하로 인증이 불가합니다.</p>}
               </div>
             </div>
             <button 
-              className={`${styles.native_certified_submit} ${(reviewList?.length || 0) > 4 ? styles.certified : styles.certifiedfalse}`} 
-              onClick={(reviewList?.length || 0) > 4 ? certified : undefined}
+              className={`${styles.native_certified_submit} ${(reviewList?.length || 0) > 5 ? styles.certified : styles.certifiedfalse}`} 
+              onClick={(reviewList?.length || 0) > 5 ? certified : undefined}
             >
               인증하기
             </button>

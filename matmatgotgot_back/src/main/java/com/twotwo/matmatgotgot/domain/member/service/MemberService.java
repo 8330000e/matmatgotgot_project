@@ -226,6 +226,7 @@ public class MemberService {
 
     public List<GetReview> myReview(String memberId, String address) {
         List<GetReview> myreview = memberMapper.myReview(memberId, address);
+        System.out.println(memberId + ',' + address);
         return myreview;
     }
 
