@@ -76,15 +76,17 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
     axios.post(`${import.meta.env.VITE_BACKSERVER}/members/native/certified`, {
       memberId: memberId
     })
-    .then((res) => {
+    .then(async (res) => {
       console.log(res);
       if (res.data > 0) {
-        Swal.fire({
+        // await를 사용하여 Swal 토스트/알림이 완전히 끝나거나 확인될 때까지 기다립니다.
+        await Swal.fire({
           toast: true,
+          position: "top-end", // Toast 위치 보장
           color: "#2b1b17",
           padding: "20px 10px",
           showConfirmButton: false,
-          timer: 1500, // 새로고침을 위해 타이머를 1.5초로 약간 단축
+          timer: 2000,
           timerProgressBar: true,
           title: "현지인 인증 완료",
           text: "현지인 인증이 완료 되었습니다.",
@@ -93,16 +95,17 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
             toast.onmouseenter = Swal.stopTimer;
             toast.onmouseleave = Swal.resumeTimer;
           }
-        }).then(() => {
-          // 알림이 닫힌 직후 페이지 새로고침
-          window.location.reload();
         });
+
+        // Swal 타이머가 완전히 종료된 후 새로고침 실행
+        window.location.reload();
       }
     })
     .catch((err) => {
       console.log(err);
       Swal.fire({
         toast: true,
+        position: "top-end",
         color: "#2b1b17",
         padding: "20px 10px",
         showConfirmButton: false,
