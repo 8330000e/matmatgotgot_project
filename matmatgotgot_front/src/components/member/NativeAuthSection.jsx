@@ -52,41 +52,33 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
   }, [memberId, address]);
 
   const certified = () => {
-    // 1. 조건 체크 (5개 이하일 때 알림 처리)
-    if ((reviewList?.length || 0) <= 5) {
+    // 1. 조건 체크 (5개 미만일 때 알림 처리)
+    if ((reviewList?.length || 0) < 5) {
       Swal.mixin({
         toast: true,
         color: "#2b1b17",
-        borderRadius: "15px",
-        fontWeight: "800",
         padding: "20px 10px",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
       }).fire({
         title: "인증 불가",
-        text: "리뷰를 6개 이상 작성해야 현지인 인증이 가능합니다.",
+        text: "리뷰를 5개 이상 작성해야 현지인 인증이 가능합니다.",
         icon: "warning",
       });
       return;
     }
 
-    // 2. Axios POST 요청 (쿼리 파라미터로 memberId 전달)
-    axios.post(
-      `${import.meta.env.VITE_BACKSERVER}/members/native/certified`,
-      null, // POST Request Body가 없을 경우 null 지정
-      {
-        memberId: memberId
-      }
-    )
+    // 2. Axios POST 요청 (JSON Body 전송)
+    axios.post(`${import.meta.env.VITE_BACKSERVER}/members/native/certified`, {
+      memberId: memberId
+    })
     .then((res) => {
       console.log(res);
       if (res.data > 0) {
         Swal.mixin({
           toast: true,
           color: "#2b1b17",
-          borderRadius: "15px",
-          fontWeight: "800",
           padding: "20px 10px",
           showConfirmButton: false,
           timer: 3000,
@@ -107,8 +99,6 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
       Swal.mixin({
         toast: true,
         color: "#2b1b17",
-        borderRadius: "15px",
-        fontWeight: "800",
         padding: "20px 10px",
         showConfirmButton: false,
         timer: 3000,
@@ -173,11 +163,11 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
               </div>
             </div>
             <button 
-            className={`${styles.native_certified_submit} ${(reviewList?.length || 0) > 5 ? styles.certified : styles.certifiedfalse}`} 
-            onClick={certified}
-          >
-            인증하기
-          </button>
+              className={`${styles.native_certified_submit} ${(reviewList?.length || 0) >= 5 ? styles.certified : styles.certifiedfalse}`} 
+              onClick={certified}
+            >
+              인증하기
+            </button>
           </div>
         </div>,
         document.body
