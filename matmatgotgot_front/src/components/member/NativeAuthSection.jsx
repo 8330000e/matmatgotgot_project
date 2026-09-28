@@ -76,7 +76,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
       `${import.meta.env.VITE_BACKSERVER}/members/native/certified`,
       null, // POST Request Body가 없을 경우 null 지정
       {
-        params: { memberId: memberId } // 쿼리 파라미터 전달 { memberId: 'qqqq1111' }
+        memberId: memberId
       }
     )
     .then((res) => {
