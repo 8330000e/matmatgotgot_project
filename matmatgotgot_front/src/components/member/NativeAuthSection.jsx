@@ -52,19 +52,22 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
   }, [memberId, address]);
 
   const certified = () => {
-    // 1. 조건 체크 (5개 미만일 때 알림 처리)
+    // 1. 조건 체크 (5개 미만일 때)
     if ((reviewList?.length || 0) < 5) {
-      Swal.mixin({
+      Swal.fire({
         toast: true,
         color: "#2b1b17",
         padding: "20px 10px",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
-      }).fire({
         title: "인증 불가",
         text: "리뷰를 5개 이상 작성해야 현지인 인증이 가능합니다.",
         icon: "warning",
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
       });
       return;
     }
@@ -76,41 +79,42 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
     .then((res) => {
       console.log(res);
       if (res.data > 0) {
-        Swal.mixin({
+        Swal.fire({
           toast: true,
           color: "#2b1b17",
           padding: "20px 10px",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 1500, // 새로고침을 위해 타이머를 1.5초로 약간 단축
           timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        }).fire({
           title: "현지인 인증 완료",
           text: "현지인 인증이 완료 되었습니다.",
           icon: "success",
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        }).then(() => {
+          // 알림이 닫힌 직후 페이지 새로고침
+          window.location.reload();
         });
       }
     })
     .catch((err) => {
       console.log(err);
-      Swal.mixin({
+      Swal.fire({
         toast: true,
         color: "#2b1b17",
         padding: "20px 10px",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        },
-      }).fire({
         title: "현지인 인증 실패",
         text: "현지인 인증이 실패했습니다.",
         icon: "error",
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
       });
     });
   };
