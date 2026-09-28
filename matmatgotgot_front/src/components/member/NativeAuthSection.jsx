@@ -129,7 +129,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
                   <div>
                     <div className={styles.scroll_container}>
                       {reviewList&&reviewList.map((review,i)=>{
-                      if (!review) return null;
+                      if (!review) return (<div className={styles.reviewlist}>리뷰목록을 불러오지 못 했습니다</div>);
                       return (
                         <ul key={`myreview-${review.reviewNo}`} className={styles.ullist}>
                           <li>{i+1}</li>
