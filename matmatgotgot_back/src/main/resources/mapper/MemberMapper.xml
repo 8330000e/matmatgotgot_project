@@ -81,8 +81,8 @@
 		FROM review_tbl r
 		JOIN restaurant_tbl b 
 			ON r.rest_no = b.rest_no
-		WHERE r.member_id = ${memberId}
-		AND b.rest_addr LIKE CONCAT('%', ${address}, '%');
+		WHERE r.member_id = #{memberId}
+		AND b.rest_addr LIKE CONCAT('%', #{address}, '%');
 	</select>
 	<insert id="insertNative">
 		INSERT INTO natives_tbl (
