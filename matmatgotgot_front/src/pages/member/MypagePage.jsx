@@ -436,10 +436,10 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 )}
               </div>
               <div>
-                {memberInfo.memberNickname && native && typeof native === "object" && native.nativeStatus === 1 ? (
-                  <img src={nativeicon} alt="현지인인증뱃지" />
-                ) : null}
-              </div>
+                {memberInfo?.memberNickname && Number(native?.native_status) === 1 && (
+                    <img src={nativeicon} alt="현지인인증뱃지" />
+                )}
+                </div>
             </div>
             <ul className={styles.info_member}>
               <li>
