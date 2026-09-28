@@ -186,6 +186,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         params: { memberId },
       })
       .then((res) => {
+        console.log(res);
         if (!res.data || res.data === "undefined") {
           setNative(null);
         } else {
