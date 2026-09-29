@@ -112,6 +112,6 @@
 			OR #{fullAddress} LIKE CONCAT('%', region, '%')
 			OR region LIKE CONCAT('%', #{parsedRegion}, '%')
 		)
-		LIMIT 1;
+		LIMIT 1
 	</select>
 </mapper>
