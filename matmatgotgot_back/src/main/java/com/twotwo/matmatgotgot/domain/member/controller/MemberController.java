@@ -508,14 +508,14 @@ public class MemberController {
 		return  ResponseEntity.ok(result);
 	}
 
-	@GetMapping("/members/natives/{memberId}")
-	public ResponseEntity<?> getNativeIcon(
-		@PathVariable("memberId") String memberId,
-		@RequestParam(value = "region", required = false) String region
-	) {
-		Natives nativeIcon = memberService.nativeIcon(memberId, region);
-		return ResponseEntity.ok(nativeIcon);
-	}
+	@GetMapping("/natives/{memberId}")
+    public ResponseEntity<?> nativeIcon(
+        @PathVariable("memberId") String memberId,
+        @RequestParam(value = "region", required = false) String region
+    ) {
+        Natives nativeIcon = memberService.nativeIcon(memberId, region);
+        return ResponseEntity.ok(nativeIcon);
+    }
 
 	@PostMapping(value="/email-verification")
 	public ResponseEntity<?> sendMail(@RequestBody Member member, Model model) throws MessagingException {

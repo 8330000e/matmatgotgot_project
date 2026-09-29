@@ -41,7 +41,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/login/oauth2/code/**", "/api/login/oauth2/code/**").permitAll()
                 
                 // 도메인 API 허용
-                .requestMatchers("/members/**", "/api/members/**", "/login", "/api/login", "/members/pwMember", "/members/memberno", "/members/natives").permitAll()
+                .requestMatchers("/members/**", "/api/members/**", "/login", "/api/login", "/members/pwMember", "/members/memberno", "/members/natives", "/members/native").permitAll()
                 .requestMatchers("/boards/**", "/api/boards/**").permitAll()
                 .requestMatchers("/editor/**", "/api/editor/**").permitAll()
                 .requestMatchers("/restaurants/**", "/api/restaurants/**").permitAll()
