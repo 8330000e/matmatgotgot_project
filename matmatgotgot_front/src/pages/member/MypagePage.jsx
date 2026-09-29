@@ -168,7 +168,6 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
         })
         .then((res) => {
             if (res.data > 0) {
-                // 상태 업데이트 반영을 위해 페이지 새로고침
                 window.location.reload();
             }
         })
