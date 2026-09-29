@@ -246,7 +246,9 @@ public class MemberService {
     }
 
     public Natives nativeIcon(String memberId, String region) {
-        if (region == null || region.isBlank()) return "";
+        if (region == null || region.trim().isEmpty()) {
+            return null; // 반환 타입이 Natives 객체이므로 String("") 대신 null 반환
+        }
 
         // 시/군/구 단어를 찾는 정규식 (2~4글자 한글 + 시/군/구)
         Pattern pattern = Pattern.compile("\\b[가-힣]{2,4}(시|군|구)\\b");
@@ -261,6 +263,7 @@ public class MemberService {
         }
         region = sb.toString();
         System.out.println(region);
+
         Natives nativeIcon = memberMapper.nativeIcon(memberId, region);
         return nativeIcon;
     }
