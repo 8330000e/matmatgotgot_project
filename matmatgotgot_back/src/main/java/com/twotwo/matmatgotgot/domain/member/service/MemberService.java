@@ -243,8 +243,8 @@ public class MemberService {
         return result;
     }
 
-    public Natives nativeIcon(String memberId) {
-        Natives nativeIcon = memberMapper.nativeIcon(memberId);
+    public Natives nativeIcon(String loginMemberId, String restAddr) {
+        Natives nativeIcon = memberMapper.nativeIcon(loginMemberId, restAddr);
         return nativeIcon;
     }
 }

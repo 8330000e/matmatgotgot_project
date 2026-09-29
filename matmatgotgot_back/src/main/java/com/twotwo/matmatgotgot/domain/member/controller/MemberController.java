@@ -508,9 +508,9 @@ public class MemberController {
 		return  ResponseEntity.ok(result);
 	}
 
-	@GetMapping(value = "/natives/{memberNickname}")
-	public ResponseEntity<?> nativeIcon(@PathVariable String memberId) {
-		Natives nativeIcon = memberService.nativeIcon(memberId);
+	@GetMapping(value = "/natives/{loginMemberId}/{restAddr}")
+	public ResponseEntity<?> nativeIcon(@PathVariable String loginMemberId, @PathVariable String restAddr) {
+		Natives nativeIcon = memberService.nativeIcon(loginMemberId, restAddr);
 		return  ResponseEntity.ok(nativeIcon);
 	}
 

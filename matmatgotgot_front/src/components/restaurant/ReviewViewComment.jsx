@@ -4,7 +4,7 @@ import styles from "./ReviewViewComment.module.css";
 import axios from "axios";
 import { useAuthStore } from "../../store/useAuthStore";
 
-const ReviewViewComment = ({ reviewNo }) => {
+const ReviewViewComment = ({ reviewNo, restAddr }) => {
   // 로그인한 회원 번호 (본인 댓글 수정/삭제 여부 판단에 사용)
   const loginMemberId = useAuthStore((state) => state.memberId);
   // const loginMemberNo = authStore.memberId;
@@ -144,6 +144,7 @@ const ReviewViewComment = ({ reviewNo }) => {
       {rootComments.map((comment) => (
         <ReviewCommentItem
           key={comment.commentNo}
+          restAddr={restAddr}
           comment={comment}
           replies={getReplies(comment.commentNo)} // 해당 댓글의 대댓글 전달
           loginMemberId={loginMemberId}

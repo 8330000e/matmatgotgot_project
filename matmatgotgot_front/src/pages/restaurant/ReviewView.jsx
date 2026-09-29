@@ -190,7 +190,7 @@ const ReviewView = () => {
       {/* ======= 댓글 섹션 ======= */}
       <section className={styles.review_comment}>
         <div className={styles.comment_title}>댓글</div>
-        <ReviewViewComment reviewNo={reviewNo} />
+        <ReviewViewComment reviewNo={reviewNo} restAddr={review.restAddr} />
       </section>
 
       {reportModal && (

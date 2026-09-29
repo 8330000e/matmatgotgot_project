@@ -7,6 +7,7 @@ import axios from "axios";
 
 const ReviewCommentItem = ({
   comment,
+  restAddr,
   replies = [],
   loginMemberId,
   onUpdate,
@@ -25,7 +26,7 @@ const ReviewCommentItem = ({
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
 
-  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${loginMemberId}`)
+  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${loginMemberId}/${restAddr}`)
         .then((res)=>{
           console.log(res);
           setNative(res.data);

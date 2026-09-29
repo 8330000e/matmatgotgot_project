@@ -57,5 +57,5 @@ public interface MemberMapper {
 
     int nativeExpire(String memberId);
 
-    Natives nativeIcon(String memberId);
+    Natives nativeIcon(String memberId, String region);
 }
