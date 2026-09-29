@@ -145,8 +145,11 @@ const ReviewCommentItem = ({
             )}
           </div>
           <span className={styles.comment_name}>{comment.writerName}</span>
-          <div>{comment.writerName && Number(native?.nativeStatus) === 0 && (<img src={nativeicon} alt="현지인인증뱃지" />)}
-          </div>
+          <span>
+            {comment?.writerName && Number(native?.nativeStatus) === 1 ? (
+              <img src={nativeicon} alt="현지인인증뱃지" />
+            ) : null}
+          </span>
           <span className={styles.comment_date}>{comment.createdAt}</span>
         </div>
 
