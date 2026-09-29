@@ -20,6 +20,7 @@ const ReviewCommentItem = ({
   const [replyContent, setReplyContent] = useState("");
   const [native, setNative] = useState(null);
   const memberId = loginMemberId;
+  const region = restAddr;
 
   // 신고 모달 표시 여부 (이 댓글 전용)
   const [reportModal, setReportModal] = useState(false);
@@ -27,7 +28,8 @@ const ReviewCommentItem = ({
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
 
-  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}/${restAddr}`)
+  // 프론트엔드 요청 예시
+  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}/${encodeURIComponent(region)}`)
         .then((res)=>{
           console.log(res);
           setNative(res.data);
@@ -254,6 +256,7 @@ const ReviewCommentItem = ({
               loginMemberId={loginMemberId}
               onUpdate={onUpdate}
               onDelete={onDelete}
+              region={region}
               // ⚠ reportModal/setReportModal 을 내려주지 않음
               //   ReplyItem 은 자체 state 로 모달을 관리함
               //   (댓글마다 독립된 모달이 필요하기 때문)
@@ -290,14 +293,26 @@ const ReviewCommentItem = ({
   );
 };
 
-const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
+const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete, region }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(reply.content);
+  const [native, setNative] = useState(null);
+  const memberId = loginMemberId;
 
   // 신고 모달 표시 여부 (이 대댓글 전용 — 부모와 독립)
   const [reportModal, setReportModal] = useState(false);
 
   const textareaRef = useRef(null);
+
+  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}/${encodeURIComponent(region)}`)
+        .then((res)=>{
+          console.log(res);
+          setNative(res.data);
+        })
+        .catch((err)=>{
+          console.log(err);
+          setNative(null);
+        });
 
   // textarea 자동 높이 조정
   useEffect(() => {
@@ -390,6 +405,11 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete }) => {
               )}
             </div>
             <span className={styles.comment_name}>{reply.writerName}</span>
+            <span>
+              {reply?.writerName && Number(native?.nativeStatus) === 1 ? (
+                <img src={nativeicon} alt="현지인인증뱃지" />
+              ) : '안되나'}
+            </span>
             <span className={styles.comment_date}>{reply.createdAt}</span>
           </div>
 
