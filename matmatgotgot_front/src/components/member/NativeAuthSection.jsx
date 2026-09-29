@@ -82,7 +82,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
         // await를 사용하여 Swal 토스트/알림이 완전히 끝나거나 확인될 때까지 기다립니다.
         await Swal.fire({
           toast: true,
-          position: "top-end", // Toast 위치 보장
+          position: "center",
           color: "#2b1b17",
           padding: "20px 10px",
           showConfirmButton: false,
@@ -91,6 +91,7 @@ function NativeAuthSection({ check, memberInfo, native, setMemberInfo }) {
           title: "현지인 인증 완료",
           text: "현지인 인증이 완료 되었습니다.",
           icon: "success",
+          xIndex: "999999999",
           didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
             toast.onmouseleave = Swal.resumeTimer;
