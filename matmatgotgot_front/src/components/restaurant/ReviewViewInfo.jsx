@@ -73,9 +73,10 @@ const ReviewViewInfo = ({ review }) => {
           >
             {review.images.map((image, idx) => (
               <SwiperSlide key={idx}>
-                <img 
-                  src={review.reviewImg?.startsWith('http') ? review.reviewImg : `${import.meta.env.VITE_BACKSERVER}/${review.reviewImg}`} 
-                  alt="리뷰 이미지" 
+                <img
+                  className={styles.swiper_img}
+                  src={`${image}`}
+                  alt="리뷰 이미지"
                 />
               </SwiperSlide>
             ))}

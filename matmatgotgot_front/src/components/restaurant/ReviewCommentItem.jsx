@@ -28,8 +28,11 @@ const ReviewCommentItem = ({
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
 
-  // 프론트엔드 요청 예시
-  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}/${encodeURIComponent(region)}`)
+  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
+          params: {
+            region: region
+          }
+        })
         .then((res)=>{
           console.log(res);
           setNative(res.data);
@@ -304,7 +307,11 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete, region }) => {
 
   const textareaRef = useRef(null);
 
-  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}/${encodeURIComponent(region)}`)
+  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
+          params: {
+            region: region
+          }
+        })
         .then((res)=>{
           console.log(res);
           setNative(res.data);

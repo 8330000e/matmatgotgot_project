@@ -508,14 +508,13 @@ public class MemberController {
 		return  ResponseEntity.ok(result);
 	}
 
-	@GetMapping("/members/natives/{memberId}/{region}")
+	@GetMapping("/members/natives/{memberId}")
 	public ResponseEntity<?> getNativeIcon(
-		@PathVariable("memberId") String memberId, 
-		@PathVariable("region") String region
+		@PathVariable("memberId") String memberId,
+		@RequestParam(value = "region", required = false) String region
 	) {
 		Natives nativeIcon = memberService.nativeIcon(memberId, region);
-		System.out.println(memberId + "와 " + region);
-		return  ResponseEntity.ok(nativeIcon);
+		return ResponseEntity.ok(nativeIcon);
 	}
 
 	@PostMapping(value="/email-verification")
