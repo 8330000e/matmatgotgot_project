@@ -53,4 +53,6 @@ public interface MemberMapper {
     List<GetReview> myReview(String memberId, String address);
 
     int insertNative(String memberId);
+
+    int nativeExpire(String memberId);
 }

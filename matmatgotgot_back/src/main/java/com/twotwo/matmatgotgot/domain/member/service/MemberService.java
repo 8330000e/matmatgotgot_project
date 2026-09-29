@@ -235,4 +235,10 @@ public class MemberService {
         int result = memberMapper.insertNative(memberId);
         return result;
     }
+
+    @Transactional
+    public int nativeExpire(String memberId) {
+        int result = memberMapper.nativeExpire(memberId);
+        return result;
+    }
 }

@@ -453,6 +453,7 @@ public class MemberController {
         @RequestParam("memberId") String memberId,
         @RequestParam("nick") String nick,
         @RequestParam("addr") String addr,
+        @RequestParam("nativeStatus") String nativeStatus,
         @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
 		Member member = new Member();
 		member.setMemberId(memberId);
@@ -491,6 +492,12 @@ public class MemberController {
 	public ResponseEntity<?> myReview(@RequestParam("memberId") String memberId, @RequestParam("address") String address) {
 		List<GetReview> myreview = memberService.myReview(memberId, address);
 		return ResponseEntity.ok(myreview);
+	}
+
+	@PostMapping(value = "/native/expire")
+	public ResponseEntity<?> nativeExpire(@RequestParam("memberId") String memberId) {
+		int result = memberService.nativeExpire(memberId);
+		return ResponseEntity.ok(result);
 	}
 
 	@PostMapping(value = "/native/certified")

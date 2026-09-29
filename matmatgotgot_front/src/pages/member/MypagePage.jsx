@@ -151,6 +151,33 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
     defaultImg || storeThumb || memberInfo?.memberThumb || null
     );
 
+    useEffect(() => {
+    // native 객체와 만료일, 그리고 현재 인증 상태(예: 1=인증)가 활성 상태일 때만 실행
+    if (native?.nativeDeadline && Number(native?.native_status) === 1) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const deadline = new Date(native.nativeDeadline);
+        deadline.setHours(0, 0, 0, 0);
+
+        // 오늘 날짜가 만료일을 지난 경우
+        if (today > deadline) {
+        // 백엔드로 만료 상태 업데이트 요청
+        axios.post(`${import.meta.env.VITE_BACKSERVER}/members/native/expire`, {
+            memberId: memberInfo?.memberId || memberId
+        })
+        .then((res) => {
+            if (res.data > 0) {
+                // 상태 업데이트 반영을 위해 페이지 새로고침
+                window.location.reload();
+            }
+        })
+        .catch((err) => {
+            console.error("만료 상태 업데이트 실패:", err);
+        });
+        }
+    }
+    }, [native]);
   // 주소 선택 완료 핸들러
   const handleCompletePostcode = (data) => {
     let fullAddress = data.address;
@@ -229,7 +256,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
       formData.append("memberId", memberId);
       formData.append("nick", memberInfo.memberNickname || "");
       formData.append("addr", memberInfo.memberAddress || "");
-      formData.append("native", native.nativeStatus || "");
+      formData.append("nativeStatus", native.nativeStatus || "");
 
       if (selectedFile) {
         formData.append("profileImage", selectedFile); 
@@ -438,7 +465,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 )}
               </div>
               <div>
-                {memberInfo?.memberNickname && Number(native?.nativeStatus) === 1 && (
+                {memberInfo?.memberNickname && Number(native?.nativeStatus) === 0 && (
                     <img src={nativeicon} alt="현지인인증뱃지" />
                 )}
                 </div>

@@ -95,9 +95,12 @@
 			member_id,
 			REGEXP_SUBSTR(member_address, '^.*?[가-힣]+(시|군|구)(\\s+[가-힣]+(읍|면))?|^.*?(구|군|읍|면)'),
 			CURRENT_DATE,                                    
-			DATE_ADD(CURRENT_DATE, INTERVAL 6 MONTH)         
+			DATE_ADD(CURRENT_DATE, INTERVAL 6 MONTH)
 		FROM member_tbl
 		WHERE member_id = #{memberId}
 		AND member_address IS NOT NULL
 	</insert>
+	<update id="nativeExpire">
+		update native_tbl set native_status = 1 where member_id = #{memberId}
+	</update>
 </mapper>
