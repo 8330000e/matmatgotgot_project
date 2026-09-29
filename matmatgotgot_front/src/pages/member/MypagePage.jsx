@@ -229,6 +229,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
       formData.append("memberId", memberId);
       formData.append("nick", memberInfo.memberNickname || "");
       formData.append("addr", memberInfo.memberAddress || "");
+      formData.append("native", native.nativeStatus || "");
 
       if (selectedFile) {
         formData.append("profileImage", selectedFile); 
@@ -437,7 +438,7 @@ export const Myinfo = ({ memberInfo, setMemberInfo }) => {
                 )}
               </div>
               <div>
-                {memberInfo?.memberNickname && Number(native?.native_status) === 1 && (
+                {memberInfo?.memberNickname && Number(native?.nativeStatus) === 1 && (
                     <img src={nativeicon} alt="현지인인증뱃지" />
                 )}
                 </div>
