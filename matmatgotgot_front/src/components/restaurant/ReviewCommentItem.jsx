@@ -28,19 +28,23 @@ const ReviewCommentItem = ({
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
 
-  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
-          params: {
-            region: region
-          }
-        })
-        .then((res)=>{
-          console.log(res);
-          setNative(res.data);
-        })
-        .catch((err)=>{
-          console.log(err);
-          setNative(null);
-        });
+  // 프론트엔드 (React)
+  useEffect(() => {
+    // memberId와 region 값이 모두 존재할 때만 API 호출
+    if (memberId && region) {
+      axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
+        params: { region }
+      })
+      .then((res) => {
+        // res.data가 존재하면 저장, 없으면 null
+        setNative(res.data || null);
+      })
+      .catch((err) => {
+        console.error(err);
+        setNative(null);
+      });
+    }
+  }, [memberId, region]); // native를 의존성 배열에 넣지 말고, 조회 기준이 되는 값만 명시!
 
   // 수정 textarea 자동 높이 조정
   useEffect(() => {
@@ -307,19 +311,23 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete, region }) => {
 
   const textareaRef = useRef(null);
 
-  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
-          params: {
-            region: region
-          }
-        })
-        .then((res)=>{
-          console.log(res);
-          setNative(res.data);
-        })
-        .catch((err)=>{
-          console.log(err);
-          setNative(null);
-        });
+  // 프론트엔드 (React)
+  useEffect(() => {
+    // memberId와 region 값이 모두 존재할 때만 API 호출
+    if (memberId && region) {
+      axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
+        params: { region }
+      })
+      .then((res) => {
+        // res.data가 존재하면 저장, 없으면 null
+        setNative(res.data || null);
+      })
+      .catch((err) => {
+        console.error(err);
+        setNative(null);
+      });
+    }
+  }, [memberId, region]); // native를 의존성 배열에 넣지 말고, 조회 기준이 되는 값만 명시!
 
   // textarea 자동 높이 조정
   useEffect(() => {
