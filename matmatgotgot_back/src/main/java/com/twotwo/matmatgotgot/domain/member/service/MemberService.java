@@ -21,6 +21,8 @@ import org.thymeleaf.context.Context;
 
 import java.lang.annotation.Native;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -243,8 +245,23 @@ public class MemberService {
         return result;
     }
 
-    public Natives nativeIcon(String loginMemberId, String restAddr) {
-        Natives nativeIcon = memberMapper.nativeIcon(loginMemberId, restAddr);
+    public Natives nativeIcon(String memberId, String region) {
+        if (region == null || region.isBlank()) return "";
+
+        // 시/군/구 단어를 찾는 정규식 (2~4글자 한글 + 시/군/구)
+        Pattern pattern = Pattern.compile("\\b[가-힣]{2,4}(시|군|구)\\b");
+        Matcher matcher = pattern.matcher(region);
+
+        StringBuilder sb = new StringBuilder();
+        while (matcher.find()) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(matcher.group());
+        }
+        region = sb.toString();
+        System.out.println(region);
+        Natives nativeIcon = memberMapper.nativeIcon(memberId, region);
         return nativeIcon;
     }
 }

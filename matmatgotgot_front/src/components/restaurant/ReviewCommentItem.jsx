@@ -19,6 +19,7 @@ const ReviewCommentItem = ({
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [native, setNative] = useState(null);
+  const memberId = loginMemberId;
 
   // 신고 모달 표시 여부 (이 댓글 전용)
   const [reportModal, setReportModal] = useState(false);
@@ -26,7 +27,7 @@ const ReviewCommentItem = ({
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
 
-  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${loginMemberId}/${restAddr}`)
+  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}/${restAddr}`)
         .then((res)=>{
           console.log(res);
           setNative(res.data);
