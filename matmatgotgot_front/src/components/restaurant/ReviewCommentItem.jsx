@@ -148,7 +148,7 @@ const ReviewCommentItem = ({
           <span>
             {comment?.writerName && Number(native?.nativeStatus) === 1 ? (
               <img src={nativeicon} alt="현지인인증뱃지" />
-            ) : null}
+            ) : '안되나'}
           </span>
           <span className={styles.comment_date}>{comment.createdAt}</span>
         </div>
