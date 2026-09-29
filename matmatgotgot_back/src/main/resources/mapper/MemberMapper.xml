@@ -108,16 +108,9 @@
 		FROM natives_tbl 
 		WHERE member_id = #{memberId}
 		AND (
-			#{region} LIKE CONCAT('%', region, '%')
-			OR region = CASE 
-				WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(#{region}, ' ', 2), ' ', -1) LIKE '%시' 
-				AND SUBSTRING_INDEX(SUBSTRING_INDEX(#{region}, ' ', 3), ' ', -1) LIKE '%구'
-				THEN CONCAT(
-						SUBSTRING_INDEX(SUBSTRING_INDEX(#{region}, ' ', 2), ' ', -1), ' ',
-						SUBSTRING_INDEX(SUBSTRING_INDEX(#{region}, ' ', 3), ' ', -1)
-					)
-				ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(#{region}, ' ', 2), ' ', -1)
-			END
+			region = #{parsedRegion}
+			OR #{fullAddress} LIKE CONCAT('%', region, '%')
+			OR region LIKE CONCAT('%', #{parsedRegion}, '%')
 		)
 		LIMIT 1;
 	</select>

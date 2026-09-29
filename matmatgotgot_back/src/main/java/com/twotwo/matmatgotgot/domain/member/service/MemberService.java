@@ -250,11 +250,23 @@ public class MemberService {
             return null;
         }
 
-        // 주소 데이터를 콘솔로 확인
-        System.out.println("전달받은 주소: " + region);
+        // 공백으로 단어 분할하여 시/군/구 조합 생성
+        String[] parts = region.trim().split(" ");
+        String parsedRegion = "";
 
-        // 주소 원본(또는 trim)을 Mapper로 바로 전달
-        Natives nativeIcon = memberMapper.nativeIcon(memberId, region.trim());
-        return nativeIcon;
+        if (parts.length >= 3 && parts[1].endsWith("시") && parts[2].endsWith("구")) {
+            // 예: '경기 수원시 팔달구 ...' -> '수원시 팔달구'
+            parsedRegion = parts[1] + " " + parts[2];
+        } else if (parts.length >= 2) {
+            // 예: '부산 해운대구 ...' -> '해운대구' (또는 parts[0] + " " + parts[1] 필요시 조정)
+            parsedRegion = parts[1];
+        } else {
+            parsedRegion = region;
+        }
+
+        System.out.println(">>> 파싱된 region: " + parsedRegion);
+
+        // Mapper 호출 (원본 region과 파싱된 parsedRegion을 함께 활용 가능)
+        return memberMapper.nativeIcon(memberId, parsedRegion, region);
     }
 }
