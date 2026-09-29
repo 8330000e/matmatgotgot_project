@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.lang.annotation.Native;
 import java.util.List;
 
 @Service
@@ -240,5 +241,10 @@ public class MemberService {
     public int nativeExpire(String memberId) {
         int result = memberMapper.nativeExpire(memberId);
         return result;
+    }
+
+    public Natives nativeIcon(String memberId) {
+        Natives nativeIcon = memberMapper.nativeIcon(memberId);
+        return nativeIcon;
     }
 }

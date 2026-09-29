@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./ReviewCommentItem.module.css";
 import Swal from "sweetalert2";
 import ReportModal from "../ui/ReportModal";
+import nativeicon from "../../assets/img/native.svg";
+import axios from "axios";
 
 const ReviewCommentItem = ({
   comment,
@@ -15,12 +17,23 @@ const ReviewCommentItem = ({
   const [editContent, setEditContent] = useState(comment.content);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState("");
+  const [native, setNative] = useState(null);
 
   // 신고 모달 표시 여부 (이 댓글 전용)
   const [reportModal, setReportModal] = useState(false);
 
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
+
+  axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${loginMemberId}`)
+        .then((res)=>{
+          console.log(res);
+          setNative(res.data);
+        })
+        .catch((err)=>{
+          console.log(err);
+          setNative(null);
+        });
 
   // 수정 textarea 자동 높이 조정
   useEffect(() => {
@@ -131,6 +144,8 @@ const ReviewCommentItem = ({
             )}
           </div>
           <span className={styles.comment_name}>{comment.writerName}</span>
+          <div>{comment.writerName && Number(native?.nativeStatus) === 0 && (<img src={nativeicon} alt="현지인인증뱃지" />)}
+          </div>
           <span className={styles.comment_date}>{comment.createdAt}</span>
         </div>
 

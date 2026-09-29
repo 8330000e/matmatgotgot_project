@@ -23,6 +23,7 @@ import com.twotwo.matmatgotgot.security.GoogleOAuthService;
 import com.twotwo.matmatgotgot.security.GoogleUserProfile;
 import com.twotwo.matmatgotgot.security.JwtTokenProvider;
 import jakarta.mail.MessagingException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -504,6 +506,12 @@ public class MemberController {
 	public ResponseEntity<?> insertNative(@RequestBody CertifiedRequestDto request) {
 		int result = memberService.insertNative(request.getMemberId());
 		return  ResponseEntity.ok(result);
+	}
+
+	@GetMapping(value = "/natives/{memberNickname}")
+	public ResponseEntity<?> nativeIcon(@PathVariable String memberId) {
+		Natives nativeIcon = memberService.nativeIcon(memberId);
+		return  ResponseEntity.ok(nativeIcon);
 	}
 
 	@PostMapping(value="/email-verification")

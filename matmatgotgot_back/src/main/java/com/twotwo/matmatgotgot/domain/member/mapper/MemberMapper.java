@@ -8,6 +8,7 @@ import com.twotwo.matmatgotgot.domain.restaurant.entity.Coords;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.lang.annotation.Native;
 import java.util.List;
 
 @Mapper
@@ -55,4 +56,6 @@ public interface MemberMapper {
     int insertNative(String memberId);
 
     int nativeExpire(String memberId);
+
+    Natives nativeIcon(String memberId);
 }

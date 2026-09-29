@@ -103,4 +103,7 @@
 	<update id="nativeExpire">
 		update native_tbl set native_status = 1 where member_id = #{memberId}
 	</update>
+	<select id="nativeIcon" resultType="natives">
+		select * from natives_tbl where member_id = #{memberId}
+	</select>
 </mapper>
