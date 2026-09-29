@@ -247,24 +247,14 @@ public class MemberService {
 
     public Natives nativeIcon(String memberId, String region) {
         if (region == null || region.trim().isEmpty()) {
-            return null; // 반환 타입이 Natives 객체이므로 String("") 대신 null 반환
+            return null;
         }
 
-        // 시/군/구 단어를 찾는 정규식 (2~4글자 한글 + 시/군/구)
-        Pattern pattern = Pattern.compile("\\b[가-힣]{2,4}(시|군|구)\\b");
-        Matcher matcher = pattern.matcher(region);
+        // 주소 데이터를 콘솔로 확인
+        System.out.println("전달받은 주소: " + region);
 
-        StringBuilder sb = new StringBuilder();
-        while (matcher.find()) {
-            if (sb.length() > 0) {
-                sb.append(" ");
-            }
-            sb.append(matcher.group());
-        }
-        region = sb.toString();
-        System.out.println(region);
-
-        Natives nativeIcon = memberMapper.nativeIcon(memberId, region);
+        // 주소 원본(또는 trim)을 Mapper로 바로 전달
+        Natives nativeIcon = memberMapper.nativeIcon(memberId, region.trim());
         return nativeIcon;
     }
 }
