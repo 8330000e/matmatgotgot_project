@@ -135,7 +135,7 @@ const ReviewCommentItem = ({
           </div>
           <span className={styles.comment_name}>{comment.writerName}</span>
           <span>
-            {comment?.writerName && Number(native === 1) ? (
+            {native === 1 ? (
               <img src={nativeicon} alt="현지인인증뱃지" />
             ) : '안되나'}
           </span>
@@ -381,7 +381,7 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete, native }) => {
             </div>
             <span className={styles.comment_name}>{reply.writerName}</span>
             <span>
-              {reply?.writerName && Number(native === 1) ? (
+              {native === 1 ? (
                 <img src={nativeicon} alt="현지인인증뱃지" />
               ) : '안되나'}
             </span>
