@@ -521,7 +521,7 @@
                         JOIN natives_tbl N
                             ON M.MEMBER_ID = N.MEMBER_ID
 
-        WHERE BC.BOARD_NO = #{boardNo}  AND BC.BOARD_COMMENT_STATUS != 2
+        WHERE BC.BOARD_NO = #{boardNo}  AND BC.BOARD_COMMENT_STATUS != 2 AND M.MEMBER_ID = N.MEMBER_ID
 
         ORDER BY BC.BOARD_COMMENT_NO ASC
 

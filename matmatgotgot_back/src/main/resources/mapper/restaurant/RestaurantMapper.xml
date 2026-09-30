@@ -187,7 +187,7 @@
         FROM review_comment_tbl c
                  INNER JOIN member_tbl m ON c.member_id = m.member_id
                     INNER JOIN natives_tbl n ON m.member_id = n.member_id
-        WHERE c.review_no = #{reviewNo} AND c.com_status = 0
+        WHERE c.review_no = #{reviewNo} AND c.com_status = 0 AND m.member_id = n.member_id
         ORDER BY
             COALESCE(c.parent_comment, c.comment_no),
             c.depth,
