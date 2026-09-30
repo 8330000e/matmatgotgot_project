@@ -181,10 +181,12 @@
             c.content,
             c.created_at,
             c.depth,
-            c.parent_comment
+            c.parent_comment,
+            n.native_status
 
         FROM review_comment_tbl c
                  INNER JOIN member_tbl m ON c.member_id = m.member_id
+                    INNER JOIN natives_tbl n ON m.member_id = n.member_id
         WHERE c.review_no = #{reviewNo} AND c.com_status = 0
         ORDER BY
             COALESCE(c.parent_comment, c.comment_no),

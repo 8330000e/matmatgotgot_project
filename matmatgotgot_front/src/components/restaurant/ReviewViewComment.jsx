@@ -151,6 +151,7 @@ const ReviewViewComment = ({ reviewNo, restAddr }) => {
           onUpdate={updateComment} // 수정 콜백
           onDelete={deleteComment} // 삭제 콜백
           onReplyAdd={registReply} // 대댓글 등록 콜백
+          native={comment.nativeStatus}
         />
       ))}
 

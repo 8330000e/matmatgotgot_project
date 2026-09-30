@@ -7,44 +7,23 @@ import axios from "axios";
 
 const ReviewCommentItem = ({
   comment,
-  restAddr,
   replies = [],
   loginMemberId,
   onUpdate,
   onDelete,
   onReplyAdd,
+  native
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState("");
-  const [native, setNative] = useState(null);
-  const memberId = loginMemberId;
-  const region = restAddr;
 
   // 신고 모달 표시 여부 (이 댓글 전용)
   const [reportModal, setReportModal] = useState(false);
 
   const editTextareaRef = useRef(null);
   const replyTextareaRef = useRef(null);
-
-  // 프론트엔드 (React)
-  useEffect(() => {
-    // memberId와 region 값이 모두 존재할 때만 API 호출
-    if (memberId && region) {
-      axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
-        params: { region }
-      })
-      .then((res) => {
-        // res.data가 존재하면 저장, 없으면 null
-        setNative(res.data || null);
-      })
-      .catch((err) => {
-        console.error(err);
-        setNative(null);
-      });
-    }
-  }, [memberId, region]); // native를 의존성 배열에 넣지 말고, 조회 기준이 되는 값만 명시!
 
   // 수정 textarea 자동 높이 조정
   useEffect(() => {
@@ -156,7 +135,7 @@ const ReviewCommentItem = ({
           </div>
           <span className={styles.comment_name}>{comment.writerName}</span>
           <span>
-            {comment?.writerName && Number(native?.nativeStatus) === 1 ? (
+            {comment?.writerName && Number(native === 1) ? (
               <img src={nativeicon} alt="현지인인증뱃지" />
             ) : '안되나'}
           </span>
@@ -263,7 +242,7 @@ const ReviewCommentItem = ({
               loginMemberId={loginMemberId}
               onUpdate={onUpdate}
               onDelete={onDelete}
-              region={region}
+              native={native}
               // ⚠ reportModal/setReportModal 을 내려주지 않음
               //   ReplyItem 은 자체 state 로 모달을 관리함
               //   (댓글마다 독립된 모달이 필요하기 때문)
@@ -300,34 +279,15 @@ const ReviewCommentItem = ({
   );
 };
 
-const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete, region }) => {
+const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete, native }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(reply.content);
-  const [native, setNative] = useState(null);
-  const memberId = loginMemberId;
 
   // 신고 모달 표시 여부 (이 대댓글 전용 — 부모와 독립)
   const [reportModal, setReportModal] = useState(false);
 
   const textareaRef = useRef(null);
 
-  // 프론트엔드 (React)
-  useEffect(() => {
-    // memberId와 region 값이 모두 존재할 때만 API 호출
-    if (memberId && region) {
-      axios.get(`${import.meta.env.VITE_BACKSERVER}/members/natives/${memberId}`, {
-        params: { region }
-      })
-      .then((res) => {
-        // res.data가 존재하면 저장, 없으면 null
-        setNative(res.data || null);
-      })
-      .catch((err) => {
-        console.error(err);
-        setNative(null);
-      });
-    }
-  }, [memberId, region]); // native를 의존성 배열에 넣지 말고, 조회 기준이 되는 값만 명시!
 
   // textarea 자동 높이 조정
   useEffect(() => {
@@ -421,7 +381,7 @@ const ReplyItem = ({ reply, loginMemberId, onUpdate, onDelete, region }) => {
             </div>
             <span className={styles.comment_name}>{reply.writerName}</span>
             <span>
-              {reply?.writerName && Number(native?.nativeStatus) === 1 ? (
+              {reply?.writerName && Number(native === 1) ? (
                 <img src={nativeicon} alt="현지인인증뱃지" />
               ) : '안되나'}
             </span>
