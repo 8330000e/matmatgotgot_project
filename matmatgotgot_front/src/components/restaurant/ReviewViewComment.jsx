@@ -27,6 +27,7 @@ const ReviewViewComment = ({ reviewNo, restAddr }) => {
         `${import.meta.env.VITE_BACKSERVER}/restaurants/review/${reviewNo}/comments`,
       )
       .then((res) => {
+        console.log("댓글리스트: ", res);
         setCommentList(res.data);
       })
       .catch((err) => {
