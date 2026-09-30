@@ -26,4 +26,6 @@ public class BoardComment {
 
     private String boardCommentWriter;
 
+    private Integer nativeStatus;
+
 }
